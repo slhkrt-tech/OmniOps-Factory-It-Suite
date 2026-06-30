@@ -1,121 +1,240 @@
-# 🌐 OmniOps: AIOps & Network Management System
+# OmniOps Factory IT Suite
 
-![Python](https://img.shields.io/badge/Python-3.x-blue?style=for-the-badge&logo=python)
-![Django](https://img.shields.io/badge/Django-Web_Framework-092E20?style=for-the-badge&logo=django)
-![Celery](https://img.shields.io/badge/Celery-Asynchronous_Task_Queue-37814A?style=for-the-badge&logo=celery)
-![Redis](https://img.shields.io/badge/Redis-Message_Broker-DC382D?style=for-the-badge&logo=redis)
+OmniOps Factory IT Suite, fabrika ve kurumsal bilgi işlem ekiplerinin günlük operasyonlarını tek panelden yönetebilmesi için geliştirilmiş kapsamlı bir ITSM, ITOM, ağ yönetimi, envanter, saha operasyonu, güvenlik ve raporlama platformudur.
 
-**OmniOps**, kurumsal ağ altyapılarını yönetmek, otomatize etmek ve otonom güvenlik kararları (AIOps) almak için geliştirilmiş kapsamlı bir Ağ Yönetim (NMS) ve IT Hizmet Yönetimi (ITSM) platformudur.
+Sistem; servis masası, ağ keşfi, cihaz yedekleme, IPAM, kamera/NVR takibi, VPN/uzaktan erişim kayıtları, fabrika alanları, sarf malzeme, personel IT süreçleri, satın alma, major incident, uyum kontrolleri, runbook, iş uygulamaları, yönetici özetleri ve PDF/Word rapor çıktıları gibi modülleri aynı modern arayüzde birleştirir.
 
-Sistem, darboğazları önlemek için asenkron mesaj kuyruğu (Producer-Consumer) mimarisi üzerine inşa edilmiş olup, fiziksel veri merkezi haritalamasından, derin ağ keşfine kadar birçok gelişmiş mühendislik algoritması barındırmaktadır.
+![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
+![Django](https://img.shields.io/badge/Django-5.x-092E20?style=for-the-badge&logo=django)
+![DRF](https://img.shields.io/badge/API-Django_REST_Framework-red?style=for-the-badge)
+![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-4169E1?style=for-the-badge&logo=postgresql)
+![Redis](https://img.shields.io/badge/Queue-Redis-DC382D?style=for-the-badge&logo=redis)
+![Docker](https://img.shields.io/badge/Deploy-Docker-2496ED?style=for-the-badge&logo=docker)
 
----
+## Öne Çıkan Modüller
 
-## 🚀 Öne Çıkan Özellikler ve Algoritmalar
+- Servis masası: ticket, yorum, ek dosya, kategori, SLA, bildirim, analitik ve CSV dışa aktarım.
+- Kullanıcı ve yetki: rol bazlı erişim, destek ekipleri, profil yönetimi, API token/JWT ve nesne bazlı izin altyapısı.
+- Ağ ve altyapı: derin ağ tarama, topoloji, IPAM, rack görünümü, port haritaları, cihaz konfigürasyon üretimi, yedekleme ve diff.
+- IT envanter: varlık, lisans, tedarikçi sözleşmesi, bakım ve zimmet süreçleri.
+- Fabrika operasyonları: fabrika alanları, sarf/stok takibi, periyodik bakım, onboarding/offboarding/transfer.
+- IT operasyon merkezi: satın alma, nöbet vardiyası, backup job izleme, vendor support case ve asset handover.
+- Servis süreç merkezi: major incident, access request, printer fleet ve runbook/SOP yönetimi.
+- Komuta merkezi: VPN/uzaktan erişim, departman kanalları, kamera/NVR cihazları, iş uygulamaları ve rapor şablonları.
+- Yönetişim merkezi: change calendar, CMDB servis bağımlılıkları, entegrasyon sağlığı, compliance ve çıktı işleri.
+- Offline saha: PWA, service worker, offline queue ve tekrar bağlantıda senkronizasyon.
+- Global komut paleti: `Ctrl+K` ile cihaz, ticket, kamera, runbook, rapor ve hızlı aksiyon arama.
+- Kurulum & Sağlık Merkezi: readiness skoru, ortam kontrolleri, modül doluluk durumu ve ilk kurulum adımları.
+- Yönetici Bilgilendirme: tek sayfa operasyon özeti, risk/KPI kartları, PDF ve Word çıktıları.
 
-* 🧠 **AIOps Otonom Kural Motoru (Rule-Based Expert System):** Webhook üzerinden gelen ağ loglarını parse eder. Kritik saldırıları (örn: Brute-Force, Broadcast Storm) saniyeler içinde analiz eder ve Celery üzerinden hedefe yönelik *Active Response* (Otonom Engelleme) uygular.
-* ⚡ **Asenkron Dağıtık Mimari:** 500+ cihaza aynı anda konfigürasyon gönderimi yapabilmek için **Celery & Redis** entegrasyonu ile *Producer-Consumer* deseni kullanılmıştır. Ana thread asla kilitlenmez.
-* 🕸️ **Graf Teorisi ile Ağ Topolojisi:** Ağdaki donanımları ve ilişkilerini (Node & Edge) *Force-Directed Graph* algoritması kullanarak interaktif bir topoloji haritasına dönüştürür.
-* 💾 **Konfigürasyon Fark Analizi (Config Diff):** Cihaz yedekleri arasındaki farkları *Longest Common Subsequence (LCS)* türevi algoritmalarla tespit edip görselleştirir.
-* 📊 **Zaman Serisi Isı Haritası:** Log frekanslarını 7x24 boyutunda bir matris ile kümeleyerek sistem yoğunluğunu anlamlı bir ısı haritasına (Heatmap) dönüştürür.
-* 🗄️ **Dinamik Kabin (Rack) Haritalama:** Donanımların U yüksekliklerini matematiksel olarak hesaplayıp, *Absolute Positioning* ile 42U'luk fiziksel veri merkezi görünümü oluşturur.
-* 🧮 **Görsel IPAM & Subnet Hesaplama:** IP bloklamalarını *Bitwise (Bit düzeyinde)* algoritmalarla hesaplayıp görsel bir matris üzerinde dolu/boş durumunu haritalandırır.
-* 🔒 **Rol ve Nesne Bazlı Yetkilendirme (RBAC & OLP):** Django-Guardian kullanılarak her yöneticinin sadece kendi zimmetindeki cihazları görmesi sağlanmıştır.
+## Teknoloji Yığını
 
----
+- Backend: Python, Django, Django REST Framework, SimpleJWT, django-guardian
+- Frontend: Django templates, Bootstrap 5, modern CSS design system, Chart.js, Leaflet, vis-network
+- Asenkron işler: Celery, Redis
+- Veritabanı: SQLite geliştirme, PostgreSQL production
+- Raporlama: ReportLab PDF, Word uyumlu HTML `.doc` çıktısı
+- Deployment: Docker, Docker Compose, Gunicorn, Nginx reverse proxy
+- PWA: manifest, service worker, offline sync JavaScript
 
-## 🛠️ Kurulum ve Çalıştırma (Geliştirici Ortamı)
+## Hızlı Docker Kurulumu
 
-Projeyi kendi bilgisayarınızda test etmek için aşağıdaki adımları sırasıyla uygulayınız.
-
-### 1. Gereksinimler
-* **Python 3.9+**
-* **Redis Server** (Asenkron kuyruk işlemleri için zorunludur. Docker üzerinden çalıştırılması tavsiye edilir).
-* **Git**
-
-### 2. Projeyi Klonlayın
 ```bash
-git clone [https://github.com/slhkrt-tech/OmniOps.git](https://github.com/slhkrt-tech/OmniOps.git)
-cd OmniOps
+git clone https://github.com/slhkrt-tech/OmniOps-Factory-It-Suite.git
+cd OmniOps-Factory-It-Suite
+copy .env.example .env
+```
 
-Sanal Ortam (Virtual Environment) ve Bağımlılıklar
+`.env` içindeki değerleri canlı ortama göre değiştirin:
 
-python -m venv venv
-# Windows için:
-venv\Scripts\activate
-# Linux/Mac için:
-# source venv/bin/activate
+```env
+APP_NAME=OmniOps
+DJANGO_SECRET_KEY=replace-with-a-strong-secret
+ALLOWED_HOSTS=localhost,127.0.0.1,omniops.example.com
+CSRF_TRUSTED_ORIGINS=https://omniops.example.com
+POSTGRES_DB=omniops
+POSTGRES_USER=omniops
+POSTGRES_PASSWORD=change-this-password
+REMOTE_PROBE_SHARED_SECRET=change-this-probe-secret
+```
 
-pip install -r requirements.txt
+Servisleri başlatın:
 
-Çevre Değişkenleri
-
-Proje ana dizininde .env adında bir dosya oluşturun ve Webhook güvenlik şifresini belirleyin:
-
-WAZUH_API_KEY=omniops_gizli_sifre_2026
-
-Veritabanı Kurulumu
-
-python manage.py makemigrations
-python manage.py migrate
-python manage.py createsuperuser  # Admin hesabı oluşturun
-
-Redis ve Celery'yi Başlatın
-
-Asenkron işlemlerin ve AIOps engelleme simülasyonlarının çalışması için sistemde Redis açık olmalıdır:
-
-# Eğer Docker kullanıyorsanız Redis'i tek komutla başlatın:
-docker run -d -p 6379:6379 redis
-
-# Yeni bir terminal sekmesi açın (venv aktifken) ve Celery Worker'ı başlatın:
-celery -A core worker -l info --pool=solo
-
-Sunucuyu Başlatın
-
-Ana terminalinize dönün ve Django projesini ayağa kaldırın:
-
-python manage.py runserver
-
-Sisteme http://127.0.0.1:8000 adresinden giriş yapabilirsiniz.
-
----
-
-## Müşteri / Production Kurulum Kontrol Listesi
-
-1. `.env.example` dosyasını `.env` olarak kopyalayın ve aşağıdaki değerleri mutlaka değiştirin:
-   - `DJANGO_SECRET_KEY`
-   - `ALLOWED_HOSTS`
-   - `CSRF_TRUSTED_ORIGINS`
-   - `POSTGRES_PASSWORD`
-   - `WAZUH_API_KEY`
-   - `REMOTE_PROBE_SHARED_SECRET`
-
-2. İlk kurulum:
 ```bash
 docker compose up --build -d
 ```
 
-3. Sağlık kontrolü:
+İlk admin kullanıcısını oluşturun:
+
+```bash
+docker compose exec web python manage.py createsuperuser
+```
+
+Sağlık kontrolü:
+
 ```bash
 curl http://127.0.0.1:8000/health/
 ```
 
-4. TLS/Reverse proxy kullanıyorsanız:
-   - Proxy HTTPS terminasyonu yapıyorsa `SECURE_SSL_REDIRECT=False` bırakılabilir.
-   - Uygulama doğrudan HTTPS sunuyorsa `SECURE_SSL_REDIRECT=True` kullanılmalıdır.
-   - Canlı domain `ALLOWED_HOSTS` ve `CSRF_TRUSTED_ORIGINS` içinde yer almalıdır.
+Arayüz:
 
-5. Production doğrulama:
+```text
+http://127.0.0.1:8000
+```
+
+## Geliştirici Kurulumu
+
+```bash
+git clone https://github.com/slhkrt-tech/OmniOps-Factory-It-Suite.git
+cd OmniOps-Factory-It-Suite
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+copy .env.example .env
+python manage.py migrate
+python manage.py setup_helpdesk
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+Celery worker:
+
+```bash
+celery -A core worker --loglevel=info --pool=solo
+```
+
+Celery beat:
+
+```bash
+celery -A core beat --loglevel=info
+```
+
+## İlk Kurulum ve Readiness
+
+OmniOps, yeni kurulumun hazır olup olmadığını kontrol eden iki araç içerir.
+
+Web arayüzü:
+
+```text
+/kurulum-merkezi/
+```
+
+CLI doctor komutu:
+
+```bash
+python manage.py omniops_doctor
+python manage.py omniops_doctor --json
+python manage.py omniops_doctor --bootstrap
+```
+
+`--bootstrap` varsayılan roller, destek ekipleri, kategoriler ve temel izinleri hazırlar.
+
+## Yönetici Raporları
+
+Yönetici bilgilendirme ekranı:
+
+```text
+/yonetici-bilgilendirme/
+```
+
+PDF çıktı:
+
+```text
+/yonetici-bilgilendirme/pdf/
+```
+
+Word çıktı:
+
+```text
+/yonetici-bilgilendirme/word/
+```
+
+Klasik raporlama merkezi:
+
+```text
+/raporlar/
+```
+
+Bu alanlardan ticket performansı, denetim izi, yönetici özeti, operasyon KPI'ları ve toplantı dokümanları dışa aktarılabilir.
+
+## API ve Dokümantasyon
+
+REST API ana yolu:
+
+```text
+/api/
+```
+
+OpenAPI schema:
+
+```text
+/api/schema/
+```
+
+Swagger UI:
+
+```text
+/api/docs/
+```
+
+JWT token:
+
+```text
+/api/token/
+/api/token/refresh/
+```
+
+## Production Kontrol Listesi
+
+- `.env` içindeki `DJANGO_SECRET_KEY`, `POSTGRES_PASSWORD`, `REMOTE_PROBE_SHARED_SECRET`, `VAULT_KEY` değerlerini değiştirin.
+- `ALLOWED_HOSTS` ve `CSRF_TRUSTED_ORIGINS` alanlarına canlı domainleri ekleyin.
+- SMTP ayarlarını girin: `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL`.
+- SSO kullanılıyorsa Azure AD, OIDC veya SAML değerlerini doldurun.
+- Nginx/TLS yapılandırmasını canlı domaininize göre güncelleyin.
+- Kalıcı volume'leri yedekleyin: `postgres_data`, `media_data`, `logs_data`, `db_backups`.
+- Derin ağ taraması için Docker Compose içinde `NET_RAW` ve `NET_ADMIN` capability kullanıldığını gözden geçirin.
+- Kurulum sonrası `/kurulum-merkezi/` ekranından readiness skorunu kontrol edin.
+
+## Doğrulama Komutları
+
 ```bash
 python manage.py check
 python manage.py test inventory
+python manage.py spectacular --file schema.yml --validate
+python manage.py makemigrations --check
 ```
 
-6. Kalıcı veriler:
-   - PostgreSQL: `postgres_data`
-   - Redis: `redis_data`
-   - Kullanıcı dosyaları: `media_data`
-   - Uygulama logları: `logs_data`
+Docker içinde:
 
-Not: Derin ağ taraması için container `NET_RAW` ve `NET_ADMIN` capability ile çalışır. Bu, tam `privileged` moddan daha dar bir yetki setidir.
+```bash
+docker compose exec web python manage.py check
+docker compose exec web python manage.py test inventory
+```
 
+## Docker Servisleri
+
+Compose proje adı ve container adları OmniOps olarak sabitlenmiştir.
+
+- `omniops_app`: Django/Gunicorn web uygulaması
+- `omniops_worker`: Celery worker
+- `omniops_beat`: Celery beat scheduler
+- `omniops_db`: PostgreSQL
+- `omniops_redis`: Redis
+
+Uygulama image adı:
+
+```text
+omniops/app:latest
+```
+
+## Güvenlik Notları
+
+- `.env` dosyasını repoya eklemeyin.
+- Production ortamında `DJANGO_DEBUG=False` kullanın.
+- Reverse proxy arkasında HTTPS, secure cookie ve CSRF trusted origin ayarlarını kontrol edin.
+- Uzak probe entegrasyonu için `REMOTE_PROBE_SHARED_SECRET` değerini güçlü ve benzersiz belirleyin.
+- Vault/cihaz parolaları için `VAULT_KEY` değerini kurulum başına ayrı üretin.
+
+## Lisans ve Kullanım
+
+Bu proje fabrika IT ekipleri, sistem yöneticileri, ağ ekipleri ve destek masası operasyonları için uçtan uca yönetim paneli olarak tasarlanmıştır. Canlı kullanım öncesinde kurum politikalarına göre güvenlik, yetki, yedekleme ve log saklama ayarları gözden geçirilmelidir.
