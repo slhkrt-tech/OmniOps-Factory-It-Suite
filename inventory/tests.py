@@ -114,6 +114,32 @@ class InventorySmokeTests(TestCase):
         self.assertEqual(created_departments, 0)
         self.assertEqual(created_zones, 0)
 
+    def test_qr_bootstrap_creates_tags(self):
+        from inventory.factory_bootstrap import ensure_default_factory_structure, ensure_default_qr_tags
+        from inventory.models import AssetQRTag
+
+        ensure_default_factory_structure()
+        created_tags = ensure_default_qr_tags()
+        self.assertGreaterEqual(created_tags, 1)
+        self.assertGreaterEqual(AssetQRTag.objects.filter(is_active=True).count(), 1)
+        self.assertEqual(ensure_default_qr_tags(), 0)
+
+    def test_camera_health_evaluate_without_network(self):
+        from inventory.integrations.camera_health import evaluate_camera_health
+        from inventory.models import CameraDevice
+
+        camera = CameraDevice(name='Test Kamera', status='online')
+        status, message = evaluate_camera_health(camera)
+        self.assertEqual(status, 'warning')
+        self.assertIn('tanımlı değil', message)
+
+    def test_readiness_report_includes_new_checks(self):
+        response = self.client.get(reverse('readiness_api'))
+        self.assertEqual(response.status_code, 200)
+        keys = {item['key'] for item in response.json().get('checks', [])}
+        self.assertIn('qr_tags', keys)
+        self.assertIn('onlyoffice', keys)
+
     def test_core_api_lists_render_for_admin(self):
         route_names = [
             'device-list',

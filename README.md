@@ -145,7 +145,7 @@ Departman kartelası, alt alanlar ve doküman merkezi:
 - Bölüm seçilince kameralar, ağ cihazları, endpointler, ticketlar ve doküman modülleri
 - PDF tarayıcı önizlemesi: `/dokuman/<id>/onizleme/`
 - Güvenli indirme: `/dokuman/<id>/indir/`
-- DOCX için harici editör URL alanı (OnlyOffice/Collabora entegrasyonuna hazır)
+- Tarayıcı editörü (DOCX/XLSX/PPTX): `/dokuman/<id>/duzenle/`
 
 İlk kartela verisi:
 
@@ -168,6 +168,8 @@ OnlyOffice örneği:
 ONLYOFFICE_DOCUMENT_SERVER_URL=https://onlyoffice.example.com
 ONLYOFFICE_JWT_SECRET=your-jwt-secret
 ```
+
+JWT kullanıyorsanız `pip install PyJWT` veya `requirements.txt` içindeki `PyJWT` paketi gerekir.
 
 ## Yönetici Raporları
 

@@ -22,6 +22,10 @@ secret.txt
 media/
 staticfiles/
 
+# --- IDE ve Çalışma Zamanı Logları ---
+logs/
+*.log
+
 # --- İşletim Sistemi ve IDE ---
 .vscode/
 .idea/

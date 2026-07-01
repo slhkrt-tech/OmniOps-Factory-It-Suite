@@ -26,3 +26,4 @@ mac-vendor-lookup
 networkx
 matplotlib
 requests
+PyJWT>=2.8

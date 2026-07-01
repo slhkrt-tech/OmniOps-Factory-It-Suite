@@ -132,6 +132,15 @@ def build_readiness_report():
         _readiness_item('celery', 'Celery/Redis Ayarı', bool(getattr(settings, 'CELERY_BROKER_URL', '')), getattr(settings, 'CELERY_BROKER_URL', ''), 'Redis ve Celery worker/beat servislerini çalıştırın.'),
         _readiness_item('factory_departments', 'Fabrika Kartelası', FactoryDepartment.objects.filter(is_active=True).exists(), 'Departman kartelası boş.', 'python manage.py omniops_doctor --bootstrap', 'warning'),
         _readiness_item('managed_documents', 'Doküman Merkezi', ManagedDocument.objects.exists(), 'Henüz yönetilen doküman yok.', 'Fabrika BT Komuta Merkezi üzerinden PDF/DOCX yükleyin.', 'warning'),
+        _readiness_item('qr_tags', 'QR/Barkod Etiketleri', AssetQRTag.objects.filter(is_active=True).exists(), 'Varlık QR etiketi tanımlı değil.', 'python manage.py omniops_doctor --bootstrap veya /varlik-qr-tara/', 'warning'),
+        _readiness_item(
+            'onlyoffice',
+            'OnlyOffice Editör',
+            bool(getattr(settings, 'ONLYOFFICE_DOCUMENT_SERVER_URL', '')),
+            getattr(settings, 'ONLYOFFICE_DOCUMENT_SERVER_URL', '') or 'ONLYOFFICE_DOCUMENT_SERVER_URL tanımlı değil.',
+            'Tarayıcı editörü için OnlyOffice sunucu URL ve isteğe bağlı JWT ayarlayın.',
+            'warning',
+        ),
     ])
 
     module_status = [

@@ -17,6 +17,8 @@ from inventory.models import (
     Runbook,
     Ticket,
     TicketCategory,
+    AssetQRTag,
+    ERPConnection,
 )
 
 
@@ -32,8 +34,11 @@ class Command(BaseCommand):
             ensure_default_groups()
             ensure_default_categories()
             ensure_default_permissions()
-            ensure_default_factory_structure()
-            ensure_default_qr_tags()
+            created_departments, created_zones = ensure_default_factory_structure()
+            created_tags = ensure_default_qr_tags()
+            self.stdout.write(self.style.SUCCESS(
+                f"Bootstrap: {created_departments} departman, {created_zones} alt alan, {created_tags} QR etiket oluşturuldu."
+            ))
 
         report = self._build_report(bootstrapped=options['bootstrap'])
 
@@ -71,6 +76,8 @@ class Command(BaseCommand):
             {'title': 'İlk cihaz/veri girilmiş', 'ok': Device.objects.exists() or ITAsset.objects.exists()},
             {'title': 'Operasyon modülleri kullanılmaya başlanmış', 'ok': FactoryArea.objects.exists() or BusinessApplication.objects.exists()},
             {'title': 'Fabrika departman kartelası', 'ok': FactoryDepartment.objects.filter(is_active=True).exists()},
+            {'title': 'QR/Barkod etiketleri', 'ok': AssetQRTag.objects.filter(is_active=True).exists()},
+            {'title': 'ERP bağlantı kaydı', 'ok': ERPConnection.objects.exists(), 'optional': True},
             {'title': 'Runbook veya rapor şablonu var', 'ok': Runbook.objects.exists() or ReportTemplate.objects.exists()},
             {'title': 'Ticket sistemi aktif', 'ok': Ticket.objects.exists() or TicketCategory.objects.exists()},
         ])

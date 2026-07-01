@@ -1129,6 +1129,7 @@ def build_executive_report_context():
         Runbook, ServiceDependency, VendorSupportCase,
         DirectoryGroup, DirectoryUser, EndpointDevice, IdentityLifecycleTask,
         FactoryDepartment, FactoryZone, ManagedDocument, FactoryITAssetRelation,
+        AssetQRTag, ERPConnection,
     )
 
     now = timezone.now()
@@ -1149,6 +1150,9 @@ def build_executive_report_context():
     endpoint_alert_count = sum(1 for endpoint in EndpointDevice.objects.all() if not endpoint.is_compliant or endpoint.is_stale)
     open_identity_tasks = IdentityLifecycleTask.objects.exclude(status__in=['done', 'cancelled']).count()
     review_documents_count = sum(1 for doc in ManagedDocument.objects.all() if doc.needs_review)
+    offline_camera_count = CameraDevice.objects.filter(status='offline').count()
+    erp_error_count = ERPConnection.objects.filter(last_sync_status='error').count()
+    active_qr_tag_count = AssetQRTag.objects.filter(is_active=True).count()
 
     risk_score = min(
         100,
@@ -1160,7 +1164,9 @@ def build_executive_report_context():
         + (unhealthy_integrations * 10)
         + (directory_attention_count * 3)
         + (endpoint_alert_count * 4)
-        + (review_documents_count * 2),
+        + (review_documents_count * 2)
+        + (offline_camera_count * 5)
+        + (erp_error_count * 8),
     )
 
     readiness = 100
@@ -1266,6 +1272,18 @@ def build_executive_report_context():
                 ('İnceleme bekleyen', review_documents_count),
                 ('Onaylı doküman', ManagedDocument.objects.filter(status='approved').count()),
                 ('Varlık ilişkisi', FactoryITAssetRelation.objects.count()),
+                ('QR etiket', active_qr_tag_count),
+                ('ERP bağlantısı', ERPConnection.objects.count()),
+            ],
+        },
+        {
+            'title': 'Entegrasyon ve Saha',
+            'icon': 'mdi:connection',
+            'metrics': [
+                ('Çevrimdışı kamera', offline_camera_count),
+                ('ERP sync hatası', erp_error_count),
+                ('Entegrasyon alarmı', unhealthy_integrations),
+                ('Aktif QR etiket', active_qr_tag_count),
             ],
         },
     ]
@@ -1278,6 +1296,8 @@ def build_executive_report_context():
         {'title': 'Entegrasyon alarmları', 'value': unhealthy_integrations, 'tone': 'warning', 'action': 'Yönetişim Merkezi'},
         {'title': 'Kimlik ve endpoint riskleri', 'value': directory_attention_count + endpoint_alert_count, 'tone': 'warning', 'action': 'Kimlik & Uç Nokta Merkezi'},
         {'title': 'İnceleme bekleyen dokümanlar', 'value': review_documents_count, 'tone': 'warning', 'action': 'Fabrika BT Komuta Merkezi'},
+        {'title': 'Çevrimdışı kameralar', 'value': offline_camera_count, 'tone': 'danger' if offline_camera_count else 'success', 'action': 'ERP & Entegrasyon'},
+        {'title': 'ERP senkron hataları', 'value': erp_error_count, 'tone': 'danger' if erp_error_count else 'success', 'action': 'ERP & Entegrasyon'},
     ]
 
     return {
