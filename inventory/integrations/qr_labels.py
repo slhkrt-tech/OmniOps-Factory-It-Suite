@@ -1,6 +1,7 @@
 """QR/barkod etiket PDF üretimi (ReportLab)."""
 import io
 
+from reportlab.graphics.barcode import code128
 from reportlab.graphics.barcode.qr import QrCodeWidget
 from reportlab.graphics.shapes import Drawing
 from reportlab.lib.pagesizes import A4
@@ -23,8 +24,14 @@ def _draw_qr(c, x, y, size_mm, value):
     drawing.drawOn(c, x, y)
 
 
+def _draw_barcode(c, x, y, value):
+    """Code128 barkod çizer (alfanumerik etiket kodları için)."""
+    barcode = code128.Code128(value, barHeight=8 * mm, barWidth=0.35)
+    barcode.drawOn(c, x, y)
+
+
 def build_qr_labels_pdf(tags, base_url=''):
-    """Tek veya çoklu QR etiketini A4 PDF olarak üretir."""
+    """Tek veya çoklu QR/barkod etiketini A4 PDF olarak üretir."""
     buffer = io.BytesIO()
     page_width, page_height = A4
     label_width = 95 * mm
@@ -51,7 +58,8 @@ def build_qr_labels_pdf(tags, base_url=''):
         if base_url:
             qr_value = f'{base_url.rstrip("/")}/api/qr-lookup/?code={tag.code}'
 
-        _draw_qr(c, x + 4 * mm, y + 12 * mm, 32, qr_value)
+        _draw_qr(c, x + 4 * mm, y + 18 * mm, 28, qr_value)
+        _draw_barcode(c, x + 4 * mm, y + 4 * mm, tag.code)
 
         c.setFont('Helvetica-Bold', 10)
         c.drawString(x + 40 * mm, y + label_height - 14 * mm, tag.display_name[:28])
@@ -60,7 +68,7 @@ def build_qr_labels_pdf(tags, base_url=''):
         c.drawString(x + 40 * mm, y + label_height - 38 * mm, tag.get_tag_type_display()[:22])
         if tag.location:
             c.setFont('Helvetica', 8)
-            c.drawString(x + 4 * mm, y + 4 * mm, tag.location[:40])
+            c.drawString(x + 44 * mm, y + 6 * mm, tag.location[:36])
 
         c.setStrokeColorRGB(0.82, 0.86, 0.9)
         c.rect(x, y, label_width - 4 * mm, label_height - 2 * mm, stroke=1, fill=0)

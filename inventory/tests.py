@@ -148,20 +148,48 @@ class InventorySmokeTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('application/pdf', response['Content-Type'])
 
-    def test_erp_connector_rejects_unknown_type(self):
+    def test_erp_connector_routes_all_supported_types(self):
         from inventory.integrations.erp_connector import ERPClientError, test_erp_connection
         from inventory.models import ERPConnection
 
-        connection = ERPConnection(
-            name='Test ERP',
-            erp_type='other',
-            base_url='https://example.com',
-            database_name='db',
-            username='user',
-            api_key='secret',
+        for erp_type, _label in ERPConnection.ERP_TYPE_CHOICES:
+            connection = ERPConnection(
+                name='Test ERP',
+                erp_type=erp_type,
+                base_url='https://127.0.0.1:1',
+                database_name='test',
+                username='user',
+                api_key='secret',
+            )
+            try:
+                test_erp_connection(connection)
+            except ERPClientError as exc:
+                self.assertNotIn('henüz desteklenmiyor', str(exc).lower())
+            except (OSError, ConnectionError):
+                # Ağ hatası, yönlendirme çalıştı demektir
+                pass
+
+    def test_batch_qr_labels_pdf(self):
+        from inventory.models import AssetQRTag
+
+        AssetQRTag.objects.create(code='BATCH-001', tag_type='it_asset', label='Batch 1')
+        AssetQRTag.objects.create(code='BATCH-002', tag_type='device', label='Batch 2')
+        response = self.client.get(reverse('asset_qr_labels_batch_pdf'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('application/pdf', response['Content-Type'])
+
+    def test_wopi_check_file_info_requires_token(self):
+        from inventory.models import ManagedDocument
+        from django.core.files.base import ContentFile
+
+        document = ManagedDocument.objects.create(
+            title='WOPI Test',
+            file_type='docx',
+            status='draft',
         )
-        with self.assertRaises(ERPClientError):
-            test_erp_connection(connection)
+        document.file.save('test.docx', ContentFile(b'docx-content'), save=True)
+        response = self.client.get(reverse('wopi_check_file_info', args=[document.id]))
+        self.assertEqual(response.status_code, 401)
 
     def test_document_editor_backend_auto_without_config(self):
         from inventory.integrations.document_editor import get_document_editor_backend

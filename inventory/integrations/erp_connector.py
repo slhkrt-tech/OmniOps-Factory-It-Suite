@@ -24,6 +24,10 @@ def test_erp_connection(connection):
             service_path=connection.database_name or '',
         )
         return client.test_connection()
+    if connection.erp_type == 'other':
+        from .generic_erp_client import GenericERPClient
+        client = GenericERPClient(connection.base_url, connection.username, connection.api_key)
+        return client.test_connection()
     raise ERPClientError(f'{connection.get_erp_type_display()} için test henüz desteklenmiyor.')
 
 
@@ -38,4 +42,7 @@ def sync_erp_connection(connection, limit=50):
     if connection.erp_type == 'sap':
         from .sap_client import sync_sap_connection
         return sync_sap_connection(connection, limit=limit)
+    if connection.erp_type == 'other':
+        from .generic_erp_client import sync_generic_connection
+        return sync_generic_connection(connection, limit=limit)
     raise ERPClientError(f'{connection.get_erp_type_display()} sync henüz desteklenmiyor.')

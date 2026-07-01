@@ -28,7 +28,7 @@
         <div class="card glass-card">
             <div class="card-header bg-transparent fw-bold">ERP Bağlantısı Ekle</div>
             <div class="card-body">
-                <p class="small text-muted">Odoo: veritabanı adı zorunlu. ERPNext: kullanıcı=API Key, parola=API Secret. SAP: parola=HTTP Basic Auth, veritabanı=OData servis yolu.</p>
+                <p class="small text-muted">Odoo: veritabanı adı zorunlu. ERPNext: kullanıcı=API Key, parola=API Secret. SAP: parola=HTTP Basic Auth, veritabanı=OData servis yolu. Diğer: genel REST sağlık kontrolü.</p>
                 <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="connection">

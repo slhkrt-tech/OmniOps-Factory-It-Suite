@@ -161,7 +161,7 @@ Sidebar navigasyonu açılır gruplar halindedir: Komuta, Fabrika Envanteri, Ağ
 - **QR/Barkod tarayıcı**: Kamera veya manuel kod ile varlık çözümleme (`/varlik-qr-tara/`)
 - **QR etiket PDF yazdırma**: `/qr-etiket/<id>/pdf/` ve `/qr-etiket/toplu-pdf/`
 - **Kamera/NVR health polling**: Celery ile 10 dakikada bir otomatik durum kontrolü
-- **Odoo / ERPNext / SAP connector**: XML-RPC, REST ve OData test/sync (`/erp-entegrasyonlari/`)
+- **Odoo / ERPNext / SAP / Genel REST connector**: XML-RPC, REST ve OData test/sync (`/erp-entegrasyonlari/`)
 
 Docker ile OnlyOffice ve Collabora:
 
@@ -185,7 +185,7 @@ DOCUMENT_EDITOR_BACKEND=collabora
 WOPI_SECRET=your-wopi-secret
 ```
 
-ERPNext alan eşlemesi: `username` = API Key, `api_key` = API Secret. SAP OData için `database_name` alanına servis yolu yazılabilir.
+ERPNext alan eşlemesi: `username` = API Key, `api_key` = API Secret. SAP OData için `database_name` alanına servis yolu yazılabilir. `other` tipi genel REST sağlık kontrolü yapar.
 
 ## Yönetici Raporları
 
