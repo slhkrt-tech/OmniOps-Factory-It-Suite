@@ -7,7 +7,7 @@
     <div>
         <span class="suite-eyebrow">OmniOps Factory IT Suite</span>
         <h1 class="suite-title">ERP & Entegrasyon Merkezi</h1>
-        <p class="suite-subtitle">Odoo bağlantıları, senkronizasyon, kamera sağlık taraması ve entegrasyon durumu.</p>
+        <p class="suite-subtitle">Odoo, ERPNext ve SAP OData bağlantıları; senkronizasyon, kamera sağlık taraması ve entegrasyon durumu.</p>
     </div>
     <form method="post" class="d-inline">
         {% csrf_token %}
@@ -26,8 +26,9 @@
 <div class="row g-4">
     <div class="col-lg-4">
         <div class="card glass-card">
-            <div class="card-header bg-transparent fw-bold">Odoo / ERP Bağlantısı Ekle</div>
+            <div class="card-header bg-transparent fw-bold">ERP Bağlantısı Ekle</div>
             <div class="card-body">
+                <p class="small text-muted">Odoo: veritabanı adı zorunlu. ERPNext: kullanıcı=API Key, parola=API Secret. SAP: parola=HTTP Basic Auth, veritabanı=OData servis yolu.</p>
                 <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="connection">

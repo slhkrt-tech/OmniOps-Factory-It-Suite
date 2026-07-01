@@ -5,7 +5,7 @@
 {% block content %}
 <section class="suite-hero mb-3">
     <div>
-        <span class="suite-eyebrow">OnlyOffice / Collabora Editör</span>
+        <span class="suite-eyebrow">{% if backend == 'collabora' %}Collabora Online{% else %}OnlyOffice{% endif %} Editör</span>
         <h1 class="suite-title">{{ document.title }}</h1>
         <p class="suite-subtitle">v{{ document.version }} · {{ document.get_file_type_display }} · Tarayıcı üzerinden düzenleme</p>
     </div>
@@ -17,12 +17,17 @@
 
 <div class="card glass-card">
     <div class="card-body p-0">
+        {% if backend == 'collabora' %}
+        <iframe id="collabora-editor" src="{{ collabora_editor_url }}" style="width:100%;min-height:80vh;border:0;" allow="clipboard-read; clipboard-write" title="{{ document.title }}"></iframe>
+        {% else %}
         <div id="onlyoffice-editor" style="min-height: 80vh;"></div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+{% if backend == 'onlyoffice' %}
 <script src="{{ onlyoffice_script_url }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -38,4 +43,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
+{% endif %}
 {% endblock %}

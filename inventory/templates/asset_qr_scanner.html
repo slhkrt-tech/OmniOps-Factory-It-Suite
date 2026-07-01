@@ -9,7 +9,12 @@
         <h1 class="suite-title">Varlık QR / Barkod Tarayıcı</h1>
         <p class="suite-subtitle">Fabrika zemininde etiket okutarak switch, endpoint, kamera veya IT varlığına anında gidin.</p>
     </div>
-    <div class="badge bg-primary-subtle text-primary px-3 py-2">{{ metrics.tags }} aktif etiket</div>
+    <div class="d-flex flex-wrap gap-2">
+        <a href="{% url 'asset_qr_labels_batch_pdf' %}" class="btn btn-outline-primary" target="_blank">
+            <span class="iconify me-1" data-icon="mdi:printer"></span> Tüm Etiketleri PDF Yazdır
+        </a>
+        <span class="badge bg-primary-subtle text-primary px-3 py-2 align-self-center">{{ metrics.tags }} aktif etiket</span>
+    </div>
 </section>
 
 <div class="row g-4">
@@ -66,7 +71,10 @@
                         <div class="fw-semibold font-monospace">{{ tag.code }}</div>
                         <div class="small text-muted">{{ tag.get_tag_type_display }} · {{ tag.display_name }}</div>
                     </div>
-                    <a href="{{ tag.resolved_url }}" class="btn btn-sm btn-outline-primary">Aç</a>
+                    <div class="d-flex gap-1">
+                        <a href="{% url 'asset_qr_label_pdf' tag.id %}" class="btn btn-sm btn-outline-secondary" target="_blank" title="PDF Etiket">PDF</a>
+                        <a href="{{ tag.resolved_url }}" class="btn btn-sm btn-outline-primary">Aç</a>
+                    </div>
                 </div>
                 {% empty %}
                 <div class="text-muted">Henüz QR etiket yok.</div>

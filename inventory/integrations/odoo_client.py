@@ -1,8 +1,10 @@
 import xmlrpc.client
 
+from .erp_connector import ERPClientError
 
-class OdooClientError(Exception):
-    pass
+
+class OdooClientError(ERPClientError):
+    """Geriye dönük uyumluluk için Odoo istisnası."""
 
 
 class OdooClient:
@@ -52,42 +54,43 @@ class OdooClient:
 
 
 def test_erp_connection(connection):
-    """ERP bağlantı kaydını test eder; desteklenen tipe göre kimlik doğrulama yapar."""
-    if connection.erp_type == 'odoo':
-        client = OdooClient(connection.base_url, connection.database_name, connection.username, connection.api_key)
-        return client.test_connection()
-    raise OdooClientError(f'{connection.get_erp_type_display()} için test henüz desteklenmiyor.')
+    """Geriye dönük uyumluluk: erp_connector test yönlendiricisi."""
+    from .erp_connector import test_erp_connection as route_test
+    return route_test(connection)
+
+
+def sync_odoo_connection(connection, limit=50):
+    """Odoo önizleme senkronizasyonu."""
+    client = OdooClient(connection.base_url, connection.database_name, connection.username, connection.api_key)
+    client.authenticate()
+    synced = 0
+    messages = []
+
+    if connection.sync_partners:
+        partners = client.sync_partners_preview(limit=limit)
+        synced += len(partners)
+        messages.append(f'{len(partners)} partner okundu')
+
+    if connection.sync_products:
+        product_count = client.execute('product.product', 'search_count', [[('active', '=', True)]])
+        synced += min(product_count, limit)
+        messages.append(f'{product_count} ürün envanteri görüldü')
+
+    if connection.sync_helpdesk:
+        ticket_models = ['helpdesk.ticket', 'project.task']
+        for model_name in ticket_models:
+            try:
+                count = client.execute(model_name, 'search_count', [[]])
+                synced += min(count, limit)
+                messages.append(f'{model_name}: {count} kayıt')
+                break
+            except Exception:
+                continue
+
+    return synced, '; '.join(messages) or 'Senkronizasyon tamamlandı'
 
 
 def sync_erp_connection(connection, limit=50):
-    """Seçili ERP bağlantısından partner, ürün ve helpdesk verilerini önizleme amaçlı okur."""
-    if connection.erp_type == 'odoo':
-        client = OdooClient(connection.base_url, connection.database_name, connection.username, connection.api_key)
-        client.authenticate()
-        synced = 0
-        messages = []
-
-        if connection.sync_partners:
-            partners = client.sync_partners_preview(limit=limit)
-            synced += len(partners)
-            messages.append(f'{len(partners)} partner okundu')
-
-        if connection.sync_products:
-            product_count = client.execute('product.product', 'search_count', [[('active', '=', True)]])
-            synced += min(product_count, limit)
-            messages.append(f'{product_count} ürün envanteri görüldü')
-
-        if connection.sync_helpdesk:
-            ticket_models = ['helpdesk.ticket', 'project.task']
-            for model_name in ticket_models:
-                try:
-                    count = client.execute(model_name, 'search_count', [[]])
-                    synced += min(count, limit)
-                    messages.append(f'{model_name}: {count} kayıt')
-                    break
-                except Exception:
-                    continue
-
-        return synced, '; '.join(messages) or 'Senkronizasyon tamamlandı'
-
-    raise OdooClientError(f'{connection.get_erp_type_display()} sync henüz desteklenmiyor.')
+    """Geriye dönük uyumluluk sarmalayıcı."""
+    from .erp_connector import sync_erp_connection as route_sync
+    return route_sync(connection, limit=limit)

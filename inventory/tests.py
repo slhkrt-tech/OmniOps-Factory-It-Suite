@@ -139,6 +139,33 @@ class InventorySmokeTests(TestCase):
         keys = {item['key'] for item in response.json().get('checks', [])}
         self.assertIn('qr_tags', keys)
         self.assertIn('onlyoffice', keys)
+        self.assertIn('collabora', keys)
+
+    def test_qr_label_pdf_download(self):
+        from inventory.models import AssetQRTag
+        tag = AssetQRTag.objects.create(code='PDF-TEST-001', tag_type='it_asset', label='PDF Test')
+        response = self.client.get(reverse('asset_qr_label_pdf', args=[tag.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('application/pdf', response['Content-Type'])
+
+    def test_erp_connector_rejects_unknown_type(self):
+        from inventory.integrations.erp_connector import ERPClientError, test_erp_connection
+        from inventory.models import ERPConnection
+
+        connection = ERPConnection(
+            name='Test ERP',
+            erp_type='other',
+            base_url='https://example.com',
+            database_name='db',
+            username='user',
+            api_key='secret',
+        )
+        with self.assertRaises(ERPClientError):
+            test_erp_connection(connection)
+
+    def test_document_editor_backend_auto_without_config(self):
+        from inventory.integrations.document_editor import get_document_editor_backend
+        self.assertIsNone(get_document_editor_backend())
 
     def test_core_api_lists_render_for_admin(self):
         route_names = [

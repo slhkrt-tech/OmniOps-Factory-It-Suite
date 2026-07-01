@@ -552,7 +552,7 @@ def poll_camera_health_task():
 def sync_erp_connection_task(connection_id):
     """Tek bir ERP bağlantısı için senkronizasyon görevini çalıştırır."""
     from .models import ERPConnection, SystemLog
-    from .integrations.odoo_client import OdooClientError, sync_erp_connection
+    from .integrations.erp_connector import ERPClientError, sync_erp_connection
 
     connection = ERPConnection.objects.filter(pk=connection_id).first()
     if not connection or not connection.sync_enabled:
@@ -569,7 +569,7 @@ def sync_erp_connection_task(connection_id):
         ])
         SystemLog.objects.create(action='SYSTEM', details=f'ERP sync OK · {connection.name}: {message}')
         return message
-    except OdooClientError as exc:
+    except ERPClientError as exc:
         connection.last_sync_status = 'error'
         connection.last_sync_message = str(exc)
         connection.save(update_fields=['last_sync_status', 'last_sync_message', 'updated_at'])

@@ -159,17 +159,33 @@ Sidebar navigasyonu açılır gruplar halindedir: Komuta, Fabrika Envanteri, Ağ
 
 - **OnlyOffice / Collabora**: DOCX/XLSX tarayıcı editörü (`/dokuman/<id>/duzenle/`)
 - **QR/Barkod tarayıcı**: Kamera veya manuel kod ile varlık çözümleme (`/varlik-qr-tara/`)
+- **QR etiket PDF yazdırma**: `/qr-etiket/<id>/pdf/` ve `/qr-etiket/toplu-pdf/`
 - **Kamera/NVR health polling**: Celery ile 10 dakikada bir otomatik durum kontrolü
-- **Odoo ERP connector**: XML-RPC test/sync (`/erp-entegrasyonlari/`)
+- **Odoo / ERPNext / SAP connector**: XML-RPC, REST ve OData test/sync (`/erp-entegrasyonlari/`)
+
+Docker ile OnlyOffice ve Collabora:
+
+```bash
+docker compose up -d onlyoffice collabora
+```
 
 OnlyOffice örneği:
 
 ```env
-ONLYOFFICE_DOCUMENT_SERVER_URL=https://onlyoffice.example.com
-ONLYOFFICE_JWT_SECRET=your-jwt-secret
+ONLYOFFICE_DOCUMENT_SERVER_URL=http://localhost:8082
+ONLYOFFICE_JWT_SECRET=omniops-jwt-secret
+DOCUMENT_EDITOR_BACKEND=onlyoffice
 ```
 
-JWT kullanıyorsanız `pip install PyJWT` veya `requirements.txt` içindeki `PyJWT` paketi gerekir.
+Collabora örneği:
+
+```env
+COLLABORA_SERVER_URL=http://localhost:9980
+DOCUMENT_EDITOR_BACKEND=collabora
+WOPI_SECRET=your-wopi-secret
+```
+
+ERPNext alan eşlemesi: `username` = API Key, `api_key` = API Secret. SAP OData için `database_name` alanına servis yolu yazılabilir.
 
 ## Yönetici Raporları
 
@@ -262,6 +278,8 @@ Compose proje adı ve container adları OmniOps olarak sabitlenmiştir.
 - `omniops_beat`: Celery beat scheduler
 - `omniops_db`: PostgreSQL
 - `omniops_redis`: Redis
+- `omniops_onlyoffice`: OnlyOffice Document Server (opsiyonel, port 8082)
+- `omniops_collabora`: Collabora Online CODE (opsiyonel, port 9980)
 
 Uygulama image adı:
 

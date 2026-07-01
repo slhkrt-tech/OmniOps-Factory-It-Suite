@@ -141,6 +141,14 @@ def build_readiness_report():
             'Tarayıcı editörü için OnlyOffice sunucu URL ve isteğe bağlı JWT ayarlayın.',
             'warning',
         ),
+        _readiness_item(
+            'collabora',
+            'Collabora Editör',
+            bool(getattr(settings, 'COLLABORA_SERVER_URL', '')),
+            getattr(settings, 'COLLABORA_SERVER_URL', '') or 'COLLABORA_SERVER_URL tanımlı değil.',
+            'Alternatif editör için Collabora CODE URL ayarlayın.',
+            'warning',
+        ),
     ])
 
     module_status = [
@@ -1188,21 +1196,24 @@ def managed_document_editor(request, pk):
     if not is_support_staff(request.user):
         return redirect('dashboard')
     from django.http import Http404
-    from .integrations.onlyoffice import build_onlyoffice_editor_config, get_onlyoffice_script_url, onlyoffice_enabled
+    from .integrations.document_editor import build_document_editor_context, get_document_editor_backend
 
     document = ManagedDocument.objects.filter(pk=pk).first()
     if not document or not document.file or not document.can_office_edit:
         raise Http404('Bu doküman tarayıcı editöründe açılamaz.')
 
-    editor_payload = build_onlyoffice_editor_config(document, request)
-    if not onlyoffice_enabled() or not editor_payload:
-        messages.warning(request, 'OnlyOffice Document Server yapılandırılmamış. ONLYOFFICE_DOCUMENT_SERVER_URL ayarlayın veya harici editör URL kullanın.')
+    editor_context = build_document_editor_context(document, request)
+    if not editor_context:
+        backend = get_document_editor_backend()
+        messages.warning(
+            request,
+            'Belge editörü yapılandırılmamış. ONLYOFFICE_DOCUMENT_SERVER_URL veya COLLABORA_SERVER_URL ayarlayın.',
+        )
         return redirect(f"{reverse('factory_command_center')}?document={document.pk}")
 
     return render(request, 'managed_document_editor.html', {
         'document': document,
-        'editor_payload_json': json.dumps(editor_payload),
-        'onlyoffice_script_url': get_onlyoffice_script_url(),
+        **editor_context,
     })
 
 
@@ -1244,6 +1255,101 @@ def managed_document_editor_callback(request, pk):
     return HttpResponse(json.dumps({'error': 0}), content_type='application/json')
 
 
+@csrf_exempt
+def wopi_check_file_info(request, pk):
+    """Collabora WOPI CheckFileInfo uç noktası."""
+    from .integrations.collabora import build_wopi_check_file_info, verify_wopi_access_token
+
+    document = ManagedDocument.objects.filter(pk=pk).first()
+    if not document or not document.file:
+        return JsonResponse({'detail': 'Dosya bulunamadı.'}, status=404)
+
+    user_id = request.GET.get('access_token_uid') or request.user.id if request.user.is_authenticated else None
+    token = request.GET.get('access_token', '')
+    if not user_id:
+        user_id = document.owner_id or 1
+    if not verify_wopi_access_token(document.pk, user_id, token):
+        return JsonResponse({'detail': 'WOPI erişim belirteci geçersiz.'}, status=401)
+
+    user = User.objects.filter(pk=user_id).first() or request.user
+    payload = build_wopi_check_file_info(document, user)
+    response = JsonResponse(payload)
+    response['X-WOPI-ItemVersion'] = str(document.version)
+    return response
+
+
+@csrf_exempt
+def wopi_file_contents(request, pk):
+    """Collabora WOPI GetFile / PutFile uç noktası."""
+    from .integrations.collabora import verify_wopi_access_token
+
+    document = ManagedDocument.objects.filter(pk=pk).first()
+    if not document or not document.file:
+        return JsonResponse({'detail': 'Dosya bulunamadı.'}, status=404)
+
+    user_id = request.GET.get('access_token_uid') or (request.user.id if request.user.is_authenticated else document.owner_id or 1)
+    token = request.GET.get('access_token', '')
+    if not verify_wopi_access_token(document.pk, user_id, token):
+        return JsonResponse({'detail': 'WOPI erişim belirteci geçersiz.'}, status=401)
+
+    if request.method == 'GET':
+        filename = os.path.basename(document.file.name)
+        response = FileResponse(document.file.open('rb'))
+        response['Content-Disposition'] = f'inline; filename="{filename}"'
+        return response
+
+    if request.method == 'POST' and request.headers.get('X-WOPI-Override', '').upper() == 'PUT':
+        content = request.body
+        filename = os.path.basename(document.file.name)
+        document.file.save(filename, ContentFile(content), save=False)
+        document.file_size = len(content)
+        document.updated_at = timezone.now()
+        document.save(update_fields=['file', 'file_size', 'updated_at'])
+        return HttpResponse(status=200)
+
+    return JsonResponse({'detail': 'Desteklenmeyen WOPI işlemi.'}, status=405)
+
+
+@login_required
+def asset_qr_label_pdf(request, pk):
+    """Tek QR etiket PDF çıktısı."""
+    if not is_support_staff(request.user):
+        return redirect('dashboard')
+    from django.http import Http404
+    from .integrations.qr_labels import build_qr_labels_pdf
+
+    tag = AssetQRTag.objects.filter(pk=pk, is_active=True).first()
+    if not tag:
+        raise Http404('QR etiket bulunamadı.')
+
+    pdf_buffer = build_qr_labels_pdf([tag], base_url=request.build_absolute_uri('/'))
+    response = FileResponse(pdf_buffer, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="qr-{tag.code}.pdf"'
+    return response
+
+
+@login_required
+def asset_qr_labels_batch_pdf(request):
+    """Seçili veya tüm aktif QR etiketler için toplu PDF."""
+    if not is_support_staff(request.user):
+        return redirect('dashboard')
+    from .integrations.qr_labels import build_qr_labels_pdf
+
+    ids = [value for value in request.GET.get('ids', '').split(',') if value.strip().isdigit()]
+    queryset = AssetQRTag.objects.filter(is_active=True).order_by('code')
+    if ids:
+        queryset = queryset.filter(pk__in=ids)
+    tags = list(queryset[:50])
+    if not tags:
+        messages.warning(request, 'PDF için aktif QR etiket bulunamadı.')
+        return redirect('asset_qr_scanner')
+
+    pdf_buffer = build_qr_labels_pdf(tags, base_url=request.build_absolute_uri('/'))
+    response = FileResponse(pdf_buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="omniops-qr-etiketleri.pdf"'
+    return response
+
+
 @login_required
 def erp_integrations_view(request):
     if not is_support_staff(request.user):
@@ -1263,14 +1369,14 @@ def erp_integrations_view(request):
         elif action == 'test_connection':
             connection = ERPConnection.objects.filter(pk=request.POST.get('connection_id')).first()
             if connection:
-                from .integrations.odoo_client import OdooClientError, test_erp_connection
+                from .integrations.erp_connector import ERPClientError, test_erp_connection
                 try:
                     result = test_erp_connection(connection)
                     connection.last_sync_status = 'healthy'
                     connection.last_sync_message = f"Test OK · sürüm {result.get('server_version', 'unknown')}"
                     connection.save(update_fields=['last_sync_status', 'last_sync_message', 'updated_at'])
                     messages.success(request, connection.last_sync_message)
-                except OdooClientError as exc:
+                except ERPClientError as exc:
                     connection.last_sync_status = 'error'
                     connection.last_sync_message = str(exc)
                     connection.save(update_fields=['last_sync_status', 'last_sync_message', 'updated_at'])

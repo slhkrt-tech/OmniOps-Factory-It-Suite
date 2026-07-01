@@ -160,6 +160,9 @@ DIRECTORY_SYNC_DRY_RUN = os.environ.get('DIRECTORY_SYNC_DRY_RUN', 'True').lower(
 # OnlyOffice / Collabora belge sunucusu (tarayıcı editörü)
 ONLYOFFICE_DOCUMENT_SERVER_URL = os.environ.get('ONLYOFFICE_DOCUMENT_SERVER_URL', '')
 ONLYOFFICE_JWT_SECRET = os.environ.get('ONLYOFFICE_JWT_SECRET', '')
+DOCUMENT_EDITOR_BACKEND = os.environ.get('DOCUMENT_EDITOR_BACKEND', 'auto')
+COLLABORA_SERVER_URL = os.environ.get('COLLABORA_SERVER_URL', '')
+WOPI_SECRET = os.environ.get('WOPI_SECRET', '')
 
 POSTGRES_BACKUP_DIR = os.environ.get('POSTGRES_BACKUP_DIR', os.path.join(BASE_DIR, 'db_backups'))
 POSTGRES_BACKUP_FORMAT = os.environ.get('POSTGRES_BACKUP_FORMAT', 'custom')

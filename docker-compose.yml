@@ -83,6 +83,11 @@ services:
       POSTGRES_BACKUP_DIR: ${POSTGRES_BACKUP_DIR:-/app/db_backups}
       POSTGRES_BACKUP_FORMAT: ${POSTGRES_BACKUP_FORMAT:-custom}
       POSTGRES_BACKUP_FILE_PREFIX: ${POSTGRES_BACKUP_FILE_PREFIX:-omniops_backup}
+      ONLYOFFICE_DOCUMENT_SERVER_URL: ${ONLYOFFICE_DOCUMENT_SERVER_URL:-http://localhost:8082}
+      ONLYOFFICE_JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:-omniops-jwt-secret}
+      COLLABORA_SERVER_URL: ${COLLABORA_SERVER_URL:-http://localhost:9980}
+      DOCUMENT_EDITOR_BACKEND: ${DOCUMENT_EDITOR_BACKEND:-auto}
+      WOPI_SECRET: ${WOPI_SECRET:-}
     cap_add:
       - NET_RAW
       - NET_ADMIN
@@ -142,6 +147,11 @@ services:
       POSTGRES_BACKUP_DIR: ${POSTGRES_BACKUP_DIR:-/app/db_backups}
       POSTGRES_BACKUP_FORMAT: ${POSTGRES_BACKUP_FORMAT:-custom}
       POSTGRES_BACKUP_FILE_PREFIX: ${POSTGRES_BACKUP_FILE_PREFIX:-omniops_backup}
+      ONLYOFFICE_DOCUMENT_SERVER_URL: ${ONLYOFFICE_DOCUMENT_SERVER_URL:-http://localhost:8082}
+      ONLYOFFICE_JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:-omniops-jwt-secret}
+      COLLABORA_SERVER_URL: ${COLLABORA_SERVER_URL:-http://localhost:9980}
+      DOCUMENT_EDITOR_BACKEND: ${DOCUMENT_EDITOR_BACKEND:-auto}
+      WOPI_SECRET: ${WOPI_SECRET:-}
     cap_add:
       - NET_RAW
       - NET_ADMIN
@@ -195,6 +205,32 @@ services:
       POSTGRES_BACKUP_DIR: ${POSTGRES_BACKUP_DIR:-/app/db_backups}
       POSTGRES_BACKUP_FORMAT: ${POSTGRES_BACKUP_FORMAT:-custom}
       POSTGRES_BACKUP_FILE_PREFIX: ${POSTGRES_BACKUP_FILE_PREFIX:-omniops_backup}
+      ONLYOFFICE_DOCUMENT_SERVER_URL: ${ONLYOFFICE_DOCUMENT_SERVER_URL:-http://localhost:8082}
+      ONLYOFFICE_JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:-omniops-jwt-secret}
+      COLLABORA_SERVER_URL: ${COLLABORA_SERVER_URL:-http://localhost:9980}
+      DOCUMENT_EDITOR_BACKEND: ${DOCUMENT_EDITOR_BACKEND:-auto}
+      WOPI_SECRET: ${WOPI_SECRET:-}
+
+  onlyoffice:
+    image: onlyoffice/documentserver:8.0.1
+    container_name: omniops_onlyoffice
+    restart: unless-stopped
+    environment:
+      JWT_ENABLED: "true"
+      JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:-omniops-jwt-secret}
+      JWT_HEADER: Authorization
+    ports:
+      - "8082:80"
+
+  collabora:
+    image: collabora/code:24.04.13.1.1
+    container_name: omniops_collabora
+    restart: unless-stopped
+    environment:
+      domain: localhost|web|host\\.docker\\.internal
+      extra_params: --o:ssl.enable=false --o:ssl.termination=false
+    ports:
+      - "9980:9980"
 
 volumes:
   postgres_data:

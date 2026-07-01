@@ -1199,14 +1199,14 @@ class ERPConnectionViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], url_path='test')
     def test_connection(self, request, pk=None):
         connection = self.get_object()
-        from .integrations.odoo_client import OdooClientError, test_erp_connection
+        from .integrations.erp_connector import ERPClientError, test_erp_connection
         try:
             result = test_erp_connection(connection)
             connection.last_sync_status = 'healthy'
             connection.last_sync_message = f"Test OK · {result.get('server_version', '')}"
             connection.save(update_fields=['last_sync_status', 'last_sync_message', 'updated_at'])
             return Response({'status': 'ok', 'result': result})
-        except OdooClientError as exc:
+        except ERPClientError as exc:
             connection.last_sync_status = 'error'
             connection.last_sync_message = str(exc)
             connection.save(update_fields=['last_sync_status', 'last_sync_message', 'updated_at'])
@@ -1215,7 +1215,7 @@ class ERPConnectionViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], url_path='sync')
     def sync(self, request, pk=None):
         connection = self.get_object()
-        from .integrations.odoo_client import OdooClientError, sync_erp_connection
+        from .integrations.erp_connector import ERPClientError, sync_erp_connection
         try:
             count, message = sync_erp_connection(connection)
             connection.last_sync_at = timezone.now()
@@ -1226,7 +1226,7 @@ class ERPConnectionViewSet(viewsets.ModelViewSet):
                 'last_sync_at', 'last_sync_status', 'last_sync_message', 'records_synced', 'updated_at',
             ])
             return Response(ERPConnectionSerializer(connection).data)
-        except OdooClientError as exc:
+        except ERPClientError as exc:
             connection.last_sync_status = 'error'
             connection.last_sync_message = str(exc)
             connection.save(update_fields=['last_sync_status', 'last_sync_message', 'updated_at'])

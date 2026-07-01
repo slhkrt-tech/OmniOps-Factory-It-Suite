@@ -38,6 +38,8 @@ from inventory.enterprise_views import (
     factory_command_center_view, managed_document_download, managed_document_preview,
     managed_document_editor, managed_document_editor_callback,
     asset_qr_scanner_view, qr_lookup_api, erp_integrations_view,
+    asset_qr_label_pdf, asset_qr_labels_batch_pdf,
+    wopi_check_file_info, wopi_file_contents,
 )
 
 # API Router ve api_views içe aktarmaları
@@ -177,7 +179,11 @@ urlpatterns = [
     path('dokuman/<int:pk>/duzenle/', managed_document_editor, name='managed_document_editor'),
     path('dokuman/<int:pk>/editor-callback/', managed_document_editor_callback, name='managed_document_editor_callback'),
     path('varlik-qr-tara/', asset_qr_scanner_view, name='asset_qr_scanner'),
+    path('qr-etiket/<int:pk>/pdf/', asset_qr_label_pdf, name='asset_qr_label_pdf'),
+    path('qr-etiket/toplu-pdf/', asset_qr_labels_batch_pdf, name='asset_qr_labels_batch_pdf'),
     path('api/qr-lookup/', qr_lookup_api, name='qr_lookup_api'),
+    path('wopi/files/<int:pk>', wopi_check_file_info, name='wopi_check_file_info'),
+    path('wopi/files/<int:pk>/contents', wopi_file_contents, name='wopi_file_contents'),
     path('erp-entegrasyonlari/', erp_integrations_view, name='erp_integrations'),
     path('kurulum-merkezi/', setup_center_view, name='setup_center'),
     path('offline-saha/', offline_field_app, name='offline_field_app'),
