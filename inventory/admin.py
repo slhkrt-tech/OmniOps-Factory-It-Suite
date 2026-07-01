@@ -16,7 +16,12 @@ from .models import (
     DirectoryConnection, DirectoryGroup, DirectoryUser, EndpointDevice,
     IdentityLifecycleTask,
     FactoryDepartment, FactoryZone, ManagedDocument, FactoryITAssetRelation,
+    FactorySite, DepartmentInventoryItem,
+    UserFactorySiteAccess, ERPExternalRecord, OTConnection, OTAssetRecord,
     AssetQRTag, ERPConnection,
+    ProblemRecord, ReleaseRecord, NotificationChannel, MonitoringConnection,
+    VMSConnection, EmailTicketInbox, ImmutableAuditEntry, AssetLifecycleEvent,
+    BackupVendorConnection, WMSConnection, ModulePermissionGrant,
 )
 
 # Temel ve basit modellerin doğrudan kaydı
@@ -69,12 +74,29 @@ admin.site.register(DirectoryGroup)
 admin.site.register(DirectoryUser)
 admin.site.register(EndpointDevice)
 admin.site.register(IdentityLifecycleTask)
+admin.site.register(FactorySite)
+admin.site.register(UserFactorySiteAccess)
 admin.site.register(FactoryDepartment)
+admin.site.register(DepartmentInventoryItem)
+admin.site.register(ERPExternalRecord)
+admin.site.register(OTConnection)
+admin.site.register(OTAssetRecord)
 admin.site.register(FactoryZone)
 admin.site.register(ManagedDocument)
 admin.site.register(FactoryITAssetRelation)
 admin.site.register(AssetQRTag)
 admin.site.register(ERPConnection)
+admin.site.register(ProblemRecord)
+admin.site.register(ReleaseRecord)
+admin.site.register(NotificationChannel)
+admin.site.register(MonitoringConnection)
+admin.site.register(VMSConnection)
+admin.site.register(EmailTicketInbox)
+admin.site.register(ImmutableAuditEntry)
+admin.site.register(AssetLifecycleEvent)
+admin.site.register(BackupVendorConnection)
+admin.site.register(WMSConnection)
+admin.site.register(ModulePermissionGrant)
 
 # ========================================================
 # --- ITSM HİZMET KATALOĞU YÖNETİMİ ---

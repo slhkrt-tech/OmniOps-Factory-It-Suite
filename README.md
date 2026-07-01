@@ -75,12 +75,15 @@ Sağlık kontrolü:
 
 ```bash
 curl http://127.0.0.1:8000/health/
+curl http://127.0.0.1:8080/health/   # nginx üzerinden
+curl http://127.0.0.1:8000/metrics/  # Prometheus scrape
 ```
 
 Arayüz:
 
 ```text
 http://127.0.0.1:8000
+http://127.0.0.1:8080   # nginx reverse proxy (docker compose)
 ```
 
 ## Geliştirici Kurulumu
@@ -186,6 +189,35 @@ WOPI_SECRET=your-wopi-secret
 ```
 
 ERPNext alan eşlemesi: `username` = API Key, `api_key` = API Secret. SAP OData için `database_name` alanına servis yolu yazılabilir. `other` tipi genel REST sağlık kontrolü yapar.
+
+### Kurumsal Tamamlama (Paket 3)
+
+- **Fabrika portföy envanteri**: tesis bazlı bölüm envanteri (`/fabrika-portfoy-envanter/`)
+- **Tesis RBAC**: kullanıcı–tesis erişim yetkisi ve modül bazlı ince yetki
+- **Entegrasyon merkezi**: Zabbix/Prometheus, VMS, Teams/Slack/e-posta webhook, IMAP ticket, backup vendor, WMS (`/entegrasyon-merkezi/`)
+- **ITSM olgunluk**: problem, release/CAB, varlık lifecycle, append-only denetim izi (`/itsm-olgunluk/`)
+- **OT/MES köprüsü**: üretim varlık senkronizasyonu (`/ot-entegrasyonlari/`)
+- **Kimlik operasyonları**: AD/LDAP/Azure sync, lifecycle otomasyonu (`/kimlik-operasyonlari/`)
+- **Prometheus metrikleri**: `/metrics/`
+- **Nginx reverse proxy**: Docker ile `http://127.0.0.1:8080` (web servisi arkasında)
+
+Production güvenlik varsayılanları:
+
+```env
+ALLOW_PUBLIC_REGISTRATION=False
+SITE_ACCESS_ENFORCEMENT=True
+DIRECTORY_SYNC_DRY_RUN=False
+FEATURE_SALES_KANBAN=True
+PROMETHEUS_METRICS_ENABLED=True
+```
+
+Yardımcı komutlar:
+
+```bash
+python manage.py import_inventory_csv veriler.csv --site-code SITE-TEXTILE
+python manage.py gdpr_export_user --username admin
+python manage.py test_postgres_restore
+```
 
 ## Yönetici Raporları
 

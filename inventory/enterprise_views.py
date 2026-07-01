@@ -19,6 +19,10 @@ from django.urls import reverse
 from django.utils import timezone
 
 from .helpdesk import is_support_staff
+from .site_access import (
+    filter_queryset_by_site, get_accessible_sites, resolve_site_for_user,
+    user_can_access_site, user_has_global_site_access, user_has_module_permission,
+)
 from .forms import (
     FactoryAreaForm, ConsumableItemForm,
     MaintenanceTaskForm, EmployeeITProcessForm,
@@ -32,7 +36,13 @@ from .forms import (
     DirectoryConnectionForm, DirectoryGroupForm, DirectoryUserForm,
     EndpointDeviceForm, IdentityLifecycleTaskForm,
     FactoryDepartmentForm, FactoryZoneForm, ManagedDocumentForm, FactoryITAssetRelationForm,
+    FactorySiteForm, DepartmentInventoryItemForm,
+    UserFactorySiteAccessForm, OTConnectionForm,
     AssetQRTagForm, ERPConnectionForm,
+    ProblemRecordForm, ReleaseRecordForm, AssetLifecycleEventForm,
+    NotificationChannelForm, MonitoringConnectionForm, VMSConnectionForm,
+    EmailTicketInboxForm, BackupVendorConnectionForm, WMSConnectionForm,
+    ModulePermissionGrantForm,
 )
 from .models import (
     FieldVisit, SalesOpportunity, Ticket, DLPEvent, Device, ITAsset, License,
@@ -47,7 +57,12 @@ from .models import (
     DirectoryConnection, DirectoryGroup, DirectoryUser, EndpointDevice,
     IdentityLifecycleTask, SystemLog,
     FactoryDepartment, FactoryZone, ManagedDocument, FactoryITAssetRelation,
-    AssetQRTag, ERPConnection,
+    FactorySite, DepartmentInventoryItem,
+    UserFactorySiteAccess,
+    AssetQRTag, ERPConnection, OTConnection,
+    ProblemRecord, ReleaseRecord, NotificationChannel, MonitoringConnection,
+    VMSConnection, EmailTicketInbox, ImmutableAuditEntry, AssetLifecycleEvent,
+    BackupVendorConnection, WMSConnection, ModulePermissionGrant,
 )
 
 
@@ -131,6 +146,8 @@ def build_readiness_report():
         ]), 'Azure AD/OIDC/SAML opsiyonel.', 'Kurumsal giriş isteniyorsa SSO bilgilerini girin.', 'warning'),
         _readiness_item('celery', 'Celery/Redis Ayarı', bool(getattr(settings, 'CELERY_BROKER_URL', '')), getattr(settings, 'CELERY_BROKER_URL', ''), 'Redis ve Celery worker/beat servislerini çalıştırın.'),
         _readiness_item('factory_departments', 'Fabrika Kartelası', FactoryDepartment.objects.filter(is_active=True).exists(), 'Departman kartelası boş.', 'python manage.py omniops_doctor --bootstrap', 'warning'),
+        _readiness_item('factory_sites', 'Fabrika Portföyü', FactorySite.objects.filter(is_active=True).exists(), 'Tesis/portföy kaydı yok.', 'python manage.py omniops_doctor --bootstrap', 'warning'),
+        _readiness_item('department_inventory', 'Bölüm Envanteri', DepartmentInventoryItem.objects.filter(is_active=True).exists(), 'Bölüm envanter kaydı yok.', '/fabrika-portfoy-envanter/ veya bootstrap', 'warning'),
         _readiness_item('managed_documents', 'Doküman Merkezi', ManagedDocument.objects.exists(), 'Henüz yönetilen doküman yok.', 'Fabrika BT Komuta Merkezi üzerinden PDF/DOCX yükleyin.', 'warning'),
         _readiness_item('qr_tags', 'QR/Barkod Etiketleri', AssetQRTag.objects.filter(is_active=True).exists(), 'Varlık QR etiketi tanımlı değil.', 'python manage.py omniops_doctor --bootstrap veya /varlik-qr-tara/', 'warning'),
         _readiness_item(
@@ -163,10 +180,14 @@ def build_readiness_report():
         {'title': 'Rapor Şablonu', 'count': ReportTemplate.objects.count(), 'url': '/komuta-merkezi/'},
         {'title': 'Directory Kullanıcısı', 'count': DirectoryUser.objects.count(), 'url': '/kimlik-operasyonlari/'},
         {'title': 'Endpoint Cihazı', 'count': EndpointDevice.objects.count(), 'url': '/kimlik-operasyonlari/'},
+        {'title': 'Fabrika Tesisi', 'count': FactorySite.objects.filter(is_active=True).count(), 'url': '/fabrika-portfoy-envanter/'},
+        {'title': 'Bölüm Envanteri', 'count': DepartmentInventoryItem.objects.filter(is_active=True).count(), 'url': '/fabrika-portfoy-envanter/'},
         {'title': 'Fabrika Departmanı', 'count': FactoryDepartment.objects.filter(is_active=True).count(), 'url': '/fabrika-komuta-merkezi/'},
         {'title': 'Yönetilen Doküman', 'count': ManagedDocument.objects.count(), 'url': '/fabrika-komuta-merkezi/'},
         {'title': 'QR Etiket', 'count': AssetQRTag.objects.filter(is_active=True).count(), 'url': '/varlik-qr-tara/'},
         {'title': 'ERP Bağlantısı', 'count': ERPConnection.objects.count(), 'url': '/erp-entegrasyonlari/'},
+        {'title': 'Entegrasyon Merkezi', 'count': MonitoringConnection.objects.count(), 'url': '/entegrasyon-merkezi/'},
+        {'title': 'ITSM Problem', 'count': ProblemRecord.objects.count(), 'url': '/itsm-olgunluk/'},
     ]
 
     critical_total = len([item for item in checks if item['severity'] == 'danger'])
@@ -193,64 +214,10 @@ def build_readiness_report():
     }
 
 
-def run_directory_sync(connection, actor=None):
-    """Directory bağlantısının durumunu güvenli şekilde kaydeder; gerçek LDAP yoksa net readiness mesajı üretir."""
-    now = timezone.now()
-    if not connection:
-        return False, 'Directory bağlantısı bulunamadı.'
-
-    if not connection.is_ready:
-        connection.last_sync_at = now
-        connection.last_sync_status = 'warning'
-        connection.last_sync_message = 'LDAP/AD bağlantı bilgileri eksik veya sync kapalı.'
-        connection.save(update_fields=['last_sync_at', 'last_sync_status', 'last_sync_message', 'updated_at'])
-        return False, connection.last_sync_message
-
-    created_users = 0
-    local_users = User.objects.filter(is_active=True).order_by('username')[:50]
-    for user in local_users:
-        try:
-            department = user.profile.department
-        except Exception:
-            department = ''
-        directory_user, created = DirectoryUser.objects.update_or_create(
-            connection=connection,
-            username=user.username,
-            defaults={
-                'user': user,
-                'display_name': user.get_full_name() or user.username,
-                'email': user.email or '',
-                'department': department,
-                'status': 'active',
-                'mfa_enabled': user.is_staff,
-                'last_seen_at': now,
-            },
-        )
-        if created:
-            created_users += 1
-        for group in user.groups.all():
-            directory_group, _ = DirectoryGroup.objects.update_or_create(
-                connection=connection,
-                name=group.name,
-                defaults={
-                    'mapped_role': group.name,
-                    'risk_level': 'high' if group.name in ['Admin', 'Yönetim', 'Sistem Ekibi'] else 'medium',
-                    'is_privileged': group.name in ['Admin', 'Yönetim', 'Sistem Ekibi'],
-                    'last_seen_at': now,
-                },
-            )
-            directory_user.groups.add(directory_group)
-
-    connection.last_sync_at = now
-    connection.last_sync_status = 'healthy'
-    connection.last_sync_message = f'Lokal kullanıcı snapshot sync tamamlandı. {local_users.count()} kullanıcı işlendi, {created_users} yeni kayıt.'
-    connection.save(update_fields=['last_sync_at', 'last_sync_status', 'last_sync_message', 'updated_at'])
-    SystemLog.objects.create(
-        user=actor,
-        action='SYSTEM',
-        details=f"Directory sync tamamlandı: {connection.name} - {connection.last_sync_message}",
-    )
-    return True, connection.last_sync_message
+def run_directory_sync(connection, actor=None, dry_run=None):
+    """Directory senkronizasyonu — LDAP/AD/Azure AD veya manuel snapshot."""
+    from .integrations.directory_sync import run_directory_sync as execute_directory_sync
+    return execute_directory_sync(connection, actor=actor, dry_run=dry_run)
 
 
 @login_required
@@ -278,6 +245,7 @@ def identity_operations_view(request):
         'user': DirectoryUserForm(),
         'endpoint': EndpointDeviceForm(),
         'lifecycle': IdentityLifecycleTaskForm(),
+        'site_access': UserFactorySiteAccessForm(),
     }
 
     if request.method == 'POST':
@@ -288,6 +256,7 @@ def identity_operations_view(request):
             'user': DirectoryUserForm,
             'endpoint': EndpointDeviceForm,
             'lifecycle': IdentityLifecycleTaskForm,
+            'site_access': UserFactorySiteAccessForm,
         }
         form_class = form_map.get(action)
         if form_class:
@@ -296,6 +265,11 @@ def identity_operations_view(request):
                 obj = form.save(commit=False)
                 if action == 'lifecycle':
                     obj.requested_by = request.user
+                if action == 'site_access':
+                    if not user_has_global_site_access(request.user):
+                        messages.error(request, 'Tesis erişim yetkisi yalnızca global yöneticiler tarafından atanabilir.')
+                        return redirect('identity_operations')
+                    obj.granted_by = request.user
                 obj.save()
                 if hasattr(form, 'save_m2m'):
                     form.save_m2m()
@@ -335,6 +309,16 @@ def identity_operations_view(request):
                 ])
                 messages.success(request, f"Kimlik işi tamamlandı: {task.title}")
                 return redirect('identity_operations')
+        elif action == 'run_lifecycle_automation':
+            task = IdentityLifecycleTask.objects.filter(pk=request.POST.get('task_id')).first()
+            if task:
+                from .integrations.ad_lifecycle import ADLifecycleError, run_identity_lifecycle_task
+                try:
+                    _, message = run_identity_lifecycle_task(task, actor=request.user)
+                    messages.success(request, message)
+                except ADLifecycleError as exc:
+                    messages.error(request, str(exc))
+                return redirect('identity_operations')
 
     connections = DirectoryConnection.objects.select_related('owner').order_by('name')
     directory_users = DirectoryUser.objects.select_related('connection', 'user').prefetch_related('groups').order_by('status', 'username')
@@ -343,6 +327,7 @@ def identity_operations_view(request):
     endpoint_alerts = [endpoint for endpoint in endpoints[:200] if not endpoint.is_compliant or endpoint.is_stale]
     lifecycle_tasks = IdentityLifecycleTask.objects.select_related('directory_user', 'requested_by', 'assigned_to').exclude(status__in=['done', 'cancelled']).order_by('due_date', '-created_at')
     privileged_groups = DirectoryGroup.objects.filter(is_privileged=True).select_related('connection', 'owner').order_by('risk_level', 'name')
+    site_access_rows = UserFactorySiteAccess.objects.select_related('user', 'factory_site', 'granted_by').order_by('factory_site__title', 'user__username')[:50]
 
     context = {
         'forms': forms,
@@ -351,6 +336,8 @@ def identity_operations_view(request):
         'endpoint_alerts': endpoint_alerts[:20],
         'lifecycle_tasks': lifecycle_tasks[:20],
         'privileged_groups': privileged_groups[:20],
+        'site_access_rows': site_access_rows,
+        'can_manage_site_access': user_has_global_site_access(request.user),
         'metrics': {
             'connections': connections.count(),
             'directory_users': DirectoryUser.objects.count(),
@@ -358,6 +345,7 @@ def identity_operations_view(request):
             'endpoint_alerts': len(endpoint_alerts),
             'lifecycle_tasks': lifecycle_tasks.count(),
             'privileged_groups': privileged_groups.count(),
+            'site_access_grants': UserFactorySiteAccess.objects.filter(is_active=True).count(),
         },
     }
     return render(request, 'identity_operations.html', context)
@@ -408,6 +396,8 @@ def field_routes_view(request):
 
 @login_required
 def sales_kanban_view(request):
+    if not getattr(settings, 'FEATURE_SALES_KANBAN', True):
+        return redirect('dashboard')
     if not is_support_staff(request.user):
         return redirect('dashboard')
 
@@ -1021,6 +1011,122 @@ def _gather_factory_scope_modules(department=None, zone=None):
 
 
 @login_required
+def factory_portfolio_inventory_view(request):
+    """Müşteri portföyündeki fabrika tesisleri ve bölüm envanterleri."""
+    if not is_support_staff(request.user):
+        return redirect('dashboard')
+
+    factory_sites = get_accessible_sites(request.user).annotate(
+        department_total=Count('departments', filter=models.Q(departments__is_active=True), distinct=True),
+        inventory_total=Count('inventory_items', filter=models.Q(inventory_items__is_active=True), distinct=True),
+    )
+
+    selected_site = None
+    selected_department = None
+    site_id = request.GET.get('site')
+    department_id = request.GET.get('department')
+
+    if site_id:
+        if not user_can_access_site(request.user, site_id):
+            messages.error(request, 'Bu fabrika tesisine erişim yetkiniz yok.')
+            return redirect('factory_portfolio_inventory')
+        selected_site = factory_sites.filter(pk=site_id).first()
+    if not selected_site:
+        selected_site = factory_sites.first()
+
+    if department_id and selected_site:
+        selected_department = FactoryDepartment.objects.filter(
+            pk=department_id, factory_site=selected_site, is_active=True,
+        ).first()
+
+    forms = {
+        'site_new': FactorySiteForm(),
+        'inventory': DepartmentInventoryItemForm(),
+    }
+    if selected_site:
+        forms['site_edit'] = FactorySiteForm(instance=selected_site)
+        forms['inventory'].fields['factory_site'].initial = selected_site.pk
+        forms['inventory'].fields['department'].queryset = FactoryDepartment.objects.filter(
+            factory_site=selected_site, is_active=True,
+        ).order_by('name')
+        forms['inventory'].fields['zone'].queryset = FactoryZone.objects.filter(
+            department__factory_site=selected_site, is_active=True,
+        ).select_related('department').order_by('department__name', 'name')
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'site':
+            form = FactorySiteForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Fabrika tesisi kaydedildi.")
+                return redirect(f"{reverse('factory_portfolio_inventory')}?site={form.instance.pk}")
+            forms['site_new'] = form
+        elif action == 'update_site' and selected_site:
+            form = FactorySiteForm(request.POST, instance=selected_site)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Tesis başlıkları güncellendi.")
+                return redirect(f"{reverse('factory_portfolio_inventory')}?site={selected_site.pk}")
+            forms['site_edit'] = form
+        elif action == 'inventory':
+            form = DepartmentInventoryItemForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Envanter kalemi eklendi.")
+                redirect_url = reverse('factory_portfolio_inventory')
+                params = [f"site={form.instance.factory_site_id}"]
+                if form.instance.department_id:
+                    params.append(f"department={form.instance.department_id}")
+                return redirect(f"{redirect_url}?{'&'.join(params)}")
+            forms['inventory'] = form
+
+    departments = []
+    inventory_groups = []
+    inventory_items = DepartmentInventoryItem.objects.none()
+    if selected_site:
+        departments = FactoryDepartment.objects.filter(
+            factory_site=selected_site, is_active=True,
+        ).annotate(
+            inventory_total=Count('inventory_items', filter=models.Q(inventory_items__is_active=True)),
+            zone_total=Count('zones', filter=models.Q(zones__is_active=True)),
+        ).order_by('department_type', 'name')
+
+        inventory_qs = DepartmentInventoryItem.objects.filter(
+            factory_site=selected_site, is_active=True,
+        ).select_related('department', 'zone').order_by('department__name', 'sort_order', 'title')
+        if selected_department:
+            inventory_qs = inventory_qs.filter(department=selected_department)
+        inventory_items = inventory_qs
+
+        grouped = {}
+        for item in inventory_items:
+            key = item.department_id or 0
+            grouped.setdefault(key, {'department': item.department, 'items': []})['items'].append(item)
+        inventory_groups = sorted(
+            grouped.values(),
+            key=lambda group: (group['department'].name if group['department'] else 'zzz'),
+        )
+
+    context = {
+        'factory_sites': factory_sites,
+        'selected_site': selected_site,
+        'selected_department': selected_department,
+        'departments': departments,
+        'inventory_items': inventory_items,
+        'inventory_groups': inventory_groups,
+        'forms': forms,
+        'metrics': {
+            'sites': factory_sites.count(),
+            'departments': departments.count() if selected_site else 0,
+            'inventory': inventory_items.count(),
+            'industries': factory_sites.values('industry_type').distinct().count(),
+        },
+    }
+    return render(request, 'factory_portfolio_inventory.html', context)
+
+
+@login_required
 def factory_command_center_view(request):
     if not is_support_staff(request.user):
         return redirect('dashboard')
@@ -1031,6 +1137,20 @@ def factory_command_center_view(request):
         'document': ManagedDocumentForm(),
         'relation': FactoryITAssetRelationForm(),
     }
+
+    factory_sites = get_accessible_sites(request.user)
+    selected_site = None
+    site_id = request.GET.get('site')
+    if site_id:
+        if not user_can_access_site(request.user, site_id):
+            messages.error(request, 'Bu fabrika tesisine erişim yetkiniz yok.')
+            return redirect('factory_command_center')
+        selected_site = factory_sites.filter(pk=site_id).first()
+    if not selected_site:
+        selected_site = factory_sites.first()
+
+    if selected_site:
+        forms['department'].fields['factory_site'].initial = selected_site.pk
 
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -1052,10 +1172,21 @@ def factory_command_center_view(request):
                     form.save_m2m()
                 messages.success(request, "Fabrika komuta merkezi kaydı oluşturuldu.")
                 redirect_url = 'factory_command_center'
+                site_param = f"site={obj.factory_site_id}" if getattr(obj, 'factory_site_id', None) else (
+                    f"site={selected_site.pk}" if selected_site else ''
+                )
                 if action == 'zone' and obj.department_id:
-                    return redirect(f"{reverse('factory_command_center')}?department={obj.department_id}")
+                    url = f"{reverse('factory_command_center')}?department={obj.department_id}"
+                    if site_param:
+                        url = f"{url}&{site_param}"
+                    return redirect(url)
                 if action in ('document', 'relation') and obj.department_id:
-                    return redirect(f"{reverse('factory_command_center')}?department={obj.department_id}")
+                    url = f"{reverse('factory_command_center')}?department={obj.department_id}"
+                    if site_param:
+                        url = f"{url}&{site_param}"
+                    return redirect(url)
+                if site_param:
+                    return redirect(f"{reverse('factory_command_center')}?{site_param}")
                 return redirect(redirect_url)
             forms[action] = form
         elif action == 'approve_document':
@@ -1085,9 +1216,13 @@ def factory_command_center_view(request):
         if selected_document and not selected_department and selected_document.department_id:
             selected_department = selected_document.department
 
-    departments = FactoryDepartment.objects.filter(is_active=True).annotate(
+    departments = FactoryDepartment.objects.filter(is_active=True)
+    departments = filter_queryset_by_site(departments, request.user)
+    if selected_site:
+        departments = departments.filter(factory_site=selected_site)
+    departments = departments.annotate(
         zone_total=Count('zones', filter=models.Q(zones__is_active=True))
-    ).order_by('department_type', 'name')
+    ).select_related('factory_site').order_by('department_type', 'name')
 
     scope = _gather_factory_scope_modules(
         department=selected_department,
@@ -1105,6 +1240,8 @@ def factory_command_center_view(request):
 
     context = {
         'forms': forms,
+        'factory_sites': factory_sites,
+        'selected_site': selected_site,
         'departments': departments,
         'selected_department': selected_department,
         'selected_zone': selected_zone,
@@ -1413,3 +1550,283 @@ def erp_integrations_view(request):
             'errors': connections.filter(last_sync_status='error').count(),
         },
     })
+
+
+@login_required
+def ot_integrations_view(request):
+    if not is_support_staff(request.user):
+        return redirect('dashboard')
+
+    form = OTConnectionForm()
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'connection':
+            form = OTConnectionForm(request.POST)
+            if form.is_valid():
+                obj = form.save(commit=False)
+                obj.owner = request.user
+                obj.save()
+                messages.success(request, 'OT/MES bağlantısı kaydedildi.')
+                return redirect('ot_integrations')
+        elif action == 'test_connection':
+            connection = OTConnection.objects.filter(pk=request.POST.get('connection_id')).first()
+            if connection:
+                from .integrations.ot_connector import OTClientError, test_ot_connection
+                try:
+                    result = test_ot_connection(connection)
+                    messages.success(request, f"OT test OK · örnek varlık: {result.get('asset_sample', 0)}")
+                except OTClientError as exc:
+                    messages.error(request, str(exc))
+                return redirect('ot_integrations')
+        elif action == 'sync_connection':
+            connection = OTConnection.objects.filter(pk=request.POST.get('connection_id')).first()
+            if connection:
+                from inventory.tasks import sync_ot_connection_task
+                sync_ot_connection_task.delay(connection.id)
+                messages.success(request, f'{connection.name} OT sync kuyruğa alındı.')
+                return redirect('ot_integrations')
+
+    connections = filter_queryset_by_site(
+        OTConnection.objects.select_related('owner', 'factory_site').order_by('factory_site__title', 'name'),
+        request.user,
+    )
+    return render(request, 'ot_integrations.html', {
+        'form': form,
+        'connections': connections,
+        'metrics': {
+            'connections': connections.count(),
+            'healthy': connections.filter(last_sync_status='healthy').count(),
+            'errors': connections.filter(last_sync_status='error').count(),
+        },
+    })
+
+
+@login_required
+def integration_hub_center_view(request):
+    if not is_support_staff(request.user):
+        return redirect('dashboard')
+    if not user_has_module_permission(request.user, 'integrations', 'view'):
+        messages.error(request, 'Entegrasyon merkezi için yetkiniz yok.')
+        return redirect('dashboard')
+
+    forms = {
+        'notification': NotificationChannelForm(),
+        'monitoring': MonitoringConnectionForm(),
+        'vms': VMSConnectionForm(),
+        'email_inbox': EmailTicketInboxForm(),
+        'backup': BackupVendorConnectionForm(),
+        'wms': WMSConnectionForm(),
+        'module_grant': ModulePermissionGrantForm(),
+    }
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        form_map = {
+            'notification': NotificationChannelForm,
+            'monitoring': MonitoringConnectionForm,
+            'vms': VMSConnectionForm,
+            'email_inbox': EmailTicketInboxForm,
+            'backup': BackupVendorConnectionForm,
+            'wms': WMSConnectionForm,
+            'module_grant': ModulePermissionGrantForm,
+        }
+        if action in form_map:
+            form = form_map[action](request.POST)
+            if form.is_valid():
+                obj = form.save(commit=False)
+                if action == 'notification':
+                    obj.owner = request.user
+                if action == 'module_grant':
+                    obj.granted_by = request.user
+                obj.save()
+                from .audit import record_audit
+                record_audit('create', action, obj.pk, actor=request.user, request=request)
+                messages.success(request, 'Kayıt oluşturuldu.')
+                return redirect('integration_hub_center')
+            forms[action] = form
+        elif action == 'sync_monitoring':
+            connection = MonitoringConnection.objects.filter(pk=request.POST.get('connection_id')).first()
+            if connection:
+                from inventory.tasks import sync_monitoring_connection_task
+                sync_monitoring_connection_task.delay(connection.id)
+                messages.success(request, f'{connection.name} izleme sync kuyruğa alındı.')
+                return redirect('integration_hub_center')
+        elif action == 'sync_vms':
+            connection = VMSConnection.objects.filter(pk=request.POST.get('connection_id')).first()
+            if connection:
+                from inventory.tasks import sync_vms_connection_task
+                sync_vms_connection_task.delay(connection.id)
+                messages.success(request, f'{connection.name} VMS sync kuyruğa alındı.')
+                return redirect('integration_hub_center')
+        elif action == 'poll_email_inbox':
+            inbox = EmailTicketInbox.objects.filter(pk=request.POST.get('inbox_id')).first()
+            if inbox:
+                from inventory.tasks import poll_email_ticket_inbox_task
+                poll_email_ticket_inbox_task.delay(inbox.id)
+                messages.success(request, f'{inbox.name} e-posta taraması kuyruğa alındı.')
+                return redirect('integration_hub_center')
+        elif action == 'sync_backup':
+            connection = BackupVendorConnection.objects.filter(pk=request.POST.get('connection_id')).first()
+            if connection:
+                from inventory.tasks import sync_backup_vendor_connection_task
+                sync_backup_vendor_connection_task.delay(connection.id)
+                messages.success(request, f'{connection.name} backup sync kuyruğa alındı.')
+                return redirect('integration_hub_center')
+        elif action == 'sync_wms':
+            connection = WMSConnection.objects.filter(pk=request.POST.get('connection_id')).first()
+            if connection:
+                from inventory.tasks import sync_wms_connection_task
+                sync_wms_connection_task.delay(connection.id)
+                messages.success(request, f'{connection.name} WMS sync kuyruğa alındı.')
+                return redirect('integration_hub_center')
+        elif action == 'test_notification':
+            channel = NotificationChannel.objects.filter(pk=request.POST.get('channel_id')).first()
+            if channel:
+                from .notification_dispatcher import NotificationError, send_notification
+                try:
+                    send_notification(channel, 'OmniOps Test', 'Entegrasyon merkezi test bildirimi.')
+                    messages.success(request, f'Test bildirimi gönderildi: {channel.name}')
+                except NotificationError as exc:
+                    messages.error(request, str(exc))
+                return redirect('integration_hub_center')
+
+    monitoring = filter_queryset_by_site(
+        MonitoringConnection.objects.select_related('factory_site').order_by('name'), request.user,
+    )
+    vms = filter_queryset_by_site(
+        VMSConnection.objects.select_related('factory_site').order_by('name'), request.user,
+    )
+    notifications = filter_queryset_by_site(
+        NotificationChannel.objects.select_related('factory_site', 'owner').order_by('name'), request.user,
+    )
+    inboxes = filter_queryset_by_site(
+        EmailTicketInbox.objects.select_related('factory_site').order_by('name'), request.user,
+    )
+    backups = BackupVendorConnection.objects.order_by('name')
+    wms_connections = filter_queryset_by_site(
+        WMSConnection.objects.select_related('factory_site').order_by('name'), request.user,
+    )
+    module_grants = ModulePermissionGrant.objects.select_related('user', 'factory_site', 'granted_by').order_by('-created_at')[:50]
+
+    return render(request, 'integration_hub_center.html', {
+        'forms': forms,
+        'monitoring_connections': monitoring,
+        'vms_connections': vms,
+        'notification_channels': notifications,
+        'email_inboxes': inboxes,
+        'backup_connections': backups,
+        'wms_connections': wms_connections,
+        'module_grants': module_grants,
+        'metrics': {
+            'monitoring': monitoring.count(),
+            'vms': vms.count(),
+            'notifications': notifications.count(),
+            'inboxes': inboxes.count(),
+            'backups': backups.count(),
+            'wms': wms_connections.count(),
+        },
+    })
+
+
+@login_required
+def itsm_maturity_view(request):
+    if not is_support_staff(request.user):
+        return redirect('dashboard')
+    if not user_has_module_permission(request.user, 'governance', 'view'):
+        messages.error(request, 'ITSM olgunluk modülü için yetkiniz yok.')
+        return redirect('dashboard')
+
+    forms = {
+        'problem': ProblemRecordForm(),
+        'release': ReleaseRecordForm(),
+        'lifecycle': AssetLifecycleEventForm(),
+    }
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        form_map = {
+            'problem': ProblemRecordForm,
+            'release': ReleaseRecordForm,
+            'lifecycle': AssetLifecycleEventForm,
+        }
+        if action in form_map:
+            form = form_map[action](request.POST)
+            if form.is_valid():
+                obj = form.save(commit=False)
+                if action == 'problem':
+                    obj.owner = obj.owner or request.user
+                elif action == 'release':
+                    obj.owner = obj.owner or request.user
+                elif action == 'lifecycle':
+                    obj.performed_by = request.user
+                obj.save()
+                from .audit import record_audit
+                record_audit('create', action, obj.pk, actor=request.user, request=request)
+                messages.success(request, 'ITSM kaydı oluşturuldu.')
+                return redirect('itsm_maturity')
+            forms[action] = form
+        elif action == 'resolve_problem':
+            problem = ProblemRecord.objects.filter(pk=request.POST.get('problem_id')).first()
+            if problem:
+                problem.status = 'resolved'
+                problem.resolved_at = timezone.now()
+                problem.save(update_fields=['status', 'resolved_at', 'updated_at'])
+                messages.success(request, f'Problem çözüldü: {problem.title}')
+                return redirect('itsm_maturity')
+        elif action == 'approve_release_cab':
+            release = ReleaseRecord.objects.filter(pk=request.POST.get('release_id')).first()
+            if release:
+                release.cab_approved = True
+                release.status = 'approved'
+                release.save(update_fields=['cab_approved', 'status', 'updated_at'])
+                messages.success(request, f'CAB onayı verildi: {release.title}')
+                return redirect('itsm_maturity')
+
+    problems_qs = filter_queryset_by_site(
+        ProblemRecord.objects.select_related('factory_site', 'owner').exclude(status='closed').order_by('-updated_at'),
+        request.user,
+    )
+    releases_qs = filter_queryset_by_site(
+        ReleaseRecord.objects.select_related('factory_site', 'owner').order_by('-planned_start', '-updated_at'),
+        request.user,
+    )
+    lifecycle_qs = filter_queryset_by_site(
+        AssetLifecycleEvent.objects.select_related('factory_site', 'it_asset', 'performed_by').order_by('-event_date'),
+        request.user,
+    )
+    audit_entries = ImmutableAuditEntry.objects.select_related('actor').order_by('-created_at')[:40]
+
+    return render(request, 'itsm_maturity.html', {
+        'forms': forms,
+        'problems': problems_qs[:25],
+        'releases': releases_qs[:25],
+        'lifecycle_events': lifecycle_qs[:40],
+        'audit_entries': audit_entries,
+        'metrics': {
+            'open_problems': problems_qs.exclude(status='resolved').count(),
+            'pending_releases': releases_qs.filter(status__in=['planned', 'cab_review']).count(),
+            'lifecycle_events': lifecycle_qs.count(),
+            'audit_entries': ImmutableAuditEntry.objects.count(),
+        },
+    })
+
+
+def prometheus_metrics_view(request):
+    """Prometheus scrape uç noktası (basit metrikler)."""
+    if not getattr(settings, 'PROMETHEUS_METRICS_ENABLED', True):
+        return HttpResponse('disabled', status=404)
+    lines = [
+        '# HELP omniops_tickets_open Açık ticket sayısı',
+        '# TYPE omniops_tickets_open gauge',
+        f'omniops_tickets_open {Ticket.objects.filter(status="Acik").count()}',
+        '# HELP omniops_factory_sites_active Aktif fabrika tesisi sayısı',
+        '# TYPE omniops_factory_sites_active gauge',
+        f'omniops_factory_sites_active {FactorySite.objects.filter(is_active=True).count()}',
+        '# HELP omniops_devices_active Aktif ağ cihazı sayısı',
+        '# TYPE omniops_devices_active gauge',
+        f'omniops_devices_active {Device.objects.filter(is_active=True).count()}',
+        '# HELP omniops_audit_entries_total Denetim izi kayıt sayısı',
+        '# TYPE omniops_audit_entries_total counter',
+        f'omniops_audit_entries_total {ImmutableAuditEntry.objects.count()}',
+    ]
+    return HttpResponse('\n'.join(lines) + '\n', content_type='text/plain; version=0.0.4; charset=utf-8')

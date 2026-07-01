@@ -85,6 +85,7 @@
                 </button>
                 <div class="collapse" id="sidebarGroupFactory">
                     <ul class="nav flex-column sidebar-group-items">
+                        <li class="nav-item"><a href="{% url 'factory_portfolio_inventory' %}" class="nav-link {% if request.path == '/fabrika-portfoy-envanter/' %}active{% endif %}"><span class="iconify" data-icon="mdi:clipboard-list-outline"></span> {% trans "Portföy Envanteri" %}</a></li>
                         <li class="nav-item"><a href="{% url 'factory_command_center' %}" class="nav-link {% if request.path == '/fabrika-komuta-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:view-grid-outline"></span> {% trans "Departman Kartelası" %}</a></li>
                         <li class="nav-item"><a href="{% url 'asset_qr_scanner' %}" class="nav-link {% if request.path == '/varlik-qr-tara/' %}active{% endif %}"><span class="iconify" data-icon="mdi:qrcode-scan"></span> {% trans "QR/Barkod Tarayıcı" %}</a></li>
                         <li class="nav-item"><a href="{% url 'factory_operations' %}" class="nav-link {% if request.path == '/fabrika-operasyonlari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:factory"></span> {% trans "Fabrika IT Operasyonları" %}</a></li>
@@ -149,7 +150,9 @@
                         <li class="nav-item"><a href="{% url 'helpdesk_analytics' %}" class="nav-link {% if request.path == '/destek-analitik/' %}active{% endif %}"><span class="iconify" data-icon="mdi:chart-donut"></span> {% trans "Destek Analitikleri" %}</a></li>
                         <li class="nav-item"><a href="{% url 'service_operations' %}" class="nav-link {% if request.path == '/servis-surecleri/' %}active{% endif %}"><span class="iconify" data-icon="mdi:clipboard-pulse-outline"></span> {% trans "Servis Süreç Merkezi" %}</a></li>
                         <li class="nav-item"><a href="{% url 'field_routes' %}" class="nav-link {% if request.path == '/saha-rotalari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:map-marker-path"></span> {% trans "Saha Rota Planlama" %}</a></li>
+                        {% if feature_sales_kanban %}
                         <li class="nav-item"><a href="{% url 'sales_kanban' %}" class="nav-link {% if request.path == '/satis-kanban/' %}active{% endif %}"><span class="iconify" data-icon="mdi:view-column-outline"></span> {% trans "Satış Kanban" %}</a></li>
+                        {% endif %}
                         <li class="nav-item"><a href="{% url 'offline_field_app' %}" class="nav-link {% if request.path == '/offline-saha/' %}active{% endif %}"><span class="iconify" data-icon="mdi:cloud-sync-outline"></span> {% trans "Offline Saha Paneli" %}</a></li>
                     </ul>
                 </div>
@@ -166,6 +169,9 @@
                     <ul class="nav flex-column sidebar-group-items">
                         <li class="nav-item"><a href="{% url 'governance_center' %}" class="nav-link {% if request.path == '/yonetisim-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:calendar-check-outline"></span> {% trans "Yönetişim Merkezi" %}</a></li>
                         <li class="nav-item"><a href="{% url 'erp_integrations' %}" class="nav-link {% if request.path == '/erp-entegrasyonlari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:connection"></span> {% trans "ERP & Entegrasyon" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'integration_hub_center' %}" class="nav-link {% if request.path == '/entegrasyon-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:hub"></span> {% trans "Entegrasyon Merkezi" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'ot_integrations' %}" class="nav-link {% if request.path == '/ot-entegrasyonlari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:robot-industrial"></span> {% trans "OT/MES Köprüsü" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'itsm_maturity' %}" class="nav-link {% if request.path == '/itsm-olgunluk/' %}active{% endif %}"><span class="iconify" data-icon="mdi:shield-check-outline"></span> {% trans "ITSM Olgunluk" %}</a></li>
                         <li class="nav-item"><a href="{% url 'dlp_events' %}" class="nav-link {% if request.path == '/dlp-olaylari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:shield-key-outline"></span> {% trans "DLP Olayları" %}</a></li>
                         <li class="nav-item"><a href="/sistem-loglari/" class="nav-link {% if request.path == '/sistem-loglari/' %}active{% endif %}"><span class="iconify text-danger" data-icon="mdi:shield-check-outline"></span> {% trans "Güvenlik Olayları & Loglar" %}</a></li>
                     </ul>

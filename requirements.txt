@@ -27,3 +27,4 @@ networkx
 matplotlib
 requests
 PyJWT>=2.8
+ldap3>=2.9

@@ -29,7 +29,10 @@ from .models import (
     DirectoryConnection, DirectoryGroup, DirectoryUser, EndpointDevice,
     IdentityLifecycleTask,
     FactoryDepartment, FactoryZone, ManagedDocument, FactoryITAssetRelation,
+    FactorySite, DepartmentInventoryItem,
     AssetQRTag, ERPConnection,
+    ProblemRecord, ReleaseRecord, NotificationChannel, MonitoringConnection,
+    ModulePermissionGrant,
 )
 from .serializers import (
     DeviceSerializer, IpAddressSerializer, TicketSerializer, UserSerializer, UserCreateSerializer,
@@ -49,11 +52,15 @@ from .serializers import (
     DirectoryConnectionSerializer, DirectoryGroupSerializer, DirectoryUserSerializer,
     EndpointDeviceSerializer, IdentityLifecycleTaskSerializer,
     FactoryDepartmentSerializer, FactoryZoneSerializer,
+    FactorySiteSerializer, DepartmentInventoryItemSerializer,
     ManagedDocumentSerializer, FactoryITAssetRelationSerializer,
     AssetQRTagSerializer, ERPConnectionSerializer,
+    ProblemRecordSerializer, ReleaseRecordSerializer, MonitoringConnectionSerializer,
+    NotificationChannelSerializer, ModulePermissionGrantSerializer,
 )
 from .permissions import IsSupportStaff, TicketObjectPermission, NotificationOwnerPermission
 from .helpdesk import is_support_staff, can_access_ticket, get_helpdesk_analytics
+from .site_access import filter_queryset_by_site, get_accessible_sites
 
 # Konfigürasyon motorunu içe aktarıyoruz
 from .utils import generate_device_config, scan_network
@@ -208,9 +215,11 @@ class TicketViewSet(viewsets.ModelViewSet):
         if getattr(self, 'swagger_fake_view', False):
             return Ticket.objects.none()
         user = self.request.user
-        qs = Ticket.objects.select_related('created_by', 'assigned_to', 'device', 'ticket_category')
+        qs = Ticket.objects.select_related(
+            'created_by', 'assigned_to', 'device', 'ticket_category', 'factory_site',
+        )
         if user.is_staff or is_support_staff(user):
-            return qs.all()
+            return filter_queryset_by_site(qs, user)
         return qs.filter(Q(created_by=user) | Q(assigned_to=user))
 
     def perform_create(self, serializer):
@@ -1120,16 +1129,49 @@ class IdentityLifecycleTaskViewSet(viewsets.ModelViewSet):
         return Response(IdentityLifecycleTaskSerializer(task).data)
 
 
+class FactorySiteViewSet(viewsets.ModelViewSet):
+    serializer_class = FactorySiteSerializer
+    permission_classes = [IsAuthenticated, IsSupportStaff]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['industry_type', 'is_active', 'customer_name', 'portfolio_code']
+    search_fields = ['title', 'short_name', 'code', 'customer_name', 'city', 'custom_industry_label']
+    ordering_fields = ['title', 'customer_name', 'industry_type', 'updated_at']
+
+    def get_queryset(self):
+        qs = FactorySite.objects.annotate(
+            department_count=Count('departments', filter=Q(departments__is_active=True), distinct=True),
+            inventory_count=Count('inventory_items', filter=Q(inventory_items__is_active=True), distinct=True),
+        ).order_by('customer_name', 'title')
+        site_ids = get_accessible_sites(self.request.user).values_list('pk', flat=True)
+        return qs.filter(pk__in=site_ids)
+
+
 class FactoryDepartmentViewSet(viewsets.ModelViewSet):
     serializer_class = FactoryDepartmentSerializer
     permission_classes = [IsAuthenticated, IsSupportStaff]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['department_type', 'criticality', 'is_active']
+    filterset_fields = ['factory_site', 'department_type', 'criticality', 'is_active']
     search_fields = ['name', 'code', 'manager_name', 'floor_label']
     ordering_fields = ['name', 'department_type', 'criticality', 'updated_at']
 
     def get_queryset(self):
-        return FactoryDepartment.objects.annotate(zone_count=Count('zones')).order_by('department_type', 'name')
+        qs = FactoryDepartment.objects.annotate(zone_count=Count('zones')).order_by('factory_site__title', 'department_type', 'name')
+        return filter_queryset_by_site(qs, self.request.user)
+
+
+class DepartmentInventoryItemViewSet(viewsets.ModelViewSet):
+    serializer_class = DepartmentInventoryItemSerializer
+    permission_classes = [IsAuthenticated, IsSupportStaff]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['factory_site', 'department', 'zone', 'item_type', 'status', 'is_active']
+    search_fields = ['title', 'reference_code', 'serial_number', 'asset_tag', 'barcode', 'category_label', 'owner_name']
+    ordering_fields = ['sort_order', 'title', 'updated_at', 'quantity']
+
+    def get_queryset(self):
+        qs = DepartmentInventoryItem.objects.select_related(
+            'factory_site', 'department', 'zone',
+        ).order_by('factory_site__title', 'department__name', 'sort_order', 'title')
+        return filter_queryset_by_site(qs, self.request.user)
 
 
 class FactoryZoneViewSet(viewsets.ModelViewSet):
@@ -1231,6 +1273,89 @@ class ERPConnectionViewSet(viewsets.ModelViewSet):
             connection.last_sync_message = str(exc)
             connection.save(update_fields=['last_sync_status', 'last_sync_message', 'updated_at'])
             return Response({'detail': str(exc)}, status=400)
+
+
+class ProblemRecordViewSet(viewsets.ModelViewSet):
+    serializer_class = ProblemRecordSerializer
+    permission_classes = [IsAuthenticated, IsSupportStaff]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['status', 'priority', 'factory_site', 'owner']
+    search_fields = ['title', 'description', 'root_cause']
+    ordering_fields = ['updated_at', 'priority', 'created_at']
+
+    def get_queryset(self):
+        qs = ProblemRecord.objects.select_related('factory_site', 'owner', 'major_incident').order_by('-updated_at')
+        return filter_queryset_by_site(qs, self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=serializer.validated_data.get('owner') or self.request.user)
+
+
+class ReleaseRecordViewSet(viewsets.ModelViewSet):
+    serializer_class = ReleaseRecordSerializer
+    permission_classes = [IsAuthenticated, IsSupportStaff]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['status', 'factory_site', 'cab_approved', 'owner']
+    search_fields = ['title', 'version', 'description']
+    ordering_fields = ['planned_start', 'updated_at']
+
+    def get_queryset(self):
+        qs = ReleaseRecord.objects.select_related('factory_site', 'owner', 'change_request').order_by('-planned_start', '-updated_at')
+        return filter_queryset_by_site(qs, self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=serializer.validated_data.get('owner') or self.request.user)
+
+
+class MonitoringConnectionViewSet(viewsets.ModelViewSet):
+    serializer_class = MonitoringConnectionSerializer
+    permission_classes = [IsAuthenticated, IsSupportStaff]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['monitor_type', 'sync_enabled', 'last_sync_status', 'factory_site']
+    search_fields = ['name', 'base_url']
+    ordering_fields = ['name', 'last_sync_at']
+
+    def get_queryset(self):
+        qs = MonitoringConnection.objects.select_related('factory_site').order_by('name')
+        return filter_queryset_by_site(qs, self.request.user)
+
+    @action(detail=True, methods=['post'], url_path='sync')
+    def sync(self, request, pk=None):
+        from inventory.tasks import sync_monitoring_connection_task
+        sync_monitoring_connection_task.delay(self.get_object().pk)
+        return Response({'status': 'queued'})
+
+
+class NotificationChannelViewSet(viewsets.ModelViewSet):
+    serializer_class = NotificationChannelSerializer
+    permission_classes = [IsAuthenticated, IsSupportStaff]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['channel_type', 'is_active', 'factory_site']
+    search_fields = ['name', 'endpoint_url', 'email_recipients']
+    ordering_fields = ['name', 'last_sent_at']
+
+    def get_queryset(self):
+        qs = NotificationChannel.objects.select_related('factory_site', 'owner').order_by('name')
+        return filter_queryset_by_site(qs, self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class ModulePermissionGrantViewSet(viewsets.ModelViewSet):
+    serializer_class = ModulePermissionGrantSerializer
+    permission_classes = [IsAuthenticated, IsSupportStaff]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['module_code', 'permission_level', 'is_active', 'factory_site', 'user']
+    search_fields = ['user__username']
+    ordering_fields = ['created_at', 'module_code']
+
+    def get_queryset(self):
+        return ModulePermissionGrant.objects.select_related('user', 'factory_site', 'granted_by').order_by('-created_at')
+
+    def perform_create(self, serializer):
+        serializer.save(granted_by=self.request.user)
+
 
 # ==================================================
 # --- KABİN ÇİZİMİ İÇİN API ---

@@ -32,7 +32,10 @@ def test_erp_connection(connection):
 
 
 def sync_erp_connection(connection, limit=50):
-    """ERP tipine göre önizleme senkronizasyonu yapar."""
+    """ERP tipine göre CMDB/envanter senkronizasyonu yapar."""
+    if getattr(connection, 'sync_to_cmdb', True):
+        from .erp_cmdb_sync import sync_erp_connection_to_cmdb
+        return sync_erp_connection_to_cmdb(connection, limit=limit)
     if connection.erp_type == 'odoo':
         from .odoo_client import sync_odoo_connection
         return sync_odoo_connection(connection, limit=limit)

@@ -58,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'inventory.middleware.audit_middleware.AuditMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -155,7 +156,11 @@ LDAP_BIND_USERNAME = os.environ.get('LDAP_BIND_USERNAME', '')
 LDAP_BIND_PASSWORD = os.environ.get('LDAP_BIND_PASSWORD', '')
 LDAP_USER_FILTER = os.environ.get('LDAP_USER_FILTER', '(objectClass=user)')
 LDAP_GROUP_FILTER = os.environ.get('LDAP_GROUP_FILTER', '(objectClass=group)')
-DIRECTORY_SYNC_DRY_RUN = os.environ.get('DIRECTORY_SYNC_DRY_RUN', 'True').lower() in ('1', 'true', 'yes')
+DIRECTORY_SYNC_DRY_RUN = os.environ.get('DIRECTORY_SYNC_DRY_RUN', 'False').lower() in ('1', 'true', 'yes')
+ALLOW_PUBLIC_REGISTRATION = os.environ.get('ALLOW_PUBLIC_REGISTRATION', 'False').lower() in ('1', 'true', 'yes')
+SITE_ACCESS_ENFORCEMENT = os.environ.get('SITE_ACCESS_ENFORCEMENT', 'True').lower() in ('1', 'true', 'yes')
+FEATURE_SALES_KANBAN = os.environ.get('FEATURE_SALES_KANBAN', 'True').lower() in ('1', 'true', 'yes')
+PROMETHEUS_METRICS_ENABLED = os.environ.get('PROMETHEUS_METRICS_ENABLED', 'True').lower() in ('1', 'true', 'yes')
 
 # OnlyOffice / Collabora belge sunucusu (tarayıcı editörü)
 ONLYOFFICE_DOCUMENT_SERVER_URL = os.environ.get('ONLYOFFICE_DOCUMENT_SERVER_URL', '')
@@ -382,9 +387,21 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'inventory.tasks.sync_all_erp_connections_task',
         'schedule': crontab(minute=15),  # Odoo/ERP bağlantı senkronizasyonu
     },
+    'directory-sync-saatlik': {
+        'task': 'inventory.tasks.sync_all_directory_connections_task',
+        'schedule': crontab(minute=45),
+    },
+    'ot-sync-saatlik': {
+        'task': 'inventory.tasks.sync_all_ot_connections_task',
+        'schedule': crontab(minute=30),
+    },
     'entegrasyon-health-poll-15dk': {
         'task': 'inventory.tasks.poll_integration_health_task',
         'schedule': crontab(minute='*/15'),  # LDAP, SMTP, API vb. uç nokta sağlığı
+    },
+    'integration-hub-sync-saatlik': {
+        'task': 'inventory.tasks.sync_all_integration_hub_task',
+        'schedule': crontab(minute=5),
     },
 }
 

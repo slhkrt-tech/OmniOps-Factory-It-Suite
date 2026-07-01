@@ -11,7 +11,12 @@ from .models import (
     DirectoryConnection, DirectoryGroup, DirectoryUser, EndpointDevice,
     IdentityLifecycleTask,
     FactoryDepartment, FactoryZone, ManagedDocument, FactoryITAssetRelation,
+    FactorySite, DepartmentInventoryItem,
+    UserFactorySiteAccess, OTConnection,
     AssetQRTag, ERPConnection,
+    ProblemRecord, ReleaseRecord, NotificationChannel, MonitoringConnection,
+    VMSConnection, EmailTicketInbox, AssetLifecycleEvent, BackupVendorConnection,
+    WMSConnection, ModulePermissionGrant,
 )
 
 # Kullanıcı formu için gerekli importlar
@@ -691,23 +696,42 @@ class DocumentOutputJobForm(forms.ModelForm):
 
 
 class DirectoryConnectionForm(forms.ModelForm):
+    bind_password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Bind parolası / client secret'}),
+        label='Bind Parolası',
+    )
+
     class Meta:
         model = DirectoryConnection
         fields = [
             'name', 'directory_type', 'server_uri', 'base_dn', 'bind_username',
-            'user_filter', 'group_filter', 'sync_enabled', 'owner',
+            'azure_tenant_id', 'user_filter', 'group_filter',
+            'auto_provision_users', 'sync_enabled', 'owner',
         ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Fabrika AD'}),
             'directory_type': forms.Select(attrs={'class': 'form-select'}),
             'server_uri': forms.TextInput(attrs={'class': 'form-control font-monospace', 'placeholder': 'ldap://dc01.firma.local'}),
             'base_dn': forms.TextInput(attrs={'class': 'form-control font-monospace', 'placeholder': 'DC=firma,DC=local'}),
-            'bind_username': forms.TextInput(attrs={'class': 'form-control font-monospace', 'placeholder': 'FIRMA\\svc_omniops'}),
+            'bind_username': forms.TextInput(attrs={'class': 'form-control font-monospace', 'placeholder': 'FIRMA\\svc_omniops veya Azure Client ID'}),
+            'azure_tenant_id': forms.TextInput(attrs={'class': 'form-control font-monospace', 'placeholder': 'Azure Tenant ID'}),
             'user_filter': forms.TextInput(attrs={'class': 'form-control font-monospace'}),
             'group_filter': forms.TextInput(attrs={'class': 'form-control font-monospace'}),
+            'auto_provision_users': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
             'sync_enabled': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
             'owner': forms.Select(attrs={'class': 'form-select'}),
         }
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        password = self.cleaned_data.get('bind_password')
+        if password:
+            instance.bind_password = password
+        if commit:
+            instance.save()
+            self.save_m2m()
+        return instance
 
 
 class DirectoryGroupForm(forms.ModelForm):
@@ -811,14 +835,42 @@ class IdentityLifecycleTaskForm(forms.ModelForm):
 # FABRİKA BT KOMUTA MERKEZİ FORMLARI
 # ==========================================
 
+class FactorySiteForm(forms.ModelForm):
+    class Meta:
+        model = FactorySite
+        fields = [
+            'title', 'short_name', 'code', 'industry_type', 'custom_industry_label',
+            'customer_name', 'portfolio_code', 'inventory_panel_title',
+            'department_label', 'zone_label', 'city', 'country', 'address', 'notes', 'is_active',
+        ]
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Vega Otomotiv Üretim Tesisi'}),
+            'short_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Vega Otomotiv'}),
+            'code': forms.TextInput(attrs={'class': 'form-control font-monospace', 'placeholder': 'SITE-AUTO-01'}),
+            'industry_type': forms.Select(attrs={'class': 'form-select'}),
+            'custom_industry_label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Örn: Savunma Sanayi'}),
+            'customer_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'portfolio_code': forms.TextInput(attrs={'class': 'form-control font-monospace'}),
+            'inventory_panel_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Pres & Montaj Envanteri'}),
+            'department_label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Bölüm / Atölye / Birim'}),
+            'zone_label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Alt Alan / Hat'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'country': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+        }
+
+
 class FactoryDepartmentForm(forms.ModelForm):
     class Meta:
         model = FactoryDepartment
         fields = [
-            'name', 'code', 'department_type', 'criticality', 'manager_name',
+            'factory_site', 'name', 'code', 'department_type', 'criticality', 'manager_name',
             'contact_phone', 'floor_label', 'description', 'is_active',
         ]
         widgets = {
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Üretim Departmanı'}),
             'code': forms.TextInput(attrs={'class': 'form-control font-monospace', 'placeholder': 'URETIM-01'}),
             'department_type': forms.Select(attrs={'class': 'form-select'}),
@@ -907,6 +959,48 @@ class FactoryITAssetRelationForm(forms.ModelForm):
         }
 
 
+class DepartmentInventoryItemForm(forms.ModelForm):
+    class Meta:
+        model = DepartmentInventoryItem
+        fields = [
+            'factory_site', 'department', 'zone', 'title', 'category_label', 'item_type',
+            'reference_code', 'serial_number', 'asset_tag', 'barcode',
+            'manufacturer', 'model_name', 'vendor', 'quantity', 'unit', 'status',
+            'location_note', 'owner_name', 'notes',
+            'device', 'it_asset', 'endpoint', 'camera', 'printer', 'consumable',
+            'sort_order', 'is_active',
+        ]
+        widgets = {
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
+            'department': forms.Select(attrs={'class': 'form-select'}),
+            'zone': forms.Select(attrs={'class': 'form-select'}),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'category_label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Özel kategori adı'}),
+            'item_type': forms.Select(attrs={'class': 'form-select'}),
+            'reference_code': forms.TextInput(attrs={'class': 'form-control font-monospace'}),
+            'serial_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'asset_tag': forms.TextInput(attrs={'class': 'form-control'}),
+            'barcode': forms.TextInput(attrs={'class': 'form-control'}),
+            'manufacturer': forms.TextInput(attrs={'class': 'form-control'}),
+            'model_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'vendor': forms.TextInput(attrs={'class': 'form-control'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+            'unit': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'adet'}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+            'location_note': forms.TextInput(attrs={'class': 'form-control'}),
+            'owner_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'device': forms.Select(attrs={'class': 'form-select'}),
+            'it_asset': forms.Select(attrs={'class': 'form-select'}),
+            'endpoint': forms.Select(attrs={'class': 'form-select'}),
+            'camera': forms.Select(attrs={'class': 'form-select'}),
+            'printer': forms.Select(attrs={'class': 'form-select'}),
+            'consumable': forms.Select(attrs={'class': 'form-select'}),
+            'sort_order': forms.NumberInput(attrs={'class': 'form-control', 'min': '0'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+        }
+
+
 class AssetQRTagForm(forms.ModelForm):
     class Meta:
         model = AssetQRTag
@@ -935,7 +1029,8 @@ class ERPConnectionForm(forms.ModelForm):
         model = ERPConnection
         fields = [
             'name', 'erp_type', 'base_url', 'database_name', 'username', 'api_key',
-            'sync_enabled', 'sync_partners', 'sync_products', 'sync_helpdesk', 'notes',
+            'factory_site', 'sync_enabled', 'sync_to_cmdb',
+            'sync_partners', 'sync_products', 'sync_helpdesk', 'notes',
         ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Odoo Üretim'}),
@@ -944,9 +1039,317 @@ class ERPConnectionForm(forms.ModelForm):
             'database_name': forms.TextInput(attrs={'class': 'form-control font-monospace'}),
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'api_key': forms.PasswordInput(render_value=True, attrs={'class': 'form-control'}),
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
             'sync_enabled': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+            'sync_to_cmdb': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
             'sync_partners': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
             'sync_products': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
             'sync_helpdesk': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
             'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+        }
+
+
+class UserFactorySiteAccessForm(forms.ModelForm):
+    class Meta:
+        model = UserFactorySiteAccess
+        fields = ['user', 'factory_site', 'access_level', 'is_active', 'notes']
+        widgets = {
+            'user': forms.Select(attrs={'class': 'form-select'}),
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
+            'access_level': forms.Select(attrs={'class': 'form-select'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+            'notes': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+
+class OTConnectionForm(forms.ModelForm):
+    api_key = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Bearer token / API key'}),
+        label='API Key',
+    )
+
+    class Meta:
+        model = OTConnection
+        fields = [
+            'name', 'ot_type', 'base_url', 'assets_path', 'factory_site',
+            'sync_enabled', 'sync_to_inventory', 'notes',
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'MES Üretim Hattı'}),
+            'ot_type': forms.Select(attrs={'class': 'form-select'}),
+            'base_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://mes.example.com'}),
+            'assets_path': forms.TextInput(attrs={'class': 'form-control font-monospace', 'placeholder': '/api/assets'}),
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
+            'sync_enabled': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+            'sync_to_inventory': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+        }
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        token = self.cleaned_data.get('api_key')
+        if token:
+            instance.api_key = token
+        if commit:
+            instance.save()
+            self.save_m2m()
+        return instance
+
+
+class ProblemRecordForm(forms.ModelForm):
+    class Meta:
+        model = ProblemRecord
+        fields = [
+            'title', 'description', 'status', 'priority', 'root_cause', 'workaround',
+            'permanent_fix', 'factory_site', 'major_incident', 'owner',
+        ]
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+            'priority': forms.Select(attrs={'class': 'form-select'}),
+            'root_cause': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'workaround': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'permanent_fix': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
+            'major_incident': forms.Select(attrs={'class': 'form-select'}),
+            'owner': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+
+class ReleaseRecordForm(forms.ModelForm):
+    class Meta:
+        model = ReleaseRecord
+        fields = [
+            'title', 'version', 'description', 'status', 'factory_site', 'change_request',
+            'calendar_event', 'planned_start', 'planned_end', 'cab_approved', 'cab_notes', 'owner',
+        ]
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'version': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
+            'change_request': forms.Select(attrs={'class': 'form-select'}),
+            'calendar_event': forms.Select(attrs={'class': 'form-select'}),
+            'planned_start': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'planned_end': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+            'cab_approved': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+            'cab_notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'owner': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+
+class AssetLifecycleEventForm(forms.ModelForm):
+    class Meta:
+        model = AssetLifecycleEvent
+        fields = [
+            'event_type', 'title', 'notes', 'factory_site', 'it_asset',
+            'inventory_item', 'event_date',
+        ]
+        widgets = {
+            'event_type': forms.Select(attrs={'class': 'form-select'}),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
+            'it_asset': forms.Select(attrs={'class': 'form-select'}),
+            'inventory_item': forms.Select(attrs={'class': 'form-select'}),
+            'event_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
+
+
+class NotificationChannelForm(forms.ModelForm):
+    secret_token = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Webhook token'}),
+        label='Secret / Token',
+    )
+
+    class Meta:
+        model = NotificationChannel
+        fields = [
+            'name', 'channel_type', 'endpoint_url', 'email_recipients',
+            'notify_tickets', 'notify_incidents', 'notify_sla_breach',
+            'factory_site', 'is_active', 'owner',
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'channel_type': forms.Select(attrs={'class': 'form-select'}),
+            'endpoint_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'email_recipients': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'a@x.com, b@y.com'}),
+            'notify_tickets': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+            'notify_incidents': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+            'notify_sla_breach': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+            'owner': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        token = self.cleaned_data.get('secret_token')
+        if token:
+            instance.secret_token = token
+        if commit:
+            instance.save()
+            self.save_m2m()
+        return instance
+
+
+class MonitoringConnectionForm(forms.ModelForm):
+    api_token = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label='API Token',
+    )
+
+    class Meta:
+        model = MonitoringConnection
+        fields = ['name', 'monitor_type', 'base_url', 'username', 'sync_enabled', 'factory_site']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'monitor_type': forms.Select(attrs={'class': 'form-select'}),
+            'base_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'sync_enabled': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        token = self.cleaned_data.get('api_token')
+        if token:
+            instance.api_token = token
+        if commit:
+            instance.save()
+            self.save_m2m()
+        return instance
+
+
+class VMSConnectionForm(forms.ModelForm):
+    api_token = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label='Parola/Token',
+    )
+
+    class Meta:
+        model = VMSConnection
+        fields = [
+            'name', 'vms_type', 'base_url', 'username', 'sync_enabled',
+            'sync_to_cameras', 'factory_site',
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'vms_type': forms.Select(attrs={'class': 'form-select'}),
+            'base_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'sync_enabled': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+            'sync_to_cameras': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        token = self.cleaned_data.get('api_token')
+        if token:
+            instance.api_token = token
+        if commit:
+            instance.save()
+            self.save_m2m()
+        return instance
+
+
+class EmailTicketInboxForm(forms.ModelForm):
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label='Parola',
+    )
+
+    class Meta:
+        model = EmailTicketInbox
+        fields = [
+            'name', 'imap_host', 'imap_port', 'username', 'folder',
+            'default_priority', 'factory_site', 'sync_enabled',
+        ]
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'imap_host': forms.TextInput(attrs={'class': 'form-control'}),
+            'imap_port': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'folder': forms.TextInput(attrs={'class': 'form-control'}),
+            'default_priority': forms.Select(attrs={'class': 'form-select'}),
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
+            'sync_enabled': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+        }
+
+
+class BackupVendorConnectionForm(forms.ModelForm):
+    api_token = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label='API Token',
+    )
+
+    class Meta:
+        model = BackupVendorConnection
+        fields = ['name', 'vendor_type', 'base_url', 'sync_enabled']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'vendor_type': forms.Select(attrs={'class': 'form-select'}),
+            'base_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'sync_enabled': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+        }
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        token = self.cleaned_data.get('api_token')
+        if token:
+            instance.api_token = token
+        if commit:
+            instance.save()
+            self.save_m2m()
+        return instance
+
+
+class WMSConnectionForm(forms.ModelForm):
+    api_token = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label='API Token',
+    )
+
+    class Meta:
+        model = WMSConnection
+        fields = ['name', 'base_url', 'assets_path', 'factory_site', 'sync_enabled']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'base_url': forms.URLInput(attrs={'class': 'form-control'}),
+            'assets_path': forms.TextInput(attrs={'class': 'form-control font-monospace'}),
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
+            'sync_enabled': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
+        }
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        token = self.cleaned_data.get('api_token')
+        if token:
+            instance.api_token = token
+        if commit:
+            instance.save()
+            self.save_m2m()
+        return instance
+
+
+class ModulePermissionGrantForm(forms.ModelForm):
+    class Meta:
+        model = ModulePermissionGrant
+        fields = ['user', 'factory_site', 'module_code', 'permission_level', 'is_active']
+        widgets = {
+            'user': forms.Select(attrs={'class': 'form-select'}),
+            'factory_site': forms.Select(attrs={'class': 'form-select'}),
+            'module_code': forms.Select(attrs={'class': 'form-select'}),
+            'permission_level': forms.Select(attrs={'class': 'form-select'}),
+            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
         }

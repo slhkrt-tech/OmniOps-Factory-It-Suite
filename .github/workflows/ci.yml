@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Django checks and tests
+        env:
+          DATABASE_URL: sqlite:///db.sqlite3
+          DJANGO_SECRET_KEY: ci-test-secret-key-with-enough-length-for-django
+          ALLOWED_HOSTS: localhost,127.0.0.1,testserver
+          ALLOW_PUBLIC_REGISTRATION: 'False'
+          SITE_ACCESS_ENFORCEMENT: 'True'
+          DIRECTORY_SYNC_DRY_RUN: 'False'
+          FEATURE_SALES_KANBAN: 'True'
+          PROMETHEUS_METRICS_ENABLED: 'True'
+          REMOTE_PROBE_SHARED_SECRET: ci-test-probe-secret
+        run: |
+          python manage.py migrate --noinput
+          python manage.py check
+          python manage.py test inventory

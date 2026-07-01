@@ -589,6 +589,59 @@ def sync_all_erp_connections_task():
     return f'{queued} ERP sync işi kuyruğa alındı.'
 
 
+@shared_task(name='inventory.tasks.sync_directory_connection_task')
+def sync_directory_connection_task(connection_id):
+    from .models import DirectoryConnection
+    from .integrations.directory_sync import run_directory_sync
+
+    connection = DirectoryConnection.objects.filter(pk=connection_id, sync_enabled=True).first()
+    if not connection:
+        return 'Directory bağlantısı bulunamadı.'
+    ok, message = run_directory_sync(connection)
+    return message if ok else f'Hata: {message}'
+
+
+@shared_task(name='inventory.tasks.sync_all_directory_connections_task')
+def sync_all_directory_connections_task():
+    from .models import DirectoryConnection
+
+    queued = 0
+    for connection in DirectoryConnection.objects.filter(sync_enabled=True):
+        sync_directory_connection_task.delay(connection.id)
+        queued += 1
+    return f'{queued} directory sync işi kuyruğa alındı.'
+
+
+@shared_task(name='inventory.tasks.sync_ot_connection_task')
+def sync_ot_connection_task(connection_id):
+    from .models import OTConnection, SystemLog
+    from .integrations.ot_connector import OTClientError, sync_ot_connection
+
+    connection = OTConnection.objects.filter(pk=connection_id, sync_enabled=True).first()
+    if not connection:
+        return 'OT bağlantısı bulunamadı.'
+    try:
+        _, message = sync_ot_connection(connection)
+        return message
+    except OTClientError as exc:
+        connection.last_sync_status = 'error'
+        connection.last_sync_message = str(exc)
+        connection.save(update_fields=['last_sync_status', 'last_sync_message', 'updated_at'])
+        SystemLog.objects.create(action='SYSTEM', details=f'OT sync hata · {connection.name}: {exc}')
+        return str(exc)
+
+
+@shared_task(name='inventory.tasks.sync_all_ot_connections_task')
+def sync_all_ot_connections_task():
+    from .models import OTConnection
+
+    queued = 0
+    for connection in OTConnection.objects.filter(sync_enabled=True):
+        sync_ot_connection_task.delay(connection.id)
+        queued += 1
+    return f'{queued} OT sync işi kuyruğa alındı.'
+
+
 @shared_task(name='inventory.tasks.poll_integration_health_task')
 def poll_integration_health_task():
     """Entegrasyon sağlık kayıtlarının uç noktalarına HTTP HEAD ile periyodik erişim testi yapar."""
@@ -623,6 +676,125 @@ def poll_integration_health_task():
 
     SystemLog.objects.create(action='SYSTEM', details=f'Entegrasyon sağlık taraması tamamlandı. {updated} kayıt güncellendi.')
     return f'{updated} entegrasyon kontrol edildi.'
+
+
+# ========================================================
+# --- ENTEGRASYON MERKEZİ SYNC GÖREVLERİ ---
+# ========================================================
+@shared_task(name='inventory.tasks.sync_monitoring_connection_task')
+def sync_monitoring_connection_task(connection_id):
+    from .integrations.integration_hub import IntegrationHubError, sync_monitoring_connection
+    from .models import MonitoringConnection, SystemLog
+
+    connection = MonitoringConnection.objects.filter(pk=connection_id, sync_enabled=True).first()
+    if not connection:
+        return 'İzleme bağlantısı bulunamadı.'
+    try:
+        _, message = sync_monitoring_connection(connection)
+        SystemLog.objects.create(action='SYSTEM', details=f'Monitoring sync · {connection.name}: {message}')
+        return message
+    except Exception as exc:
+        connection.last_sync_status = 'error'
+        connection.last_sync_message = str(exc)
+        connection.save(update_fields=['last_sync_status', 'last_sync_message', 'updated_at'])
+        return str(exc)
+
+
+@shared_task(name='inventory.tasks.sync_vms_connection_task')
+def sync_vms_connection_task(connection_id):
+    from .integrations.integration_hub import sync_vms_connection
+    from .models import SystemLog, VMSConnection
+
+    connection = VMSConnection.objects.filter(pk=connection_id, sync_enabled=True).first()
+    if not connection:
+        return 'VMS bağlantısı bulunamadı.'
+    try:
+        _, message = sync_vms_connection(connection)
+        SystemLog.objects.create(action='SYSTEM', details=f'VMS sync · {connection.name}: {message}')
+        return message
+    except Exception as exc:
+        connection.last_sync_status = 'error'
+        connection.last_sync_message = str(exc)
+        connection.save(update_fields=['last_sync_status', 'last_sync_message', 'updated_at'])
+        return str(exc)
+
+
+@shared_task(name='inventory.tasks.poll_email_ticket_inbox_task')
+def poll_email_ticket_inbox_task(inbox_id):
+    from .integrations.integration_hub import poll_email_ticket_inbox
+    from .models import EmailTicketInbox
+
+    inbox = EmailTicketInbox.objects.filter(pk=inbox_id, sync_enabled=True).first()
+    if not inbox:
+        return 'E-posta inbox bulunamadı.'
+    try:
+        _, message = poll_email_ticket_inbox(inbox)
+        return message
+    except Exception as exc:
+        inbox.last_message = str(exc)
+        inbox.save(update_fields=['last_message', 'updated_at'])
+        return str(exc)
+
+
+@shared_task(name='inventory.tasks.sync_backup_vendor_connection_task')
+def sync_backup_vendor_connection_task(connection_id):
+    from .integrations.integration_hub import sync_backup_vendor_connection
+    from .models import BackupVendorConnection, SystemLog
+
+    connection = BackupVendorConnection.objects.filter(pk=connection_id, sync_enabled=True).first()
+    if not connection:
+        return 'Backup vendor bağlantısı bulunamadı.'
+    try:
+        _, message = sync_backup_vendor_connection(connection)
+        SystemLog.objects.create(action='SYSTEM', details=f'Backup sync · {connection.name}: {message}')
+        return message
+    except Exception as exc:
+        connection.last_sync_status = 'error'
+        connection.last_sync_message = str(exc)
+        connection.save(update_fields=['last_sync_status', 'last_sync_message', 'updated_at'])
+        return str(exc)
+
+
+@shared_task(name='inventory.tasks.sync_wms_connection_task')
+def sync_wms_connection_task(connection_id):
+    from .integrations.integration_hub import sync_wms_connection
+    from .models import SystemLog, WMSConnection
+
+    connection = WMSConnection.objects.filter(pk=connection_id, sync_enabled=True).first()
+    if not connection:
+        return 'WMS bağlantısı bulunamadı.'
+    try:
+        _, message = sync_wms_connection(connection)
+        SystemLog.objects.create(action='SYSTEM', details=f'WMS sync · {connection.name}: {message}')
+        return message
+    except Exception as exc:
+        connection.last_sync_status = 'error'
+        connection.last_sync_message = str(exc)
+        connection.save(update_fields=['last_sync_status', 'last_sync_message', 'updated_at'])
+        return str(exc)
+
+
+@shared_task(name='inventory.tasks.sync_all_integration_hub_task')
+def sync_all_integration_hub_task():
+    from .models import BackupVendorConnection, EmailTicketInbox, MonitoringConnection, VMSConnection, WMSConnection
+
+    queued = 0
+    for connection in MonitoringConnection.objects.filter(sync_enabled=True):
+        sync_monitoring_connection_task.delay(connection.id)
+        queued += 1
+    for connection in VMSConnection.objects.filter(sync_enabled=True):
+        sync_vms_connection_task.delay(connection.id)
+        queued += 1
+    for inbox in EmailTicketInbox.objects.filter(sync_enabled=True):
+        poll_email_ticket_inbox_task.delay(inbox.id)
+        queued += 1
+    for connection in BackupVendorConnection.objects.filter(sync_enabled=True):
+        sync_backup_vendor_connection_task.delay(connection.id)
+        queued += 1
+    for connection in WMSConnection.objects.filter(sync_enabled=True):
+        sync_wms_connection_task.delay(connection.id)
+        queued += 1
+    return f'{queued} entegrasyon hub sync işi kuyruğa alındı.'
 
 
 # ========================================================

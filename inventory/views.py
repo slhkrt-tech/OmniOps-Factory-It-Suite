@@ -156,7 +156,19 @@ def global_search_api(request):
         ).order_by('hostname')[:limit]:
             add_result('Endpoint', endpoint.hostname, f"{endpoint.get_device_type_display()} · {endpoint.get_status_display()}", '/kimlik-operasyonlari/', 'mdi:laptop')
 
-        from .models import FactoryDepartment, ManagedDocument
+        from .models import FactoryDepartment, ManagedDocument, FactorySite, DepartmentInventoryItem
+
+        for site in FactorySite.objects.filter(
+            models.Q(title__icontains=query) | models.Q(code__icontains=query) |
+            models.Q(customer_name__icontains=query) | models.Q(custom_industry_label__icontains=query)
+        ).order_by('title')[:limit]:
+            add_result('Fabrika Tesisi', site.display_title, f"{site.industry_display} · {site.code}", f'/fabrika-portfoy-envanter/?site={site.id}', 'mdi:domain')
+
+        for item in DepartmentInventoryItem.objects.filter(
+            models.Q(title__icontains=query) | models.Q(reference_code__icontains=query) |
+            models.Q(serial_number__icontains=query) | models.Q(category_label__icontains=query)
+        ).select_related('factory_site', 'department').order_by('title')[:limit]:
+            add_result('Bölüm Envanteri', item.title, f"{item.factory_site.display_title} · {item.category_display}", f'/fabrika-portfoy-envanter/?site={item.factory_site_id}&department={item.department_id or ""}', 'mdi:package-variant')
 
         for department in FactoryDepartment.objects.filter(
             models.Q(name__icontains=query) | models.Q(code__icontains=query) | models.Q(manager_name__icontains=query)
@@ -833,6 +845,10 @@ def network_topology(request):
 
 
 def register_page(request):
+    from django.conf import settings as django_settings
+    if not getattr(django_settings, 'ALLOW_PUBLIC_REGISTRATION', False):
+        from django.http import Http404
+        raise Http404('Kayıt kapalı. Lütfen yöneticinizle iletişime geçin.')
     if request.user.is_authenticated:
         return redirect('dashboard')
     form = PublicRegistrationForm()

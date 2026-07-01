@@ -35,9 +35,10 @@ from inventory.enterprise_views import (
     service_worker_js, health_check, factory_operations_view, it_operations_view,
     service_operations_view, command_center_view, governance_center_view,
     setup_center_view, readiness_api, identity_operations_view,
-    factory_command_center_view, managed_document_download, managed_document_preview,
+    factory_command_center_view, factory_portfolio_inventory_view, managed_document_download, managed_document_preview,
     managed_document_editor, managed_document_editor_callback,
-    asset_qr_scanner_view, qr_lookup_api, erp_integrations_view,
+    asset_qr_scanner_view, qr_lookup_api, erp_integrations_view, ot_integrations_view,
+    integration_hub_center_view, itsm_maturity_view, prometheus_metrics_view,
     asset_qr_label_pdf, asset_qr_labels_batch_pdf,
     wopi_check_file_info, wopi_file_contents,
 )
@@ -106,15 +107,23 @@ router.register(r'directory-groups', api_views.DirectoryGroupViewSet, basename='
 router.register(r'directory-users', api_views.DirectoryUserViewSet, basename='directory-user')
 router.register(r'endpoint-devices', api_views.EndpointDeviceViewSet, basename='endpoint-device')
 router.register(r'identity-lifecycle-tasks', api_views.IdentityLifecycleTaskViewSet, basename='identity-lifecycle-task')
+router.register(r'factory-sites', api_views.FactorySiteViewSet, basename='factory-site')
 router.register(r'factory-departments', api_views.FactoryDepartmentViewSet, basename='factory-department')
+router.register(r'department-inventory', api_views.DepartmentInventoryItemViewSet, basename='department-inventory')
 router.register(r'factory-zones', api_views.FactoryZoneViewSet, basename='factory-zone')
 router.register(r'managed-documents', api_views.ManagedDocumentViewSet, basename='managed-document')
 router.register(r'factory-asset-relations', api_views.FactoryITAssetRelationViewSet, basename='factory-asset-relation')
 router.register(r'asset-qr-tags', api_views.AssetQRTagViewSet, basename='asset-qr-tag')
 router.register(r'erp-connections', api_views.ERPConnectionViewSet, basename='erp-connection')
+router.register(r'problems', api_views.ProblemRecordViewSet, basename='problem-record')
+router.register(r'releases', api_views.ReleaseRecordViewSet, basename='release-record')
+router.register(r'monitoring-connections', api_views.MonitoringConnectionViewSet, basename='monitoring-connection')
+router.register(r'notification-channels', api_views.NotificationChannelViewSet, basename='notification-channel')
+router.register(r'module-permissions', api_views.ModulePermissionGrantViewSet, basename='module-permission')
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
+    path('metrics/', prometheus_metrics_view, name='prometheus_metrics'),
 
     # YENİ: Dil değiştirme rotası
     path('i18n/', include('django.conf.urls.i18n')),
@@ -174,6 +183,7 @@ urlpatterns = [
     path('yonetisim-merkezi/', governance_center_view, name='governance_center'),
     path('kimlik-operasyonlari/', identity_operations_view, name='identity_operations'),
     path('fabrika-komuta-merkezi/', factory_command_center_view, name='factory_command_center'),
+    path('fabrika-portfoy-envanter/', factory_portfolio_inventory_view, name='factory_portfolio_inventory'),
     path('dokuman/<int:pk>/indir/', managed_document_download, name='managed_document_download'),
     path('dokuman/<int:pk>/onizleme/', managed_document_preview, name='managed_document_preview'),
     path('dokuman/<int:pk>/duzenle/', managed_document_editor, name='managed_document_editor'),
@@ -185,6 +195,9 @@ urlpatterns = [
     path('wopi/files/<int:pk>', wopi_check_file_info, name='wopi_check_file_info'),
     path('wopi/files/<int:pk>/contents', wopi_file_contents, name='wopi_file_contents'),
     path('erp-entegrasyonlari/', erp_integrations_view, name='erp_integrations'),
+    path('ot-entegrasyonlari/', ot_integrations_view, name='ot_integrations'),
+    path('entegrasyon-merkezi/', integration_hub_center_view, name='integration_hub_center'),
+    path('itsm-olgunluk/', itsm_maturity_view, name='itsm_maturity'),
     path('kurulum-merkezi/', setup_center_view, name='setup_center'),
     path('offline-saha/', offline_field_app, name='offline_field_app'),
     path('service-worker.js', service_worker_js, name='service_worker_js'),

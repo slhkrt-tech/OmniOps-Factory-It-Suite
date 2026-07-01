@@ -31,7 +31,7 @@
     <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Dikkat Kullanıcı</div><div class="display-6 fw-bold text-warning">{{ metrics.attention_users }}</div></div></div></div>
     <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Endpoint Alarm</div><div class="display-6 fw-bold text-danger">{{ metrics.endpoint_alerts }}</div></div></div></div>
     <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Lifecycle</div><div class="display-6 fw-bold">{{ metrics.lifecycle_tasks }}</div></div></div></div>
-    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Privileged Grup</div><div class="display-6 fw-bold text-danger">{{ metrics.privileged_groups }}</div></div></div></div>
+    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Tesis Yetkisi</div><div class="display-6 fw-bold">{{ metrics.site_access_grants }}</div></div></div></div>
 </div>
 
 <div class="row g-4">
@@ -61,6 +61,14 @@
                     <form method="post">{% csrf_token %}<input type="hidden" name="action" value="endpoint">{{ forms.endpoint.as_p }}<button class="btn btn-success w-100">Endpoint Kaydet</button></form>
                 </div></div>
             </div>
+            {% if can_manage_site_access %}
+            <div class="accordion-item border-0 glass-card mb-3">
+                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#siteAccessForm">Fabrika Tesis Erişimi</button></h2>
+                <div id="siteAccessForm" class="accordion-collapse collapse" data-bs-parent="#identityForms"><div class="accordion-body">
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="site_access">{{ forms.site_access.as_p }}<button class="btn btn-outline-primary w-100">Tesis Yetkisi Ver</button></form>
+                </div></div>
+            </div>
+            {% endif %}
             <div class="accordion-item border-0 glass-card">
                 <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#lifecycleForm">Lifecycle İşi</button></h2>
                 <div id="lifecycleForm" class="accordion-collapse collapse" data-bs-parent="#identityForms"><div class="accordion-body">
@@ -145,12 +153,20 @@
                                     <div class="fw-bold">{{ task.title }}</div>
                                     <div class="text-muted small">{{ task.employee_name }} · {{ task.get_process_type_display }} · %{{ task.completion_percent }}</div>
                                 </div>
-                                <form method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="mark_lifecycle_done">
-                                    <input type="hidden" name="task_id" value="{{ task.id }}">
-                                    <button class="btn btn-sm btn-outline-primary">Tamamla</button>
-                                </form>
+                                <div class="d-flex gap-1">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="run_lifecycle_automation">
+                                        <input type="hidden" name="task_id" value="{{ task.id }}">
+                                        <button class="btn btn-sm btn-primary" type="submit">AD Otomasyon</button>
+                                    </form>
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="mark_lifecycle_done">
+                                        <input type="hidden" name="task_id" value="{{ task.id }}">
+                                        <button class="btn btn-sm btn-outline-primary" type="submit">Tamamla</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                         {% empty %}

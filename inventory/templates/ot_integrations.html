@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}OT/MES Entegrasyonları - OmniOps{% endblock %}
+
+{% block content %}
+<section class="suite-hero mb-4">
+    <div>
+        <span class="suite-eyebrow">OmniOps Factory IT Suite</span>
+        <h1 class="suite-title">OT / MES Köprüsü</h1>
+        <p class="suite-subtitle">MES, SCADA REST gateway veya OPC köprüsünden üretim varlıklarını fabrika envanterine aktarın.</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'erp_integrations' %}" class="btn btn-outline-secondary">ERP Entegrasyonları</a>
+    </div>
+</section>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="card glass-card"><div class="card-body"><div class="text-muted small">Bağlantı</div><div class="display-6 fw-bold">{{ metrics.connections }}</div></div></div></div>
+    <div class="col-md-4"><div class="card glass-card"><div class="card-body"><div class="text-muted small">Sağlıklı</div><div class="display-6 fw-bold text-success">{{ metrics.healthy }}</div></div></div></div>
+    <div class="col-md-4"><div class="card glass-card"><div class="card-body"><div class="text-muted small">Hata</div><div class="display-6 fw-bold text-danger">{{ metrics.errors }}</div></div></div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card glass-card">
+            <div class="card-header bg-transparent fw-bold">Yeni OT Bağlantısı</div>
+            <div class="card-body">
+                <form method="post">{% csrf_token %}<input type="hidden" name="action" value="connection">
+                {{ form.as_p }}
+                <button class="btn btn-primary w-100">Kaydet</button></form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card glass-card">
+            <div class="card-header bg-transparent fw-bold">Aktif Bağlantılar</div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead><tr><th>Ad</th><th>Tip</th><th>Tesis</th><th>Durum</th><th>İşlem</th></tr></thead>
+                    <tbody>
+                        {% for connection in connections %}
+                        <tr>
+                            <td class="fw-semibold">{{ connection.name }}</td>
+                            <td>{{ connection.get_ot_type_display }}</td>
+                            <td>{{ connection.factory_site.display_title }}</td>
+                            <td>{{ connection.get_last_sync_status_display }}</td>
+                            <td class="d-flex gap-1">
+                                <form method="post">{% csrf_token %}<input type="hidden" name="action" value="test_connection"><input type="hidden" name="connection_id" value="{{ connection.id }}"><button class="btn btn-sm btn-outline-secondary">Test</button></form>
+                                <form method="post">{% csrf_token %}<input type="hidden" name="action" value="sync_connection"><input type="hidden" name="connection_id" value="{{ connection.id }}"><button class="btn btn-sm btn-primary">Sync</button></form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-muted text-center py-4">OT bağlantısı yok.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

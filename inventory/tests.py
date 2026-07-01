@@ -60,8 +60,12 @@ class InventorySmokeTests(TestCase):
             'governance_center',
             'identity_operations',
             'factory_command_center',
+            'factory_portfolio_inventory',
             'asset_qr_scanner',
             'erp_integrations',
+            'ot_integrations',
+            'integration_hub_center',
+            'itsm_maturity',
             'setup_center',
             'offline_field_app',
             'dlp_events',
@@ -107,12 +111,34 @@ class InventorySmokeTests(TestCase):
 
     def test_factory_bootstrap_creates_departments(self):
         from inventory.factory_bootstrap import ensure_default_factory_structure
-        created_departments, created_zones = ensure_default_factory_structure()
+        from inventory.models import FactorySite, DepartmentInventoryItem
+
+        created_sites, created_departments, created_zones, created_inventory = ensure_default_factory_structure()
+        self.assertGreaterEqual(created_sites, 1)
         self.assertGreaterEqual(created_departments, 1)
         self.assertGreaterEqual(created_zones, 1)
-        created_departments, created_zones = ensure_default_factory_structure()
+        self.assertGreaterEqual(created_inventory, 1)
+        self.assertGreaterEqual(FactorySite.objects.filter(is_active=True).count(), 1)
+        self.assertGreaterEqual(DepartmentInventoryItem.objects.filter(is_active=True).count(), 1)
+        created_sites, created_departments, created_zones, created_inventory = ensure_default_factory_structure()
+        self.assertEqual(created_sites, 0)
         self.assertEqual(created_departments, 0)
         self.assertEqual(created_zones, 0)
+        self.assertEqual(created_inventory, 0)
+
+    def test_factory_portfolio_inventory_view(self):
+        from inventory.factory_bootstrap import ensure_default_factory_structure
+        from inventory.models import FactorySite
+
+        ensure_default_factory_structure()
+        site = FactorySite.objects.filter(is_active=True).first()
+        response = self.client.get(reverse('factory_portfolio_inventory'))
+        self.assertEqual(response.status_code, 200)
+        if site:
+            response = self.client.get(reverse('factory_portfolio_inventory'), {'site': site.pk})
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, site.display_title)
+            self.assertContains(response, site.code)
 
     def test_qr_bootstrap_creates_tags(self):
         from inventory.factory_bootstrap import ensure_default_factory_structure, ensure_default_qr_tags
@@ -140,6 +166,8 @@ class InventorySmokeTests(TestCase):
         self.assertIn('qr_tags', keys)
         self.assertIn('onlyoffice', keys)
         self.assertIn('collabora', keys)
+        self.assertIn('factory_sites', keys)
+        self.assertIn('department_inventory', keys)
 
     def test_qr_label_pdf_download(self):
         from inventory.models import AssetQRTag
@@ -324,3 +352,204 @@ class InventorySmokeTests(TestCase):
             for match in static_re.finditer(text):
                 asset = match.group(1)
                 self.assertIsNotNone(find(asset), f'{path.relative_to(root)} statik dosyası bulunamadı: {asset}')
+
+
+@override_settings(
+    SECURE_SSL_REDIRECT=False,
+    ALLOW_PUBLIC_REGISTRATION=False,
+    SITE_ACCESS_ENFORCEMENT=True,
+)
+class ProductionHardeningTests(TestCase):
+    def setUp(self):
+        self.admin = User.objects.create_superuser(
+            username='admin2',
+            email='admin2@example.com',
+            password='StrongPass123!',
+        )
+        self.client.force_login(self.admin)
+
+    def test_public_registration_disabled_by_default(self):
+        response = self.client.get(reverse('register'))
+        self.assertEqual(response.status_code, 404)
+
+    @override_settings(ALLOW_PUBLIC_REGISTRATION=True)
+    def test_public_registration_enabled_when_configured(self):
+        self.client.logout()
+        response = self.client.get(reverse('register'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_manual_directory_sync(self):
+        from inventory.integrations.directory_sync import run_directory_sync
+        from inventory.models import DirectoryConnection
+
+        connection = DirectoryConnection.objects.create(
+            name='Manual AD',
+            directory_type='manual',
+            sync_enabled=True,
+        )
+        ok, message = run_directory_sync(connection, actor=self.admin)
+        self.assertTrue(ok)
+        self.assertIn('snapshot', message.lower())
+
+    def test_site_access_restricts_portfolio_view(self):
+        from django.contrib.auth.models import Group
+        from inventory.factory_bootstrap import ensure_default_factory_structure
+        from inventory.models import FactorySite, UserFactorySiteAccess
+
+        ensure_default_factory_structure()
+        sites = list(FactorySite.objects.filter(is_active=True).order_by('id'))
+        self.assertGreaterEqual(len(sites), 2)
+
+        limited = User.objects.create_user(username='siteuser', password='StrongPass123!')
+        group, _ = Group.objects.get_or_create(name='Help Desk Ekibi')
+        limited.groups.add(group)
+        UserFactorySiteAccess.objects.create(
+            user=limited,
+            factory_site=sites[0],
+            access_level='viewer',
+            granted_by=self.admin,
+        )
+
+        self.client.force_login(limited)
+        blocked = self.client.get(reverse('factory_portfolio_inventory'), {'site': sites[1].pk})
+        self.assertEqual(blocked.status_code, 302)
+        allowed = self.client.get(reverse('factory_portfolio_inventory'), {'site': sites[0].pk})
+        self.assertEqual(allowed.status_code, 200)
+
+    def test_ot_connector_sync_with_mock_payload(self):
+        from io import BytesIO
+        from unittest.mock import patch
+
+        from inventory.factory_bootstrap import ensure_default_factory_structure
+        from inventory.integrations.ot_connector import sync_ot_connection
+        from inventory.models import FactorySite, OTAssetRecord, OTConnection
+
+        ensure_default_factory_structure()
+        site = FactorySite.objects.filter(is_active=True).first()
+        connection = OTConnection.objects.create(
+            name='Mock MES',
+            ot_type='mes_rest',
+            base_url='https://mes.example.com',
+            assets_path='/api/assets',
+            factory_site=site,
+            sync_enabled=True,
+        )
+        payload = BytesIO(b'[{"id":"PLC-01","name":"Hat 1 PLC","status":"online","type":"plc"}]')
+
+        class MockResponse:
+            def read(self):
+                return payload.getvalue()
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+        with patch('inventory.integrations.ot_connector.urllib.request.urlopen', return_value=MockResponse()):
+            count, message = sync_ot_connection(connection)
+
+        self.assertGreaterEqual(count, 1)
+        self.assertGreaterEqual(OTAssetRecord.objects.filter(connection=connection).count(), 1)
+        self.assertIn('OT varlık', message)
+
+    def test_erp_cmdb_sync_creates_external_record(self):
+        from unittest.mock import patch
+
+        from inventory.factory_bootstrap import ensure_default_factory_structure
+        from inventory.integrations.erp_cmdb_sync import sync_erp_connection_to_cmdb
+        from inventory.models import ERPConnection, ERPExternalRecord, FactorySite
+
+        ensure_default_factory_structure()
+        site = FactorySite.objects.filter(is_active=True).first()
+        connection = ERPConnection.objects.create(
+            name='Mock Odoo',
+            erp_type='odoo',
+            base_url='https://odoo.example.com',
+            database_name='test',
+            username='admin',
+            api_key='secret',
+            factory_site=site,
+            sync_partners=True,
+            sync_to_cmdb=True,
+        )
+
+        class FakeClient:
+            def __init__(self, *args, **kwargs):
+                self.uid = 1
+
+            def authenticate(self):
+                return 1
+
+            def sync_partners_preview(self, limit=50):
+                return [{'id': 7, 'name': 'ACME Partner', 'email': 'a@acme.com'}]
+
+        with patch('inventory.integrations.odoo_client.OdooClient', FakeClient):
+            count, message = sync_erp_connection_to_cmdb(connection, limit=10)
+
+        self.assertGreaterEqual(count, 1)
+        self.assertTrue(ERPExternalRecord.objects.filter(connection=connection, external_model='res.partner').exists())
+
+
+class EnterpriseCompletenessTests(TestCase):
+    def setUp(self):
+        self.admin = User.objects.create_superuser(
+            username='enterprise_admin',
+            email='enterprise@example.com',
+            password='StrongPass123!',
+        )
+        self.client.force_login(self.admin)
+
+    def test_prometheus_metrics_endpoint(self):
+        response = self.client.get(reverse('prometheus_metrics'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('omniops_tickets_open', response.content.decode())
+
+    def test_immutable_audit_entry_is_append_only(self):
+        from inventory.models import ImmutableAuditEntry
+
+        entry = ImmutableAuditEntry.objects.create(
+            actor=self.admin,
+            action='create',
+            resource_type='test',
+            resource_id='1',
+        )
+        with self.assertRaises(ValueError):
+            entry.action = 'update'
+            entry.save()
+        with self.assertRaises(ValueError):
+            entry.delete()
+
+    def test_module_permission_grant(self):
+        from inventory.site_access import user_has_module_permission
+        from inventory.models import ModulePermissionGrant
+
+        limited = User.objects.create_user(username='moduser', password='StrongPass123!')
+        self.assertFalse(user_has_module_permission(limited, 'integrations', 'view'))
+        ModulePermissionGrant.objects.create(
+            user=limited,
+            module_code='integrations',
+            permission_level='view',
+            granted_by=self.admin,
+        )
+        self.assertTrue(user_has_module_permission(limited, 'integrations', 'view'))
+
+    def test_ad_lifecycle_provision(self):
+        from inventory.integrations.ad_lifecycle import run_identity_lifecycle_task
+        from inventory.models import DirectoryConnection, IdentityLifecycleTask
+
+        DirectoryConnection.objects.create(name='Manual', directory_type='manual', sync_enabled=True)
+        task = IdentityLifecycleTask.objects.create(
+            title='Yeni Personel',
+            process_type='onboarding',
+            employee_name='Ayse Yilmaz',
+            department='IT',
+        )
+        user, message = run_identity_lifecycle_task(task, actor=self.admin)
+        self.assertEqual(user.username, 'ayse.yilmaz')
+        self.assertIn('oluşturuldu', message.lower())
+
+    @override_settings(FEATURE_SALES_KANBAN=False)
+    def test_sales_kanban_hidden_when_feature_disabled(self):
+        response = self.client.get(reverse('sales_kanban'))
+        self.assertEqual(response.status_code, 302)

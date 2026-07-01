@@ -17,7 +17,10 @@ from .models import (
     DirectoryConnection, DirectoryGroup, DirectoryUser, EndpointDevice,
     IdentityLifecycleTask,
     FactoryDepartment, FactoryZone, ManagedDocument, FactoryITAssetRelation,
+    FactorySite, DepartmentInventoryItem,
     AssetQRTag, ERPConnection,
+    ProblemRecord, ReleaseRecord, NotificationChannel, MonitoringConnection,
+    ModulePermissionGrant, ImmutableAuditEntry,
 )
 from .helpdesk import is_support_staff
 
@@ -181,7 +184,7 @@ class TicketSerializer(serializers.ModelSerializer):
         model = Ticket
         fields = [
             'id', 'title', 'description', 'priority', 'category', 'ticket_category',
-            'ticket_category_id', 'status', 'device', 'created_by', 'assigned_to',
+            'ticket_category_id', 'status', 'device', 'factory_site', 'created_by', 'assigned_to',
             'is_escalated', 'is_sla_breached', 'created_at', 'updated_at',
             'closed_at', 'sla_deadline', 'comments_count',
         ]
@@ -635,17 +638,56 @@ class IdentityLifecycleTaskSerializer(serializers.ModelSerializer):
         read_only_fields = ['requested_by', 'completion_percent', 'is_overdue', 'created_at', 'updated_at']
 
 
+class FactorySiteSerializer(serializers.ModelSerializer):
+    industry_display = serializers.CharField(read_only=True)
+    display_title = serializers.CharField(read_only=True)
+    department_count = serializers.IntegerField(read_only=True)
+    inventory_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = FactorySite
+        fields = [
+            'id', 'title', 'short_name', 'code', 'industry_type', 'custom_industry_label',
+            'industry_display', 'display_title', 'customer_name', 'portfolio_code',
+            'inventory_panel_title', 'department_label', 'zone_label',
+            'city', 'country', 'address', 'notes', 'is_active',
+            'department_count', 'inventory_count', 'created_at', 'updated_at',
+        ]
+        read_only_fields = ['created_at', 'updated_at', 'industry_display', 'display_title']
+
+
 class FactoryDepartmentSerializer(serializers.ModelSerializer):
     zone_count = serializers.IntegerField(read_only=True)
+    factory_site_title = serializers.CharField(source='factory_site.display_title', read_only=True)
 
     class Meta:
         model = FactoryDepartment
         fields = [
-            'id', 'name', 'code', 'department_type', 'description', 'criticality',
+            'id', 'factory_site', 'factory_site_title', 'name', 'code', 'department_type', 'description', 'criticality',
             'manager_name', 'contact_phone', 'floor_label', 'is_active',
             'zone_count', 'created_at', 'updated_at',
         ]
-        read_only_fields = ['created_at', 'updated_at', 'zone_count']
+        read_only_fields = ['created_at', 'updated_at', 'zone_count', 'factory_site_title']
+
+
+class DepartmentInventoryItemSerializer(serializers.ModelSerializer):
+    factory_site_title = serializers.CharField(source='factory_site.display_title', read_only=True)
+    department_name = serializers.CharField(source='department.name', read_only=True)
+    zone_name = serializers.CharField(source='zone.name', read_only=True)
+    category_display = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = DepartmentInventoryItem
+        fields = [
+            'id', 'factory_site', 'factory_site_title', 'department', 'department_name',
+            'zone', 'zone_name', 'title', 'category_label', 'category_display', 'item_type',
+            'reference_code', 'serial_number', 'asset_tag', 'barcode',
+            'manufacturer', 'model_name', 'vendor', 'quantity', 'unit', 'status',
+            'location_note', 'owner_name', 'notes',
+            'device', 'it_asset', 'endpoint', 'camera', 'printer', 'consumable',
+            'sort_order', 'is_active', 'created_at', 'updated_at',
+        ]
+        read_only_fields = ['created_at', 'updated_at', 'category_display']
 
 
 class FactoryZoneSerializer(serializers.ModelSerializer):
@@ -755,6 +797,75 @@ class ERPConnectionSerializer(serializers.ModelSerializer):
             'is_ready', 'is_unhealthy', 'updated_at',
         ]
         extra_kwargs = {'api_key': {'write_only': True}}
+
+
+class ProblemRecordSerializer(serializers.ModelSerializer):
+    owner_name = serializers.CharField(source='owner.username', read_only=True)
+    factory_site_title = serializers.CharField(source='factory_site.display_title', read_only=True)
+
+    class Meta:
+        model = ProblemRecord
+        fields = [
+            'id', 'title', 'description', 'status', 'priority', 'root_cause', 'workaround',
+            'permanent_fix', 'factory_site', 'factory_site_title', 'major_incident', 'owner',
+            'owner_name', 'created_at', 'updated_at', 'resolved_at',
+        ]
+        read_only_fields = ['created_at', 'updated_at', 'resolved_at']
+
+
+class ReleaseRecordSerializer(serializers.ModelSerializer):
+    owner_name = serializers.CharField(source='owner.username', read_only=True)
+    factory_site_title = serializers.CharField(source='factory_site.display_title', read_only=True)
+
+    class Meta:
+        model = ReleaseRecord
+        fields = [
+            'id', 'title', 'version', 'description', 'status', 'factory_site', 'factory_site_title',
+            'change_request', 'calendar_event', 'planned_start', 'planned_end', 'cab_approved',
+            'cab_notes', 'owner', 'owner_name', 'created_at', 'updated_at',
+        ]
+        read_only_fields = ['created_at', 'updated_at']
+
+
+class MonitoringConnectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MonitoringConnection
+        fields = [
+            'id', 'name', 'monitor_type', 'base_url', 'username', 'api_token', 'sync_enabled',
+            'last_sync_at', 'last_sync_status', 'last_sync_message', 'records_synced',
+            'factory_site', 'updated_at',
+        ]
+        read_only_fields = [
+            'last_sync_at', 'last_sync_status', 'last_sync_message', 'records_synced', 'updated_at',
+        ]
+        extra_kwargs = {'api_token': {'write_only': True}}
+
+
+class NotificationChannelSerializer(serializers.ModelSerializer):
+    owner_name = serializers.CharField(source='owner.username', read_only=True)
+
+    class Meta:
+        model = NotificationChannel
+        fields = [
+            'id', 'name', 'channel_type', 'endpoint_url', 'email_recipients', 'secret_token',
+            'notify_tickets', 'notify_incidents', 'notify_sla_breach', 'factory_site', 'is_active',
+            'last_sent_at', 'owner', 'owner_name', 'updated_at',
+        ]
+        read_only_fields = ['last_sent_at', 'updated_at']
+        extra_kwargs = {'secret_token': {'write_only': True}}
+
+
+class ModulePermissionGrantSerializer(serializers.ModelSerializer):
+    user_name = serializers.CharField(source='user.username', read_only=True)
+    factory_site_title = serializers.CharField(source='factory_site.display_title', read_only=True)
+
+    class Meta:
+        model = ModulePermissionGrant
+        fields = [
+            'id', 'user', 'user_name', 'factory_site', 'factory_site_title', 'module_code',
+            'permission_level', 'is_active', 'granted_by', 'created_at',
+        ]
+        read_only_fields = ['created_at']
 
 
 class DevicePerformanceLogSerializer(serializers.ModelSerializer):

@@ -10,7 +10,10 @@
         <p class="suite-subtitle">Departman kartelasından bölüm seçin; kameralar, switchler, endpointler, ticketlar ve dokümanlar aynı ekranda açılsın.</p>
     </div>
     <div class="d-flex flex-wrap gap-2">
-        <a href="{% url 'factory_command_center' %}" class="btn btn-outline-secondary">
+        <a href="{% url 'factory_portfolio_inventory' %}{% if selected_site %}?site={{ selected_site.id }}{% endif %}" class="btn btn-outline-secondary">
+            <span class="iconify me-1" data-icon="mdi:clipboard-list-outline"></span> Portföy Envanteri
+        </a>
+        <a href="{% url 'factory_command_center' %}{% if selected_site %}?site={{ selected_site.id }}{% endif %}" class="btn btn-outline-secondary">
             <span class="iconify me-1" data-icon="mdi:view-grid-outline"></span> Kartela Görünümü
         </a>
         {% if selected_department %}
@@ -29,6 +32,22 @@
     <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">İnceleme Bekleyen</div><div class="display-6 fw-bold text-warning">{{ metrics.review_documents }}</div></div></div></div>
     <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Kapsam Riski</div><div class="display-6 fw-bold text-danger">{{ metrics.risk_items }}</div></div></div></div>
 </div>
+
+{% if factory_sites %}
+<div class="card glass-card mb-4">
+    <div class="card-header bg-transparent fw-bold d-flex justify-content-between align-items-center">
+        <span>Fabrika / Tesis Seçimi</span>
+        <span class="text-muted small">Portföy filtresi</span>
+    </div>
+    <div class="card-body d-flex flex-wrap gap-2">
+        {% for site in factory_sites %}
+        <a href="{% url 'factory_command_center' %}?site={{ site.id }}" class="btn btn-sm {% if selected_site and selected_site.id == site.id %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+            {{ site.display_title }} · {{ site.industry_display }}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
 <div class="row g-4">
     <div class="col-xl-4">
@@ -63,13 +82,13 @@
     <div class="col-xl-8">
         <div class="card glass-card mb-4">
             <div class="card-header bg-transparent fw-bold d-flex justify-content-between align-items-center">
-                <span>Departman Kartelası</span>
+                <span>{% if selected_site %}{{ selected_site.department_label }} Kartelası · {{ selected_site.display_title }}{% else %}Departman Kartelası{% endif %}</span>
                 <span class="text-muted small">Bölüm seçince modüller açılır</span>
             </div>
             <div class="card-body">
                 <div class="factory-card-grid">
                     {% for department in departments %}
-                    <a href="{% url 'factory_command_center' %}?department={{ department.id }}" class="factory-dept-card {% if selected_department and selected_department.id == department.id %}is-active{% endif %}">
+                    <a href="{% url 'factory_command_center' %}?department={{ department.id }}{% if selected_site %}&site={{ selected_site.id }}{% endif %}" class="factory-dept-card {% if selected_department and selected_department.id == department.id %}is-active{% endif %}">
                         <span class="factory-dept-icon"><span class="iconify" data-icon="mdi:office-building-outline"></span></span>
                         <span class="factory-dept-copy">
                             <span class="factory-dept-title">{{ department.name }}</span>

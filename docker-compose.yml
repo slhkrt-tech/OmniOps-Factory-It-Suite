@@ -232,6 +232,18 @@ services:
     ports:
       - "9980:9980"
 
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: omniops_nginx
+    restart: unless-stopped
+    depends_on:
+      - web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./deploy/nginx/omniops.conf:/etc/nginx/nginx.conf:ro
+      - media_data:/app/media:ro
+
 volumes:
   postgres_data:
   redis_data:

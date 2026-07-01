@@ -208,6 +208,18 @@ def notify_ticket_event(ticket, event_type, actor=None):
     for user in recipients:
         notify_user(user, title, msg, link=link, notification_type=event_type, ticket=ticket)
 
+    try:
+        from .notification_dispatcher import broadcast_event
+        broadcast_event(
+            'sla' if event_type == 'sla_breach' else 'ticket',
+            title,
+            msg,
+            factory_site=getattr(ticket, 'factory_site', None),
+            payload={'ticket_id': ticket.pk, 'event_type': event_type},
+        )
+    except Exception:
+        pass
+
 
 def get_helpdesk_analytics():
     """Yönetici paneli için talep analitik verilerini döndürür."""

@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}Fabrika Portföy Envanteri - OmniOps{% endblock %}
+
+{% block content %}
+<section class="suite-hero mb-4">
+    <div>
+        <span class="suite-eyebrow">OmniOps Factory IT Suite</span>
+        <h1 class="suite-title">
+            {% if selected_site %}{{ selected_site.inventory_panel_title }}{% else %}Fabrika Portföy Envanteri{% endif %}
+        </h1>
+        <p class="suite-subtitle">
+            Müşteri portföyündeki her fabrika/tesis için özelleştirilebilir bölüm envanteri.
+            {% if selected_site %}
+            Sektör: <strong>{{ selected_site.industry_display }}</strong>
+            {% if selected_site.customer_name %} · Müşteri: {{ selected_site.customer_name }}{% endif %}
+            {% endif %}
+        </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a href="{% url 'factory_command_center' %}{% if selected_site %}?site={{ selected_site.id }}{% endif %}" class="btn btn-outline-secondary">
+            <span class="iconify me-1" data-icon="mdi:view-grid-outline"></span> BT Komuta Merkezi
+        </a>
+        {% if selected_site %}
+        <a href="{% url 'factory_portfolio_inventory' %}?site={{ selected_site.id }}" class="btn btn-primary">
+            <span class="iconify me-1" data-icon="mdi:factory"></span> {{ selected_site.display_title }}
+        </a>
+        {% endif %}
+    </div>
+</section>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Aktif Tesis</div><div class="display-6 fw-bold">{{ metrics.sites }}</div></div></div></div>
+    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% if selected_site %}{{ selected_site.department_label }}{% else %}Bölüm{% endif %}</div><div class="display-6 fw-bold text-primary">{{ metrics.departments }}</div></div></div></div>
+    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Envanter Kalemi</div><div class="display-6 fw-bold">{{ metrics.inventory }}</div></div></div></div>
+    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Sektör Çeşitliliği</div><div class="display-6 fw-bold">{{ metrics.industries }}</div></div></div></div>
+</div>
+
+{% if factory_sites %}
+<div class="card glass-card mb-4">
+    <div class="card-header bg-transparent fw-bold">Fabrika / Tesis Portföyü</div>
+    <div class="card-body">
+        <div class="factory-card-grid">
+            {% for site in factory_sites %}
+            <a href="{% url 'factory_portfolio_inventory' %}?site={{ site.id }}" class="factory-dept-card {% if selected_site and selected_site.id == site.id %}is-active{% endif %}">
+                <span class="factory-dept-icon"><span class="iconify" data-icon="mdi:domain"></span></span>
+                <span class="factory-dept-copy">
+                    <span class="factory-dept-title">{{ site.display_title }}</span>
+                    <span class="factory-dept-meta">{{ site.industry_display }} · {{ site.code }}</span>
+                    <span class="factory-dept-meta">{{ site.department_total }} {{ site.department_label|lower }} · {{ site.inventory_total }} envanter</span>
+                </span>
+                <span class="iconify factory-dept-arrow" data-icon="mdi:chevron-right"></span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if selected_site %}
+<div class="row g-4">
+    <div class="col-xl-4">
+        <div class="accordion" id="portfolioForms">
+            <div class="accordion-item border-0 glass-card mb-3">
+                <h2 class="accordion-header"><button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#siteTitlesForm">Tesis Başlıkları ({{ selected_site.code }})</button></h2>
+                <div id="siteTitlesForm" class="accordion-collapse collapse show" data-bs-parent="#portfolioForms"><div class="accordion-body">
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="update_site">
+                    {{ forms.site_edit.as_p }}
+                    <button class="btn btn-outline-primary w-100">Başlıkları Güncelle</button></form>
+                </div></div>
+            </div>
+            <div class="accordion-item border-0 glass-card mb-3">
+                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#newSiteForm">Yeni Tesis Ekle</button></h2>
+                <div id="newSiteForm" class="accordion-collapse collapse" data-bs-parent="#portfolioForms"><div class="accordion-body">
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="site">
+                    {{ forms.site_new.as_p }}
+                    <button class="btn btn-primary w-100">Tesis Kaydet</button></form>
+                </div></div>
+            </div>
+            <div class="accordion-item border-0 glass-card">
+                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#inventoryForm">Envanter Kalemi Ekle</button></h2>
+                <div id="inventoryForm" class="accordion-collapse collapse" data-bs-parent="#portfolioForms"><div class="accordion-body">
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="inventory">
+                    {{ forms.inventory.as_p }}
+                    <button class="btn btn-success w-100">Envantere Ekle</button></form>
+                </div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-8">
+        <div class="card glass-card mb-4">
+            <div class="card-header bg-transparent fw-bold d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <span>{{ selected_site.department_label }} Filtresi</span>
+                <span class="text-muted small">{{ selected_site.inventory_panel_title }}</span>
+            </div>
+            <div class="card-body d-flex flex-wrap gap-2">
+                <a href="{% url 'factory_portfolio_inventory' %}?site={{ selected_site.id }}" class="btn btn-sm {% if not selected_department %}btn-primary{% else %}btn-outline-primary{% endif %}">Tüm {{ selected_site.department_label }}</a>
+                {% for department in departments %}
+                <a href="{% url 'factory_portfolio_inventory' %}?site={{ selected_site.id }}&department={{ department.id }}" class="btn btn-sm {% if selected_department and selected_department.id == department.id %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                    {{ department.name }} ({{ department.inventory_total }})
+                </a>
+                {% empty %}
+                <span class="text-muted">Bu tesiste henüz {{ selected_site.department_label|lower }} tanımlı değil.</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% for group in inventory_groups %}
+        <div class="card glass-card mb-4">
+            <div class="card-header bg-transparent fw-bold">
+                {% if group.department %}{{ group.department.name }}{% else %}Tesis Geneli{% endif %}
+                <span class="text-muted small ms-2">{{ group.items|length }} kalem</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Başlık</th>
+                            <th>Kategori</th>
+                            <th>Tip</th>
+                            <th>Miktar</th>
+                            <th>Durum</th>
+                            <th>Konum</th>
+                            <th>Sorumlu</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in group.items %}
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">{{ item.title }}</div>
+                                {% if item.reference_code %}<div class="small text-muted font-monospace">{{ item.reference_code }}</div>{% endif %}
+                            </td>
+                            <td>{{ item.category_display }}</td>
+                            <td>{{ item.get_item_type_display }}</td>
+                            <td>{{ item.quantity }} {{ item.unit }}</td>
+                            <td><span class="badge text-bg-secondary">{{ item.get_status_display }}</span></td>
+                            <td>{% if item.zone %}{{ item.zone.name }}{% elif item.location_note %}{{ item.location_note }}{% else %}—{% endif %}</td>
+                            <td>{{ item.owner_name|default:"—" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% empty %}
+        <div class="card glass-card">
+            <div class="card-body text-center text-muted py-5">
+                <span class="iconify display-4" data-icon="mdi:package-variant"></span>
+                <p class="mt-3 mb-0">Bu kapsamda envanter kaydı yok. Sol panelden kalem ekleyin veya <code>python manage.py omniops_doctor --bootstrap</code> çalıştırın.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="card glass-card">
+    <div class="card-body text-center text-muted py-5">
+        <p class="mb-3">Henüz fabrika tesisi tanımlı değil.</p>
+        <p class="small">Sol panelden yeni tesis ekleyin veya bootstrap komutunu çalıştırın.</p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
