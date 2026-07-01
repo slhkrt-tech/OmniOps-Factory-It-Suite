@@ -1815,6 +1815,11 @@ def prometheus_metrics_view(request):
     """Prometheus scrape uç noktası (basit metrikler)."""
     if not getattr(settings, 'PROMETHEUS_METRICS_ENABLED', True):
         return HttpResponse('disabled', status=404)
+    metrics_token = getattr(settings, 'PROMETHEUS_METRICS_TOKEN', '')
+    if metrics_token:
+        provided = request.headers.get('Authorization', '').removeprefix('Bearer ').strip()
+        if provided != metrics_token:
+            return HttpResponse('unauthorized', status=401)
     lines = [
         '# HELP omniops_tickets_open Açık ticket sayısı',
         '# TYPE omniops_tickets_open gauge',

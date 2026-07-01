@@ -17,7 +17,6 @@ class IntegrationHubError(Exception):
 
 def sync_monitoring_connection(connection):
     token = connection.get_api_token_plain()
-    headers = {'Authorization': f'Bearer {token}'} if token else {}
     synced = 0
     message = ''
 
@@ -28,18 +27,33 @@ def sync_monitoring_connection(connection):
             'params': {'output': ['hostid', 'name', 'status'], 'limit': 100},
             'id': 1,
         }
-        resp = requests.post(f'{connection.base_url.rstrip("/")}/api_jsonrpc.php', json=payload, headers=headers, timeout=20)
+        if token:
+            payload['auth'] = token
+        resp = requests.post(
+            f'{connection.base_url.rstrip("/")}/api_jsonrpc.php',
+            json=payload,
+            timeout=20,
+        )
         resp.raise_for_status()
-        hosts = resp.json().get('result', [])
+        body = resp.json()
+        if 'error' in body:
+            raise IntegrationHubError(body['error'].get('data', body['error'].get('message', 'Zabbix API hatası')))
+        hosts = body.get('result', [])
         synced = len(hosts)
         message = f'Zabbix: {synced} host okundu'
     elif connection.monitor_type == 'prometheus':
-        resp = requests.get(f'{connection.base_url.rstrip("/")}/api/v1/targets', headers=headers, timeout=20)
+        headers = {'Authorization': f'Bearer {token}'} if token else {}
+        resp = requests.get(
+            f'{connection.base_url.rstrip("/")}/api/v1/targets',
+            headers=headers,
+            timeout=20,
+        )
         resp.raise_for_status()
         targets = resp.json().get('data', {}).get('activeTargets', [])
         synced = len(targets)
         message = f'Prometheus: {synced} target okundu'
     else:
+        headers = {'Authorization': f'Bearer {token}'} if token else {}
         resp = requests.get(connection.base_url, headers=headers, timeout=20)
         resp.raise_for_status()
         synced = 1
@@ -68,14 +82,22 @@ def sync_vms_connection(connection):
     resp = requests.get(url, headers=headers, auth=auth, timeout=20)
     resp.raise_for_status()
     synced = 0
+    site_label = connection.factory_site.display_title if connection.factory_site_id else connection.name
     if connection.sync_to_cameras:
         payload = resp.json() if resp.headers.get('Content-Type', '').startswith('application/json') else {}
         cameras = payload if isinstance(payload, list) else payload.get('cameras') or payload.get('data') or []
         for item in cameras[:100]:
-            name = item.get('name') or item.get('cameraName') or 'VMS Camera'
+            name = str(item.get('name') or item.get('cameraName') or 'VMS Camera')[:120]
+            external_id = str(item.get('id') or item.get('cameraId') or item.get('uuid') or synced)
+            stream_url = f'vms://{connection.id}/{external_id}'[:500]
             CameraDevice.objects.update_or_create(
-                name=str(name)[:120],
-                defaults={'status': 'online', 'last_checked_at': timezone.now()},
+                stream_url=stream_url,
+                defaults={
+                    'name': name,
+                    'status': 'online',
+                    'location': site_label[:150],
+                    'last_checked_at': timezone.now(),
+                },
             )
             synced += 1
     connection.last_sync_at = timezone.now()
@@ -94,6 +116,7 @@ def sync_wms_connection(connection):
     with urllib.request.urlopen(request, timeout=20) as response:
         payload = json.loads(response.read().decode('utf-8'))
     items = payload if isinstance(payload, list) else payload.get('results') or payload.get('data') or []
+    location = f'WMS:{connection.pk}:{connection.factory_site_id or "global"}'
     synced = 0
     for item in items[:200]:
         sku = str(item.get('sku') or item.get('code') or item.get('id') or synced)[:80]
@@ -101,7 +124,8 @@ def sync_wms_connection(connection):
         qty = int(item.get('quantity') or item.get('qty') or 0)
         ConsumableItem.objects.update_or_create(
             sku=sku,
-            defaults={'name': name, 'quantity': max(qty, 0), 'category': 'other', 'location': connection.factory_site.display_title if connection.factory_site_id else ''},
+            location=location[:120],
+            defaults={'name': name, 'quantity': max(qty, 0), 'category': 'other'},
         )
         synced += 1
     connection.last_sync_at = timezone.now()
@@ -141,7 +165,11 @@ def poll_email_ticket_inbox(inbox):
             if status != 'OK':
                 continue
             msg = email.message_from_bytes(msg_data[0][1])
-            subject = msg.get('Subject', 'E-posta Ticket')[:100]
+            message_id = (msg.get('Message-ID') or '').strip()
+            if message_id and Ticket.objects.filter(description__contains=message_id).exists():
+                mail.store(num, '+FLAGS', '\\Seen')
+                continue
+            subject = (msg.get('Subject') or 'E-posta Ticket')[:100]
             body = ''
             if msg.is_multipart():
                 for part in msg.walk():
@@ -150,6 +178,8 @@ def poll_email_ticket_inbox(inbox):
                         break
             else:
                 body = msg.get_payload(decode=True).decode(errors='ignore')[:2000]
+            if message_id:
+                body = f'[Message-ID: {message_id}]\n{body}'
             Ticket.objects.create(
                 title=subject,
                 description=body or subject,
@@ -158,6 +188,7 @@ def poll_email_ticket_inbox(inbox):
                 status='Acik',
                 factory_site=inbox.factory_site,
             )
+            mail.store(num, '+FLAGS', '\\Seen')
             created += 1
     mail.logout()
     inbox.last_poll_at = timezone.now()

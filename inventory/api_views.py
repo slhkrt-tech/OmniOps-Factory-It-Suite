@@ -92,19 +92,25 @@ class DeviceViewSet(viewsets.ModelViewSet):
     """Cihaz envanterine API üzerinden CRUD işlemi yapar."""
     queryset = Device.objects.order_by('id')
     serializer_class = DeviceSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsSupportStaff]
 
-    # Cihazlarda filtreleme, arama ve sıralama
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['device_type', 'is_active', 'parent_device'] 
-    search_fields = ['name', 'mac_address'] 
+    filterset_fields = ['device_type', 'is_active', 'parent_device']
+    search_fields = ['name', 'mac_address']
     ordering_fields = ['name', 'id']
 
-    # ==================================================
-    # API UÇ NOKTASI (CUSTOM ACTION)
-    # ==================================================
+    def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Device.objects.none()
+        qs = Device.objects.order_by('id')
+        if self.request.user.is_superuser:
+            return qs
+        return get_objects_for_user(self.request.user, 'inventory.view_device', qs)
+
     @action(detail=False, methods=['post'], url_path='generate-config')
     def generate_config(self, request):
+        if not is_support_staff(request.user):
+            return Response({'error': 'Yetkisiz'}, status=status.HTTP_403_FORBIDDEN)
         """
         Dışarıdan JSON olarak gelen cihaz parametrelerini alır
         ve üretilmiş CLI konfigürasyonunu JSON olarak geri döndürür.
@@ -154,11 +160,20 @@ class IpAddressViewSet(viewsets.ModelViewSet):
     """IP adresi haritasını ve atamalarını JSON döner."""
     queryset = IpAddress.objects.order_by('id')
     serializer_class = IpAddressSerializer
-    permission_classes = [IsAuthenticated]
-    
+    permission_classes = [IsAuthenticated, IsSupportStaff]
+
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['device']
     search_fields = ['address']
+
+    def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return IpAddress.objects.none()
+        qs = IpAddress.objects.select_related('device').order_by('id')
+        if self.request.user.is_superuser:
+            return qs
+        allowed_devices = get_objects_for_user(self.request.user, 'inventory.view_device', Device.objects.all())
+        return qs.filter(device__in=allowed_devices)
 
 
 class NetworkScanViewSet(viewsets.ModelViewSet):

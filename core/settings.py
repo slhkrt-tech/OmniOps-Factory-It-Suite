@@ -161,6 +161,7 @@ ALLOW_PUBLIC_REGISTRATION = os.environ.get('ALLOW_PUBLIC_REGISTRATION', 'False')
 SITE_ACCESS_ENFORCEMENT = os.environ.get('SITE_ACCESS_ENFORCEMENT', 'True').lower() in ('1', 'true', 'yes')
 FEATURE_SALES_KANBAN = os.environ.get('FEATURE_SALES_KANBAN', 'True').lower() in ('1', 'true', 'yes')
 PROMETHEUS_METRICS_ENABLED = os.environ.get('PROMETHEUS_METRICS_ENABLED', 'True').lower() in ('1', 'true', 'yes')
+PROMETHEUS_METRICS_TOKEN = os.environ.get('PROMETHEUS_METRICS_TOKEN', '')
 
 # OnlyOffice / Collabora belge sunucusu (tarayıcı editörü)
 ONLYOFFICE_DOCUMENT_SERVER_URL = os.environ.get('ONLYOFFICE_DOCUMENT_SERVER_URL', '')
@@ -420,6 +421,8 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend', # Django'nun varsayılan motoru (Şifreli giriş)
     'guardian.backends.ObjectPermissionBackend', # Guardian OLP motoru
 ]
+ANONYMOUS_USER_NAME = None
+GUARDIAN_GET_INIT_ANONYMOUS_USER = 'guardian.management.get_init_anonymous_user'
 
 # SADECE .env DOSYASINDA ANAHTARLAR VARSA SSO MOTORLARINI AKTİF ET!
 # Bu sayede anahtarlar boşken uygulamanın (HTTP 500) çökmesini kalıcı olarak önleriz.
@@ -632,3 +635,10 @@ LOGGING = {
 
 # SSO ile kayıtlı olsa da yerel şifre değişikliğine izin ver
 SOCIAL_AUTH_DEFAULT_USERNAME_FUNCTION = 'social_core.utils.slugify'
+
+import sys
+if not DEBUG and 'test' not in sys.argv:
+    insecure_markers = ('dev-only', 'change-me', 'insecure', 'please-set-env')
+    if not SECRET_KEY or any(marker in SECRET_KEY.lower() for marker in insecure_markers):
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured('Production ortamında güvenli bir DJANGO_SECRET_KEY zorunludur.')

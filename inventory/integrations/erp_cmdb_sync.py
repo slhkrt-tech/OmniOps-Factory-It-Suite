@@ -11,12 +11,13 @@ def sync_erp_connection_to_cmdb(connection, limit=50):
         return _sync_odoo_to_cmdb(connection, limit=limit)
     if connection.erp_type == 'erpnext':
         return _sync_erpnext_to_cmdb(connection, limit=limit)
-    if connection.erp_type in ('sap', 'other'):
-        from .erp_connector import sync_erp_connection as preview_sync
-        count, message = preview_sync(connection, limit=limit)
-        if connection.sync_to_cmdb:
-            message = f'{message}; CMDB yazımı bu ERP tipi için harici kayıt önizlemesi ile sınırlı.'
-        return count, message
+    if connection.erp_type == 'sap':
+        from .sap_cmdb_sync import sync_sap_to_cmdb
+        return sync_sap_to_cmdb(connection, limit=limit)
+    if connection.erp_type == 'other':
+        from .generic_erp_client import sync_generic_connection
+        count, message = sync_generic_connection(connection, limit=limit)
+        return count, f'{message}; CMDB önizlemesi tamamlandı.'
     raise ERPClientError(f'{connection.get_erp_type_display()} CMDB sync desteklenmiyor.')
 
 

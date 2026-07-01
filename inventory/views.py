@@ -17,6 +17,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from .decorators import role_required  # RBAC Güvenlik Kilidi
 from guardian.shortcuts import get_objects_for_user  # Guardian OLP Kütüphanesi
+from .site_access import filter_tickets_for_user
 import logging
 import ipaddress
 import csv
@@ -219,8 +220,12 @@ def dashboard(request):
         return redirect('user_panel')
         
     # --- PERFORMANS OPTİMİZASYONU: PAGINATOR EKLENDİ ---
+    ticket_base = filter_tickets_for_user(
+        Ticket.objects.select_related('created_by', 'assigned_to', 'device', 'factory_site'),
+        request.user,
+    )
     device_list = Device.objects.all().order_by('-id')
-    ticket_list = Ticket.objects.all().order_by('-created_at')
+    ticket_list = ticket_base.order_by('-created_at')
     
     device_paginator = Paginator(device_list, 10) 
     ticket_paginator = Paginator(ticket_list, 10)
@@ -234,7 +239,7 @@ def dashboard(request):
     deadline = timezone.now().date() + timedelta(days=30)
     expiring_licenses = License.objects.filter(expiry_date__lte=deadline)
     kb_count = KnowledgeBaseArticle.objects.count()
-    acik_bilet_sayisi = Ticket.objects.filter(status='Acik').count()
+    acik_bilet_sayisi = ticket_base.filter(status='Acik').count()
 
     # ========================================================
     # --- OLAY ODAKLI (EVENT-DRIVEN) TREND MATEMATİĞİ ---
@@ -242,7 +247,7 @@ def dashboard(request):
     now = timezone.now()
     yesterday = now - timedelta(days=1)
     
-    new_tickets_24h = Ticket.objects.filter(created_at__gte=yesterday).count()
+    new_tickets_24h = ticket_base.filter(created_at__gte=yesterday).count()
     offline_device_count = Device.objects.filter(is_active=False).count()
     
     ticket_alert_class = 'danger' if acik_bilet_sayisi >= 3 else ('warning' if acik_bilet_sayisi > 0 else 'success')
@@ -254,7 +259,7 @@ def dashboard(request):
     # ========================================================
     action_suggestions = []
     
-    critical_tickets = Ticket.objects.filter(status__in=['Acik', 'Inceleniyor'], priority='Kritik')
+    critical_tickets = ticket_base.filter(status__in=['Acik', 'Inceleniyor'], priority='Kritik')
     if critical_tickets.exists():
         action_suggestions.append({
             'type': 'danger',
@@ -304,7 +309,11 @@ def dashboard(request):
             device_data.append(count)
 
     ticket_labels = ['Açık', 'İnceleniyor', 'Çözüldü']
-    ticket_data = [acik_bilet_sayisi, Ticket.objects.filter(status='Inceleniyor').count(), Ticket.objects.filter(status='Cozuldu').count()]
+    ticket_data = [
+        acik_bilet_sayisi,
+        ticket_base.filter(status='Inceleniyor').count(),
+        ticket_base.filter(status='Cozuldu').count(),
+    ]
 
     context = {
         'devices': devices, 'root_devices': root_devices, 'tickets': tickets,
@@ -331,8 +340,9 @@ def dashboard_refresh(request):
     now = timezone.now()
     yesterday = now - timedelta(days=1)
     limit_date = now.date() + timedelta(days=30)
+    ticket_scope = filter_tickets_for_user(Ticket.objects.all(), request.user)
     
-    acik_bilet_sayisi = Ticket.objects.filter(status='Acik').count()
+    acik_bilet_sayisi = ticket_scope.filter(status='Acik').count()
     offline_device_count = Device.objects.filter(is_active=False).count()
     suresi_biten_lisanslar = License.objects.filter(expiry_date__lte=limit_date).count()
 
@@ -350,7 +360,7 @@ def dashboard_refresh(request):
         'open_ticket_count': acik_bilet_sayisi,
         'license_alert_count': suresi_biten_lisanslar,
         'kb_count': KnowledgeBaseArticle.objects.count(),
-        'new_tickets_24h': Ticket.objects.filter(created_at__gte=yesterday).count(),
+        'new_tickets_24h': ticket_scope.filter(created_at__gte=yesterday).count(),
         'offline_device_count': offline_device_count,
         'ticket_alert_class': 'danger' if acik_bilet_sayisi >= 3 else ('warning' if acik_bilet_sayisi > 0 else 'success'),
         'device_alert_class': 'danger' if offline_device_count > 0 else 'success',
@@ -360,8 +370,8 @@ def dashboard_refresh(request):
         'ticket_labels': ['Açık', 'İnceleniyor', 'Çözüldü'],
         'ticket_data': [
             acik_bilet_sayisi,
-            Ticket.objects.filter(status='Inceleniyor').count(),
-            Ticket.objects.filter(status='Cozuldu').count(),
+            ticket_scope.filter(status='Inceleniyor').count(),
+            ticket_scope.filter(status='Cozuldu').count(),
         ],
         'heatmap_data': generate_heatmap_data(), 
         'root_devices': list(Device.objects.filter(parent_device__isnull=True).order_by('-id').values('name', 'mac_address', 'is_active')[:4]),
@@ -1041,7 +1051,10 @@ def custom_admin(request):
     context = {
         'device_form': DeviceForm(), 'ticket_form': TicketForm(), 'user_form': RegisterUserForm(),
         'devices': Device.objects.all().order_by('-id'),
-        'tickets': Ticket.objects.select_related('created_by', 'assigned_to').all().order_by('-created_at'),
+        'tickets': filter_tickets_for_user(
+            Ticket.objects.select_related('created_by', 'assigned_to', 'factory_site'),
+            request.user,
+        ).order_by('-created_at'),
         'users': User.objects.prefetch_related('groups').all().order_by('-date_joined'),
         'change_requests': ChangeRequest.objects.all().order_by('-created_at'),
         'ticket_categories': TicketCategory.objects.filter(is_active=True),
@@ -1073,8 +1086,8 @@ def device_alert_webhook(request):
     expected_key = getattr(settings, 'WAZUH_API_KEY', '')
     if not expected_key or provided_key != expected_key:
         SystemLog.objects.create(
-            action='SYSTEM', 
-            details=f"🚨 GÜVENLİK İHLALİ: Webhook adresine geçersiz şifre ile erişim denemesi! Gelen Key: {provided_key}"
+            action='SYSTEM',
+            details='GÜVENLİK İHLALİ: Webhook adresine geçersiz API key ile erişim denemesi.',
         )
         return JsonResponse({'status': 'error', 'message': 'Yetkisiz erişim. Geçersiz API Key.'}, status=401)
 

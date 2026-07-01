@@ -693,6 +693,11 @@ def sync_monitoring_connection_task(connection_id):
         _, message = sync_monitoring_connection(connection)
         SystemLog.objects.create(action='SYSTEM', details=f'Monitoring sync · {connection.name}: {message}')
         return message
+    except IntegrationHubError as exc:
+        connection.last_sync_status = 'error'
+        connection.last_sync_message = str(exc)
+        connection.save(update_fields=['last_sync_status', 'last_sync_message', 'updated_at'])
+        return str(exc)
     except Exception as exc:
         connection.last_sync_status = 'error'
         connection.last_sync_message = str(exc)

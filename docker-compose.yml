@@ -45,6 +45,7 @@ services:
       - media_data:/app/media
       - logs_data:/app/logs
       - db_backups:/app/db_backups
+      - staticfiles_data:/app/staticfiles
     depends_on:
       - db
       - redis
@@ -243,6 +244,7 @@ services:
     volumes:
       - ./deploy/nginx/omniops.conf:/etc/nginx/nginx.conf:ro
       - media_data:/app/media:ro
+      - staticfiles_data:/app/staticfiles:ro
 
 volumes:
   postgres_data:
@@ -250,3 +252,4 @@ volumes:
   media_data:
   logs_data:
   db_backups:
+  staticfiles_data:

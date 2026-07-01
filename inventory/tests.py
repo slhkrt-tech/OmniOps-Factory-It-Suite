@@ -553,3 +553,38 @@ class EnterpriseCompletenessTests(TestCase):
     def test_sales_kanban_hidden_when_feature_disabled(self):
         response = self.client.get(reverse('sales_kanban'))
         self.assertEqual(response.status_code, 302)
+
+    def test_sap_cmdb_sync_does_not_recurse(self):
+        from inventory.factory_bootstrap import ensure_default_factory_structure
+        from inventory.integrations.erp_cmdb_sync import sync_erp_connection_to_cmdb
+        from inventory.models import ERPConnection, FactorySite
+        from unittest.mock import patch
+
+        ensure_default_factory_structure()
+        site = FactorySite.objects.filter(is_active=True).first()
+        connection = ERPConnection.objects.create(
+            name='SAP Test',
+            erp_type='sap',
+            base_url='https://sap.example.com',
+            username='user',
+            api_key='secret',
+            factory_site=site,
+            sync_partners=True,
+            sync_to_cmdb=True,
+        )
+
+        class FakeSAPClient:
+            def __init__(self, *args, **kwargs):
+                pass
+
+            def test_connection(self):
+                return {'server_version': 'SAP OData'}
+
+            def preview_business_partners(self, limit=50):
+                return [{'BusinessPartner': '100', 'BusinessPartnerName': 'ACME'}]
+
+        with patch('inventory.integrations.sap_cmdb_sync.SAPODataClient', FakeSAPClient):
+            count, message = sync_erp_connection_to_cmdb(connection, limit=5)
+
+        self.assertGreaterEqual(count, 1)
+        self.assertIn('SAP CMDB', message)

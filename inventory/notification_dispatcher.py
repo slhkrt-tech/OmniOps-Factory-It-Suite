@@ -1,10 +1,10 @@
 """Teams/Slack/e-posta/webhook bildirim gönderimi."""
 import json
-import smtplib
 import urllib.error
 import urllib.request
 
 from django.conf import settings
+from django.core.mail import EmailMessage
 from django.db import models
 from django.utils import timezone
 
@@ -44,7 +44,7 @@ def broadcast_event(event_type, title, message, factory_site=None, payload=None)
         try:
             send_notification(channel, title, message, payload)
             sent += 1
-        except NotificationError:
+        except (NotificationError, OSError, urllib.error.URLError):
             continue
     return sent
 
@@ -71,10 +71,10 @@ def _send_email(channel, title, message):
         raise NotificationError('E-posta alıcısı yok.')
     if not settings.EMAIL_HOST:
         raise NotificationError('SMTP yapılandırılmamış.')
-    body = f'Subject: {title}\n\n{message}\n'
-    with smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT) as server:
-        if settings.EMAIL_USE_TLS:
-            server.starttls()
-        if settings.EMAIL_HOST_USER:
-            server.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-        server.sendmail(settings.DEFAULT_FROM_EMAIL, recipients, body)
+    email = EmailMessage(
+        subject=title,
+        body=message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=recipients,
+    )
+    email.send(fail_silently=False)

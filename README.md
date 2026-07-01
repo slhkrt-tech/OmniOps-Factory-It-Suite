@@ -209,7 +209,12 @@ SITE_ACCESS_ENFORCEMENT=True
 DIRECTORY_SYNC_DRY_RUN=False
 FEATURE_SALES_KANBAN=True
 PROMETHEUS_METRICS_ENABLED=True
+PROMETHEUS_METRICS_TOKEN=replace-with-random-metrics-token
 ```
+
+Prometheus scrape için isteğe bağlı bearer token kullanın: `Authorization: Bearer <token>`.
+
+Docker nginx (`8080`) statik dosyalar için `staticfiles_data` volume paylaşır; `collectstatic` web konteynerinde çalışır.
 
 Yardımcı komutlar:
 

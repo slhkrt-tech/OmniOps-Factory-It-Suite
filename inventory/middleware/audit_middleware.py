@@ -6,6 +6,8 @@ class AuditMiddleware:
     SENSITIVE_PREFIXES = (
         '/admin/', '/api/', '/kimlik-operasyonlari/', '/entegrasyon-merkezi/',
         '/itsm-olgunluk/', '/kullanici-yonetimi/', '/fabrika-portfoy-envanter/',
+        '/erp-entegrasyonlari/', '/ot-entegrasyonlari/', '/fabrika-komuta-merkezi/',
+        '/panel/', '/yonetisim-merkezi/',
     )
 
     def __init__(self, get_response):

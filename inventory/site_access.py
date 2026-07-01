@@ -78,6 +78,8 @@ def user_has_module_permission(user, module_code, required='view', factory_site=
         return False
     if user.is_superuser or user_has_global_site_access(user):
         return True
+    if is_support_staff(user) and not ModulePermissionGrant.objects.filter(user=user, is_active=True).exists():
+        return True
     if factory_site and not user_can_access_site(user, factory_site):
         return False
     grants = ModulePermissionGrant.objects.filter(
@@ -90,3 +92,8 @@ def user_has_module_permission(user, module_code, required='view', factory_site=
         if PERMISSION_RANK.get(grant.permission_level, 0) >= required_rank:
             return True
     return False
+
+
+def filter_tickets_for_user(queryset, user):
+    """Ticket queryset'ine tesis RBAC uygular."""
+    return filter_queryset_by_site(queryset, user)
