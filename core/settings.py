@@ -3,8 +3,8 @@ Django settings for core project.
 """
 
 from pathlib import Path
-from datetime import timedelta # Token süresi hesaplamak için
-from celery.schedules import crontab # Zamanlanmış görevler için
+from datetime import timedelta
+from celery.schedules import crontab
 import os
 import dj_database_url
 from django.utils.translation import gettext_lazy as _
@@ -40,10 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'social_django',
     'inventory.apps.InventoryConfig',
-    'rest_framework', 
-    'django_filters', # API Filtreleme Motoru
-    'drf_spectacular', # Swagger API Dokümantasyonu
-    'guardian', # YENİ: Nesne Bazlı Yetkilendirme (OLP)
+    'rest_framework',
+    'django_filters',
+    'drf_spectacular',
+    'guardian',
 ]
 
 SITE_ID = 1
@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware', # YENİ: Dil değiştirme altyapısı
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -109,9 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# ==========================================
-# --- YENİ: I18N (ÇOKLU DİL) AYARLARI ---
-# ==========================================
+# Internationalization
 LANGUAGE_CODE = 'tr'
 
 TIME_ZONE = 'Europe/Istanbul'
@@ -131,7 +129,7 @@ LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
 
-# --- SSO / OAuth2 / OpenID Connect / Azure AD Ayarları ---
+# SSO / OAuth2 / OIDC / Azure AD (temel)
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/login/'
@@ -210,9 +208,7 @@ def _parse_admins(value):
 
 ADMINS = _parse_admins(os.environ.get('ADMINS', ''))
 
-# ==========================================
-
-# Static files (CSS, JavaScript, Images)
+# Static files
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
@@ -231,11 +227,11 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = int(os.environ.get('DATA_UPLOAD_MAX_NUMBER_FIELD
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# --- GİRİŞ / ÇIKIŞ YÖNLENDİRMELERİ ---
-LOGIN_REDIRECT_URL = '/'  # Giriş başarılıysa ana sayfaya git
-LOGIN_URL = 'login'       # Giriş yapmamış biri zorlanırsa buraya at
+# Auth redirects
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
 
-# --- DJANGO REST FRAMEWORK AYARLARI ---
+# Django REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -258,13 +254,13 @@ REST_FRAMEWORK = {
     },
 }
 
-# --- JWT (JSON Web Token) AYARLARI ---
+# JWT
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60), 
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    
 }
 
-# --- SWAGGER / OPENAPI AYARLARI ---
+# OpenAPI / Swagger
 SPECTACULAR_SETTINGS = {
     'TITLE': 'OmniOps API',
     'DESCRIPTION': 'Ağ Cihazları, IPAM, Otomatik Konfigürasyon ve Bilet Yönetim Sistemi',
@@ -325,18 +321,14 @@ SPECTACULAR_SETTINGS = {
     },
 }
 
-# ==========================================
-# --- CELERY & REDİS AYARLARI ---
-# ==========================================
+# Celery and Redis
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://redis:6379/0')
 CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://redis:6379/0')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Europe/Istanbul'
 
-# ==========================================
-# --- CELERY BEAT (ZAMANLANMIŞ GÖREVLER) ---
-# ==========================================
+# Celery Beat schedule
 CELERY_BEAT_SCHEDULE = {
     'otomatik-ag-taramasi-gece': {
         'task': 'inventory.tasks.otomatik_ag_taramasi',
@@ -375,7 +367,6 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'inventory.tasks.distributed_probe_polling',
         'schedule': crontab(minute='*/15'),
     },
-    # YENİ EKLENDİ: DENETİM RAPORU (Her Pazartesi Sabah 08:00)
     'haftalik-denetim-raporu': {
         'task': 'inventory.tasks.generate_and_send_audit_report',
         'schedule': crontab(day_of_week='1', hour=8, minute=0), 
@@ -406,26 +397,20 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-# ==========================================
-# --- OMNIOPS GÜVENLİK VE WEBHOOK AYARLARI ---
-# ==========================================
+# Webhook and security
 WAZUH_API_KEY = os.environ.get('WAZUH_API_KEY', '')
 WEBHOOK_ALLOWED_IPS = [ip.strip() for ip in os.environ.get('WEBHOOK_ALLOWED_IPS', '127.0.0.1,::1').split(',') if ip.strip()]
 
 
-# ==========================================
-# --- GUARDIAN VE SSO YETKİLENDİRME MOTORLARI ---
-# ==========================================
-# Temel motorlar (Normal şifreli giriş ve Guardian) her zaman aktif olmalı
+# Authentication backends (Guardian OLP + conditional SSO)
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend', # Django'nun varsayılan motoru (Şifreli giriş)
-    'guardian.backends.ObjectPermissionBackend', # Guardian OLP motoru
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
 ]
 ANONYMOUS_USER_NAME = None
 GUARDIAN_GET_INIT_ANONYMOUS_USER = 'guardian.management.get_init_anonymous_user'
 
-# SADECE .env DOSYASINDA ANAHTARLAR VARSA SSO MOTORLARINI AKTİF ET!
-# Bu sayede anahtarlar boşken uygulamanın (HTTP 500) çökmesini kalıcı olarak önleriz.
+# SSO backends are registered only when credentials exist (prevents HTTP 500 on empty keys).
 if os.environ.get('SOCIAL_AUTH_AZUREAD_OAUTH2_KEY'):
     AUTHENTICATION_BACKENDS.insert(0, 'social_core.backends.azuread.AzureADOAuth2')
 
@@ -435,26 +420,14 @@ if os.environ.get('SOCIAL_AUTH_OIDC_KEY'):
 if os.environ.get('SAML_METADATA_URL'):
     AUTHENTICATION_BACKENDS.insert(0, 'social_core.backends.saml.SAMLAuth')
 
-# ==========================================
-# --- SSO / OAUTH2 / OIDC / SAML2 AYARLARI ---
-# ==========================================
+# SSO / OAuth2 / OIDC / SAML2
 
-# OIDC (OpenID Connect) Genel Ayarları
-SOCIAL_AUTH_OIDC_ENDPOINT = os.environ.get('SOCIAL_AUTH_OIDC_ENDPOINT', '')
-SOCIAL_AUTH_OIDC_KEY = os.environ.get('SOCIAL_AUTH_OIDC_KEY', '')
-SOCIAL_AUTH_OIDC_SECRET = os.environ.get('SOCIAL_AUTH_OIDC_SECRET', '')
-
-# Azure AD / Azure B2C Ayarları
-SOCIAL_AUTH_AZUREAD_OAUTH2_TENANT_ID = os.environ.get('SOCIAL_AUTH_AZUREAD_OAUTH2_TENANT_ID', '')
-SOCIAL_AUTH_AZUREAD_OAUTH2_KEY = os.environ.get('SOCIAL_AUTH_AZUREAD_OAUTH2_KEY', '')
-SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET = os.environ.get('SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET', '')
-
-# Okta Ayarları (OIDC üzerinden)
+# Okta (OIDC)
 SOCIAL_AUTH_OKTA_OPENID_ENDPOINT = os.environ.get('SOCIAL_AUTH_OKTA_OPENID_ENDPOINT', '')
 SOCIAL_AUTH_OKTA_OPENID_KEY = os.environ.get('SOCIAL_AUTH_OKTA_OPENID_KEY', '')
 SOCIAL_AUTH_OKTA_OPENID_SECRET = os.environ.get('SOCIAL_AUTH_OKTA_OPENID_SECRET', '')
 
-# SAML 2.0 Ayarları
+# SAML 2.0
 SOCIAL_AUTH_SAML_ORG_INFO = {
     'en-US': {
         'name': 'OmniOps',
@@ -473,102 +446,70 @@ SOCIAL_AUTH_SAML_SUPPORT_CONTACT = {
     'emailAddress': os.environ.get('SAML_SUPPORT_CONTACT_EMAIL', 'support@omniops.example.com'),
 }
 
-# SAML Attribute Mapping: SAML'deki attributes'ları Django user fields'ine eşle
+# SAML attribute mapping (Just-in-Time provisioning)
 SOCIAL_AUTH_SAML_ATTRIBUTE_MAPPING = {
     'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress': ('email',),
     'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname': ('first_name',),
     'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname': ('last_name',),
     'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn': ('username',),
-    'groups': ('groups',),  # Grup bilgisi - Just-in-Time Provisioning için
+    'groups': ('groups',),
 }
 
-# SAML Metadata dosyasının URL'si (IdP'den alınır)
+# SAML metadata (IdP)
 SAML_METADATA_URL = os.environ.get('SAML_METADATA_URL', '')
 SAML_ENTITY_ID = os.environ.get('SAML_ENTITY_ID', 'https://omniops.example.com/saml2/metadata/')
 SAML_ASSERTION_CONSUMER_SERVICE_URL = os.environ.get('SAML_ACS_URL', 'https://omniops.example.com/accounts/complete/saml/')
 
-# Social Auth Just-in-Time Provisioning Pipeline
+# Social auth pipeline (JIT role mapping via inventory.sso_pipeline)
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.auth.auth_allowed',
     'social_core.pipeline.auth.social_uid_from_whomami',
     'social_core.pipeline.auth.social_user',
     'social_core.pipeline.user.get_username',
     'social_core.pipeline.user.create_user',
-    'inventory.sso_pipeline.update_user_role_from_sso',  # YENİ: Rol/Grup Eşleştirmesi
+    'inventory.sso_pipeline.update_user_role_from_sso',
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 )
 
-# SSO Yönlendirmeleri
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/kullanici-paneli/'
-SOCIAL_AUTH_LOGIN_ERROR_URL = '/login/'
 SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/login/'
-
-# SSO ile giriş yapan kullanıcıları admin olarak işle (opsiyonel)
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
-SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
-
-# Kullanıcı ayrıntılarını otomatik olarak güncelle
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
-# ==========================================
-# --- SAML2 GÜVENLİK AYARLARI ---
-# ==========================================
-# SAML2 sertifika ve anahtar dosyaları (üretim ortamında gerekli)
-# Format: /path/to/sp.crt, /path/to/sp.key
+# SAML SP certificates (production)
 SOCIAL_AUTH_SAML_SP_CERTIFICATE_FILE = os.environ.get('SAML_SP_CERTIFICATE_FILE', None)
 SOCIAL_AUTH_SAML_SP_PRIVATE_KEY_FILE = os.environ.get('SAML_SP_PRIVATE_KEY_FILE', None)
 
-# SAML2 imzalama ve şifreleme ayarları
+# SAML signing and encryption
 SOCIAL_AUTH_SAML_SECURITY_CONFIG = {
     'nameIDFormat': 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-    'signMetadata': True,  # Metadata'yı imzala
-    'wantAssertionsSigned': True,  # Assertion imzalaması iste
-    'wantAssertionsEncrypted': False,  # Assertion şifrelemesi iste (mı?)
-    'wantNameIDEncrypted': False,  # NameID şifrelemesi iste
+    'signMetadata': True,
+    'wantAssertionsSigned': True,
+    'wantAssertionsEncrypted': False,
+    'wantNameIDEncrypted': False,
 }
 
-# ==========================================
-# --- OKTA / OKTA WORKFORCE İDENTİTY MANAGEMENT
-# ==========================================
-# Okta SAML ayarları (alternatif: OIDC)
+# Okta SAML (alternative to OIDC)
 SOCIAL_AUTH_OKTA_SAML_METADATA_URL = os.environ.get('SOCIAL_AUTH_OKTA_SAML_METADATA_URL', '')
 
-# ==========================================
-# --- OPENID CONNECT (OIDC) GENIŞLETME AYARLARI
-# ==========================================
-# OIDC kapsamı (scope) - hangi bilgileri talep edelim
+# OIDC scopes and optional providers
 SOCIAL_AUTH_OIDC_SCOPE = ['openid', 'profile', 'email', 'groups']
-
-# OIDC claim mapping - IdP'den gelen claim'leri user field'lerine eşle
 SOCIAL_AUTH_OIDC_ID_TOKEN_DECRYPTION_ALGORITHM = 'RS256'
 
-# Google OAuth2 (Opsiyonel)
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', '')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', '')
 
-# GitHub OAuth2 (Opsiyonel)
 SOCIAL_AUTH_GITHUB_KEY = os.environ.get('SOCIAL_AUTH_GITHUB_KEY', '')
 SOCIAL_AUTH_GITHUB_SECRET = os.environ.get('SOCIAL_AUTH_GITHUB_SECRET', '')
 
-# ==========================================
-# --- SSO EXTENDED SECURITY
-# ==========================================
-# Sosyal auth ile birden fazla bağlantıya izin ver
+# SSO extended security
 SOCIAL_AUTH_ALLOW_REDIRECT_AFTER_DISCONNECT = True
-
-# SAML sertifikası doğrulaması zorunlu
 SOCIAL_AUTH_SAML_STRICT_METADATA_VALIDATION = os.environ.get('SOCIAL_AUTH_SAML_STRICT_VALIDATION', 'True').lower() == 'true'
-
-# Kullanıcı kaydında email doğrulaması gerekliliği
 SOCIAL_AUTH_EMAIL_VALIDATION_FUNCTION = 'social_core.utils.silent_email_validator'
 SOCIAL_AUTH_EMAIL_REQUIRED = True
 
-# ==========================================
-# --- ÜRETİM GÜVENLİK AYARLARI ---
-# ==========================================
+# Production security headers
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True

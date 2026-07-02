@@ -193,9 +193,7 @@ def global_search_api(request):
     return JsonResponse({'results': results[:30]})
 
 
-# ========================================================
-# --- ISI HARİTASI ALGORİTMASI ---
-# ========================================================
+# Isı haritası (ticket yoğunluk skoru)
 def generate_heatmap_data():
     """Son 30 günün loglarını gün ve saat bazında sayarak Heatmap veri yapısına dönüştürür."""
     thirty_days_ago = timezone.now() - timedelta(days=30)
@@ -219,7 +217,6 @@ def dashboard(request):
     if not request.user.is_staff:
         return redirect('user_panel')
         
-    # --- PERFORMANS OPTİMİZASYONU: PAGINATOR EKLENDİ ---
     ticket_base = filter_tickets_for_user(
         Ticket.objects.select_related('created_by', 'assigned_to', 'device', 'factory_site'),
         request.user,
@@ -241,9 +238,7 @@ def dashboard(request):
     kb_count = KnowledgeBaseArticle.objects.count()
     acik_bilet_sayisi = ticket_base.filter(status='Acik').count()
 
-    # ========================================================
-    # --- OLAY ODAKLI (EVENT-DRIVEN) TREND MATEMATİĞİ ---
-    # ========================================================
+    # Olay odaklı trend (son 7 gün)
     now = timezone.now()
     yesterday = now - timedelta(days=1)
     
@@ -254,9 +249,7 @@ def dashboard(request):
     device_alert_class = 'danger' if offline_device_count > 0 else 'success'
     license_alert_class = 'danger' if expiring_licenses.exists() else 'success'
 
-    # ========================================================
-    # --- AIOps ZEKİ AKSİYON ÖNERİLERİ (OPERASYONEL ZEKA) ---
-    # ========================================================
+    # AIOps aksiyon önerileri
     action_suggestions = []
     
     critical_tickets = ticket_base.filter(status__in=['Acik', 'Inceleniyor'], priority='Kritik')
@@ -379,9 +372,7 @@ def dashboard_refresh(request):
     return JsonResponse(response_payload)
 
 
-# ========================================================
-# --- NESNE BAZLI YETKİLENDİRİLMİŞ ENVANTER GÖRÜNÜMÜ ---
-# ========================================================
+# Envanter (nesne bazlı yetkilendirme)
 @login_required
 def it_inventory_view(request):
     if not request.user.is_staff:
@@ -409,7 +400,6 @@ def it_inventory_view(request):
             messages.success(request, "Tedarikçi sözleşmesi başarıyla kaydedildi.")
             return redirect('it_inventory')
 
-    # --- NESNE BAZLI YETKİLENDİRME (OLP) ---
     if request.user.is_superuser:
         assets_qs = ITAsset.objects.all()
         licenses_qs = License.objects.all()
@@ -942,8 +932,7 @@ def bulk_config_generator(request):
             config_payload=config_payload
         )
         bulk_cr.target_devices.set(selected_device_ids)
-        
-        # YENİ: Tek tek geciktirmek yerine tüm listeyi işleyecek ana paralel görevi tetikliyoruz
+
         from .tasks import bulk_push_config_to_devices
         bulk_push_config_to_devices.delay(bulk_cr.id)
             
@@ -1062,9 +1051,7 @@ def custom_admin(request):
     return render(request, 'custom_admin.html', context)
 
 
-# ========================================================
-# --- WEBHOOK ---
-# ========================================================
+# Webhook (Wazuh / syslog alert ingestion)
 @csrf_exempt
 def device_alert_webhook(request):
     if request.method != 'POST':
@@ -1439,9 +1426,7 @@ def executive_summary_export(request, export_format):
     return response
 
 
-# ========================================================
-# --- RAPORLAMA MERKEZİ (REPORTING HUB) ---
-# ========================================================
+# Raporlama merkezi
 @login_required
 @role_required(['Ağ Ekibi', 'Yönetim'])
 def reporting_hub_view(request):
@@ -1541,9 +1526,7 @@ def reporting_hub_view(request):
     return render(request, 'reporting_hub.html')
 
 
-# ========================================================
-# --- EVRENSEL (GENERIC) CRUD (DÜZENLEME VE SİLME) GÖRÜNÜMLERİ ---
-# ========================================================
+# Generic CRUD views (panel düzenleme/silme)
 
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     raise_exception = True
@@ -1552,7 +1535,7 @@ class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
         return self.request.user.is_staff or self.request.user.is_superuser
 
 
-# --- CİHAZ (DONANIM) ---
+# Device CRUD
 class DeviceUpdateView(StaffRequiredMixin, UpdateView):
     model = Device
     form_class = DeviceForm
@@ -1564,7 +1547,7 @@ class DeviceDeleteView(StaffRequiredMixin, DeleteView):
     template_name = 'inventory/generic_confirm_delete.html'
     success_url = reverse_lazy('custom_admin')
 
-# --- LİSANS ---
+# License CRUD
 class LicenseUpdateView(StaffRequiredMixin, UpdateView):
     model = License
     form_class = LicenseForm
@@ -1576,7 +1559,7 @@ class LicenseDeleteView(StaffRequiredMixin, DeleteView):
     template_name = 'inventory/generic_confirm_delete.html'
     success_url = reverse_lazy('it_inventory')
 
-# --- TEDARİKÇİ (VENDOR CONTRACT) ---
+# Vendor contract CRUD
 class VendorContractUpdateView(StaffRequiredMixin, UpdateView):
     model = VendorContract
     fields = '__all__'
@@ -1588,7 +1571,7 @@ class VendorContractDeleteView(StaffRequiredMixin, DeleteView):
     template_name = 'inventory/generic_confirm_delete.html'
     success_url = reverse_lazy('it_inventory')
 
-# --- ZİMMET (IT ASSET) ---
+# IT asset CRUD
 class ITAssetUpdateView(StaffRequiredMixin, UpdateView):
     model = ITAsset
     form_class = ITAssetForm
@@ -1600,7 +1583,7 @@ class ITAssetDeleteView(StaffRequiredMixin, DeleteView):
     template_name = 'inventory/generic_confirm_delete.html'
     success_url = reverse_lazy('it_inventory')
 
-# --- IP ADRESİ (IPAM) ---
+# IP address CRUD
 class IpAddressUpdateView(StaffRequiredMixin, UpdateView):
     model = IpAddress
     form_class = IpAddressForm
@@ -1612,7 +1595,7 @@ class IpAddressDeleteView(StaffRequiredMixin, DeleteView):
     template_name = 'inventory/generic_confirm_delete.html'
     success_url = reverse_lazy('visual_ipam')
 
-# --- DESTEK BİLETİ (TICKET) ---
+# Ticket CRUD
 class TicketUpdateView(StaffRequiredMixin, UpdateView):
     model = Ticket
     form_class = TicketForm

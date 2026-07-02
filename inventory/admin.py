@@ -98,18 +98,14 @@ admin.site.register(BackupVendorConnection)
 admin.site.register(WMSConnection)
 admin.site.register(ModulePermissionGrant)
 
-# ========================================================
-# --- ITSM HİZMET KATALOĞU YÖNETİMİ ---
-# ========================================================
+# ITSM service catalog
 @admin.register(ServiceCatalogItem)
 class ServiceCatalogItemAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'requires_approval')
     search_fields = ('title', 'description')
     list_filter = ('category', 'requires_approval')
 
-# ========================================================
-# --- SİSTEM LOGLARI YÖNETİMİ ---
-# ========================================================
+# System logs
 @admin.register(SystemLog)
 class SystemLogAdmin(admin.ModelAdmin):
     list_display = ('action', 'user', 'created_at') # Listede görünecek sütunlar
@@ -123,9 +119,7 @@ class SystemLogAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
-# ========================================================
-# --- CİHAZ YEDEKLERİ YÖNETİMİ ---
-# ========================================================
+# Device backups
 @admin.register(DeviceBackup)
 class DeviceBackupAdmin(admin.ModelAdmin):
     list_display = ('device', 'created_at', 'backed_up_by')

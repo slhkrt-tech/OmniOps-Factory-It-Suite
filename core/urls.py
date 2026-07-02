@@ -4,11 +4,11 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 from inventory.views import (
-    config_generator, dashboard, dashboard_refresh, subnet_calculator, export_pdf, 
-    export_csv, network_scanner, custom_admin, user_panel, 
-    register_page, visual_ipam, live_monitor, get_monitor_data, 
-    network_topology, device_backup_view, 
-    bulk_config_generator, # Toplu İşlem Fonksiyonu
+    config_generator, dashboard, dashboard_refresh, subnet_calculator, export_pdf,
+    export_csv, network_scanner, custom_admin, user_panel,
+    register_page, visual_ipam, live_monitor, get_monitor_data,
+    network_topology, device_backup_view,
+    bulk_config_generator,
     it_inventory_view,
     system_logs_view,
     port_mapping_view,
@@ -16,10 +16,10 @@ from inventory.views import (
     sync_ad_users,
     knowledge_base_view,
     search_kb_api,
-    device_alert_webhook, # Webhook Fonksiyonu
-    config_diff_view,     # Config Karşılaştırma (Diff)
-    rack_elevation_view,  # Veri Merkezi Kabin Çizimi
-    reporting_hub_view,   # YENİ: Raporlama Merkezi
+    device_alert_webhook,
+    config_diff_view,
+    rack_elevation_view,
+    reporting_hub_view,
     global_search_api,
     executive_summary_view,
     executive_summary_export,
@@ -43,25 +43,21 @@ from inventory.enterprise_views import (
     wopi_check_file_info, wopi_file_contents,
 )
 
-# API Router ve api_views içe aktarmaları
-from rest_framework.routers import DefaultRouter
 from inventory import api_views
-from inventory.api_views import get_rack_devices # YENİ: Kabin çizim API'sini içe aktardık
+from inventory.api_views import get_rack_devices
+from rest_framework.routers import DefaultRouter
 
-# JWT Kimlik Doğrulaması için gerekli view'lar
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 
-# Swagger ve ReDoc için gerekli Spectacular view'ları
 from drf_spectacular.views import (
     SpectacularAPIView, 
     SpectacularRedocView, 
     SpectacularSwaggerView
 )
 
-# --- DRF ROUTER KURULUMU ---
 router = DefaultRouter()
 router.register(r'devices', api_views.DeviceViewSet, basename='device')
 router.register(r'ip-addresses', api_views.IpAddressViewSet, basename='ipaddress')
@@ -125,13 +121,11 @@ urlpatterns = [
     path('health/', health_check, name='health_check'),
     path('metrics/', prometheus_metrics_view, name='prometheus_metrics'),
 
-    # YENİ: Dil değiştirme rotası
     path('i18n/', include('django.conf.urls.i18n')),
 
-    # Django'nun varsayılan admin paneli
-    path('admin/', admin.site.urls), 
-    
-    # --- GİRİŞ, ÇIKIŞ VE KAYIT SAYFALARI ---
+    path('admin/', admin.site.urls),
+
+    # Auth
     path('login/', auth_views.LoginView.as_view(
         template_name='login.html',
         extra_context={
@@ -142,7 +136,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path('kayit-ol/', register_page, name='register'),
     
-    # --- UYGULAMA SAYFALARI ---
+    # Application routes
     path('uretici/', config_generator, name='generator'),
     path('subnet-hesapla/', subnet_calculator, name='subnet_calc'),
     path('indir-pdf/', export_pdf, name='export_pdf'),
@@ -158,14 +152,12 @@ urlpatterns = [
     path('topoloji/png/', topology_png_export, name='topology_png_export'),
     
     path('yedekleme/', device_backup_view, name='device_backup'), 
-    path('toplu-generator/', bulk_config_generator, name='bulk_config_generator'), # Toplu İşlem Rotası
+    path('toplu-generator/', bulk_config_generator, name='bulk_config_generator'),
     path('konfigurasyon-karsilastir/<int:device_id>/', config_diff_view, name='config_diff'),
     
-    # Veri Merkezi Kabin Haritası Rotası
     path('veri-merkezi/', rack_elevation_view, name='rack_elevation'),
-    
-    # YENİ: Raporlama Merkezi (PDF Çıktıları)
-    path('raporlar/', reporting_hub_view, name='reporting_hub'), 
+
+    path('raporlar/', reporting_hub_view, name='reporting_hub'),
     path('yonetici-bilgilendirme/', executive_summary_view, name='executive_summary'),
     path('yonetici-bilgilendirme/<str:export_format>/', executive_summary_export, name='executive_summary_export'),
     
@@ -214,38 +206,28 @@ urlpatterns = [
     path('port-haritasi/<int:device_id>/', port_mapping_view, name='port_mapping'),
     path('ad-sync/', sync_ad_users, name='sync_ad_users'), 
     
-    # ==========================================
-    # --- BİLGİ BANKASI ROTALARI ---
-    # ==========================================
     path('bilgi-bankasi/', knowledge_base_view, name='knowledge_base'),
     path('api/kb-ara/', search_kb_api, name='search_kb_api'),
-    
-    # ==========================================
-    # --- REST API VE WEBHOOK ROTALARI ---
-    # ==========================================
+
+    # REST API and webhooks
     path('api/', include(router.urls)),
     path('', include('inventory.urls')),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')), 
     path('oauth/', include('social_django.urls', namespace='social')),
     
-    # YENİ EKLENEN RACK API ROTASI
     path('api/rack-devices/', get_rack_devices, name='rack_devices_api'),
-    
-    # Reaktif İzleme (Syslog/Trap) Uç Noktası
     path('api/webhook/alert/', device_alert_webhook, name='device_alert_webhook'),
-    
-    # JWT Token Rotaları
+
+    # JWT
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    # ==========================================
-    # --- API DOKÜMANTASYONU (SWAGGER/REDOC) ---
-    # ==========================================
+    # OpenAPI docs
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     
-    # Ana Sayfa (Dashboard)
+    # Dashboard (home)
     path('', dashboard, name='dashboard'),
 ]
 

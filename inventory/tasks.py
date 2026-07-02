@@ -10,7 +10,7 @@ import os
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from django.db import transaction
-from django.db import connection # YENİ: Risk 1 çözümü için
+from django.db import connection
 from .models import Device, IpAddress, License, VendorContract, SystemLog, User, Ticket, DevicePerformanceLog, ITAsset
 from .utils import (
     scan_network, deep_discover_device, push_config_to_device, 
@@ -18,7 +18,7 @@ from .utils import (
     check_all_devices_predictive_maintenance
 )
 
-# --- MEVCUT RUTİN GÖREVLER ---
+# Routine scheduled tasks
 
 @shared_task(name="inventory.tasks.otomatik_ag_taramasi", soft_time_limit=3600, time_limit=3660)
 def otomatik_ag_taramasi(network="192.168.1.0/24"):
@@ -397,9 +397,7 @@ def periodic_security_poll():
         scanned += 1
     return f"Security poll tamamlandı. {scanned} cihaz tarandı."
 
-# ========================================================
-# --- VERİ ARŞİVLEME VE TEMİZLEME (DATA RETENTION) ---
-# ========================================================
+# Veri arşivleme (retention)
 @shared_task(soft_time_limit=3600, time_limit=3660)
 def data_retention_policy_task():
     """Her ayın 1'inde 90 günden eski performans ve sistem loglarını CSV/PDF olarak arşivler ve siler."""
@@ -475,9 +473,7 @@ def archive_old_performance_logs():
     return data_retention_policy_task()
 
 
-# ========================================================
-# --- AIOPS - TAHMİNLEYİCİ BAKIM ---
-# ========================================================
+# AIOps — tahminleyici bakım
 @shared_task(soft_time_limit=3600, time_limit=3660)
 def run_predictive_maintenance():
     """Celery Beat üzerinden her gün tetiklenecek görev."""
@@ -485,9 +481,7 @@ def run_predictive_maintenance():
     SystemLog.objects.create(action='SYSTEM', details=f"AIOps: {result}")
     return result
 
-# ========================================================
-# --- WAZUH ACTIVE RESPONSE (OTONOM SİBER SAVUNMA) ---
-# ========================================================
+# Wazuh active response
 @shared_task
 def active_response_block_ip(attacker_ip, device_id):
     """Siber saldırı (Brute-Force) tespit edildiğinde IP bloklar."""
@@ -526,9 +520,7 @@ def active_response_block_ip(attacker_ip, device_id):
         return f"Savunma Başarısız: {msg}"
 
 
-# ========================================================
-# --- KAMERA / NVR HEALTH POLLING ---
-# ========================================================
+# Kamera / NVR health polling
 @shared_task(name='inventory.tasks.poll_camera_health_task')
 def poll_camera_health_task():
     """Celery Beat: kamera/NVR cihazlarının TCP ve HTTP erişilebilirliğini periyodik kontrol eder."""
@@ -545,9 +537,7 @@ def poll_camera_health_task():
     return message
 
 
-# ========================================================
-# --- ODOO / ERP CONNECTOR SYNC ---
-# ========================================================
+# ERP connector sync
 @shared_task(name='inventory.tasks.sync_erp_connection_task')
 def sync_erp_connection_task(connection_id):
     """Tek bir ERP bağlantısı için senkronizasyon görevini çalıştırır."""
@@ -678,9 +668,7 @@ def poll_integration_health_task():
     return f'{updated} entegrasyon kontrol edildi.'
 
 
-# ========================================================
-# --- ENTEGRASYON MERKEZİ SYNC GÖREVLERİ ---
-# ========================================================
+# Entegrasyon merkezi sync
 @shared_task(name='inventory.tasks.sync_monitoring_connection_task')
 def sync_monitoring_connection_task(connection_id):
     from .integrations.integration_hub import IntegrationHubError, sync_monitoring_connection
@@ -802,9 +790,7 @@ def sync_all_integration_hub_task():
     return f'{queued} entegrasyon hub sync işi kuyruğa alındı.'
 
 
-# ========================================================
-# --- BULK KONFİGÜRASYON (ASENKRON VE PARALEL YAPI) ---
-# ========================================================
+# Toplu konfigürasyon (paralel Celery)
 
 def _atomic_device_config_push(device_id, config_payload, vendor, change_request_id):
     """Her bir cihaz için paralel iş parçacığında tetiklenecek atomik SSH fonksiyonu."""
@@ -925,9 +911,7 @@ def bulk_push_config_to_devices(change_request_id):
     except ChangeRequest.DoesNotExist:
         return f"Error: ChangeRequest ID #{change_request_id} not found."
 
-# ========================================================
-# --- DENETİM VE UYUMLULUK RAPORU (AUDIT REPORT) ---
-# ========================================================
+# Denetim raporu (haftalık PDF)
 @shared_task(soft_time_limit=3600, time_limit=3660)
 def generate_and_send_audit_report():
     """Haftalık denetim raporu (Audit Report) oluşturur ve yöneticilere PDF olarak e-postalar."""

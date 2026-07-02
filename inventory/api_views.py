@@ -833,9 +833,7 @@ class DevicePerformanceLogViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ['device__name']
     ordering_fields = ['recorded_at']
 
-# ==================================================
-# --- DAĞITIK PROBE (AJAN) UÇ NOKTALARI ---
-# ==================================================
+# Dağıtık probe (remote agent) endpoints
 class RemoteProbeViewSet(viewsets.ModelViewSet):
     """Uzak Ajanların (Probe) merkez sunucuyla iletişim kurduğu API noktası."""
     queryset = RemoteProbe.objects.all()
@@ -1372,9 +1370,7 @@ class ModulePermissionGrantViewSet(viewsets.ModelViewSet):
         serializer.save(granted_by=self.request.user)
 
 
-# ==================================================
-# --- KABİN ÇİZİMİ İÇİN API ---
-# ==================================================
+# Rack elevation API
 @extend_schema(responses={200: OpenApiTypes.OBJECT})
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
