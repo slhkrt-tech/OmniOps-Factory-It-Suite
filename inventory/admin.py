@@ -22,6 +22,7 @@ from .models import (
     ProblemRecord, ReleaseRecord, NotificationChannel, MonitoringConnection,
     VMSConnection, EmailTicketInbox, ImmutableAuditEntry, AssetLifecycleEvent,
     BackupVendorConnection, WMSConnection, ModulePermissionGrant,
+    OrganizationWorkspace, UserWorkspacePreference,
 )
 
 # Temel ve basit modellerin doğrudan kaydı
@@ -128,3 +129,15 @@ class DeviceBackupAdmin(admin.ModelAdmin):
     
     # GÜVENLİK: Alınan yedekler admin panelinden elle değiştirilemez! Sadece okunabilir.
     readonly_fields = ('device', 'config_text', 'created_at', 'backed_up_by')
+
+
+@admin.register(OrganizationWorkspace)
+class OrganizationWorkspaceAdmin(admin.ModelAdmin):
+    list_display = ('name', 'primary_industry', 'is_active', 'updated_at')
+    list_filter = ('primary_industry', 'is_active')
+
+
+@admin.register(UserWorkspacePreference)
+class UserWorkspacePreferenceAdmin(admin.ModelAdmin):
+    list_display = ('user', 'active_factory_site', 'drag_drop_enabled', 'updated_at')
+    search_fields = ('user__username',)

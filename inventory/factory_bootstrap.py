@@ -128,6 +128,49 @@ SITE_PORTFOLIO = [
             },
         ],
     },
+    {
+        'code': 'SITE-SOLAR-01',
+        'title': 'Ege Güneş PV Santrali',
+        'short_name': 'Ege Solar',
+        'industry_type': 'solar',
+        'customer_name': 'Ege Güneş Enerji A.Ş.',
+        'portfolio_code': 'PORT-EGE-SOLAR',
+        'inventory_panel_title': 'İnverter & String Envanteri',
+        'department_label': 'Saha',
+        'zone_label': 'İnverter Grubu',
+        'city': 'Denizli',
+        'departments': [
+            {
+                'name': 'PV Saha', 'code': 'SAHA', 'department_type': 'production', 'criticality': 'critical',
+                'manager_name': 'Saha Sorumlusu', 'floor_label': 'Arazi',
+                'zones': [
+                    {'name': 'String Blok A', 'code': 'STR-A', 'zone_type': 'production_line', 'criticality': 'high'},
+                    {'name': 'İnverter İstasyonu 1', 'code': 'INV-01', 'zone_type': 'production_line', 'criticality': 'critical'},
+                ],
+                'inventory': [
+                    {'title': 'Huawei SUN2000 İnverter', 'item_type': 'production', 'category_label': 'İnverter', 'quantity': 12},
+                    {'title': 'SCADA RTU', 'item_type': 'production', 'category_label': 'Telemetri', 'quantity': 2},
+                ],
+            },
+            {
+                'name': 'OG Trafo Merkezi', 'code': 'OG', 'department_type': 'maintenance', 'criticality': 'critical',
+                'manager_name': 'OG Bakım Şefi', 'floor_label': 'Trafo',
+                'zones': [{'name': 'OG Switchgear', 'code': 'OG-01', 'zone_type': 'room', 'criticality': 'critical'}],
+                'inventory': [
+                    {'title': 'OG Koruma Rölesi', 'item_type': 'production', 'category_label': 'Koruma', 'quantity': 4},
+                ],
+            },
+            {
+                'name': 'Bilgi İşlem', 'code': 'BIT', 'department_type': 'it', 'criticality': 'high',
+                'manager_name': 'OT/IT Sorumlusu', 'floor_label': 'Kontrol Binası',
+                'zones': [{'name': 'SCADA Odası', 'code': 'SCADA-01', 'zone_type': 'server_room', 'criticality': 'critical'}],
+                'inventory': [
+                    {'title': 'SCADA Historian Sunucusu', 'item_type': 'it_asset', 'category_label': 'Sunucu', 'quantity': 1},
+                    {'title': 'Saha Fiber Switch', 'item_type': 'network', 'category_label': 'Ağ', 'quantity': 3},
+                ],
+            },
+        ],
+    },
 ]
 
 

@@ -1,10 +1,5 @@
-/* ==========================================
-   OMNIOPS MERKEZİ JAVASCRIPT DOSYASI
-========================================== */
-
-// Sayfa yüklendiğinde çalışacak fonksiyon
+/* OmniOps global UI scripts */
 document.addEventListener('DOMContentLoaded', () => {
-    // --- BOOTSTRAP TOOLTIP'LERİNİ TÜM SAYFALARDA OTOMATİK BAŞLAT ---
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);

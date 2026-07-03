@@ -1912,6 +1912,7 @@ class FactorySite(models.Model):
         ('metal', 'Metal & Makine'),
         ('logistics', 'Lojistik & Depo'),
         ('energy', 'Enerji'),
+        ('solar', 'Güneş Enerjisi'),
         ('paper', 'Kağıt & Ambalaj'),
         ('generic', 'Genel Endüstri'),
         ('custom', 'Özel Sektör Tanımı'),
@@ -2929,9 +2930,54 @@ class ModulePermissionGrant(models.Model):
         return f"{self.user.username} · {site} · {self.get_module_code_display()}"
 
 
-# ==========================================
-# --- YENİ: AIOps Tahminleyici Bakım Modeli ---
-# ==========================================
+class OrganizationWorkspace(models.Model):
+    """Kurulum genelinde çalışma alanı profili (sektör, modüller, terminoloji)."""
+    INDUSTRY_TYPE_CHOICES = FactorySite.INDUSTRY_TYPE_CHOICES
+
+    name = models.CharField(max_length=120, default='OmniOps', verbose_name="Çalışma Alanı Adı")
+    primary_industry = models.CharField(
+        max_length=30, choices=INDUSTRY_TYPE_CHOICES, default='generic', db_index=True,
+        verbose_name="Birincil Sektör",
+    )
+    custom_industry_label = models.CharField(max_length=80, blank=True, verbose_name="Özel Sektör Adı")
+    tagline = models.CharField(max_length=160, blank=True, verbose_name="Alt Başlık")
+    enabled_modules = models.JSONField(default=list, blank=True, verbose_name="Aktif Modüller")
+    module_labels = models.JSONField(default=dict, blank=True, verbose_name="Modül Etiketleri")
+    terminology = models.JSONField(default=dict, blank=True, verbose_name="Terminoloji")
+    feature_overrides = models.JSONField(default=dict, blank=True, verbose_name="Özellik Bayrakları")
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Aktif Profil")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+
+    class Meta:
+        verbose_name = "Kurum Çalışma Alanı"
+        verbose_name_plural = "Kurum Çalışma Alanları"
+
+    def __str__(self):
+        return f"{self.name} · {self.get_primary_industry_display()}"
+
+
+class UserWorkspacePreference(models.Model):
+    """Kullanıcı bazlı düzen, sürükle-bırak layout ve aktif tesis."""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='workspace_preference', verbose_name="Kullanıcı")
+    active_factory_site = models.ForeignKey(
+        FactorySite, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='active_for_users', verbose_name="Aktif Tesis",
+    )
+    dashboard_layout = models.JSONField(default=list, blank=True, verbose_name="Panel Widget Sırası")
+    sidebar_layout = models.JSONField(default=list, blank=True, verbose_name="Menü Grup Sırası")
+    hidden_widgets = models.JSONField(default=list, blank=True, verbose_name="Gizli Widget'lar")
+    drag_drop_enabled = models.BooleanField(default=True, verbose_name="Sürükle-Bırak Aktif")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+
+    class Meta:
+        verbose_name = "Kullanıcı Çalışma Alanı Tercihi"
+        verbose_name_plural = "Kullanıcı Çalışma Alanı Tercihleri"
+
+    def __str__(self):
+        return f"{self.user.username} workspace prefs"
+
+
+# AIOps tahminleyici bakım
 class DevicePerformanceLog(models.Model):
     """ Cihazların anlık performans verilerini tutan ve AI Tahminlemesi için kullanılan model """
     device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='performance_logs')

@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}OmniOps - {% trans "Çalışma Alanı" %}{% endblock %}
+{% block page_heading %}{% trans "Çalışma Alanı Studio" %}{% endblock %}
+
+{% block content %}
+<div class="ops-page">
+    <div class="ops-page-head">
+        <div>
+            <p class="ops-page-sub mb-0">
+                {% trans "Sektörünüze göre modülleri, etiketleri ve panel düzenini özelleştirin. Tekstil tesisindeki BT ekranı ile güneş santrali operasyonu aynı olmamalı." %}
+            </p>
+        </div>
+        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">
+            {{ workspace.industry_label }}
+        </span>
+    </div>
+
+    <section class="ops-bento">
+        <div class="ops-panel ops-span-8">
+            <div class="ops-panel__head">
+                <h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:tune-variant"></span>{% trans "Aktif Profil" %}</h6>
+            </div>
+            <div class="ops-panel__body">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <div class="ops-metric ops-metric--info h-100">
+                            <div class="ops-metric__label">{% trans "Sektör" %}</div>
+                            <div class="ops-metric__value" style="font-size:1.35rem;">{{ workspace.industry_label }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ops-metric ops-metric--success h-100">
+                            <div class="ops-metric__label">{% trans "Aktif Modül" %}</div>
+                            <div class="ops-metric__value">{{ enabled_module_count }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ops-metric ops-metric--warning h-100">
+                            <div class="ops-metric__label">{% trans "Sürükle-Bırak" %}</div>
+                            <div class="ops-metric__value" style="font-size:1.35rem;">{% if prefs.drag_drop_enabled %}{% trans "Açık" %}{% else %}{% trans "Kapalı" %}{% endif %}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="fw-bold mb-2">{% trans "Sektör Şablonları" %}</h6>
+                <div class="row g-2">
+                    {% for key, preset in industry_presets.items %}
+                    <div class="col-md-6 col-xl-4">
+                        <div class="ops-suggestion h-100 {% if workspace.industry == key %}border border-primary{% endif %}">
+                            <strong>{{ preset.label }}</strong>
+                            <p class="text-muted small mb-2">{{ preset.modules|length }} modül · {{ preset.terminology.department_label|default:"Bölüm" }}</p>
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for mod in preset.modules|slice:":4" %}
+                                <span class="badge bg-body-secondary text-body-secondary">{{ mod }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="ops-panel ops-span-4">
+            <div class="ops-panel__head">
+                <h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:account-cog-outline"></span>{% trans "Kişisel Tercihler" %}</h6>
+            </div>
+            <div class="ops-panel__body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="user_prefs">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small">{% trans "Aktif tesis" %}</label>
+                        <select name="active_factory_site" class="form-select">
+                            <option value="">{% trans "Otomatik (sektöre göre)" %}</option>
+                            {% for site in sites %}
+                            <option value="{{ site.id }}" {% if prefs.active_factory_site_id == site.id %}selected{% endif %}>
+                                {{ site.display_title }} · {{ site.industry_display }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="drag_drop_enabled" id="dragDropToggle" {% if prefs.drag_drop_enabled %}checked{% endif %}>
+                        <label class="form-check-label" for="dragDropToggle">{% trans "Sürükle-bırak düzenleme" %}</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mb-2">{% trans "Kaydet" %}</button>
+                </form>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="reset_layout">
+                    <button type="submit" class="btn btn-outline-secondary w-100">{% trans "Panel düzenini sıfırla" %}</button>
+                </form>
+            </div>
+        </div>
+
+        {% if user.is_superuser %}
+        <div class="ops-panel ops-span-12">
+            <div class="ops-panel__head">
+                <h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:office-building-cog-outline"></span>{% trans "Kurum Profili (Yönetici)" %}</h6>
+            </div>
+            <div class="ops-panel__body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="org_profile">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small">{% trans "Birincil sektör" %}</label>
+                            <select name="primary_industry" class="form-select">
+                                {% for value, label in industry_choices %}
+                                <option value="{{ value }}" {% if org.primary_industry == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small">{% trans "Özel sektör adı" %}</label>
+                            <input type="text" name="custom_industry_label" class="form-control" value="{{ org.custom_industry_label }}" placeholder="{% trans 'Örn: Güneş Paneli Üretimi' %}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small">{% trans "Alt başlık" %}</label>
+                            <input type="text" name="tagline" class="form-control" value="{{ org.tagline }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold small">{% trans "Aktif modüller" %}</label>
+                            <div class="d-flex flex-wrap gap-3">
+                                {% for key, label in module_items %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="module_{{ key }}" id="mod_{{ key }}"
+                                        {% if key in checked_modules %}checked{% endif %}>
+                                    <label class="form-check-label" for="mod_{{ key }}">{{ label }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">{% trans "Kurum profilini kaydet" %}</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="ops-panel">
+        <div class="ops-panel__head">
+            <h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:gesture-swipe"></span>{% trans "Sürükle-Bırak İpuçları" %}</h6>
+        </div>
+        <div class="ops-panel__body">
+            <ul class="mb-0 text-muted">
+                <li>{% trans "Ana Panel'de widget başlıklarından tutup sıralamayı değiştirebilirsiniz." %}</li>
+                <li>{% trans "Satış Kanban kartlarını sütunlar arasında sürükleyin." %}</li>
+                <li>{% trans "Portföy envanterinde satır sırasını sürükleyerek düzenleyin." %}</li>
+                <li>{% trans "Düzen otomatik kaydedilir; sıfırlamak için yukarıdaki butonu kullanın." %}</li>
+            </ul>
+        </div>
+    </section>
+</div>
+{% endblock %}

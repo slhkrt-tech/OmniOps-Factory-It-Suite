@@ -32,7 +32,7 @@
         .trend-down { background-color: rgba(244, 63, 94, 0.12); color: #f43f5e; }
     </style>
 </head>
-<body> 
+<body data-drag-drop="{% if workspace.drag_drop_enabled %}1{% else %}0{% endif %}"> 
 
     <aside class="sidebar p-3 d-flex flex-column" id="sidebar">
         <div class="d-flex justify-content-between align-items-center mb-4 mt-2 px-2">
@@ -54,67 +54,69 @@
             {% if user.is_staff %}
 
             {% if request.user|has_role:"Ağ Ekibi,Sistem Ekibi,Yönetim,Help Desk Ekibi" %}
+            {% if workspace.modules.command %}
             <div class="sidebar-group mb-2" data-sidebar-group="command">
                 <button class="sidebar-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarGroupCommand" aria-expanded="true">
-                    <span>{% trans "Komuta" %}</span>
+                    <span>{{ workspace.module_labels.command|default:"Genel Bakış" }}</span>
                     <span class="iconify sidebar-group-chevron" data-icon="mdi:chevron-down"></span>
                 </button>
                 <div class="collapse show" id="sidebarGroupCommand">
                     <ul class="nav flex-column sidebar-group-items">
                         {% if request.user|has_role:"Ağ Ekibi,Sistem Ekibi,Yönetim" %}
-                        <li class="nav-item"><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}"><span class="iconify" data-icon="mdi:view-dashboard-outline"></span> {% trans "Dashboard" %}</a></li>
+                        <li class="nav-item"><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}"><span class="iconify" data-icon="mdi:view-dashboard-outline"></span> {% trans "Ana Panel" %}</a></li>
                         {% endif %}
                         {% if request.user|has_role:"Ağ Ekibi,Help Desk Ekibi,Yönetim" %}
-                        <li class="nav-item"><a href="{% url 'command_center' %}" class="nav-link {% if request.path == '/komuta-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:view-dashboard-edit-outline"></span> {% trans "Komuta Merkezi" %}</a></li>
-                        <li class="nav-item"><a href="{% url 'factory_command_center' %}" class="nav-link {% if request.path == '/fabrika-komuta-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:factory"></span> {% trans "Fabrika BT Komuta Merkezi" %}</a></li>
-                        <li class="nav-item"><a href="{% url 'setup_center' %}" class="nav-link {% if request.path == '/kurulum-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:progress-wrench"></span> {% trans "Kurulum & Sağlık Merkezi" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'command_center' %}" class="nav-link {% if request.path == '/komuta-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:view-dashboard-edit-outline"></span> {% trans "Operasyon Merkezi" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'factory_command_center' %}" class="nav-link {% if request.path == '/fabrika-komuta-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:factory"></span> {% trans "Fabrika Merkezi" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'setup_center' %}" class="nav-link {% if request.path == '/kurulum-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:progress-wrench"></span> {% trans "Sistem Sağlığı" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'workspace_center' %}" class="nav-link {% if request.path == '/calisma-alani/' %}active{% endif %}"><span class="iconify" data-icon="mdi:tune-variant"></span> {% trans "Çalışma Alanı" %}</a></li>
                         {% endif %}
                         {% if request.user|has_role:"Sistem Ekibi,Yönetim,Ağ Ekibi" %}
-                        <li class="nav-item"><a href="{% url 'executive_summary' %}" class="nav-link {% if request.path == '/yonetici-bilgilendirme/' %}active{% endif %}"><span class="iconify text-primary" data-icon="mdi:chart-box-outline"></span> {% trans "Yönetici Bilgilendirme" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'executive_summary' %}" class="nav-link {% if request.path == '/yonetici-bilgilendirme/' %}active{% endif %}"><span class="iconify text-primary" data-icon="mdi:chart-box-outline"></span> {% trans "Yönetici Raporu" %}</a></li>
                         {% endif %}
                     </ul>
                 </div>
             </div>
             {% endif %}
 
-            {% if request.user|has_role:"Ağ Ekibi,Help Desk Ekibi,Yönetim" %}
+            {% if workspace.modules.factory %}
             <div class="sidebar-group mb-2" data-sidebar-group="factory">
                 <button class="sidebar-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarGroupFactory" aria-expanded="false">
-                    <span>{% trans "Fabrika Envanteri" %}</span>
+                    <span>{{ workspace.module_labels.factory|default:"Fabrika & Envanter" }}</span>
                     <span class="iconify sidebar-group-chevron" data-icon="mdi:chevron-down"></span>
                 </button>
                 <div class="collapse" id="sidebarGroupFactory">
                     <ul class="nav flex-column sidebar-group-items">
                         <li class="nav-item"><a href="{% url 'factory_portfolio_inventory' %}" class="nav-link {% if request.path == '/fabrika-portfoy-envanter/' %}active{% endif %}"><span class="iconify" data-icon="mdi:clipboard-list-outline"></span> {% trans "Portföy Envanteri" %}</a></li>
-                        <li class="nav-item"><a href="{% url 'factory_command_center' %}" class="nav-link {% if request.path == '/fabrika-komuta-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:view-grid-outline"></span> {% trans "Departman Kartelası" %}</a></li>
-                        <li class="nav-item"><a href="{% url 'asset_qr_scanner' %}" class="nav-link {% if request.path == '/varlik-qr-tara/' %}active{% endif %}"><span class="iconify" data-icon="mdi:qrcode-scan"></span> {% trans "QR/Barkod Tarayıcı" %}</a></li>
-                        <li class="nav-item"><a href="{% url 'factory_operations' %}" class="nav-link {% if request.path == '/fabrika-operasyonlari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:factory"></span> {% trans "Fabrika IT Operasyonları" %}</a></li>
-                        <li class="nav-item"><a href="{% url 'it_operations' %}" class="nav-link {% if request.path == '/it-operasyonlari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:briefcase-account-outline"></span> {% trans "IT Operasyon Merkezi" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'factory_command_center' %}" class="nav-link {% if request.path == '/fabrika-komuta-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:view-grid-outline"></span> {% trans "Departman Panosu" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'asset_qr_scanner' %}" class="nav-link {% if request.path == '/varlik-qr-tara/' %}active{% endif %}"><span class="iconify" data-icon="mdi:qrcode-scan"></span> {% trans "QR Tarayıcı" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'factory_operations' %}" class="nav-link {% if request.path == '/fabrika-operasyonlari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:factory"></span> {% trans "Fabrika Süreçleri" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'it_operations' %}" class="nav-link {% if request.path == '/it-operasyonlari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:briefcase-account-outline"></span> {% trans "IT Süreçleri" %}</a></li>
                     </ul>
                 </div>
             </div>
             {% endif %}
 
-            {% if request.user|has_role:"Ağ Ekibi,Sistem Ekibi,Yönetim" %}
+            {% if workspace.modules.network %}
             <div class="sidebar-group mb-2" data-sidebar-group="network">
                 <button class="sidebar-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarGroupNetwork" aria-expanded="false">
-                    <span>{% trans "Ağ ve Sistem" %}</span>
+                    <span>{{ workspace.module_labels.network|default:"Altyapı" }}</span>
                     <span class="iconify sidebar-group-chevron" data-icon="mdi:chevron-down"></span>
                 </button>
                 <div class="collapse" id="sidebarGroupNetwork">
                     <ul class="nav flex-column sidebar-group-items">
-                        <li class="nav-item"><a href="/monitor/" class="nav-link {% if request.path == '/monitor/' %}active{% endif %}"><span class="iconify" data-icon="mdi:chart-line"></span> {% trans "Zabbix Canlı İzleme" %}</a></li>
-                        <li class="nav-item"><a href="/topoloji/" class="nav-link {% if request.path == '/topoloji/' %}active{% endif %}"><span class="iconify" data-icon="mdi:graph-outline"></span> {% trans "Ağ Topolojisi" %}</a></li>
-                        <li class="nav-item"><a href="{% url 'rack_elevation' %}" class="nav-link {% if request.path == '/veri-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:server"></span> {% trans "Veri Merkezi" %}</a></li>
+                        <li class="nav-item"><a href="/monitor/" class="nav-link {% if request.path == '/monitor/' %}active{% endif %}"><span class="iconify" data-icon="mdi:chart-areaspline"></span> {{ workspace.nav_labels.monitor|default:"Performans İzleme" }}</a></li>
+                        <li class="nav-item"><a href="/topoloji/" class="nav-link {% if request.path == '/topoloji/' %}active{% endif %}"><span class="iconify" data-icon="mdi:graph-outline"></span> {% trans "Topoloji Haritası" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'rack_elevation' %}" class="nav-link {% if request.path == '/veri-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:server"></span> {% trans "Kabin & Rack" %}</a></li>
                         {% if request.user|has_role:"Sistem Ekibi,Yönetim" %}
-                        <li class="nav-item"><a href="/it-envanter/" class="nav-link {% if request.path == '/it-envanter/' %}active{% endif %}"><span class="iconify" data-icon="mdi:server-network"></span> {% trans "BT Varlık Merkezi" %}</a></li>
+                        <li class="nav-item"><a href="/it-envanter/" class="nav-link {% if request.path == '/it-envanter/' %}active{% endif %}"><span class="iconify" data-icon="mdi:server-network"></span> {% trans "BT Envanteri" %}</a></li>
                         {% endif %}
-                        <li class="nav-item"><a href="/ag-tarayici/" class="nav-link {% if request.path == '/ag-tarayici/' %}active{% endif %}"><span class="iconify" data-icon="mdi:radar"></span> {% trans "Derin Ağ Keşfi" %}</a></li>
-                        <li class="nav-item"><a href="/ipam/" class="nav-link {% if '/ipam/' in request.path %}active{% endif %}"><span class="iconify" data-icon="mdi:ip-network-outline"></span> {% trans "Görsel IPAM" %}</a></li>
+                        <li class="nav-item"><a href="/ag-tarayici/" class="nav-link {% if request.path == '/ag-tarayici/' %}active{% endif %}"><span class="iconify" data-icon="mdi:radar"></span> {% trans "Ağ Keşfi" %}</a></li>
+                        <li class="nav-item"><a href="/ipam/" class="nav-link {% if '/ipam/' in request.path %}active{% endif %}"><span class="iconify" data-icon="mdi:ip-network-outline"></span> {% trans "IP Adresleri" %}</a></li>
                         <li class="nav-item"><a href="/subnet-hesapla/" class="nav-link {% if request.path == '/subnet-hesapla/' %}active{% endif %}"><span class="iconify" data-icon="mdi:calculator-variant-outline"></span> {% trans "Subnet Hesapla" %}</a></li>
                         {% if request.user|has_role:"Ağ Ekibi,Yönetim" %}
-                        <li class="nav-item"><a href="{% url 'bulk_config_generator' %}" class="nav-link {% if request.path == '/toplu-generator/' %}active{% endif %}"><span class="iconify" data-icon="mdi:rocket-launch-outline"></span> {% trans "Toplu Konfigürasyon" %}</a></li>
-                        <li class="nav-item"><a href="/uretici/" class="nav-link {% if request.path == '/uretici/' %}active{% endif %}"><span class="iconify" data-icon="mdi:console-line"></span> {% trans "Cihaz & CAB Yönetimi" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'bulk_config_generator' %}" class="nav-link {% if request.path == '/toplu-generator/' %}active{% endif %}"><span class="iconify" data-icon="mdi:rocket-launch-outline"></span> {% trans "Toplu Config" %}</a></li>
+                        <li class="nav-item"><a href="/uretici/" class="nav-link {% if request.path == '/uretici/' %}active{% endif %}"><span class="iconify" data-icon="mdi:console-line"></span> {% trans "Config Üretici" %}</a></li>
                         <li class="nav-item"><a href="{% url 'port_mapping_list' %}" class="nav-link {% if '/port-haritasi/' in request.path %}active{% endif %}"><span class="iconify" data-icon="mdi:map-marker-path"></span> {% trans "Port Haritaları" %}</a></li>
                         <li class="nav-item"><a href="{% url 'device_backup' %}" class="nav-link {% if request.path == '/yedekleme/' %}active{% endif %}"><span class="iconify" data-icon="mdi:database-sync-outline"></span> {% trans "Yedekleme & Kurtarma" %}</a></li>
                         {% endif %}
@@ -123,22 +125,24 @@
             </div>
             {% endif %}
 
-            {% if request.user|has_role:"Ağ Ekibi,Help Desk Ekibi,Yönetim" %}
+            {% if workspace.modules.identity %}
             <div class="sidebar-group mb-2" data-sidebar-group="identity">
                 <button class="sidebar-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarGroupIdentity" aria-expanded="false">
-                    <span>{% trans "Kimlik ve Kullanıcı" %}</span>
+                    <span>{% trans "Kimlik & Erişim" %}</span>
                     <span class="iconify sidebar-group-chevron" data-icon="mdi:chevron-down"></span>
                 </button>
                 <div class="collapse" id="sidebarGroupIdentity">
                     <ul class="nav flex-column sidebar-group-items">
-                        <li class="nav-item"><a href="{% url 'identity_operations' %}" class="nav-link {% if request.path == '/kimlik-operasyonlari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:account-key-outline"></span> {% trans "Kimlik & Uç Nokta Merkezi" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'identity_operations' %}" class="nav-link {% if request.path == '/kimlik-operasyonlari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:account-key-outline"></span> {% trans "Dizin & Kimlik" %}</a></li>
                         {% if request.user|has_role:"Admin,Yönetim" %}
                         <li class="nav-item"><a href="{% url 'user_management' %}" class="nav-link {% if request.path == '/kullanici-yonetimi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:account-group-outline"></span> {% trans "Kullanıcı Yönetimi" %}</a></li>
                         {% endif %}
                     </ul>
                 </div>
             </div>
+            {% endif %}
 
+            {% if workspace.modules.service %}
             <div class="sidebar-group mb-2" data-sidebar-group="service">
                 <button class="sidebar-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarGroupService" aria-expanded="false">
                     <span>{% trans "Servis Masası" %}</span>
@@ -146,43 +150,43 @@
                 </button>
                 <div class="collapse" id="sidebarGroupService">
                     <ul class="nav flex-column sidebar-group-items">
-                        <li class="nav-item"><a href="/panel/" class="nav-link {% if request.path == '/panel/' %}active{% endif %}"><span class="iconify" data-icon="mdi:ticket-confirmation-outline"></span> {% trans "Sistem & Bilet Yönetimi" %}</a></li>
-                        <li class="nav-item"><a href="{% url 'helpdesk_analytics' %}" class="nav-link {% if request.path == '/destek-analitik/' %}active{% endif %}"><span class="iconify" data-icon="mdi:chart-donut"></span> {% trans "Destek Analitikleri" %}</a></li>
-                        <li class="nav-item"><a href="{% url 'service_operations' %}" class="nav-link {% if request.path == '/servis-surecleri/' %}active{% endif %}"><span class="iconify" data-icon="mdi:clipboard-pulse-outline"></span> {% trans "Servis Süreç Merkezi" %}</a></li>
-                        <li class="nav-item"><a href="{% url 'field_routes' %}" class="nav-link {% if request.path == '/saha-rotalari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:map-marker-path"></span> {% trans "Saha Rota Planlama" %}</a></li>
+                        <li class="nav-item"><a href="/panel/" class="nav-link {% if request.path == '/panel/' %}active{% endif %}"><span class="iconify" data-icon="mdi:ticket-confirmation-outline"></span> {% trans "Ticket Paneli" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'helpdesk_analytics' %}" class="nav-link {% if request.path == '/destek-analitik/' %}active{% endif %}"><span class="iconify" data-icon="mdi:chart-donut"></span> {% trans "Destek Analitiği" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'service_operations' %}" class="nav-link {% if request.path == '/servis-surecleri/' %}active{% endif %}"><span class="iconify" data-icon="mdi:clipboard-pulse-outline"></span> {% trans "Servis Süreçleri" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'field_routes' %}" class="nav-link {% if request.path == '/saha-rotalari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:map-marker-path"></span> {% trans "Saha Rotaları" %}</a></li>
                         {% if feature_sales_kanban %}
                         <li class="nav-item"><a href="{% url 'sales_kanban' %}" class="nav-link {% if request.path == '/satis-kanban/' %}active{% endif %}"><span class="iconify" data-icon="mdi:view-column-outline"></span> {% trans "Satış Kanban" %}</a></li>
                         {% endif %}
-                        <li class="nav-item"><a href="{% url 'offline_field_app' %}" class="nav-link {% if request.path == '/offline-saha/' %}active{% endif %}"><span class="iconify" data-icon="mdi:cloud-sync-outline"></span> {% trans "Offline Saha Paneli" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'offline_field_app' %}" class="nav-link {% if request.path == '/offline-saha/' %}active{% endif %}"><span class="iconify" data-icon="mdi:cloud-sync-outline"></span> {% trans "Offline Saha" %}</a></li>
                     </ul>
                 </div>
             </div>
             {% endif %}
 
-            {% if request.user|has_role:"Sistem Ekibi,Yönetim,Ağ Ekibi,Help Desk Ekibi" %}
+            {% if workspace.modules.security %}
             <div class="sidebar-group mb-2" data-sidebar-group="security">
                 <button class="sidebar-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarGroupSecurity" aria-expanded="false">
-                    <span>{% trans "Güvenlik ve Yönetişim" %}</span>
+                    <span>{% trans "Güvenlik & Uyum" %}</span>
                     <span class="iconify sidebar-group-chevron" data-icon="mdi:chevron-down"></span>
                 </button>
                 <div class="collapse" id="sidebarGroupSecurity">
                     <ul class="nav flex-column sidebar-group-items">
                         <li class="nav-item"><a href="{% url 'governance_center' %}" class="nav-link {% if request.path == '/yonetisim-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:calendar-check-outline"></span> {% trans "Yönetişim Merkezi" %}</a></li>
-                        <li class="nav-item"><a href="{% url 'erp_integrations' %}" class="nav-link {% if request.path == '/erp-entegrasyonlari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:connection"></span> {% trans "ERP & Entegrasyon" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'erp_integrations' %}" class="nav-link {% if request.path == '/erp-entegrasyonlari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:connection"></span> {% trans "ERP Bağlantıları" %}</a></li>
                         <li class="nav-item"><a href="{% url 'integration_hub_center' %}" class="nav-link {% if request.path == '/entegrasyon-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:hub"></span> {% trans "Entegrasyon Merkezi" %}</a></li>
                         <li class="nav-item"><a href="{% url 'ot_integrations' %}" class="nav-link {% if request.path == '/ot-entegrasyonlari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:robot-industrial"></span> {% trans "OT/MES Köprüsü" %}</a></li>
-                        <li class="nav-item"><a href="{% url 'itsm_maturity' %}" class="nav-link {% if request.path == '/itsm-olgunluk/' %}active{% endif %}"><span class="iconify" data-icon="mdi:shield-check-outline"></span> {% trans "ITSM Olgunluk" %}</a></li>
+                        <li class="nav-item"><a href="{% url 'itsm_maturity' %}" class="nav-link {% if request.path == '/itsm-olgunluk/' %}active{% endif %}"><span class="iconify" data-icon="mdi:shield-check-outline"></span> {% trans "Problem & Release" %}</a></li>
                         <li class="nav-item"><a href="{% url 'dlp_events' %}" class="nav-link {% if request.path == '/dlp-olaylari/' %}active{% endif %}"><span class="iconify" data-icon="mdi:shield-key-outline"></span> {% trans "DLP Olayları" %}</a></li>
-                        <li class="nav-item"><a href="/sistem-loglari/" class="nav-link {% if request.path == '/sistem-loglari/' %}active{% endif %}"><span class="iconify text-danger" data-icon="mdi:shield-check-outline"></span> {% trans "Güvenlik Olayları & Loglar" %}</a></li>
+                        <li class="nav-item"><a href="/sistem-loglari/" class="nav-link {% if request.path == '/sistem-loglari/' %}active{% endif %}"><span class="iconify text-danger" data-icon="mdi:shield-check-outline"></span> {% trans "Denetim Kayıtları" %}</a></li>
                     </ul>
                 </div>
             </div>
             {% endif %}
 
-            {% if request.user|has_role:"Sistem Ekibi,Yönetim,Ağ Ekibi" %}
+            {% if workspace.modules.reports %}
             <div class="sidebar-group mb-2" data-sidebar-group="reports">
                 <button class="sidebar-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarGroupReports" aria-expanded="false">
-                    <span>{% trans "Rapor ve Doküman" %}</span>
+                    <span>{% trans "Rapor & Doküman" %}</span>
                     <span class="iconify sidebar-group-chevron" data-icon="mdi:chevron-down"></span>
                 </button>
                 <div class="collapse" id="sidebarGroupReports">
@@ -198,7 +202,7 @@
             </div>
             {% endif %}
 
-            {% if request.user|has_role:"Sistem Ekibi,Yönetim" %}
+            {% if workspace.modules.admin and request.user|has_role:"Sistem Ekibi,Yönetim" %}
             <div class="sidebar-group mb-4" data-sidebar-group="admin">
                 <button class="sidebar-group-toggle text-warning" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarGroupAdmin" aria-expanded="false">
                     <span>{% trans "Yönetim" %}</span>
@@ -212,6 +216,7 @@
             </div>
             {% endif %}
 
+            {% endif %}
             {% endif %}
             
             {% if user.is_authenticated and not user.is_staff %}
@@ -350,7 +355,7 @@
             <section class="suite-page-shell mb-4">
                 <div>
                     <span class="suite-eyebrow">OmniOps Factory IT Suite</span>
-                    <h1 class="suite-page-title">{% block page_heading %}{% trans "Fabrika BT Operasyon Merkezi" %}{% endblock %}</h1>
+                    <h1 class="suite-page-title">{% block page_heading %}{% trans "Ana Panel" %}{% endblock %}</h1>
                 </div>
                 <a href="{% url 'executive_summary' %}" class="btn btn-light suite-report-shortcut">
                     <span class="iconify me-1" data-icon="mdi:file-chart-check-outline"></span>
@@ -505,35 +510,137 @@
     </script>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
+        window.OmniOpsCharts = window.OmniOpsCharts || {};
+
+        function getChartTheme() {
+            const theme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+            const style = getComputedStyle(document.documentElement);
+            return {
+                mode: theme,
+                text: style.getPropertyValue('--text-main').trim() || (theme === 'dark' ? '#eef4ff' : '#151923'),
+                muted: style.getPropertyValue('--text-muted').trim() || '#697386',
+                grid: style.getPropertyValue('--border-color').trim() || '#edf0f4',
+                surface: style.getPropertyValue('--surface').trim() || '#ffffff',
+            };
+        }
+
+        function applyChartTheme() {
+            const theme = getChartTheme();
+            if (typeof Chart !== 'undefined') {
+                Chart.defaults.color = theme.muted;
+                Chart.defaults.borderColor = theme.grid;
+                Chart.defaults.font.family = "'Inter', sans-serif";
+            }
+            return theme;
+        }
+
         function renderNetArchChart(canvasId, type, labels, data, colors, titleText = '') {
             const canvas = document.getElementById(canvasId);
-            if (!canvas) return; 
-            
+            if (!canvas || typeof Chart === 'undefined') return null;
+
+            const theme = applyChartTheme();
             const ctx = canvas.getContext('2d');
+            const gradient = ctx.createLinearGradient(0, 0, 0, 280);
+            gradient.addColorStop(0, 'rgba(124, 58, 237, 0.35)');
+            gradient.addColorStop(1, 'rgba(6, 182, 212, 0.05)');
+
             return new Chart(ctx, {
                 type: type,
                 data: {
                     labels: labels,
                     datasets: [{
                         data: data,
-                        backgroundColor: colors,
-                        borderWidth: 0,
-                        hoverOffset: 4
+                        backgroundColor: type === 'line' ? gradient : colors,
+                        borderColor: type === 'line' ? '#7c3aed' : colors,
+                        borderWidth: type === 'line' ? 2 : 0,
+                        fill: type === 'line',
+                        tension: 0.38,
+                        pointRadius: 0,
+                        hoverOffset: 6,
+                        borderRadius: type === 'bar' ? 10 : 0,
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20, color: 'var(--text-main)' } },
-                        title: { display: !!titleText, text: titleText, font: { size: 16, weight: 'bold' }, color: 'var(--text-main)' }
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 18,
+                                color: theme.text,
+                                boxWidth: 8,
+                                font: { weight: '700', size: 11 }
+                            }
+                        },
+                        title: {
+                            display: !!titleText,
+                            text: titleText,
+                            font: { size: 14, weight: '800' },
+                            color: theme.text
+                        }
                     },
-                    cutout: type === 'doughnut' ? '75%' : undefined
+                    scales: type === 'line' || type === 'bar' ? {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: theme.muted, maxRotation: 0 }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: theme.grid, drawBorder: false },
+                            ticks: { color: theme.muted, padding: 8 }
+                        }
+                    } : undefined,
+                    cutout: type === 'doughnut' ? '72%' : undefined
                 }
             });
         }
+
+        function renderApexHeatmap(containerId, series, optionsOverride = {}) {
+            const el = document.querySelector(containerId);
+            if (!el || typeof ApexCharts === 'undefined') return null;
+            const theme = getChartTheme();
+            const options = Object.assign({
+                series: series,
+                chart: {
+                    height: 300,
+                    type: 'heatmap',
+                    toolbar: { show: false },
+                    fontFamily: 'Inter, sans-serif',
+                    background: 'transparent'
+                },
+                dataLabels: { enabled: false },
+                stroke: { width: 2, colors: [theme.surface] },
+                plotOptions: {
+                    heatmap: {
+                        shadeIntensity: 0.45,
+                        radius: 6,
+                        useFillColorAsStroke: false,
+                        colorScale: {
+                            ranges: [
+                                { from: 0, to: 0, color: theme.mode === 'dark' ? 'rgba(124, 58, 237, 0.08)' : 'rgba(124, 58, 237, 0.06)', name: 'Yok' },
+                                { from: 1, to: 5, color: '#8b5cf6', name: 'Düşük' },
+                                { from: 6, to: 15, color: '#7c3aed', name: 'Orta' },
+                                { from: 16, to: 1000, color: '#4c1d95', name: 'Yüksek' }
+                            ]
+                        }
+                    }
+                },
+                xaxis: { labels: { style: { colors: theme.muted, fontWeight: 600 } } },
+                yaxis: { labels: { style: { colors: theme.muted, fontWeight: 600 } } },
+                theme: { mode: theme.mode }
+            }, optionsOverride);
+            const chart = new ApexCharts(el, options);
+            chart.render();
+            return chart;
+        }
     </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <script src="{% static 'js/workspace.js' %}"></script>
     
     {% block scripts %}
     {% endblock %}

@@ -1,122 +1,174 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Komuta Merkezi - OmniOps{% endblock %}
+{% block title %}{% trans "Operasyon Merkezi" %} - OmniOps{% endblock %}
+{% block page_heading %}{% trans "Operasyon Merkezi" %}{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <div>
-        <h2 class="fw-bold mb-1">Bilgi İşlem Komuta Merkezi</h2>
-        <p class="text-muted mb-0">VPN/uzaktan erişim, departman chat, kameralar, iş uygulamaları ve rapor şablonlarını tek ekrandan yönetin.</p>
-    </div>
-</div>
-
-<div class="row g-3 mb-4">
-    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body">
-        <div class="text-muted small">Aktif Uzaktan Erişim</div>
-        <div class="display-6 fw-bold text-primary">{{ metrics.remote_access }}</div>
-    </div></div></div>
-    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body">
-        <div class="text-muted small">Kamera Uyarısı</div>
-        <div class="display-6 fw-bold text-danger">{{ metrics.camera_alerts }}</div>
-    </div></div></div>
-    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body">
-        <div class="text-muted small">İş Uygulaması</div>
-        <div class="display-6 fw-bold text-success">{{ metrics.applications }}</div>
-    </div></div></div>
-    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body">
-        <div class="text-muted small">Chat Kanalı</div>
-        <div class="display-6 fw-bold">{{ metrics.channels }}</div>
-    </div></div></div>
-</div>
-
-<div class="row g-4">
-    <div class="col-xl-4">
-        <div class="accordion" id="commandForms">
-            <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#remoteForm">VPN / Uzaktan Erişim</button></h2>
-                <div id="remoteForm" class="accordion-collapse collapse show" data-bs-parent="#commandForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="remote_access">{{ forms.remote_access.as_p }}<button class="btn btn-primary w-100">Erişimi Kaydet</button></form>
-                </div></div>
-            </div>
-            <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#messageForm">Departman Mesajı</button></h2>
-                <div id="messageForm" class="accordion-collapse collapse" data-bs-parent="#commandForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="message">{{ forms.message.as_p }}<button class="btn btn-info w-100">Mesaj Gönder</button></form>
-                    <hr>
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="channel">{{ forms.channel.as_p }}<button class="btn btn-outline-info w-100">Kanal Oluştur</button></form>
-                </div></div>
-            </div>
-            <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#cameraForm">Kamera / NVR</button></h2>
-                <div id="cameraForm" class="accordion-collapse collapse" data-bs-parent="#commandForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="camera">{{ forms.camera.as_p }}<button class="btn btn-warning w-100">Kamerayı Kaydet</button></form>
-                </div></div>
-            </div>
-            <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#appForm">Odoo / ERP / Uygulama</button></h2>
-                <div id="appForm" class="accordion-collapse collapse" data-bs-parent="#commandForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="application">{{ forms.application.as_p }}<button class="btn btn-success w-100">Uygulamayı Kaydet</button></form>
-                </div></div>
-            </div>
-            <div class="accordion-item border-0 glass-card">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#reportForm">Rapor / Çıktı Şablonu</button></h2>
-                <div id="reportForm" class="accordion-collapse collapse" data-bs-parent="#commandForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="report">{{ forms.report.as_p }}<button class="btn btn-secondary w-100">Rapor Şablonu Kaydet</button></form>
-                </div></div>
-            </div>
+<div class="ops-page">
+    <div class="ops-page-head">
+        <div>
+            <p class="ops-page-sub mb-0">{% trans "Uzaktan erişim, kameralar, iş uygulamaları ve departman iletişimini tek ekrandan yönetin." %}</p>
         </div>
     </div>
 
-    <div class="col-xl-8">
-        <div class="row g-4">
-            <div class="col-lg-6">
-                <div class="card glass-card h-100"><div class="card-header bg-transparent fw-bold">Uzaktan Erişim Yetkileri</div><div class="card-body">
-                    {% for grant in remote_access %}
-                    <div class="d-flex justify-content-between align-items-start border-bottom py-2 gap-2">
-                        <div><div class="fw-bold">{{ grant.employee_name }}</div><div class="text-muted small">{{ grant.get_access_method_display }} · {{ grant.target_resource }}</div></div>
-                        {% if grant.status != 'active' %}<form method="post">{% csrf_token %}<input type="hidden" name="action" value="activate_remote_access"><input type="hidden" name="grant_id" value="{{ grant.id }}"><button class="btn btn-sm btn-outline-success">Aktif Et</button></form>{% endif %}
-                    </div>
-                    {% empty %}<p class="text-muted mb-0">Uzaktan erişim kaydı yok.</p>{% endfor %}
-                </div></div>
+    <section class="ops-bento ops-bento--metrics">
+        <article class="ops-metric ops-metric--info">
+            <div class="ops-metric__row">
+                <div>
+                    <div class="ops-metric__label">{% trans "Uzaktan Erişim" %}</div>
+                    <div class="ops-metric__value">{{ metrics.remote_access }}</div>
+                </div>
+                <span class="ops-metric__icon"><span class="iconify" data-icon="mdi:vpn"></span></span>
             </div>
-            <div class="col-lg-6">
-                <div class="card glass-card h-100"><div class="card-header bg-transparent fw-bold">Kamera Uyarıları</div><div class="card-body">
-                    {% for camera in camera_alerts %}
-                    <div class="d-flex justify-content-between align-items-start border-bottom py-2 gap-2">
-                        <div><div class="fw-bold">{{ camera.name }}</div><div class="text-muted small">{{ camera.location|default:"Lokasyon yok" }} · {{ camera.get_status_display }}</div></div>
-                        <form method="post">{% csrf_token %}<input type="hidden" name="action" value="camera_checked"><input type="hidden" name="camera_id" value="{{ camera.id }}"><button class="btn btn-sm btn-outline-primary">Kontrol OK</button></form>
-                    </div>
-                    {% empty %}<p class="text-muted mb-0">Kamera uyarısı yok.</p>{% endfor %}
-                </div></div>
+        </article>
+        <article class="ops-metric ops-metric--danger">
+            <div class="ops-metric__row">
+                <div>
+                    <div class="ops-metric__label">{% trans "Kamera Uyarısı" %}</div>
+                    <div class="ops-metric__value">{{ metrics.camera_alerts }}</div>
+                </div>
+                <span class="ops-metric__icon"><span class="iconify" data-icon="mdi:cctv"></span></span>
             </div>
-            <div class="col-lg-6">
-                <div class="card glass-card h-100"><div class="card-header bg-transparent fw-bold">İş Uygulamaları</div><div class="card-body">
-                    {% for app in applications %}
-                    <div class="border-bottom py-2">
-                        <div class="fw-bold">{% if app.url %}<a href="{{ app.url }}" target="_blank" class="text-decoration-none">{{ app.name }}</a>{% else %}{{ app.name }}{% endif %}</div>
-                        <div class="text-muted small">{{ app.get_app_type_display }} · {{ app.get_status_display }}{% if app.sso_enabled %} · SSO{% endif %}</div>
-                    </div>
-                    {% empty %}<p class="text-muted mb-0">Uygulama kaydı yok.</p>{% endfor %}
-                </div></div>
+        </article>
+        <article class="ops-metric ops-metric--success">
+            <div class="ops-metric__row">
+                <div>
+                    <div class="ops-metric__label">{% trans "İş Uygulaması" %}</div>
+                    <div class="ops-metric__value">{{ metrics.applications }}</div>
+                </div>
+                <span class="ops-metric__icon"><span class="iconify" data-icon="mdi:application-outline"></span></span>
             </div>
-            <div class="col-lg-6">
-                <div class="card glass-card h-100"><div class="card-header bg-transparent fw-bold">Departman Chat</div><div class="card-body">
-                    {% for message in recent_messages %}
-                    <div class="border-bottom py-2">
-                        <div class="small text-muted">{{ message.channel.name }} · {{ message.author.username|default:"Sistem" }} · {{ message.created_at|date:"d.m H:i" }}</div>
+        </article>
+        <article class="ops-metric ops-metric--warning">
+            <div class="ops-metric__row">
+                <div>
+                    <div class="ops-metric__label">{% trans "Chat Kanalı" %}</div>
+                    <div class="ops-metric__value">{{ metrics.channels }}</div>
+                </div>
+                <span class="ops-metric__icon"><span class="iconify" data-icon="mdi:forum-outline"></span></span>
+            </div>
+        </article>
+    </section>
+
+    <section class="ops-bento">
+        <div class="ops-panel ops-span-4">
+            <div class="ops-panel__head">
+                <h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:chart-donut"></span>{% trans "Kaynak Dağılımı" %}</h6>
+            </div>
+            <div class="ops-panel__body">
+                <div class="ops-panel__chart ops-panel__chart--sm"><canvas id="commandMetricsChart"></canvas></div>
+            </div>
+        </div>
+
+        <div class="ops-panel ops-span-8">
+            <div class="ops-panel__head">
+                <h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:plus-circle-outline"></span>{% trans "Hızlı Kayıt" %}</h6>
+            </div>
+            <div class="ops-panel__body">
+                <ul class="nav ops-tabbar mb-3" role="tablist">
+                    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#remoteForm" type="button">{% trans "Erişim" %}</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#messageForm" type="button">{% trans "Mesaj" %}</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#cameraForm" type="button">{% trans "Kamera" %}</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#appForm" type="button">{% trans "Uygulama" %}</button></li>
+                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#reportForm" type="button">{% trans "Rapor" %}</button></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="remoteForm">
+                        <form method="post">{% csrf_token %}<input type="hidden" name="action" value="remote_access">{{ forms.remote_access.as_p }}<button class="btn btn-primary w-100 mt-2">{% trans "Erişimi Kaydet" %}</button></form>
+                    </div>
+                    <div class="tab-pane fade" id="messageForm">
+                        <form method="post">{% csrf_token %}<input type="hidden" name="action" value="message">{{ forms.message.as_p }}<button class="btn btn-info w-100 mt-2">{% trans "Mesaj Gönder" %}</button></form>
+                        <hr>
+                        <form method="post">{% csrf_token %}<input type="hidden" name="action" value="channel">{{ forms.channel.as_p }}<button class="btn btn-outline-info w-100 mt-2">{% trans "Kanal Oluştur" %}</button></form>
+                    </div>
+                    <div class="tab-pane fade" id="cameraForm">
+                        <form method="post">{% csrf_token %}<input type="hidden" name="action" value="camera">{{ forms.camera.as_p }}<button class="btn btn-warning w-100 mt-2">{% trans "Kamerayı Kaydet" %}</button></form>
+                    </div>
+                    <div class="tab-pane fade" id="appForm">
+                        <form method="post">{% csrf_token %}<input type="hidden" name="action" value="application">{{ forms.application.as_p }}<button class="btn btn-success w-100 mt-2">{% trans "Uygulamayı Kaydet" %}</button></form>
+                    </div>
+                    <div class="tab-pane fade" id="reportForm">
+                        <form method="post">{% csrf_token %}<input type="hidden" name="action" value="report">{{ forms.report.as_p }}<button class="btn btn-secondary w-100 mt-2">{% trans "Şablon Kaydet" %}</button></form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ops-panel ops-span-6">
+            <div class="ops-panel__head"><h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:account-key-outline"></span>{% trans "Uzaktan Erişim" %}</h6></div>
+            <div class="ops-panel__body pt-2">
+                {% for grant in remote_access %}
+                <div class="ops-insight-row">
+                    <div class="flex-grow-1">
+                        <div class="ops-insight-title">{{ grant.employee_name }}</div>
+                        <div class="ops-insight-meta">{{ grant.get_access_method_display }} · {{ grant.target_resource }}</div>
+                    </div>
+                    {% if grant.status != 'active' %}
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="activate_remote_access"><input type="hidden" name="grant_id" value="{{ grant.id }}"><button class="btn btn-sm btn-outline-success">{% trans "Aktif Et" %}</button></form>
+                    {% endif %}
+                </div>
+                {% empty %}<p class="text-muted mb-0">{% trans "Kayıt yok." %}</p>{% endfor %}
+            </div>
+        </div>
+
+        <div class="ops-panel ops-span-6">
+            <div class="ops-panel__head"><h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:cctv"></span>{% trans "Kamera Uyarıları" %}</h6></div>
+            <div class="ops-panel__body pt-2">
+                {% for camera in camera_alerts %}
+                <div class="ops-insight-row">
+                    <div class="flex-grow-1">
+                        <div class="ops-insight-title">{{ camera.name }}</div>
+                        <div class="ops-insight-meta">{{ camera.location|default:"—" }} · {{ camera.get_status_display }}</div>
+                    </div>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="camera_checked"><input type="hidden" name="camera_id" value="{{ camera.id }}"><button class="btn btn-sm btn-outline-primary">OK</button></form>
+                </div>
+                {% empty %}<p class="text-muted mb-0">{% trans "Uyarı yok." %}</p>{% endfor %}
+            </div>
+        </div>
+
+        <div class="ops-panel ops-span-6">
+            <div class="ops-panel__head"><h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:application-outline"></span>{% trans "İş Uygulamaları" %}</h6></div>
+            <div class="ops-panel__body pt-2">
+                {% for app in applications %}
+                <div class="ops-insight-row">
+                    <div class="flex-grow-1">
+                        <div class="ops-insight-title">{% if app.url %}<a href="{{ app.url }}" target="_blank" class="text-decoration-none">{{ app.name }}</a>{% else %}{{ app.name }}{% endif %}</div>
+                        <div class="ops-insight-meta">{{ app.get_app_type_display }} · {{ app.get_status_display }}{% if app.sso_enabled %} · SSO{% endif %}</div>
+                    </div>
+                </div>
+                {% empty %}<p class="text-muted mb-0">{% trans "Uygulama yok." %}</p>{% endfor %}
+            </div>
+        </div>
+
+        <div class="ops-panel ops-span-6">
+            <div class="ops-panel__head"><h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:forum-outline"></span>{% trans "Departman Mesajları" %}</h6></div>
+            <div class="ops-panel__body pt-2">
+                {% for message in recent_messages %}
+                <div class="ops-insight-row">
+                    <div class="flex-grow-1">
+                        <div class="ops-insight-meta">{{ message.channel.name }} · {{ message.author.username|default:"Sistem" }} · {{ message.created_at|date:"d.m H:i" }}</div>
                         <div class="{% if message.is_announcement %}fw-bold text-warning{% endif %}">{{ message.message }}</div>
                     </div>
-                    {% empty %}<p class="text-muted mb-0">Mesaj yok.</p>{% endfor %}
-                </div></div>
-            </div>
-            <div class="col-12">
-                <div class="card glass-card"><div class="card-header bg-transparent fw-bold">Rapor / Çıktı Şablonları</div><div class="card-body d-flex flex-wrap gap-2">
-                    {% for report in reports %}
-                    <span class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">{{ report.get_report_type_display }} · {{ report.title }} · {{ report.output_format }}</span>
-                    {% empty %}<span class="text-muted">Aktif rapor şablonu yok.</span>{% endfor %}
-                </div></div>
+                </div>
+                {% empty %}<p class="text-muted mb-0">{% trans "Mesaj yok." %}</p>{% endfor %}
             </div>
         </div>
-    </div>
+    </section>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    applyChartTheme();
+    renderNetArchChart(
+        'commandMetricsChart',
+        'doughnut',
+        ['{% trans "Erişim" %}', '{% trans "Kamera" %}', '{% trans "Uygulama" %}', '{% trans "Kanal" %}'],
+        [{{ metrics.remote_access }}, {{ metrics.camera_alerts }}, {{ metrics.applications }}, {{ metrics.channels }}],
+        ['#7c3aed', '#f43f5e', '#22c55e', '#f59e0b']
+    );
+});
+</script>
 {% endblock %}

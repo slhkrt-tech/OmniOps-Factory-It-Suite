@@ -1396,3 +1396,38 @@ def get_rack_devices(request):
             'rack_u_height': d.height_u,      
         })
     return Response(data)
+
+
+@extend_schema(responses={200: OpenApiTypes.OBJECT})
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def workspace_layout_api(request):
+    """Kullanıcı panel/sidebar sürükle-bırak düzenini okur veya kaydeder."""
+    from .workspace_service import get_user_preferences, get_workspace_context, save_user_layout
+
+    if request.method == 'GET':
+        prefs = get_user_preferences(request.user)
+        ctx = get_workspace_context(request.user, request)
+        return Response({
+            'dashboard_layout': ctx['dashboard_layout'],
+            'sidebar_layout': ctx['sidebar_layout'],
+            'hidden_widgets': prefs.hidden_widgets if prefs else [],
+            'drag_drop_enabled': ctx['drag_drop_enabled'],
+        })
+
+    page = request.data.get('page', 'dashboard')
+    order = request.data.get('order') or []
+    hidden = request.data.get('hidden')
+    if not isinstance(order, list):
+        return Response({'detail': 'order listesi gerekli.'}, status=status.HTTP_400_BAD_REQUEST)
+    save_user_layout(request.user, page, order, hidden=hidden if isinstance(hidden, list) else None)
+    return Response({'status': 'ok', 'page': page, 'order': order})
+
+
+@extend_schema(responses={200: OpenApiTypes.OBJECT})
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def workspace_config_api(request):
+    from .workspace_service import get_workspace_context
+
+    return Response(get_workspace_context(request.user, request))

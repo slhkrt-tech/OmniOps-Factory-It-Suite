@@ -1835,3 +1835,65 @@ def prometheus_metrics_view(request):
         f'omniops_audit_entries_total {ImmutableAuditEntry.objects.count()}',
     ]
     return HttpResponse('\n'.join(lines) + '\n', content_type='text/plain; version=0.0.4; charset=utf-8')
+
+
+@login_required
+def workspace_center_view(request):
+    """Sektör profili, modül görünürlüğü ve çalışma alanı kişiselleştirme."""
+    if not is_support_staff(request.user):
+        return redirect('dashboard')
+
+    from .models import OrganizationWorkspace
+    from .workspace_registry import INDUSTRY_PRESETS, WORKSPACE_MODULE_KEYS
+    from .workspace_service import get_active_organization, get_user_preferences, get_workspace_context
+    from .site_access import get_accessible_sites
+
+    org = get_active_organization()
+    prefs = get_user_preferences(request.user)
+    workspace = get_workspace_context(request.user, request)
+    sites = get_accessible_sites(request.user)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'org_profile' and request.user.is_superuser:
+            org.primary_industry = request.POST.get('primary_industry', org.primary_industry)
+            org.custom_industry_label = request.POST.get('custom_industry_label', '')
+            org.tagline = request.POST.get('tagline', '')
+            org.enabled_modules = [
+                key for key in WORKSPACE_MODULE_KEYS
+                if request.POST.get(f'module_{key}') == 'on'
+            ]
+            org.save()
+            messages.success(request, 'Kurum çalışma alanı profili güncellendi.')
+        elif action == 'user_prefs':
+            site_id = request.POST.get('active_factory_site')
+            if site_id:
+                prefs.active_factory_site = sites.filter(pk=site_id).first()
+            else:
+                prefs.active_factory_site = None
+            prefs.drag_drop_enabled = request.POST.get('drag_drop_enabled') == 'on'
+            prefs.save(update_fields=['active_factory_site', 'drag_drop_enabled', 'updated_at'])
+            messages.success(request, 'Kişisel çalışma alanı tercihleri kaydedildi.')
+        elif action == 'reset_layout':
+            prefs.dashboard_layout = []
+            prefs.sidebar_layout = []
+            prefs.hidden_widgets = []
+            prefs.save(update_fields=['dashboard_layout', 'sidebar_layout', 'hidden_widgets', 'updated_at'])
+            messages.success(request, 'Panel düzeni varsayılana sıfırlandı.')
+        return redirect('workspace_center')
+
+    industry_choices = OrganizationWorkspace.INDUSTRY_TYPE_CHOICES
+    enabled_list = org.enabled_modules if org.enabled_modules else [k for k, v in workspace['modules'].items() if v]
+    enabled_count = sum(1 for v in workspace['modules'].values() if v)
+    module_items = [(key, workspace['module_labels'].get(key, key)) for key in WORKSPACE_MODULE_KEYS]
+    return render(request, 'workspace_center.html', {
+        'org': org,
+        'prefs': prefs,
+        'workspace': workspace,
+        'sites': sites,
+        'industry_presets': INDUSTRY_PRESETS,
+        'module_items': module_items,
+        'industry_choices': industry_choices,
+        'checked_modules': enabled_list,
+        'enabled_module_count': enabled_count,
+    })

@@ -588,3 +588,46 @@ class EnterpriseCompletenessTests(TestCase):
 
         self.assertGreaterEqual(count, 1)
         self.assertIn('SAP CMDB', message)
+
+
+class WorkspaceEngineTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='wsuser', password='pass123')
+        self.client.login(username='wsuser', password='pass123')
+
+    def test_solar_preset_hides_identity_module(self):
+        from inventory.models import OrganizationWorkspace
+        from inventory.workspace_service import get_workspace_context
+
+        OrganizationWorkspace.objects.create(
+            name='Solar Ops',
+            primary_industry='solar',
+            is_active=True,
+        )
+        ctx = get_workspace_context(self.user)
+        self.assertEqual(ctx['industry'], 'solar')
+        self.assertFalse(ctx['modules']['identity'])
+        self.assertTrue(ctx['modules']['network'])
+
+    def test_workspace_layout_api_persists_order(self):
+        order = ['events', 'heatmap', 'device_chart', 'ticket_chart', 'backbone']
+        response = self.client.post(
+            reverse('workspace_layout_api'),
+            data={'page': 'dashboard', 'order': order},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        from inventory.models import UserWorkspacePreference
+        prefs = UserWorkspacePreference.objects.get(user=self.user)
+        self.assertEqual(prefs.dashboard_layout, order)
+
+    def test_workspace_center_requires_staff(self):
+        response = self.client.get(reverse('workspace_center'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_solar_site_in_bootstrap(self):
+        from inventory.factory_bootstrap import ensure_default_factory_structure
+        from inventory.models import FactorySite
+
+        ensure_default_factory_structure()
+        self.assertTrue(FactorySite.objects.filter(code='SITE-SOLAR-01', industry_type='solar').exists())

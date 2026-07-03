@@ -1,386 +1,274 @@
 {% extends 'base.html' %}
 {% load i18n static %}
 
-{% block title %}{% trans "OmniOps - Komuta Merkezi" %}{% endblock %}
+{% block title %}{% trans "OmniOps - Ana Panel" %}{% endblock %}
+{% block page_heading %}{% trans "Ana Panel" %}{% endblock %}
 
 {% block content %}
-<style>
-    .event-card {
-        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-    }
-    .pulse-danger {
-        border-color: rgba(244, 63, 94, 0.45) !important;
-        background: linear-gradient(145deg, rgba(244, 63, 94, 0.08), var(--surface)) !important;
-    }
-    .trend-neutral { color: var(--text-muted); }
-    .timeline-widget {
-        border-left: 2px solid var(--border-color);
-        margin-left: 20px;
-    }
-    .timeline-item:last-child {
-        padding-bottom: 0 !important;
-        border-left: 2px solid transparent !important;
-        margin-left: -2px;
-    }
-    .timeline-marker {
-        box-shadow: 0 0 0 4px var(--surface) !important;
-    }
-</style>
-
-<div class="container-fluid px-0 mb-5">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+<div class="ops-page">
+    <div class="ops-page-head">
         <div>
-            <h4 class="fw-bold mb-1">{% trans "Komuta Merkezi" %}</h4>
-            <p class="text-muted small mb-0">{% trans "Sisteminizin genel sağlık durumunu ve aktif süreçleri buradan takip edin." %}</p>
+            <p class="ops-page-sub mb-0">{% trans "Altyapı sağlığı, servis talepleri ve operasyonel yoğunluğu tek ekranda izleyin." %}</p>
         </div>
-        <div class="text-muted small fw-medium d-flex align-items-center">
-            <span class="iconify me-1 text-info fs-5" data-icon="mdi:calendar-clock"></span> 
-            {% now "j F Y, l" %}
-            <span class="ms-3 badge bg-success bg-opacity-10 text-success border border-success-subtle rounded-pill d-flex align-items-center">
-                <span class="iconify me-1" data-icon="mdi:record-circle"></span> Canlı İzleme Aktif
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <span class="ops-live-badge"><span class="pulse-dot"></span> {% trans "Canlı veri" %}</span>
+            <span class="text-muted small fw-semibold d-flex align-items-center">
+                <span class="iconify me-1" data-icon="mdi:calendar-clock"></span>{% now "j F Y, l" %}
             </span>
         </div>
     </div>
 
     {% if action_suggestions %}
-    <div class="mb-5 mt-2">
-        <h6 class="fw-bold text-muted text-uppercase tracking-wide mb-3 d-flex align-items-center">
-            <span class="iconify fs-4 text-primary me-2" data-icon="mdi:brain"></span> 
-            AIOps Karar Destek Merkezi
+    <section>
+        <h6 class="fw-bold text-muted text-uppercase mb-3 d-flex align-items-center gap-2" style="font-size:0.72rem; letter-spacing:0.08em;">
+            <span class="iconify text-primary" data-icon="mdi:brain"></span>
+            {% trans "AIOps Önerileri" %}
         </h6>
-        <div class="row g-3">
+        <div class="ops-bento ops-bento--metrics mb-1">
             {% for suggestion in action_suggestions %}
-            <div class="col-md-6 col-xl-4">
-                <div class="card border-0 shadow-sm border-start border-4 border-{{ suggestion.type }} h-100 glass-card">
-                    <div class="card-body d-flex flex-column">
-                        <div class="d-flex align-items-center mb-2">
-                            <div class="bg-{{ suggestion.type }} bg-opacity-10 text-{{ suggestion.type }} rounded p-2 me-3 shadow-sm">
-                                <span class="iconify fs-3" data-icon="{{ suggestion.icon }}"></span>
-                            </div>
-                            <h6 class="fw-bold mb-0 text-white">{{ suggestion.title }}</h6>
-                        </div>
-                        <p class="text-muted small flex-grow-1 mt-2 mb-3">{{ suggestion.message }}</p>
-                        <a href="{{ suggestion.action_url }}" class="btn btn-sm btn-outline-{{ suggestion.type }} fw-bold w-100 d-flex justify-content-center align-items-center transition-all">
-                            {{ suggestion.action_text }} <span class="iconify ms-1" data-icon="mdi:arrow-right"></span>
-                        </a>
-                    </div>
+            <div class="ops-suggestion">
+                <div class="ops-suggestion__head">
+                    <span class="ops-suggestion__icon bg-{{ suggestion.type }} bg-opacity-10 text-{{ suggestion.type }}">
+                        <span class="iconify fs-4" data-icon="{{ suggestion.icon }}"></span>
+                    </span>
+                    <strong>{{ suggestion.title }}</strong>
                 </div>
+                <p class="text-muted small mb-0 flex-grow-1">{{ suggestion.message }}</p>
+                <a href="{{ suggestion.action_url }}" class="btn btn-sm btn-outline-{{ suggestion.type }} fw-bold w-100">
+                    {{ suggestion.action_text }} <span class="iconify ms-1" data-icon="mdi:arrow-right"></span>
+                </a>
             </div>
             {% endfor %}
         </div>
-    </div>
+    </section>
     {% endif %}
 
-    <div class="row g-4 mb-5">
-        <div class="col-sm-6 col-xl-3">
-            <div id="card-device" class="card event-card h-100 {% if device_alert_class == 'danger' %}pulse-danger{% endif %}">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-muted small fw-bold text-uppercase tracking-wide">{% trans "Ağ Cihazları" %}</span>
-                        <div id="icon-device" class="bg-{{ device_alert_class }} bg-opacity-10 text-{{ device_alert_class }} rounded p-2 d-flex align-items-center">
-                            <span class="iconify fs-4" data-icon="mdi:server-network"></span>
+    <section class="ops-bento ops-bento--metrics" data-sortable-zone="dashboard-metrics" data-widget-id="metrics">
+        <article id="card-device" class="ops-metric {% if device_alert_class == 'danger' %}ops-metric--danger pulse-danger{% else %}ops-metric--info{% endif %}">
+            <div class="ops-metric__row">
+                <div>
+                    <div class="ops-metric__label">{% trans "Ağ Cihazları" %}</div>
+                    <div id="device-count" class="ops-metric__value">{{ cihaz_sayisi }}</div>
+                    <div id="device-trend" class="ops-metric__hint {% if offline_device_count > 0 %}text-danger{% endif %}">
+                        <span class="iconify" data-icon="mdi:{% if offline_device_count > 0 %}alert-circle{% else %}check-circle{% endif %}"></span>
+                        {% if offline_device_count > 0 %}{{ offline_device_count }} {% trans "çevrimdışı" %}{% else %}{% trans "Tümü çevrimiçi" %}{% endif %}
+                    </div>
+                </div>
+                <span id="icon-device" class="ops-metric__icon"><span class="iconify" data-icon="mdi:server-network"></span></span>
+            </div>
+        </article>
+
+        <article id="card-ticket" class="ops-metric {% if ticket_alert_class == 'danger' %}ops-metric--danger pulse-danger{% else %}ops-metric--warning{% endif %}">
+            <div class="ops-metric__row">
+                <div>
+                    <div class="ops-metric__label">{% trans "Açık Talepler" %}</div>
+                    <div id="open-ticket-count" class="ops-metric__value">{{ acik_bilet_sayisi|default:"0" }}</div>
+                    <div id="ticket-trend" class="ops-metric__hint {% if new_tickets_24h > 0 %}text-danger{% endif %}">
+                        <span class="iconify" data-icon="mdi:{% if new_tickets_24h > 0 %}trending-up{% else %}minus{% endif %}"></span>
+                        {% if new_tickets_24h > 0 %}+{{ new_tickets_24h }} {% trans "son 24s" %}{% else %}{% trans "Yeni talep yok" %}{% endif %}
+                    </div>
+                </div>
+                <span id="icon-ticket" class="ops-metric__icon"><span class="iconify" data-icon="mdi:ticket-alert-outline"></span></span>
+            </div>
+        </article>
+
+        <article id="card-license" class="ops-metric {% if license_alert_class == 'danger' %}ops-metric--danger pulse-danger{% else %}ops-metric--success{% endif %}">
+            <div class="ops-metric__row">
+                <div>
+                    <div class="ops-metric__label">{% trans "Kritik Lisanslar" %}</div>
+                    <div id="license-alert-count" class="ops-metric__value">{{ suresi_biten_lisanslar }}</div>
+                    <div id="license-trend" class="ops-metric__hint {% if suresi_biten_lisanslar > 0 %}text-danger{% endif %}">
+                        <span class="iconify" data-icon="mdi:calendar-alert"></span>
+                        {% trans "30 gün içinde" %}
+                    </div>
+                </div>
+                <span id="icon-license" class="ops-metric__icon"><span class="iconify" data-icon="mdi:certificate-outline"></span></span>
+            </div>
+        </article>
+
+        <article class="ops-metric ops-metric--info">
+            <div class="ops-metric__row">
+                <div>
+                    <div class="ops-metric__label">{% trans "Bilgi Bankası" %}</div>
+                    <div id="kb-count" class="ops-metric__value">{{ kb_count|default:"0" }}</div>
+                    <div class="ops-metric__hint">
+                        <span class="iconify" data-icon="mdi:book-open-page-variant-outline"></span>
+                        {% trans "Dokümantasyon" %}
+                    </div>
+                </div>
+                <span class="ops-metric__icon"><span class="iconify" data-icon="mdi:book-open-page-variant-outline"></span></span>
+            </div>
+        </article>
+    </section>
+
+    <section class="ops-bento" data-sortable-zone="dashboard" {% if workspace.drag_drop_enabled %}data-sortable-handle=".ops-drag-handle"{% endif %}>
+        <div class="ops-panel ops-span-12" data-widget-id="heatmap" data-collapsible-panel="heatmap">
+            <div class="ops-panel__head">
+                <h6 class="ops-panel__title">
+                    {% if workspace.drag_drop_enabled %}<span class="ops-drag-handle iconify me-1" data-icon="mdi:drag-vertical" title="Sürükle"></span>{% endif %}
+                    <span class="iconify" data-icon="mdi:chart-timeline-variant"></span>{% trans "Aktivite Isı Haritası" %} <span class="text-muted fw-normal">· {% trans "Son 30 gün" %}</span>
+                </h6>
+                <button type="button" class="btn btn-sm btn-light" data-collapse-toggle>{% trans "Gizle" %}</button>
+            </div>
+            <div class="ops-panel__body">
+                <div id="heatmapChart" class="ops-panel__chart ops-panel__chart--lg"></div>
+            </div>
+        </div>
+
+        <div class="ops-panel ops-span-6" data-widget-id="device_chart">
+            <div class="ops-panel__head">
+                <h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:server"></span>{% trans "Cihaz Dağılımı" %}</h6>
+            </div>
+            <div class="ops-panel__body">
+                <div class="ops-panel__chart"><canvas id="deviceChart"></canvas></div>
+            </div>
+        </div>
+
+        <div class="ops-panel ops-span-6" data-widget-id="ticket_chart">
+            <div class="ops-panel__head">
+                <h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:ticket-outline"></span>{% trans "Talep Durumları" %}</h6>
+            </div>
+            <div class="ops-panel__body">
+                <div class="ops-panel__chart"><canvas id="ticketChart"></canvas></div>
+            </div>
+        </div>
+
+        <div class="ops-panel ops-span-8" data-widget-id="events">
+            <div class="ops-panel__head">
+                <h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:shield-alert-outline"></span>{% trans "Son Olaylar" %}</h6>
+                <a href="{% url 'custom_admin' %}" class="ops-panel__link">{% trans "Tümünü gör" %}</a>
+            </div>
+            <div class="ops-panel__body pt-2">
+                {% for ticket in tickets|slice:":6" %}
+                <div class="ops-insight-row">
+                    <span class="ops-insight-dot {% if ticket.priority == 'Kritik' %}bg-danger{% elif ticket.priority == 'Yuksek' %}bg-warning{% elif ticket.priority == 'Orta' %}bg-info{% else %}bg-success{% endif %}"></span>
+                    <div class="flex-grow-1 min-width-0">
+                        <div class="ops-insight-title text-truncate">{{ ticket.title }}</div>
+                        <div class="ops-insight-meta">
+                            <span class="iconify" data-icon="mdi:account-outline"></span> {{ ticket.created_by.username }}
+                            · {{ ticket.created_at|date:"d M H:i" }}
                         </div>
                     </div>
-                    <h3 id="device-count" class="fw-bold mb-1 text-white">{{ cihaz_sayisi }}</h3>
-                    <div class="d-flex align-items-center mt-2">
-                        <span id="device-trend" class="{% if offline_device_count > 0 %}trend-up text-danger{% else %}trend-neutral{% endif %} small fw-bold">
-                            <span class="iconify" data-icon="mdi:{% if offline_device_count > 0 %}alert-circle{% else %}check-circle{% endif %}"></span>
-                            {% if offline_device_count > 0 %}{{ offline_device_count }} Cihaz Çevrimdışı{% else %}Tümü Çevrimiçi{% endif %}
-                        </span>
+                    <div class="text-end">
+                        {% if ticket.status == 'Acik' %}<span class="badge bg-primary bg-opacity-10 text-primary">{% trans "Açık" %}</span>
+                        {% elif ticket.status == 'Inceleniyor' %}<span class="badge bg-warning bg-opacity-10 text-warning">{% trans "İnceleniyor" %}</span>
+                        {% elif ticket.status == 'Cozuldu' %}<span class="badge bg-success bg-opacity-10 text-success">{% trans "Çözüldü" %}</span>
+                        {% else %}<span class="badge bg-secondary bg-opacity-10 text-secondary">{% trans "Kapalı" %}</span>{% endif %}
                     </div>
                 </div>
+                {% empty %}
+                <div class="text-center py-5 text-muted">
+                    <span class="iconify fs-1 mb-2 opacity-50 d-block" data-icon="mdi:shield-check"></span>
+                    {% trans "Kayıtlı olay bulunmuyor." %}
+                </div>
+                {% endfor %}
             </div>
         </div>
 
-        <div class="col-sm-6 col-xl-3">
-            <div id="card-ticket" class="card event-card h-100 {% if ticket_alert_class == 'danger' %}pulse-danger{% endif %}">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-muted small fw-bold text-uppercase tracking-wide">{% trans "Açık Talepler" %}</span>
-                        <div id="icon-ticket" class="bg-{{ ticket_alert_class }} bg-opacity-10 text-{{ ticket_alert_class }} rounded p-2 d-flex align-items-center">
-                            <span class="iconify fs-4" data-icon="mdi:ticket-alert-outline"></span>
-                        </div>
+        <div class="ops-panel ops-span-4" data-widget-id="backbone">
+            <div class="ops-panel__head">
+                <h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:sitemap"></span>{% trans "Omurga Cihazlar" %}</h6>
+            </div>
+            <div class="ops-panel__body pt-2">
+                {% for root in root_devices|slice:":5" %}
+                <div class="ops-insight-row">
+                    <div class="flex-grow-1">
+                        <div class="ops-insight-title">{{ root.name }}</div>
+                        <div class="ops-insight-meta font-monospace">{{ root.mac_address|default:"IP bilinmiyor" }}</div>
                     </div>
-                    <h3 id="open-ticket-count" class="fw-bold mb-1 text-white">{{ acik_bilet_sayisi|default:"0" }}</h3>
-                    <div class="d-flex align-items-center mt-2">
-                        <span id="ticket-trend" class="{% if new_tickets_24h > 0 %}trend-up text-danger{% else %}trend-neutral{% endif %} small fw-bold">
-                            <span class="iconify" data-icon="mdi:{% if new_tickets_24h > 0 %}trending-up{% else %}minus{% endif %}"></span>
-                            {% if new_tickets_24h > 0 %}+{{ new_tickets_24h }} (Son 24s){% else %}Yeni talep yok{% endif %}
-                        </span>
-                    </div>
+                    <span class="iconify fs-4 {% if root.is_active %}text-success{% else %}text-danger{% endif %}" data-icon="mdi:{% if root.is_active %}check-circle{% else %}alert-circle{% endif %}"></span>
                 </div>
+                {% empty %}
+                <p class="text-muted small mb-0">{% trans "Kök cihaz tanımlanmamış." %}</p>
+                {% endfor %}
+
+                {% if expiring_licenses %}
+                <hr class="my-3">
+                <h6 class="fw-bold text-warning small mb-2 d-flex align-items-center gap-1">
+                    <span class="iconify" data-icon="mdi:alert"></span> {% trans "Yaklaşan Yenilemeler" %}
+                </h6>
+                {% for lic in expiring_licenses|slice:":3" %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="small fw-bold">{{ lic.name }}</span>
+                    <span class="badge bg-danger bg-opacity-10 text-danger">{{ lic.days_left }} {% trans "gün" %}</span>
+                </div>
+                {% endfor %}
+                {% endif %}
             </div>
         </div>
-
-        <div class="col-sm-6 col-xl-3">
-            <div id="card-license" class="card event-card h-100 {% if license_alert_class == 'danger' %}pulse-danger{% endif %}">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-muted small fw-bold text-uppercase tracking-wide">{% trans "Kritik Lisanslar" %}</span>
-                        <div id="icon-license" class="bg-{{ license_alert_class }} bg-opacity-10 text-{{ license_alert_class }} rounded p-2 d-flex align-items-center">
-                            <span class="iconify fs-4" data-icon="mdi:certificate-outline"></span>
-                        </div>
-                    </div>
-                    <h3 id="license-alert-count" class="fw-bold mb-1 text-white">{{ suresi_biten_lisanslar }}</h3>
-                    <div class="d-flex align-items-center mt-2">
-                        <span id="license-trend" class="{% if suresi_biten_lisanslar > 0 %}trend-up text-danger{% else %}trend-neutral{% endif %} small fw-bold">
-                            <span class="iconify" data-icon="mdi:calendar-alert"></span>
-                            30 Gün içinde dolacak
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-6 col-xl-3">
-            <div class="card event-card h-100">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-muted small fw-bold text-uppercase tracking-wide">Bilgi Bankası</span>
-                        <div class="bg-info bg-opacity-10 text-info rounded p-2 d-flex align-items-center">
-                            <span class="iconify fs-4" data-icon="mdi:book-open-page-variant-outline"></span>
-                        </div>
-                    </div>
-                    <h3 id="kb-count" class="fw-bold mb-1 text-white">{{ kb_count|default:"0" }}</h3>
-                    <div class="d-flex align-items-center mt-2">
-                        <span class="trend-neutral small fw-bold">
-                            <span class="iconify" data-icon="mdi:check-all"></span> Sistem dokümantasyonu
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="pro-table-wrapper p-4 pb-2 rounded-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h6 class="fw-bold mb-0 text-white">
-                        <span class="iconify me-1 fs-5 align-text-bottom text-info" data-icon="mdi:chart-box-outline"></span> 
-                        {% trans "Sistem Aktivite Isı Haritası (Son 30 Gün)" %}
-                    </h6>
-                </div>
-                <div id="heatmapChart" style="min-height: 280px;"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row g-4 mb-4">
-        <div class="col-lg-6">
-            <div class="pro-table-wrapper h-100 rounded-4 p-3">
-                <h6 class="fw-bold mb-3 text-white"><span class="iconify me-2 text-info" data-icon="mdi:server"></span>{% trans "Cihaz Türü Dağılımı" %}</h6>
-                <div style="height: 300px;"><canvas id="deviceChart"></canvas></div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="pro-table-wrapper h-100 rounded-4 p-3">
-                <h6 class="fw-bold mb-3 text-white"><span class="iconify me-2 text-warning" data-icon="mdi:ticket-outline"></span>{% trans "Aktif Bilet Durumları" %}</h6>
-                <div style="height: 300px;"><canvas id="ticketChart"></canvas></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row g-4">
-        <div class="col-lg-8">
-            <div class="pro-table-wrapper h-100 rounded-4 p-0">
-                <div class="d-flex justify-content-between align-items-center p-4 pb-0 mb-3 border-bottom border-secondary" style="border-color: var(--border-color) !important;">
-                    <h6 class="fw-bold mb-3 text-white"><span class="iconify me-1 fs-5 align-text-bottom text-danger" data-icon="mdi:chart-timeline-variant"></span> {% trans "Siber Olaylar (Security Events)" %}</h6>
-                    <a href="{% url 'custom_admin' %}" class="text-decoration-none small text-info fw-bold mb-3">Olay Yönetimi</a>
-                </div>
-                
-                <div class="px-4 pb-4 mt-3">
-                    <ul class="timeline-widget list-unstyled mb-0">
-                        {% for ticket in tickets|slice:":6" %}
-                        <li class="timeline-item position-relative pb-4">
-                            <div class="timeline-marker position-absolute rounded-circle {% if ticket.priority == 'Kritik' %}bg-danger{% elif ticket.priority == 'Yuksek' %}bg-warning{% elif ticket.priority == 'Orta' %}bg-info{% else %}bg-success{% endif %}" style="width: 14px; height: 14px; left: -27px; top: 4px; box-shadow: 0 0 0 4px var(--surface);"></div>
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h6 class="fw-bold mb-1 text-white">{{ ticket.title }}</h6>
-                                    <small class="text-muted"><span class="iconify" data-icon="mdi:account-outline"></span> {{ ticket.created_by.username }}</small>
-                                </div>
-                                <div class="text-end">
-                                    <div class="small fw-bold text-muted mb-1">{{ ticket.created_at|date:"d M H:i" }}</div>
-                                    {% if ticket.status == 'Acik' %}<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle rounded-pill px-3">Açık</span>
-                                    {% elif ticket.status == 'Inceleniyor' %}<span class="badge bg-warning bg-opacity-10 text-warning border border-warning-subtle rounded-pill px-3">İnceleniyor</span>
-                                    {% elif ticket.status == 'Cozuldu' %}<span class="badge bg-success bg-opacity-10 text-success border border-success-subtle rounded-pill px-3">Çözüldü</span>
-                                    {% else %}<span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle rounded-pill px-3">Kapatıldı</span>{% endif %}
-                                    
-                                    <div class="mt-2">
-                                        <a href="{% url 'ticket_edit' ticket.id %}" class="btn btn-sm btn-outline-warning border-0 rounded-circle" title="Düzenle"><span class="iconify" data-icon="mdi:pencil"></span></a>
-                                        <a href="{% url 'ticket_delete' ticket.id %}" class="btn btn-sm btn-outline-danger border-0 rounded-circle" title="Sil"><span class="iconify" data-icon="mdi:trash-can-outline"></span></a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mt-2 text-muted small text-truncate" style="max-width: 90%;">{{ ticket.description|striptags }}</div>
-                        </li>
-                        {% empty %}
-                        <div class="text-center py-5 text-muted">
-                            <span class="iconify fs-1 mb-2 opacity-50" data-icon="mdi:shield-check"></span>
-                            <p class="mb-0">Sistemde kaydedilmiş herhangi bir güvenlik olayı (Bilet) bulunmuyor.</p>
-                        </div>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="pro-table-wrapper rounded-4 mb-4 p-0">
-                <div class="p-4 pb-2 border-bottom border-secondary" style="border-color: var(--border-color) !important;">
-                    <h6 class="fw-bold mb-3 text-white"><span class="iconify me-1 fs-5 align-text-bottom text-info" data-icon="mdi:sitemap"></span> Omurga Cihazlar</h6>
-                </div>
-                <div class="px-3 pb-3 mt-2">
-                    <ul class="list-group list-group-flush border-0">
-                        {% for root in root_devices|slice:":4" %}
-                        <li class="list-group-item bg-transparent px-2 py-3 border-bottom d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="fw-bold d-block text-white">{{ root.name }}</span>
-                                <small class="text-muted font-monospace">{{ root.mac_address|default:"IP: Bilinmiyor" }}</small>
-                            </div>
-                            {% if root.is_active %}
-                                <span class="iconify text-success fs-4" data-icon="mdi:check-circle"></span>
-                            {% else %}
-                                <span class="iconify text-danger fs-4" data-icon="mdi:alert-circle"></span>
-                            {% endif %}
-                        </li>
-                        {% empty %}
-                        <li class="list-group-item bg-transparent px-2 text-muted small border-0">Kök cihaz tanımlanmamış.</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-
-            {% if expiring_licenses %}
-            <div class="card border border-warning shadow-lg rounded-4" style="background-color: var(--surface);">
-                <div class="card-body p-4">
-                    <h6 class="fw-bold text-warning mb-3 d-flex align-items-center">
-                        <span class="iconify fs-5 me-2" data-icon="mdi:alert"></span> Yaklaşan Yenilemeler
-                    </h6>
-                    {% for lic in expiring_licenses|slice:":3" %}
-                    <div class="mb-2 pb-2 {% if not forloop.last %}border-bottom{% endif %}" style="border-color: var(--border-color) !important;">
-                        <div class="d-flex justify-content-between">
-                            <span class="text-white fw-bold small">{{ lic.name }}</span>
-                            <span class="badge bg-danger bg-opacity-10 text-danger px-2">{{ lic.days_left }} Gün</span>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-        </div>
-    </div>
+    </section>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
+{{ workspace.dashboard_layout|json_script:"dashboard-layout-data" }}
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const deviceLabels = JSON.parse('{{ device_labels|safe|escapejs }}');
-        const deviceData = JSON.parse('{{ device_data|safe|escapejs }}');
-        const ticketLabels = JSON.parse('{{ ticket_labels|safe|escapejs }}');
-        const ticketData = JSON.parse('{{ ticket_data|safe|escapejs }}');
-        const brandColors = ['#0ea5e9', '#14b8a6', '#f59e0b', '#ef4444', '#8b5cf6'];
+window.__OMNIOPS_DASHBOARD_LAYOUT__ = JSON.parse(document.getElementById('dashboard-layout-data').textContent);
+document.addEventListener("DOMContentLoaded", function() {
+    const deviceLabels = JSON.parse('{{ device_labels|safe|escapejs }}');
+    const deviceData = JSON.parse('{{ device_data|safe|escapejs }}');
+    const ticketLabels = JSON.parse('{{ ticket_labels|safe|escapejs }}');
+    const ticketData = JSON.parse('{{ ticket_data|safe|escapejs }}');
+    const heatmapData = JSON.parse('{{ heatmap_data|safe|escapejs }}');
+    const brandColors = ['#7c3aed', '#06b6d4', '#22c55e', '#f59e0b', '#f43f5e', '#8b5cf6'];
 
-        let deviceChart = null; let ticketChart = null;
+    applyChartTheme();
+    let deviceChart = null;
+    let ticketChart = null;
+    let heatChart = null;
 
-        // Karanlık Tema İçin Chart.js Varsayılan Ayarları
-        Chart.defaults.color = '#94a3b8';
-        Chart.defaults.borderColor = '#1e293b';
-
-        function renderDashboardCharts(deviceLabelsValue, deviceDataValue, ticketLabelsValue, ticketDataValue) {
-            if (deviceChart) deviceChart.destroy();
-            if (ticketChart) ticketChart.destroy();
-            if (deviceDataValue.length > 0) deviceChart = renderNetArchChart('deviceChart', 'doughnut', deviceLabelsValue, deviceDataValue, brandColors);
-            if (ticketDataValue.length > 0 && ticketDataValue.some(val => val > 0)) ticketChart = renderNetArchChart('ticketChart', 'pie', ticketLabelsValue, ticketDataValue, brandColors.slice().reverse());
+    function renderDashboardCharts(deviceLabelsValue, deviceDataValue, ticketLabelsValue, ticketDataValue) {
+        if (deviceChart) deviceChart.destroy();
+        if (ticketChart) ticketChart.destroy();
+        if (deviceDataValue.length > 0) {
+            deviceChart = renderNetArchChart('deviceChart', 'doughnut', deviceLabelsValue, deviceDataValue, brandColors);
         }
-
-        // --- Heatmap Grafiği ---
-        const heatmapData = JSON.parse('{{ heatmap_data|safe|escapejs }}');
-        let heatChart = null;
-
-        function renderHeatmap(data) {
-            if (heatChart) {
-                heatChart.updateSeries(data);
-                return;
-            }
-            var options = {
-                series: data,
-                chart: { height: 280, type: 'heatmap', toolbar: { show: false }, fontFamily: 'inherit', background: 'transparent' },
-                dataLabels: { enabled: false },
-                colors: ['#0ea5e9'],
-                xaxis: { labels: { style: { colors: '#94a3b8' } } },
-                yaxis: { labels: { style: { colors: '#94a3b8' } } },
-                plotOptions: {
-                    heatmap: {
-                        shadeIntensity: 0.5,
-                        radius: 4,
-                        useFillColorAsStroke: false,
-                        colorScale: {
-                            ranges: [
-                                { from: 0, to: 0, color: 'rgba(14, 165, 233, 0.05)', name: 'Yok' },
-                                { from: 1, to: 5, color: '#0284c7', name: 'Düşük' },
-                                { from: 6, to: 15, color: '#0369a1', name: 'Orta' },
-                                { from: 16, to: 1000, color: '#082f49', name: 'Yüksek' }
-                            ]
-                        }
-                    }
-                },
-                theme: { mode: 'dark' }, // Her zaman karanlık moda zorla
-                stroke: { colors: ['#1e293b'] } // Koyu aralık çizgileri
-            };
-            heatChart = new ApexCharts(document.querySelector("#heatmapChart"), options);
-            heatChart.render();
+        if (ticketDataValue.length > 0 && ticketDataValue.some(val => val > 0)) {
+            ticketChart = renderNetArchChart('ticketChart', 'doughnut', ticketLabelsValue, ticketDataValue, brandColors.slice().reverse());
         }
-        renderHeatmap(heatmapData);
+    }
 
-        // ========================================================
-        // 10 SANİYELİK AGRESİF POLLING (LIVE-REFRESH)
-        // ========================================================
-        function refreshDashboard() {
-            fetch('{% url "dashboard_refresh" %}')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status !== 'ok') return;
-                    
-                    document.getElementById('device-count').textContent = data.device_count;
-                    document.getElementById('open-ticket-count').textContent = data.open_ticket_count;
-                    document.getElementById('license-alert-count').textContent = data.license_alert_count;
-                    document.getElementById('kb-count').textContent = data.kb_count;
-
-                    // 1. Bilet Kartı Animasyonu
-                    const tCard = document.getElementById('card-ticket');
-                    const tIcon = document.getElementById('icon-ticket');
-                    tCard.className = `card event-card h-100 ${data.ticket_alert_class === 'danger' ? 'pulse-danger' : ''}`;
-                    tIcon.className = `bg-${data.ticket_alert_class} bg-opacity-10 text-${data.ticket_alert_class} rounded p-2 d-flex align-items-center`;
-                    document.getElementById('ticket-trend').innerHTML = data.new_tickets_24h > 0 
-                        ? `<span class="iconify" data-icon="mdi:trending-up"></span> +${data.new_tickets_24h} (Son 24s)` 
-                        : `<span class="iconify" data-icon="mdi:minus"></span> Yeni talep yok`;
-                    document.getElementById('ticket-trend').className = data.new_tickets_24h > 0 ? "trend-up text-danger small fw-bold" : "trend-neutral small fw-bold";
-
-                    // 2. Cihaz Kartı Animasyonu
-                    const dCard = document.getElementById('card-device');
-                    const dIcon = document.getElementById('icon-device');
-                    dCard.className = `card event-card h-100 ${data.device_alert_class === 'danger' ? 'pulse-danger' : ''}`;
-                    dIcon.className = `bg-${data.device_alert_class} bg-opacity-10 text-${data.device_alert_class} rounded p-2 d-flex align-items-center`;
-                    document.getElementById('device-trend').innerHTML = data.offline_device_count > 0 
-                        ? `<span class="iconify" data-icon="mdi:alert-circle"></span> ${data.offline_device_count} Cihaz Çevrimdışı` 
-                        : `<span class="iconify" data-icon="mdi:check-circle"></span> Tümü Çevrimiçi`;
-                    document.getElementById('device-trend').className = data.offline_device_count > 0 ? "trend-up text-danger small fw-bold" : "trend-neutral small fw-bold";
-
-                    renderDashboardCharts(data.device_labels, data.device_data, data.ticket_labels, data.ticket_data);
-
-                    if(data.heatmap_data) renderHeatmap(data.heatmap_data);
-                }).catch(console.error);
+    function renderHeatmap(data) {
+        if (heatChart) {
+            heatChart.updateSeries(data);
+            return;
         }
+        heatChart = renderApexHeatmap('#heatmapChart', data);
+    }
 
-        renderDashboardCharts(deviceLabels, deviceData, ticketLabels, ticketData);
-        
-        // 10 Saniyede Bir Arka Plandan Sessizce Veri Çek
-        setInterval(refreshDashboard, 10000); 
-    });
+    function refreshDashboard() {
+        fetch('{% url "dashboard_refresh" %}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status !== 'ok') return;
+
+                document.getElementById('device-count').textContent = data.device_count;
+                document.getElementById('open-ticket-count').textContent = data.open_ticket_count;
+                document.getElementById('license-alert-count').textContent = data.license_alert_count;
+                document.getElementById('kb-count').textContent = data.kb_count;
+
+                const tCard = document.getElementById('card-ticket');
+                tCard.className = `ops-metric ${data.ticket_alert_class === 'danger' ? 'ops-metric--danger pulse-danger' : 'ops-metric--warning'}`;
+                document.getElementById('ticket-trend').innerHTML = data.new_tickets_24h > 0
+                    ? `<span class="iconify" data-icon="mdi:trending-up"></span> +${data.new_tickets_24h} son 24s`
+                    : `<span class="iconify" data-icon="mdi:minus"></span> Yeni talep yok`;
+                document.getElementById('ticket-trend').className = `ops-metric__hint ${data.new_tickets_24h > 0 ? 'text-danger' : ''}`;
+
+                const dCard = document.getElementById('card-device');
+                dCard.className = `ops-metric ${data.device_alert_class === 'danger' ? 'ops-metric--danger pulse-danger' : 'ops-metric--info'}`;
+                document.getElementById('device-trend').innerHTML = data.offline_device_count > 0
+                    ? `<span class="iconify" data-icon="mdi:alert-circle"></span> ${data.offline_device_count} çevrimdışı`
+                    : `<span class="iconify" data-icon="mdi:check-circle"></span> Tümü çevrimiçi`;
+                document.getElementById('device-trend').className = `ops-metric__hint ${data.offline_device_count > 0 ? 'text-danger' : ''}`;
+
+                renderDashboardCharts(data.device_labels, data.device_data, data.ticket_labels, data.ticket_data);
+                if (data.heatmap_data) renderHeatmap(data.heatmap_data);
+            }).catch(console.error);
+    }
+
+    renderDashboardCharts(deviceLabels, deviceData, ticketLabels, ticketData);
+    renderHeatmap(heatmapData);
+    setInterval(refreshDashboard, 10000);
+});
 </script>
 {% endblock %}

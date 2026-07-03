@@ -1,118 +1,107 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}Destek Analitikleri - OmniOps{% endblock %}
+{% block title %}OmniOps - {% trans "Destek Analitiği" %}{% endblock %}
+{% block page_heading %}{% trans "Destek Analitiği" %}{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <div>
-        <h2 class="fw-bold mb-1">Servis Masası Analitikleri</h2>
-        <p class="text-muted mb-0">Gerçek zamanlı talep metrikleri ve performans göstergeleri</p>
+<div class="ops-page">
+    <div class="ops-page-head">
+        <div>
+            <p class="ops-page-sub mb-0">{% trans "SLA uyumu, talep dağılımı ve ekip iş yükünü grafiklerle takip edin." %}</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'export_tickets_csv' %}" class="btn btn-outline-success btn-sm">
+                <span class="iconify align-text-bottom" data-icon="mdi:file-delimited-outline"></span> CSV
+            </a>
+            <a href="{% url 'custom_admin' %}" class="btn btn-primary btn-sm">{% trans "Ticket Paneli" %}</a>
+        </div>
     </div>
-    <div class="d-flex gap-2">
-        <a href="{% url 'export_tickets_csv' %}" class="btn btn-outline-success">
-            <span class="iconify align-text-bottom" data-icon="mdi:file-delimited-outline"></span> CSV Dışa Aktar
-        </a>
-        <a href="{% url 'custom_admin' %}" class="btn btn-primary">Talep Yönetimi</a>
-    </div>
-</div>
 
-<div class="row g-3 mb-4">
-    <div class="col-6 col-md-3">
-        <div class="card glass-card text-center p-3">
-            <div class="fs-2 fw-bold text-primary">{{ analytics.total }}</div>
-            <div class="small text-muted">Toplam Talep</div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card glass-card text-center p-3">
-            <div class="fs-2 fw-bold text-warning">{{ analytics.open }}</div>
-            <div class="small text-muted">Açık Talep</div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card glass-card text-center p-3">
-            <div class="fs-2 fw-bold text-danger">{{ analytics.sla_breached }}</div>
-            <div class="small text-muted">SLA İhlali</div>
-        </div>
-    </div>
-    <div class="col-6 col-md-3">
-        <div class="card glass-card text-center p-3">
-            <div class="fs-2 fw-bold text-success">{{ analytics.sla_compliance }}%</div>
-            <div class="small text-muted">SLA Uyumu</div>
-        </div>
-    </div>
-</div>
+    <section class="ops-bento ops-bento--metrics">
+        <article class="ops-metric ops-metric--info">
+            <div class="ops-metric__label">{% trans "Toplam Talep" %}</div>
+            <div class="ops-metric__value">{{ analytics.total }}</div>
+        </article>
+        <article class="ops-metric ops-metric--warning">
+            <div class="ops-metric__label">{% trans "Açık Talep" %}</div>
+            <div class="ops-metric__value">{{ analytics.open }}</div>
+        </article>
+        <article class="ops-metric ops-metric--danger">
+            <div class="ops-metric__label">{% trans "SLA İhlali" %}</div>
+            <div class="ops-metric__value">{{ analytics.sla_breached }}</div>
+        </article>
+        <article class="ops-metric ops-metric--success">
+            <div class="ops-metric__label">{% trans "SLA Uyumu" %}</div>
+            <div class="ops-metric__value">{{ analytics.sla_compliance }}%</div>
+        </article>
+    </section>
 
-<div class="row g-3 mb-4">
-    <div class="col-md-4">
-        <div class="card glass-card p-3">
-            <h6 class="fw-bold mb-3">Kategori Dağılımı</h6>
-            <div style="height: 220px;"><canvas id="categoryChart"></canvas></div>
+    <section class="ops-bento">
+        <div class="ops-panel ops-span-4">
+            <div class="ops-panel__head"><h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:shape-outline"></span>{% trans "Kategori" %}</h6></div>
+            <div class="ops-panel__body"><div class="ops-panel__chart ops-panel__chart--sm"><canvas id="categoryChart"></canvas></div></div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card glass-card p-3">
-            <h6 class="fw-bold mb-3">Öncelik Dağılımı</h6>
-            <div style="height: 220px;"><canvas id="priorityChart"></canvas></div>
+        <div class="ops-panel ops-span-4">
+            <div class="ops-panel__head"><h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:flag-outline"></span>{% trans "Öncelik" %}</h6></div>
+            <div class="ops-panel__body"><div class="ops-panel__chart ops-panel__chart--sm"><canvas id="priorityChart"></canvas></div></div>
         </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card glass-card p-3">
-            <h6 class="fw-bold mb-3">Durum Dağılımı</h6>
-            <div style="height: 220px;"><canvas id="statusChart"></canvas></div>
+        <div class="ops-panel ops-span-4">
+            <div class="ops-panel__head"><h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:progress-check"></span>{% trans "Durum" %}</h6></div>
+            <div class="ops-panel__body"><div class="ops-panel__chart ops-panel__chart--sm"><canvas id="statusChart"></canvas></div></div>
         </div>
-    </div>
-</div>
 
-<div class="row g-4">
-    <div class="col-lg-6">
-        <div class="card glass-card">
-            <div class="card-body">
-                <h6 class="fw-bold mb-3">Performans Metrikleri</h6>
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-2"><strong>Ort. Çözüm Süresi:</strong> {{ analytics.avg_resolution_hours|default:"—" }} saat</li>
-                    <li class="mb-2"><strong>Bu Hafta Oluşturulan:</strong> {{ analytics.created_this_week }}</li>
-                    <li class="mb-2"><strong>Bu Hafta Kapatılan:</strong> {{ analytics.closed_this_week }}</li>
-                    <li><strong>Eskale Talepler:</strong> {{ analytics.escalated }}</li>
-                </ul>
+        <div class="ops-panel ops-span-6">
+            <div class="ops-panel__head"><h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:chart-line"></span>{% trans "Performans Özeti" %}</h6></div>
+            <div class="ops-panel__body">
+                <div class="ops-insight-row">
+                    <div class="flex-grow-1"><div class="ops-insight-title">{% trans "Ort. çözüm süresi" %}</div></div>
+                    <strong>{{ analytics.avg_resolution_hours|default:"—" }} {% trans "saat" %}</strong>
+                </div>
+                <div class="ops-insight-row">
+                    <div class="flex-grow-1"><div class="ops-insight-title">{% trans "Bu hafta oluşturulan" %}</div></div>
+                    <strong>{{ analytics.created_this_week }}</strong>
+                </div>
+                <div class="ops-insight-row">
+                    <div class="flex-grow-1"><div class="ops-insight-title">{% trans "Bu hafta kapatılan" %}</div></div>
+                    <strong>{{ analytics.closed_this_week }}</strong>
+                </div>
+                <div class="ops-insight-row">
+                    <div class="flex-grow-1"><div class="ops-insight-title">{% trans "Eskale talepler" %}</div></div>
+                    <strong class="text-danger">{{ analytics.escalated }}</strong>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="card glass-card">
-            <div class="card-body">
-                <h6 class="fw-bold mb-3">Personel İş Yükü</h6>
+
+        <div class="ops-panel ops-span-6">
+            <div class="ops-panel__head"><h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:account-group-outline"></span>{% trans "Ekip İş Yükü" %}</h6></div>
+            <div class="ops-panel__body p-0">
                 <div class="table-responsive">
-                    <table class="table table-sm mb-0">
-                        <thead><tr><th>Personel</th><th>Açık Talep</th></tr></thead>
+                    <table class="table mb-0">
+                        <thead><tr><th>{% trans "Personel" %}</th><th class="text-end">{% trans "Açık" %}</th></tr></thead>
                         <tbody>
                         {% for agent in analytics.agent_workload %}
-                        <tr><td>{{ agent.username }}</td><td>{{ agent.open_count }}</td></tr>
+                        <tr><td>{{ agent.username }}</td><td class="text-end fw-bold">{{ agent.open_count }}</td></tr>
                         {% empty %}
-                        <tr><td colspan="2" class="text-muted">Veri yok</td></tr>
+                        <tr><td colspan="2" class="text-muted">{% trans "Veri yok" %}</td></tr>
                         {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    renderNetArchChart('categoryChart', 'doughnut',
-        {{ category_labels_json|safe }}, {{ category_counts_json|safe }},
-        ['#0ea5e9', '#8b5cf6', '#f59e0b', '#10b981', '#ef4444']);
-    renderNetArchChart('priorityChart', 'doughnut',
-        {{ priority_labels_json|safe }}, {{ priority_counts_json|safe }},
-        ['#ef4444', '#f97316', '#eab308', '#22c55e']);
-    renderNetArchChart('statusChart', 'doughnut',
-        {{ status_labels_json|safe }}, {{ status_counts_json|safe }},
-        ['#3b82f6', '#8b5cf6', '#22c55e', '#64748b']);
+    applyChartTheme();
+    const palette = ['#7c3aed', '#06b6d4', '#22c55e', '#f59e0b', '#f43f5e'];
+    renderNetArchChart('categoryChart', 'doughnut', {{ category_labels_json|safe }}, {{ category_counts_json|safe }}, palette);
+    renderNetArchChart('priorityChart', 'doughnut', {{ priority_labels_json|safe }}, {{ priority_counts_json|safe }}, ['#f43f5e', '#f97316', '#eab308', '#22c55e']);
+    renderNetArchChart('statusChart', 'doughnut', {{ status_labels_json|safe }}, {{ status_counts_json|safe }}, ['#7c3aed', '#06b6d4', '#22c55e', '#64748b']);
 });
 </script>
 {% endblock %}

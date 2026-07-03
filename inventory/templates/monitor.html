@@ -1,299 +1,236 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}OmniOps - Canlı İzleme{% endblock %}
+{% block title %}OmniOps - {% trans "Performans İzleme" %}{% endblock %}
+{% block page_heading %}{% trans "Performans İzleme" %}{% endblock %}
 
 {% block content %}
-<div class="container-fluid px-0 mb-5">
-    
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+<div class="ops-page">
+    <div class="ops-page-head">
         <div>
-            <h4 class="fw-bold mb-1">Cihaz Performans Monitörü</h4>
-            <p class="text-muted small mb-0">Ağ cihazlarından çekilen eşzamanlı ve canlı kaynak tüketimi verileri.</p>
+            <p class="ops-page-sub mb-0">{% trans "Seçili cihazın CPU, bellek ve ağ trafiğini gerçek zamanlı grafiklerle izleyin." %}</p>
+        </div>
+        <span class="ops-live-badge"><span class="pulse-dot"></span> {% trans "2 sn güncelleme" %}</span>
+    </div>
+
+    <div class="ops-toolbar mb-1">
+        <div class="d-flex align-items-center gap-2 flex-grow-1">
+            <span class="ops-metric__icon mb-0"><span class="iconify" data-icon="mdi:server-network"></span></span>
+            <div class="flex-grow-1">
+                <label for="deviceSelector" class="form-label small fw-bold text-muted mb-1">{% trans "İzlenen cihaz" %}</label>
+                <select id="deviceSelector" class="form-select fw-semibold">
+                    <option value="127.0.0.1" selected>{% trans "Yerel sunucu" %}</option>
+                    {% for dev in devices %}
+                        {% for ip_obj in dev.ipaddress_set.all %}
+                            <option value="{{ ip_obj.address }}">{{ dev.name }} · {{ ip_obj.address }}</option>
+                        {% endfor %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="ops-stat-inline">
+            <span class="ops-stat-inline__label">{% trans "Gecikme" %}</span>
+            <span id="latencyValue" class="ops-stat-inline__value">-- ms</span>
+        </div>
+        <div class="ops-stat-inline">
+            <span class="ops-stat-inline__label">{% trans "Bağlantı" %}</span>
+            <span id="connectionStatus" class="badge bg-success bg-opacity-10 text-success border border-success-subtle px-3 py-2">
+                <span class="spinner-grow spinner-grow-sm me-1" style="width:8px;height:8px;"></span> {% trans "Aktif" %}
+            </span>
         </div>
     </div>
 
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm rounded-4 p-2" style="background-color: var(--card-bg);">
-                <div class="card-body p-3 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-                    
-                    <div class="d-flex align-items-center w-100 w-md-auto">
-                        <div class="bg-primary bg-opacity-10 text-primary rounded p-2 me-3 d-none d-sm-block">
-                            <span class="iconify fs-4" data-icon="mdi:server-network"></span>
-                        </div>
-                        <div class="flex-grow-1">
-                            <label class="form-label small fw-bold text-muted mb-1">İzlenecek Hedef Cihaz</label>
-                            <select id="deviceSelector" class="form-select bg-body-tertiary text-body fw-bold border-secondary-subtle shadow-sm" style="min-width: 250px;">
-                                <option value="127.0.0.1" selected>🖥️ Local Server</option>
-                                {% for dev in devices %}
-                                    {% for ip_obj in dev.ipaddress_set.all %}
-                                        <option value="{{ ip_obj.address }}">📡 {{ dev.name }} - {{ ip_obj.address }}</option>
-                                    {% endfor %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="d-flex align-items-center gap-2 mt-2 mt-md-0">
-                        <div class="d-flex flex-column align-items-end me-3 border-end border-secondary-subtle pe-4">
-                            <small class="text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">GECİKME</small>
-                            <span id="latencyBadge" class="badge bg-body-tertiary text-body border border-secondary-subtle px-3 py-2 fw-bold fs-6 shadow-sm">
-                                <span class="iconify align-text-bottom text-info me-1" data-icon="mdi:lan-connect"></span> <span id="latencyValue">-- ms</span>
-                            </span>
-                        </div>
-                        <div class="d-flex flex-column align-items-end">
-                            <small class="text-muted fw-bold mb-1" style="font-size: 0.7rem; letter-spacing: 0.5px;">BAĞLANTI DURUMU</small>
-                            <span id="connectionStatus" class="badge bg-success bg-opacity-10 text-success border border-success-subtle px-3 py-2 fs-6 shadow-sm">
-                                <span class="spinner-grow spinner-grow-sm me-1" role="status" style="width: 10px; height: 10px;"></span> Aktif
-                            </span>
-                        </div>
-                    </div>
-
-                </div>
+    <section class="ops-bento">
+        <div class="ops-panel ops-span-6">
+            <div class="ops-panel__head">
+                <h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:cpu-64-bit"></span>{% trans "CPU Kullanımı" %}</h6>
+                <strong id="liveCpuText" class="text-primary fs-5">--%</strong>
             </div>
-        </div>
-    </div>
-
-    <div class="row g-4">
-        
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm rounded-4 h-100" style="background-color: var(--card-bg);">
-                <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <span class="bg-primary bg-opacity-10 text-primary rounded p-1 me-2"><span class="iconify fs-5" data-icon="mdi:cpu-64-bit"></span></span>
-                        <h6 class="fw-bold mb-0">CPU Tüketimi</h6>
-                    </div>
-                    <h5 class="fw-bold text-primary mb-0" id="liveCpuText">--%</h5>
-                </div>
-                <div class="card-body p-4 pt-3">
-                    <canvas id="cpuChart" height="220"></canvas>
-                </div>
+            <div class="ops-panel__body">
+                <div class="ops-panel__chart ops-panel__chart--sm"><canvas id="cpuChart"></canvas></div>
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm rounded-4 h-100" style="background-color: var(--card-bg);">
-                <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <span class="bg-warning bg-opacity-10 text-warning rounded p-1 me-2"><span class="iconify fs-5" data-icon="mdi:memory"></span></span>
-                        <h6 class="fw-bold mb-0">RAM Tüketimi</h6>
-                    </div>
-                     <h5 class="fw-bold text-warning mb-0" id="liveRamText">--%</h5>
-                </div>
-                <div class="card-body p-4 pt-3">
-                    <canvas id="ramChart" height="220"></canvas>
-                </div>
+        <div class="ops-panel ops-span-6">
+            <div class="ops-panel__head">
+                <h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:memory"></span>{% trans "Bellek Kullanımı" %}</h6>
+                <strong id="liveRamText" class="text-warning fs-5">--%</strong>
+            </div>
+            <div class="ops-panel__body">
+                <div class="ops-panel__chart ops-panel__chart--sm"><canvas id="ramChart"></canvas></div>
             </div>
         </div>
 
-        <div class="col-12">
-            <div class="card border-0 shadow-sm rounded-4" style="background-color: var(--card-bg);">
-                <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0 d-flex align-items-center">
-                    <span class="bg-success bg-opacity-10 text-success rounded p-1 me-2"><span class="iconify fs-5" data-icon="mdi:swap-horizontal"></span></span>
-                    <h6 class="fw-bold mb-0">Bant Genişliği Trafiği (Mbps)</h6>
-                </div>
-                <div class="card-body p-4 pt-3">
-                    <canvas id="trafficChart" height="150"></canvas>
-                </div>
+        <div class="ops-panel ops-span-12">
+            <div class="ops-panel__head">
+                <h6 class="ops-panel__title"><span class="iconify" data-icon="mdi:swap-horizontal"></span>{% trans "Ağ Trafiği (Mbps)" %}</h6>
+            </div>
+            <div class="ops-panel__body">
+                <div class="ops-panel__chart"><canvas id="trafficChart"></canvas></div>
             </div>
         </div>
-
-    </div>
+    </section>
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        
-        let targetIP = document.getElementById('deviceSelector').value || "127.0.0.1";
-        
-        // Tema Renkleri
-        const style = getComputedStyle(document.documentElement);
-        const textColor = style.getPropertyValue('--text-main').trim() || '#334155';
-        const gridColor = style.getPropertyValue('--border-color').trim() || '#e2e8f0';
+document.addEventListener("DOMContentLoaded", function() {
+    let targetIP = document.getElementById('deviceSelector').value || "127.0.0.1";
+    const theme = applyChartTheme();
 
-        Chart.defaults.color = textColor;
-        Chart.defaults.font.family = "'Inter', sans-serif";
-
-        const commonOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: { duration: 0 }, // Akıcılık için animasyon kapalı
-            scales: {
-                y: { 
-                    beginAtZero: true, 
-                    max: 100, 
-                    grid: { color: gridColor, drawBorder: false },
-                    ticks: { color: textColor, padding: 10 } 
-                },
-                x: { 
-                    grid: { display: false, drawBorder: false },
-                    ticks: { color: textColor, maxRotation: 0, maxTicksLimit: 10 } 
-                }
+    const lineDefaults = {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 0 },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 100,
+                grid: { color: theme.grid, drawBorder: false },
+                ticks: { color: theme.muted, padding: 10 }
             },
-            plugins: { 
-                legend: { display: false },
-                tooltip: { enabled: false } // Mouse ile üzerine gelme kapatıldı (akıcılık için)
-            },
-            elements: {
-                point: { radius: 0 } // Çizgi üstündeki yuvarlak noktaları kaldırır
+            x: {
+                grid: { display: false },
+                ticks: { color: theme.muted, maxRotation: 0, maxTicksLimit: 8 }
             }
-        };
+        },
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        elements: { point: { radius: 0 } }
+    };
 
-        const MAX_POINTS = 20;
-        let timeLabels = Array(MAX_POINTS).fill('');
-        let cpuData = Array(MAX_POINTS).fill(0);
-        let ramData = Array(MAX_POINTS).fill(0);
-        let trafficInData = Array(MAX_POINTS).fill(0);
-        let trafficOutData = Array(MAX_POINTS).fill(0);
+    const MAX_POINTS = 24;
+    let timeLabels = Array(MAX_POINTS).fill('');
+    let cpuData = Array(MAX_POINTS).fill(0);
+    let ramData = Array(MAX_POINTS).fill(0);
+    let trafficInData = Array(MAX_POINTS).fill(0);
+    let trafficOutData = Array(MAX_POINTS).fill(0);
 
-        // 1. CPU Grafiği
-        const ctxCpu = document.getElementById('cpuChart').getContext('2d');
-        const cpuChart = new Chart(ctxCpu, {
-            type: 'line',
-            data: { 
-                labels: timeLabels, 
-                datasets: [{ 
-                    data: cpuData, 
-                    borderColor: '#0ea5e9',
-                    backgroundColor: 'rgba(14, 165, 233, 0.1)', 
-                    borderWidth: 2, 
-                    fill: true, 
-                    tension: 0.4 // Yumuşak kıvrım
-                }] 
-            },
-            options: commonOptions
-        });
+    function makeGradient(ctx, color) {
+        const g = ctx.createLinearGradient(0, 0, 0, 220);
+        g.addColorStop(0, color.replace('1)', '0.28)'));
+        g.addColorStop(1, color.replace('1)', '0.02)'));
+        return g;
+    }
 
-        // 2. RAM Grafiği
-        const ctxRam = document.getElementById('ramChart').getContext('2d');
-        const ramChart = new Chart(ctxRam, {
-            type: 'line',
-            data: { 
-                labels: timeLabels, 
-                datasets: [{ 
-                    data: ramData, 
-                    borderColor: '#f59e0b',
-                    backgroundColor: 'rgba(245, 158, 11, 0.1)', 
-                    borderWidth: 2, 
-                    fill: true, 
-                    tension: 0.4
-                }] 
-            },
-            options: commonOptions
-        });
-
-        // 3. Trafik Grafiği (Çift Çizgi)
-        const ctxTraffic = document.getElementById('trafficChart').getContext('2d');
-        const trafficChart = new Chart(ctxTraffic, {
-            type: 'line',
-            data: { 
-                labels: timeLabels, 
-                datasets: [
-                    { 
-                        label: 'Gelen (In)', 
-                        data: trafficInData, 
-                        borderColor: '#10b981',
-                        borderWidth: 2, 
-                        tension: 0.4
-                    },
-                    { 
-                        label: 'Giden (Out)', 
-                        data: trafficOutData, 
-                        borderColor: '#ef4444',
-                        borderWidth: 2, 
-                        borderDash: [5, 5], // Kesik çizgi
-                        tension: 0.4
-                    }
-                ] 
-            },
-            options: {
-                ...commonOptions,
-                scales: { 
-                    y: { 
-                        beginAtZero: true, 
-                        suggestedMax: 200, // Trafik için sabit 100 sınırı kaldırıldı
-                        grid: { color: gridColor, drawBorder: false },
-                        ticks: { color: textColor, padding: 10 }
-                    },
-                    x: commonOptions.scales.x
-                }, 
-                plugins: { 
-                    legend: { display: true, position: 'bottom', labels: { color: textColor, usePointStyle: true, boxWidth: 8 } }
-                }
-            }
-        });
-
-        // Cihaz değişirse temizle
-        document.getElementById('deviceSelector').addEventListener('change', function() {
-            targetIP = this.value;
-            
-            // Verileri Sıfırla
-            cpuData.fill(0);
-            ramData.fill(0);
-            trafficInData.fill(0);
-            trafficOutData.fill(0);
-            
-            cpuChart.update();
-            ramChart.update();
-            trafficChart.update();
-            
-            fetchMonitorData();
-        });
-
-        // Veri Çekme Motoru
-        function fetchMonitorData() {
-            fetch(`/api/monitor-data/?ip=${targetIP}`)
-                .then(response => response.json())
-                .then(data => {
-                    const now = new Date();
-                    const timeStr = now.getHours().toString().padStart(2, '0') + ":" + 
-                                    now.getMinutes().toString().padStart(2, '0') + ":" + 
-                                    now.getSeconds().toString().padStart(2, '0');
-
-                    if (data.status === "success") {
-                        // Statü Güncelleme
-                        document.getElementById('connectionStatus').className = "badge bg-success bg-opacity-10 text-success border border-success-subtle px-3 py-2 fs-6 shadow-sm";
-                        document.getElementById('connectionStatus').innerHTML = '<span class="spinner-grow spinner-grow-sm me-1" role="status" style="width: 10px; height: 10px;"></span> Aktif';
-                        document.getElementById('latencyValue').innerText = data.latency + (data.latency === "<1" ? "" : " ms");
-                        
-                        // Başlıklara Anlık Veri Yazma
-                        document.getElementById('liveCpuText').innerText = data.cpu + "%";
-                        document.getElementById('liveRamText').innerText = data.ram + "%";
-
-                        // Dizileri Kaydır (Baştakini At, Sona Ekle)
-                        timeLabels.shift(); timeLabels.push(timeStr);
-                        
-                        cpuData.shift(); cpuData.push(data.cpu);
-                        ramData.shift(); ramData.push(data.ram);
-                        
-                        trafficInData.shift(); trafficInData.push(data.traffic_in);
-                        trafficOutData.shift(); trafficOutData.push(data.traffic_out);
-
-                    } else {
-                        document.getElementById('connectionStatus').className = "badge bg-danger bg-opacity-10 text-danger border border-danger-subtle px-3 py-2 fs-6 shadow-sm";
-                        document.getElementById('connectionStatus').innerText = "Bağlantı Koptu";
-                        
-                        timeLabels.shift(); timeLabels.push(timeStr);
-                        cpuData.shift(); cpuData.push(0);
-                        ramData.shift(); ramData.push(0);
-                        trafficInData.shift(); trafficInData.push(0);
-                        trafficOutData.shift(); trafficOutData.push(0);
-                    }
-
-                    // Güncelle
-                    cpuChart.update();
-                    ramChart.update();
-                    trafficChart.update();
-                })
-                .catch(error => console.error("Veri çekilemedi:", error));
-        }
-
-        // Her 2 saniyede bir tetikle
-        setInterval(fetchMonitorData, 2000);
-        fetchMonitorData(); 
+    const ctxCpu = document.getElementById('cpuChart').getContext('2d');
+    const cpuChart = new Chart(ctxCpu, {
+        type: 'line',
+        data: {
+            labels: timeLabels,
+            datasets: [{
+                data: cpuData,
+                borderColor: '#7c3aed',
+                backgroundColor: makeGradient(ctxCpu, 'rgba(124, 58, 237, 1)'),
+                borderWidth: 2,
+                fill: true,
+                tension: 0.42
+            }]
+        },
+        options: lineDefaults
     });
+
+    const ctxRam = document.getElementById('ramChart').getContext('2d');
+    const ramChart = new Chart(ctxRam, {
+        type: 'line',
+        data: {
+            labels: timeLabels,
+            datasets: [{
+                data: ramData,
+                borderColor: '#f59e0b',
+                backgroundColor: makeGradient(ctxRam, 'rgba(245, 158, 11, 1)'),
+                borderWidth: 2,
+                fill: true,
+                tension: 0.42
+            }]
+        },
+        options: lineDefaults
+    });
+
+    const trafficChart = new Chart(document.getElementById('trafficChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: timeLabels,
+            datasets: [
+                {
+                    label: '{% trans "Gelen" %}',
+                    data: trafficInData,
+                    borderColor: '#22c55e',
+                    backgroundColor: 'rgba(34, 197, 94, 0.08)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.35
+                },
+                {
+                    label: '{% trans "Giden" %}',
+                    data: trafficOutData,
+                    borderColor: '#f43f5e',
+                    borderWidth: 2,
+                    borderDash: [6, 4],
+                    fill: false,
+                    tension: 0.35
+                }
+            ]
+        },
+        options: {
+            ...lineDefaults,
+            scales: {
+                y: { beginAtZero: true, suggestedMax: 200, grid: { color: theme.grid }, ticks: { color: theme.muted } },
+                x: lineDefaults.scales.x
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: { color: theme.text, usePointStyle: true, boxWidth: 8, font: { weight: '700' } }
+                },
+                tooltip: { enabled: false }
+            }
+        }
+    });
+
+    function shiftSeries(timeStr, cpu, ram, tin, tout) {
+        timeLabels.shift(); timeLabels.push(timeStr);
+        cpuData.shift(); cpuData.push(cpu);
+        ramData.shift(); ramData.push(ram);
+        trafficInData.shift(); trafficInData.push(tin);
+        trafficOutData.shift(); trafficOutData.push(tout);
+        cpuChart.update();
+        ramChart.update();
+        trafficChart.update();
+    }
+
+    document.getElementById('deviceSelector').addEventListener('change', function() {
+        targetIP = this.value;
+        cpuData.fill(0); ramData.fill(0); trafficInData.fill(0); trafficOutData.fill(0);
+        fetchMonitorData();
+    });
+
+    function fetchMonitorData() {
+        fetch(`/api/monitor-data/?ip=${targetIP}`)
+            .then(response => response.json())
+            .then(data => {
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+                if (data.status === "success") {
+                    document.getElementById('connectionStatus').className = "badge bg-success bg-opacity-10 text-success border border-success-subtle px-3 py-2";
+                    document.getElementById('connectionStatus').innerHTML = '<span class="spinner-grow spinner-grow-sm me-1" style="width:8px;height:8px;"></span> Aktif';
+                    document.getElementById('latencyValue').innerText = data.latency + (data.latency === "<1" ? "" : " ms");
+                    document.getElementById('liveCpuText').innerText = data.cpu + "%";
+                    document.getElementById('liveRamText').innerText = data.ram + "%";
+                    shiftSeries(timeStr, data.cpu, data.ram, data.traffic_in, data.traffic_out);
+                } else {
+                    document.getElementById('connectionStatus').className = "badge bg-danger bg-opacity-10 text-danger border border-danger-subtle px-3 py-2";
+                    document.getElementById('connectionStatus').innerText = "{% trans 'Bağlantı yok' %}";
+                    shiftSeries(timeStr, 0, 0, 0, 0);
+                }
+            })
+            .catch(console.error);
+    }
+
+    setInterval(fetchMonitorData, 2000);
+    fetchMonitorData();
+});
 </script>
 {% endblock %}

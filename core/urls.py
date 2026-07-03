@@ -39,6 +39,7 @@ from inventory.enterprise_views import (
     managed_document_editor, managed_document_editor_callback,
     asset_qr_scanner_view, qr_lookup_api, erp_integrations_view, ot_integrations_view,
     integration_hub_center_view, itsm_maturity_view, prometheus_metrics_view,
+    workspace_center_view,
     asset_qr_label_pdf, asset_qr_labels_batch_pdf,
     wopi_check_file_info, wopi_file_contents,
 )
@@ -190,6 +191,7 @@ urlpatterns = [
     path('ot-entegrasyonlari/', ot_integrations_view, name='ot_integrations'),
     path('entegrasyon-merkezi/', integration_hub_center_view, name='integration_hub_center'),
     path('itsm-olgunluk/', itsm_maturity_view, name='itsm_maturity'),
+    path('calisma-alani/', workspace_center_view, name='workspace_center'),
     path('kurulum-merkezi/', setup_center_view, name='setup_center'),
     path('offline-saha/', offline_field_app, name='offline_field_app'),
     path('service-worker.js', service_worker_js, name='service_worker_js'),
@@ -216,6 +218,8 @@ urlpatterns = [
     path('oauth/', include('social_django.urls', namespace='social')),
     
     path('api/rack-devices/', get_rack_devices, name='rack_devices_api'),
+    path('api/workspace/layout/', api_views.workspace_layout_api, name='workspace_layout_api'),
+    path('api/workspace/config/', api_views.workspace_config_api, name='workspace_config_api'),
     path('api/webhook/alert/', device_alert_webhook, name='device_alert_webhook'),
 
     # JWT
