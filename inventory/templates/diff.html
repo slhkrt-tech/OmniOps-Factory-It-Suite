@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}OmniOps - Config Diff{% endblock %}
+{% block title %}{% trans "OmniOps - Config Diff" %}{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-0 mb-5">
@@ -8,12 +9,12 @@
         <div>
             <h4 class="fw-bold mb-1 text-primary d-flex align-items-center">
                 <span class="iconify me-2 fs-3" data-icon="mdi:file-compare"></span> 
-                Konfigürasyon Karşılaştırma
+                {% trans "Konfigürasyon Karşılaştırma" %}
             </h4>
-            <p class="text-muted small mb-0"><strong>{{ device.name }}</strong> cihazının geçmiş yedekleri arasındaki değişiklikleri denetleyin.</p>
+            <p class="text-muted small mb-0"><strong>{{ device.name }}</strong> {% trans "cihazının geçmiş yedekleri arasındaki değişiklikleri denetleyin." %}</p>
         </div>
         <a href="{% url 'device_backup' %}" class="btn btn-outline-secondary btn-sm shadow-sm rounded-pill px-3">
-            <span class="iconify me-1 align-text-bottom" data-icon="mdi:arrow-left"></span> Yedeklere Dön
+            <span class="iconify me-1 align-text-bottom" data-icon="mdi:arrow-left"></span> {% trans "Yedeklere Dön" %}
         </a>
     </div>
 
@@ -21,9 +22,9 @@
         <div class="card-body p-4">
             <form method="GET" class="row g-3 align-items-end">
                 <div class="col-md-5">
-                    <label class="form-label small fw-bold text-muted mb-1 text-danger">🔴 Referans Yedek (Eski)</label>
+                    <label class="form-label small fw-bold text-muted mb-1 text-danger">{% trans "🔴 Referans Yedek (Eski)" %}</label>
                     <select name="b1" class="form-select bg-body-tertiary border-secondary-subtle font-monospace small">
-                        <option value="">-- Referans Yedeği Seçin --</option>
+                        <option value="">{% trans "-- Referans Yedeği Seçin --" %}</option>
                         {% for b in backups %}
                         <option value="{{ b.id }}" {% if b.id == b1_id %}selected{% endif %}>
                             {{ b.created_at|date:"d.m.Y H:i:s" }} (ID: {{ b.id }})
@@ -32,9 +33,9 @@
                     </select>
                 </div>
                 <div class="col-md-5">
-                    <label class="form-label small fw-bold text-muted mb-1 text-success">🟢 Karşılaştırılacak Yedek (Yeni)</label>
+                    <label class="form-label small fw-bold text-muted mb-1 text-success">{% trans "🟢 Karşılaştırılacak Yedek (Yeni)" %}</label>
                     <select name="b2" class="form-select bg-body-tertiary border-secondary-subtle font-monospace small">
-                        <option value="">-- Yeni Yedeği Seçin --</option>
+                        <option value="">{% trans "-- Yeni Yedeği Seçin --" %}</option>
                         {% for b in backups %}
                         <option value="{{ b.id }}" {% if b.id == b2_id %}selected{% endif %}>
                             {{ b.created_at|date:"d.m.Y H:i:s" }} (ID: {{ b.id }})
@@ -54,8 +55,8 @@
     {% if diff_lines %}
     <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
         <div class="card-header bg-dark border-bottom border-secondary pt-3 px-4 pb-2 d-flex justify-content-between align-items-center">
-            <h6 class="text-light font-monospace small mb-0"><span class="iconify text-warning me-2" data-icon="mdi:console"></span>Diff Analyzer Engine</h6>
-            <span class="badge bg-secondary bg-opacity-25 text-light border border-secondary-subtle">Satır Satır Analiz</span>
+            <h6 class="text-light font-monospace small mb-0"><span class="iconify text-warning me-2" data-icon="mdi:console"></span>{% trans "Diff Analyzer Engine" %}</h6>
+            <span class="badge bg-secondary bg-opacity-25 text-light border border-secondary-subtle">{% trans "Satır Satır Analiz" %}</span>
         </div>
         <div class="card-body p-0 bg-dark overflow-auto" style="max-height: 600px;">
             <table class="table table-dark table-sm table-borderless mb-0 font-monospace" style="font-size: 0.85rem; line-height: 1.5;">
@@ -83,8 +84,8 @@
     <div class="alert alert-success d-flex align-items-center shadow-sm border-0 rounded-4 p-4 mt-4">
         <span class="iconify fs-1 me-3" data-icon="mdi:check-decagram"></span>
         <div>
-            <h6 class="fw-bold mb-1">Mükemmel Uyum</h6>
-            <p class="mb-0 small">Seçilen iki yedek arasında hiçbir konfigürasyon değişikliği bulunmamaktadır. Cihaz güvenli durumdadır.</p>
+            <h6 class="fw-bold mb-1">{% trans "Mükemmel Uyum" %}</h6>
+            <p class="mb-0 small">{% trans "Seçilen iki yedek arasında hiçbir konfigürasyon değişikliği bulunmamaktadır. Cihaz güvenli durumdadır." %}</p>
         </div>
     </div>
     {% endif %}

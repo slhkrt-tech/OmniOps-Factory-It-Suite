@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}Profilim - OmniOps{% endblock %}
+{% block title %}{% trans "Profilim" %} - OmniOps{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -18,7 +18,7 @@
                     {% endif %}
                     <div>
                         <h3 class="fw-bold mb-0">{{ user.username }}</h3>
-                        <p class="text-muted mb-0">{{ user.email|default:"E-posta eklenmemiş" }}</p>
+                        <p class="text-muted mb-0">{% if user.email %}{{ user.email }}{% else %}{% trans "E-posta eklenmemiş" %}{% endif %}</p>
                     </div>
                 </div>
 
@@ -54,7 +54,7 @@
                             {{ form.bio }}
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-4">Profili Kaydet</button>
+                    <button type="submit" class="btn btn-primary mt-4">{% trans "Profili Kaydet" %}</button>
                 </form>
             </div>
         </div>

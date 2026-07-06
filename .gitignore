@@ -8,9 +8,7 @@ db.sqlite3
 # --- Sanal Ortam (Virtual Environment) ---
 venv/
 env/
-Lib/
-Scripts/
-Include/
+.venv/
 pyvenv.cfg
 
 # --- Güvenlik ve Şifreler ---

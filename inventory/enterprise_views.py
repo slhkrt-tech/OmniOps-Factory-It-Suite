@@ -17,8 +17,15 @@ from django.db import connection, models
 from django.db.models import Count
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 from .helpdesk import is_support_staff
+
+
+def _home_redirect(request):
+    if request.user.is_staff:
+        return redirect('dashboard')
+    return redirect('user_panel')
 from .site_access import (
     filter_queryset_by_site, get_accessible_sites, resolve_site_for_user,
     user_can_access_site, user_has_global_site_access, user_has_module_permission,
@@ -133,7 +140,10 @@ def build_readiness_report():
         _readiness_item('admin', 'Admin Kullanıcı', User.objects.filter(is_superuser=True).exists(), 'En az bir superuser bulunmalı.', 'python manage.py createsuperuser'),
         _readiness_item('groups', 'Rol Grupları', not missing_groups, 'Eksik grup: ' + ', '.join(missing_groups) if missing_groups else 'Temel RBAC grupları hazır.', 'python manage.py setup_helpdesk'),
         _readiness_item('ticket_categories', 'Ticket Kategorileri', TicketCategory.objects.exists(), 'Varsayılan destek kategorileri hazır olmalı.', 'python manage.py setup_helpdesk'),
-        _readiness_item('secret_key', 'Gizli Anahtar', bool(getattr(settings, 'SECRET_KEY', '')) and 'change-me' not in settings.SECRET_KEY.lower(), 'DJANGO_SECRET_KEY canlı ortamda benzersiz olmalı.', '.env içinden DJANGO_SECRET_KEY değerini değiştirin.'),
+        _readiness_item('secret_key', 'Gizli Anahtar', bool(getattr(settings, 'SECRET_KEY', '')) and not any(
+            marker in settings.SECRET_KEY.lower()
+            for marker in ('change-me', 'dev-only', 'insecure', 'please-set-env')
+        ), 'DJANGO_SECRET_KEY canlı ortamda benzersiz olmalı.', '.env içinden DJANGO_SECRET_KEY değerini değiştirin.'),
         _readiness_item('allowed_hosts', 'Allowed Hosts', bool(getattr(settings, 'ALLOWED_HOSTS', [])), ', '.join(getattr(settings, 'ALLOWED_HOSTS', [])) or 'Boş', 'ALLOWED_HOSTS canlı domainleri içermeli.'),
         _readiness_item('remote_secret', 'Remote Probe Secret', bool(getattr(settings, 'REMOTE_PROBE_SHARED_SECRET', '')), 'Uzak ajan senkronizasyon şifresi.', 'REMOTE_PROBE_SHARED_SECRET ayarlayın.'),
         _readiness_item('media_root', 'Media Dizini', bool(media_root) and os.path.isdir(media_root), str(media_root), 'media klasörünü oluşturup yazılabilir yapın.'),
@@ -223,7 +233,7 @@ def run_directory_sync(connection, actor=None, dry_run=None):
 @login_required
 def setup_center_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
     return render(request, 'setup_center.html', build_readiness_report())
 
 
@@ -237,7 +247,7 @@ def readiness_api(request):
 @login_required
 def identity_operations_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     forms = {
         'connection': DirectoryConnectionForm(),
@@ -267,13 +277,13 @@ def identity_operations_view(request):
                     obj.requested_by = request.user
                 if action == 'site_access':
                     if not user_has_global_site_access(request.user):
-                        messages.error(request, 'Tesis erişim yetkisi yalnızca global yöneticiler tarafından atanabilir.')
+                        messages.error(request, _('Tesis erişim yetkisi yalnızca global yöneticiler tarafından atanabilir.'))
                         return redirect('identity_operations')
                     obj.granted_by = request.user
                 obj.save()
                 if hasattr(form, 'save_m2m'):
                     form.save_m2m()
-                messages.success(request, "Kimlik merkezi kaydı oluşturuldu.")
+                messages.success(request, _("Kimlik merkezi kaydı oluşturuldu."))
                 return redirect('identity_operations')
             forms[action] = form
         elif action == 'sync_directory':
@@ -354,7 +364,7 @@ def identity_operations_view(request):
 @login_required
 def field_routes_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     if request.method == 'POST':
         visit = FieldVisit.objects.create(
@@ -397,9 +407,9 @@ def field_routes_view(request):
 @login_required
 def sales_kanban_view(request):
     if not getattr(settings, 'FEATURE_SALES_KANBAN', True):
-        return redirect('dashboard')
+        return _home_redirect(request)
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     if request.method == 'POST':
         SalesOpportunity.objects.create(
@@ -410,7 +420,7 @@ def sales_kanban_view(request):
             owner=request.user,
             notes=request.POST.get('notes', ''),
         )
-        messages.success(request, "Satış fırsatı eklendi.")
+        messages.success(request, _("Satış fırsatı eklendi."))
         return redirect('sales_kanban')
 
     stages = []
@@ -445,7 +455,7 @@ def service_worker_js(request):
 @login_required
 def factory_operations_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     forms = {
         'area': FactoryAreaForm(),
@@ -470,7 +480,7 @@ def factory_operations_view(request):
                 if action == 'employee_process':
                     obj.requester = request.user
                 obj.save()
-                messages.success(request, "Fabrika IT operasyon kaydı oluşturuldu.")
+                messages.success(request, _("Fabrika IT operasyon kaydı oluşturuldu."))
                 return redirect('factory_operations')
             forms[action] = form
         elif action == 'mark_maintenance_done':
@@ -515,7 +525,7 @@ def factory_operations_view(request):
 @login_required
 def it_operations_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     forms = {
         'procurement': ProcurementRequestForm(),
@@ -544,7 +554,7 @@ def it_operations_view(request):
                 elif action == 'handover':
                     obj.performed_by = request.user
                 obj.save()
-                messages.success(request, "IT operasyon kaydı oluşturuldu.")
+                messages.success(request, _("IT operasyon kaydı oluşturuldu."))
                 return redirect('it_operations')
             forms[action] = form
         elif action == 'approve_procurement':
@@ -598,7 +608,7 @@ def it_operations_view(request):
 @login_required
 def service_operations_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     forms = {
         'incident': MajorIncidentForm(),
@@ -623,7 +633,7 @@ def service_operations_view(request):
                 if action == 'access':
                     obj.requester = request.user
                 obj.save()
-                messages.success(request, "Servis süreç kaydı oluşturuldu.")
+                messages.success(request, _("Servis süreç kaydı oluşturuldu."))
                 return redirect('service_operations')
             forms[action] = form
         elif action == 'resolve_incident':
@@ -675,7 +685,7 @@ def service_operations_view(request):
 @login_required
 def command_center_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     forms = {
         'remote_access': RemoteAccessGrantForm(),
@@ -704,7 +714,7 @@ def command_center_view(request):
                 if action == 'message':
                     obj.author = request.user
                 obj.save()
-                messages.success(request, "Komuta merkezi kaydı oluşturuldu.")
+                messages.success(request, _("Komuta merkezi kaydı oluşturuldu."))
                 return redirect('command_center')
             forms[action] = form
         elif action == 'activate_remote_access':
@@ -750,7 +760,7 @@ def command_center_view(request):
 @login_required
 def governance_center_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     forms = {
         'calendar': ChangeCalendarEventForm(),
@@ -777,7 +787,7 @@ def governance_center_view(request):
                 if action == 'document':
                     obj.requested_by = request.user
                 obj.save()
-                messages.success(request, "Yönetişim kaydı oluşturuldu.")
+                messages.success(request, _("Yönetişim kaydı oluşturuldu."))
                 return redirect('governance_center')
             forms[action] = form
         elif action == 'complete_calendar':
@@ -838,7 +848,7 @@ def governance_center_view(request):
 @login_required
 def dlp_events_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
     events = DLPEvent.objects.select_related('user').order_by('-created_at')[:200]
     return render(request, 'dlp_events.html', {'events': events})
 
@@ -846,7 +856,7 @@ def dlp_events_view(request):
 @login_required
 def topology_png_export(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     import matplotlib
     matplotlib.use('Agg')
@@ -882,7 +892,7 @@ def topology_png_export(request):
 @require_POST
 def optimize_field_route(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
     visits = list(FieldVisit.objects.all().order_by('order_index', 'id'))
     current = None
     ordered = []
@@ -902,7 +912,7 @@ def optimize_field_route(request):
     for index, visit in enumerate(ordered):
         visit.order_index = index + 1
         visit.save(update_fields=['order_index', 'updated_at'])
-    messages.success(request, "Rota en yakın komşu algoritmasıyla optimize edildi.")
+    messages.success(request, _("Rota en yakın komşu algoritmasıyla optimize edildi."))
     return redirect('field_routes')
 
 
@@ -1014,7 +1024,7 @@ def _gather_factory_scope_modules(department=None, zone=None):
 def factory_portfolio_inventory_view(request):
     """Müşteri portföyündeki fabrika tesisleri ve bölüm envanterleri."""
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     factory_sites = get_accessible_sites(request.user).annotate(
         department_total=Count('departments', filter=models.Q(departments__is_active=True), distinct=True),
@@ -1028,7 +1038,7 @@ def factory_portfolio_inventory_view(request):
 
     if site_id:
         if not user_can_access_site(request.user, site_id):
-            messages.error(request, 'Bu fabrika tesisine erişim yetkiniz yok.')
+            messages.error(request, _('Bu fabrika tesisine erişim yetkiniz yok.'))
             return redirect('factory_portfolio_inventory')
         selected_site = factory_sites.filter(pk=site_id).first()
     if not selected_site:
@@ -1059,21 +1069,21 @@ def factory_portfolio_inventory_view(request):
             form = FactorySiteForm(request.POST)
             if form.is_valid():
                 form.save()
-                messages.success(request, "Fabrika tesisi kaydedildi.")
+                messages.success(request, _("Fabrika tesisi kaydedildi."))
                 return redirect(f"{reverse('factory_portfolio_inventory')}?site={form.instance.pk}")
             forms['site_new'] = form
         elif action == 'update_site' and selected_site:
             form = FactorySiteForm(request.POST, instance=selected_site)
             if form.is_valid():
                 form.save()
-                messages.success(request, "Tesis başlıkları güncellendi.")
+                messages.success(request, _("Tesis başlıkları güncellendi."))
                 return redirect(f"{reverse('factory_portfolio_inventory')}?site={selected_site.pk}")
             forms['site_edit'] = form
         elif action == 'inventory':
             form = DepartmentInventoryItemForm(request.POST)
             if form.is_valid():
                 form.save()
-                messages.success(request, "Envanter kalemi eklendi.")
+                messages.success(request, _("Envanter kalemi eklendi."))
                 redirect_url = reverse('factory_portfolio_inventory')
                 params = [f"site={form.instance.factory_site_id}"]
                 if form.instance.department_id:
@@ -1129,7 +1139,7 @@ def factory_portfolio_inventory_view(request):
 @login_required
 def factory_command_center_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     forms = {
         'department': FactoryDepartmentForm(),
@@ -1143,7 +1153,7 @@ def factory_command_center_view(request):
     site_id = request.GET.get('site')
     if site_id:
         if not user_can_access_site(request.user, site_id):
-            messages.error(request, 'Bu fabrika tesisine erişim yetkiniz yok.')
+            messages.error(request, _('Bu fabrika tesisine erişim yetkiniz yok.'))
             return redirect('factory_command_center')
         selected_site = factory_sites.filter(pk=site_id).first()
     if not selected_site:
@@ -1170,7 +1180,7 @@ def factory_command_center_view(request):
                 obj.save()
                 if hasattr(form, 'save_m2m'):
                     form.save_m2m()
-                messages.success(request, "Fabrika komuta merkezi kaydı oluşturuldu.")
+                messages.success(request, _("Fabrika komuta merkezi kaydı oluşturuldu."))
                 redirect_url = 'factory_command_center'
                 site_param = f"site={obj.factory_site_id}" if getattr(obj, 'factory_site_id', None) else (
                     f"site={selected_site.pk}" if selected_site else ''
@@ -1263,7 +1273,7 @@ def factory_command_center_view(request):
 @login_required
 def managed_document_download(request, pk):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
     document = ManagedDocument.objects.filter(pk=pk).first()
     if not document or not document.file:
         from django.http import Http404
@@ -1275,7 +1285,7 @@ def managed_document_download(request, pk):
 @login_required
 def managed_document_preview(request, pk):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
     document = ManagedDocument.objects.filter(pk=pk).first()
     if not document or not document.can_browser_preview:
         from django.http import Http404
@@ -1289,7 +1299,7 @@ def managed_document_preview(request, pk):
 @login_required
 def asset_qr_scanner_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     lookup_result = None
     forms = {'tag': AssetQRTagForm()}
@@ -1300,7 +1310,7 @@ def asset_qr_scanner_view(request):
             form = AssetQRTagForm(request.POST)
             if form.is_valid():
                 form.save()
-                messages.success(request, 'QR etiket kaydı oluşturuldu.')
+                messages.success(request, _('QR etiket kaydı oluşturuldu.'))
                 return redirect('asset_qr_scanner')
             forms['tag'] = form
         elif action == 'lookup':
@@ -1331,7 +1341,7 @@ def qr_lookup_api(request):
 @login_required
 def managed_document_editor(request, pk):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
     from django.http import Http404
     from .integrations.document_editor import build_document_editor_context, get_document_editor_backend
 
@@ -1344,7 +1354,7 @@ def managed_document_editor(request, pk):
         backend = get_document_editor_backend()
         messages.warning(
             request,
-            'Belge editörü yapılandırılmamış. ONLYOFFICE_DOCUMENT_SERVER_URL veya COLLABORA_SERVER_URL ayarlayın.',
+            _('Belge editörü yapılandırılmamış. ONLYOFFICE_DOCUMENT_SERVER_URL veya COLLABORA_SERVER_URL ayarlayın.'),
         )
         return redirect(f"{reverse('factory_command_center')}?document={document.pk}")
 
@@ -1387,7 +1397,7 @@ def managed_document_editor_callback(request, pk):
             return HttpResponse(json.dumps({'error': 1}), content_type='application/json')
 
     if build_document_key(document) != payload.get('key', ''):
-        pass
+        return HttpResponse(json.dumps({'error': 1}), content_type='application/json')
 
     return HttpResponse(json.dumps({'error': 0}), content_type='application/json')
 
@@ -1401,11 +1411,13 @@ def wopi_check_file_info(request, pk):
     if not document or not document.file:
         return JsonResponse({'detail': 'Dosya bulunamadı.'}, status=404)
 
-    user_id = request.GET.get('access_token_uid') or request.user.id if request.user.is_authenticated else None
-    token = request.GET.get('access_token', '')
+    user_id = request.GET.get('access_token_uid')
+    if request.user.is_authenticated and not user_id:
+        user_id = request.user.id
     if not user_id:
-        user_id = document.owner_id or 1
-    if not verify_wopi_access_token(document.pk, user_id, token):
+        user_id = document.owner_id
+    token = request.GET.get('access_token', '')
+    if not user_id or not verify_wopi_access_token(document.pk, user_id, token):
         return JsonResponse({'detail': 'WOPI erişim belirteci geçersiz.'}, status=401)
 
     user = User.objects.filter(pk=user_id).first() or request.user
@@ -1424,9 +1436,13 @@ def wopi_file_contents(request, pk):
     if not document or not document.file:
         return JsonResponse({'detail': 'Dosya bulunamadı.'}, status=404)
 
-    user_id = request.GET.get('access_token_uid') or (request.user.id if request.user.is_authenticated else document.owner_id or 1)
+    user_id = request.GET.get('access_token_uid')
+    if request.user.is_authenticated and not user_id:
+        user_id = request.user.id
+    if not user_id:
+        user_id = document.owner_id
     token = request.GET.get('access_token', '')
-    if not verify_wopi_access_token(document.pk, user_id, token):
+    if not user_id or not verify_wopi_access_token(document.pk, user_id, token):
         return JsonResponse({'detail': 'WOPI erişim belirteci geçersiz.'}, status=401)
 
     if request.method == 'GET':
@@ -1451,7 +1467,7 @@ def wopi_file_contents(request, pk):
 def asset_qr_label_pdf(request, pk):
     """Tek QR etiket PDF çıktısı."""
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
     from django.http import Http404
     from .integrations.qr_labels import build_qr_labels_pdf
 
@@ -1469,7 +1485,7 @@ def asset_qr_label_pdf(request, pk):
 def asset_qr_labels_batch_pdf(request):
     """Seçili veya tüm aktif QR etiketler için toplu PDF."""
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
     from .integrations.qr_labels import build_qr_labels_pdf
 
     ids = [value for value in request.GET.get('ids', '').split(',') if value.strip().isdigit()]
@@ -1478,7 +1494,7 @@ def asset_qr_labels_batch_pdf(request):
         queryset = queryset.filter(pk__in=ids)
     tags = list(queryset[:50])
     if not tags:
-        messages.warning(request, 'PDF için aktif QR etiket bulunamadı.')
+        messages.warning(request, _('PDF için aktif QR etiket bulunamadı.'))
         return redirect('asset_qr_scanner')
 
     pdf_buffer = build_qr_labels_pdf(tags, base_url=request.build_absolute_uri('/'))
@@ -1490,7 +1506,7 @@ def asset_qr_labels_batch_pdf(request):
 @login_required
 def erp_integrations_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     form = ERPConnectionForm()
     if request.method == 'POST':
@@ -1501,7 +1517,7 @@ def erp_integrations_view(request):
                 obj = form.save(commit=False)
                 obj.owner = request.user
                 obj.save()
-                messages.success(request, 'ERP bağlantısı kaydedildi.')
+                messages.success(request, _('ERP bağlantısı kaydedildi.'))
                 return redirect('erp_integrations')
         elif action == 'test_connection':
             connection = ERPConnection.objects.filter(pk=request.POST.get('connection_id')).first()
@@ -1529,7 +1545,7 @@ def erp_integrations_view(request):
         elif action == 'poll_cameras':
             from inventory.tasks import poll_camera_health_task
             poll_camera_health_task.delay()
-            messages.success(request, 'Kamera sağlık taraması kuyruğa alındı.')
+            messages.success(request, _('Kamera sağlık taraması kuyruğa alındı.'))
             return redirect('erp_integrations')
 
     connections = ERPConnection.objects.select_related('owner').order_by('erp_type', 'name')
@@ -1555,7 +1571,7 @@ def erp_integrations_view(request):
 @login_required
 def ot_integrations_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     form = OTConnectionForm()
     if request.method == 'POST':
@@ -1566,7 +1582,7 @@ def ot_integrations_view(request):
                 obj = form.save(commit=False)
                 obj.owner = request.user
                 obj.save()
-                messages.success(request, 'OT/MES bağlantısı kaydedildi.')
+                messages.success(request, _('OT/MES bağlantısı kaydedildi.'))
                 return redirect('ot_integrations')
         elif action == 'test_connection':
             connection = OTConnection.objects.filter(pk=request.POST.get('connection_id')).first()
@@ -1604,10 +1620,10 @@ def ot_integrations_view(request):
 @login_required
 def integration_hub_center_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
     if not user_has_module_permission(request.user, 'integrations', 'view'):
-        messages.error(request, 'Entegrasyon merkezi için yetkiniz yok.')
-        return redirect('dashboard')
+        messages.error(request, _('Entegrasyon merkezi için yetkiniz yok.'))
+        return _home_redirect(request)
 
     forms = {
         'notification': NotificationChannelForm(),
@@ -1641,7 +1657,7 @@ def integration_hub_center_view(request):
                 obj.save()
                 from .audit import record_audit
                 record_audit('create', action, obj.pk, actor=request.user, request=request)
-                messages.success(request, 'Kayıt oluşturuldu.')
+                messages.success(request, _('Kayıt oluşturuldu.'))
                 return redirect('integration_hub_center')
             forms[action] = form
         elif action == 'sync_monitoring':
@@ -1731,10 +1747,10 @@ def integration_hub_center_view(request):
 @login_required
 def itsm_maturity_view(request):
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
     if not user_has_module_permission(request.user, 'governance', 'view'):
-        messages.error(request, 'ITSM olgunluk modülü için yetkiniz yok.')
-        return redirect('dashboard')
+        messages.error(request, _('ITSM olgunluk modülü için yetkiniz yok.'))
+        return _home_redirect(request)
 
     forms = {
         'problem': ProblemRecordForm(),
@@ -1762,7 +1778,7 @@ def itsm_maturity_view(request):
                 obj.save()
                 from .audit import record_audit
                 record_audit('create', action, obj.pk, actor=request.user, request=request)
-                messages.success(request, 'ITSM kaydı oluşturuldu.')
+                messages.success(request, _('ITSM kaydı oluşturuldu.'))
                 return redirect('itsm_maturity')
             forms[action] = form
         elif action == 'resolve_problem':
@@ -1841,7 +1857,7 @@ def prometheus_metrics_view(request):
 def workspace_center_view(request):
     """Sektör profili, modül görünürlüğü ve çalışma alanı kişiselleştirme."""
     if not is_support_staff(request.user):
-        return redirect('dashboard')
+        return _home_redirect(request)
 
     from .models import OrganizationWorkspace
     from .workspace_registry import INDUSTRY_PRESETS, WORKSPACE_MODULE_KEYS
@@ -1864,7 +1880,7 @@ def workspace_center_view(request):
                 if request.POST.get(f'module_{key}') == 'on'
             ]
             org.save()
-            messages.success(request, 'Kurum çalışma alanı profili güncellendi.')
+            messages.success(request, _('Kurum çalışma alanı profili güncellendi.'))
         elif action == 'user_prefs':
             site_id = request.POST.get('active_factory_site')
             if site_id:
@@ -1873,13 +1889,13 @@ def workspace_center_view(request):
                 prefs.active_factory_site = None
             prefs.drag_drop_enabled = request.POST.get('drag_drop_enabled') == 'on'
             prefs.save(update_fields=['active_factory_site', 'drag_drop_enabled', 'updated_at'])
-            messages.success(request, 'Kişisel çalışma alanı tercihleri kaydedildi.')
+            messages.success(request, _('Kişisel çalışma alanı tercihleri kaydedildi.'))
         elif action == 'reset_layout':
             prefs.dashboard_layout = []
             prefs.sidebar_layout = []
             prefs.hidden_widgets = []
             prefs.save(update_fields=['dashboard_layout', 'sidebar_layout', 'hidden_widgets', 'updated_at'])
-            messages.success(request, 'Panel düzeni varsayılana sıfırlandı.')
+            messages.success(request, _('Panel düzeni varsayılana sıfırlandı.'))
         return redirect('workspace_center')
 
     industry_choices = OrganizationWorkspace.INDUSTRY_TYPE_CHOICES

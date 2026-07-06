@@ -1,55 +1,56 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}ITSM Olgunluk - OmniOps{% endblock %}
+{% block title %}{% trans "ITSM Olgunluk - OmniOps" %}{% endblock %}
 
 {% block content %}
 <section class="suite-hero mb-4">
     <div>
         <span class="suite-eyebrow">OmniOps Enterprise</span>
-        <h1 class="suite-title">ITSM Olgunluk</h1>
-        <p class="suite-subtitle">Problem yönetimi, release/CAB, varlık yaşam döngüsü ve denetim izi.</p>
+        <h1 class="suite-title">{% trans "ITSM Olgunluk" %}</h1>
+        <p class="suite-subtitle">{% trans "Problem yönetimi, release/CAB, varlık yaşam döngüsü ve denetim izi." %}</p>
     </div>
     <div class="d-flex gap-2">
-        <a href="{% url 'governance_center' %}" class="btn btn-outline-secondary">Yönetişim</a>
-        <a href="{% url 'integration_hub_center' %}" class="btn btn-outline-secondary">Entegrasyon Merkezi</a>
+        <a href="{% url 'governance_center' %}" class="btn btn-outline-secondary">{% trans "Yönetişim" %}</a>
+        <a href="{% url 'integration_hub_center' %}" class="btn btn-outline-secondary">{% trans "Entegrasyon Merkezi" %}</a>
     </div>
 </section>
 
 <div class="row g-3 mb-4">
-    <div class="col-md-3"><div class="card glass-card"><div class="card-body"><div class="text-muted small">Açık Problem</div><div class="h3 mb-0">{{ metrics.open_problems }}</div></div></div></div>
+    <div class="col-md-3"><div class="card glass-card"><div class="card-body"><div class="text-muted small">{% trans "Açık Problem" %}</div><div class="h3 mb-0">{{ metrics.open_problems }}</div></div></div></div>
     <div class="col-md-3"><div class="card glass-card"><div class="card-body"><div class="text-muted small">Bekleyen Release</div><div class="h3 mb-0">{{ metrics.pending_releases }}</div></div></div></div>
-    <div class="col-md-3"><div class="card glass-card"><div class="card-body"><div class="text-muted small">Lifecycle Olay</div><div class="h3 mb-0">{{ metrics.lifecycle_events }}</div></div></div></div>
-    <div class="col-md-3"><div class="card glass-card"><div class="card-body"><div class="text-muted small">Denetim İzi</div><div class="h3 mb-0">{{ metrics.audit_entries }}</div></div></div></div>
+    <div class="col-md-3"><div class="card glass-card"><div class="card-body"><div class="text-muted small">{% trans "Lifecycle Olay" %}</div><div class="h3 mb-0">{{ metrics.lifecycle_events }}</div></div></div></div>
+    <div class="col-md-3"><div class="card glass-card"><div class="card-body"><div class="text-muted small">{% trans "Denetim İzi" %}</div><div class="h3 mb-0">{{ metrics.audit_entries }}</div></div></div></div>
 </div>
 
 <div class="row g-4">
     <div class="col-lg-4">
         <div class="card glass-card mb-4">
-            <div class="card-header bg-transparent fw-bold">Problem Kaydı</div>
-            <div class="card-body"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="problem">{{ forms.problem.as_p }}<button class="btn btn-primary w-100">Kaydet</button></form></div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Problem Kaydı" %}</div>
+            <div class="card-body"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="problem">{{ forms.problem.as_p }}<button class="btn btn-primary w-100">{% trans "Kaydet" %}</button></form></div>
         </div>
         <div class="card glass-card mb-4">
             <div class="card-header bg-transparent fw-bold">Release</div>
-            <div class="card-body"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="release">{{ forms.release.as_p }}<button class="btn btn-primary w-100">Kaydet</button></form></div>
+            <div class="card-body"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="release">{{ forms.release.as_p }}<button class="btn btn-primary w-100">{% trans "Kaydet" %}</button></form></div>
         </div>
         <div class="card glass-card">
-            <div class="card-header bg-transparent fw-bold">Varlık Yaşam Döngüsü</div>
-            <div class="card-body"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="lifecycle">{{ forms.lifecycle.as_p }}<button class="btn btn-primary w-100">Kaydet</button></form></div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Varlık Yaşam Döngüsü" %}</div>
+            <div class="card-body"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="lifecycle">{{ forms.lifecycle.as_p }}<button class="btn btn-primary w-100">{% trans "Kaydet" %}</button></form></div>
         </div>
     </div>
     <div class="col-lg-8">
         <div class="card glass-card mb-4">
-            <div class="card-header bg-transparent fw-bold">Problem Kayıtları</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Problem Kayıtları" %}</div>
             <div class="table-responsive">
                 <table class="table table-hover mb-0 align-middle">
-                    <thead><tr><th>Başlık</th><th>Durum</th><th>Öncelik</th><th>İşlem</th></tr></thead>
+                    <thead><tr><th>{% trans "Başlık" %}</th><th>Durum</th><th>{% trans "Öncelik" %}</th><th>{% trans "İşlem" %}</th></tr></thead>
                     <tbody>
                         {% for problem in problems %}
                         <tr>
                             <td>{{ problem.title }}</td>
                             <td>{{ problem.get_status_display }}</td>
                             <td>{{ problem.priority }}</td>
-                            <td>{% if problem.status != 'resolved' %}<form method="post">{% csrf_token %}<input type="hidden" name="action" value="resolve_problem"><input type="hidden" name="problem_id" value="{{ problem.id }}"><button class="btn btn-sm btn-success">Çöz</button></form>{% endif %}</td>
+                            <td>{% if problem.status != 'resolved' %}<form method="post">{% csrf_token %}<input type="hidden" name="action" value="resolve_problem"><input type="hidden" name="problem_id" value="{{ problem.id }}"><button class="btn btn-sm btn-success">{% trans "Çöz" %}</button></form>{% endif %}</td>
                         </tr>
                         {% empty %}<tr><td colspan="4" class="text-center text-muted py-3">Problem yok.</td></tr>{% endfor %}
                     </tbody>
@@ -57,10 +58,10 @@
             </div>
         </div>
         <div class="card glass-card mb-4">
-            <div class="card-header bg-transparent fw-bold">Release Kayıtları</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Release Kayıtları" %}</div>
             <div class="table-responsive">
                 <table class="table table-hover mb-0 align-middle">
-                    <thead><tr><th>Release</th><th>Sürüm</th><th>Durum</th><th>CAB</th><th>İşlem</th></tr></thead>
+                    <thead><tr><th>Release</th><th>{% trans "Sürüm" %}</th><th>Durum</th><th>CAB</th><th>{% trans "İşlem" %}</th></tr></thead>
                     <tbody>
                         {% for release in releases %}
                         <tr>
@@ -68,7 +69,7 @@
                             <td>{{ release.version }}</td>
                             <td>{{ release.get_status_display }}</td>
                             <td>{% if release.cab_approved %}Onaylı{% else %}Bekliyor{% endif %}</td>
-                            <td>{% if not release.cab_approved %}<form method="post">{% csrf_token %}<input type="hidden" name="action" value="approve_release_cab"><input type="hidden" name="release_id" value="{{ release.id }}"><button class="btn btn-sm btn-outline-primary">CAB Onay</button></form>{% endif %}</td>
+                            <td>{% if not release.cab_approved %}<form method="post">{% csrf_token %}<input type="hidden" name="action" value="approve_release_cab"><input type="hidden" name="release_id" value="{{ release.id }}"><button class="btn btn-sm btn-outline-primary">{% trans "CAB Onay" %}</button></form>{% endif %}</td>
                         </tr>
                         {% empty %}<tr><td colspan="5" class="text-center text-muted py-3">Release yok.</td></tr>{% endfor %}
                     </tbody>
@@ -76,14 +77,14 @@
             </div>
         </div>
         <div class="card glass-card">
-            <div class="card-header bg-transparent fw-bold">Son Denetim İzleri</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Son Denetim İzleri" %}</div>
             <div class="table-responsive">
                 <table class="table table-sm mb-0">
-                    <thead><tr><th>Zaman</th><th>Kullanıcı</th><th>Aksiyon</th><th>Kaynak</th></tr></thead>
+                    <thead><tr><th>Zaman</th><th>{% trans "Kullanıcı" %}</th><th>{% trans "Aksiyon" %}</th><th>Kaynak</th></tr></thead>
                     <tbody>
                         {% for entry in audit_entries %}
                         <tr><td>{{ entry.created_at|date:"Y-m-d H:i" }}</td><td>{{ entry.actor }}</td><td>{{ entry.get_action_display }}</td><td>{{ entry.resource_type }}</td></tr>
-                        {% empty %}<tr><td colspan="4" class="text-center text-muted py-3">Denetim kaydı yok.</td></tr>{% endfor %}
+                        {% empty %}<tr><td colspan="4" class="text-center text-muted py-3">{% trans "Denetim kaydı yok." %}</td></tr>{% endfor %}
                     </tbody>
                 </table>
             </div>

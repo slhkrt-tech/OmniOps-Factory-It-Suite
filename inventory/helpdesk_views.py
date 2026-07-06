@@ -7,6 +7,7 @@ from django.contrib.auth.models import User, Group
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST, require_GET
 from django.db.models import Q
+from django.utils.translation import gettext as _
 
 from .helpdesk import (
     can_access_ticket, get_helpdesk_analytics, is_support_staff,
@@ -30,8 +31,8 @@ def ticket_detail(request, pk):
         pk=pk,
     )
     if not can_access_ticket(request.user, ticket):
-        messages.error(request, 'Bu talebe erişim yetkiniz yok.')
-        return redirect('user_panel' if not request.user.is_staff else 'custom_admin')
+        messages.error(request, _('Bu talebe erişim yetkiniz yok.'))
+        return redirect('custom_admin' if is_support_staff(request.user) else 'user_panel')
 
     comments = ticket.comments.select_related('author')
     if not is_support_staff(request.user):
@@ -54,7 +55,7 @@ def ticket_detail(request, pk):
                     user=request.user, action='TICKET',
                     details=f'#{ticket.id} talebine yorum eklendi.',
                 )
-                messages.success(request, 'Yorumunuz eklendi.')
+                messages.success(request, _('Yorumunuz eklendi.'))
                 return redirect('ticket_detail', pk=pk)
 
         elif action == 'attachment' and request.FILES.get('file'):
@@ -64,7 +65,7 @@ def ticket_detail(request, pk):
                 attachment.ticket = ticket
                 attachment.uploaded_by = request.user
                 attachment.save()
-                messages.success(request, 'Dosya eklendi.')
+                messages.success(request, _('Dosya eklendi.'))
                 return redirect('ticket_detail', pk=pk)
 
         elif action == 'update_status' and is_support_staff(request.user):
@@ -72,7 +73,7 @@ def ticket_detail(request, pk):
             if new_status in dict(Ticket.STATUS_CHOICES):
                 ticket.status = new_status
                 ticket.save()
-                messages.success(request, 'Talep durumu güncellendi.')
+                messages.success(request, _('Talep durumu güncellendi.'))
                 return redirect('ticket_detail', pk=pk)
 
         elif action == 'assign' and is_support_staff(request.user):
@@ -80,7 +81,7 @@ def ticket_detail(request, pk):
             if assignee_id:
                 ticket.assigned_to = get_object_or_404(User, pk=assignee_id)
                 ticket.save()
-                messages.success(request, 'Talep atandı.')
+                messages.success(request, _('Talep atandı.'))
                 return redirect('ticket_detail', pk=pk)
 
     support_agents = User.objects.filter(
@@ -126,7 +127,7 @@ def helpdesk_analytics(request):
 @login_required
 def export_tickets_csv(request):
     if not is_support_staff(request.user):
-        messages.error(request, 'CSV dışa aktarma yetkiniz yok.')
+        messages.error(request, _('CSV dışa aktarma yetkiniz yok.'))
         return redirect('dashboard')
 
     import csv
@@ -163,7 +164,7 @@ def user_profile_view(request):
             user.last_name = form.cleaned_data.get('last_name', user.last_name)
             user.email = form.cleaned_data.get('email', user.email)
             user.save()
-            messages.success(request, 'Profiliniz güncellendi.')
+            messages.success(request, _('Profiliniz güncellendi.'))
             return redirect('user_profile')
     else:
         form = UserProfileForm(instance=profile, initial={

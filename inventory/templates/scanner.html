@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}OmniOps - Canlı Ağ Tarayıcı{% endblock %}
+{% block title %}{% trans "OmniOps - Canlı Ağ Tarayıcı" %}{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-0 mb-5">
     
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h4 class="fw-bold mb-1">Gelişmiş Ağ Tarayıcı</h4>
-            <p class="text-muted small mb-0">Ping, ARP ve raw-socket/TCP probelarını birleştirerek cihaz, MAC ve üretici bilgilerini yakalayın.</p>
+            <h4 class="fw-bold mb-1">{% trans "Gelişmiş Ağ Tarayıcı" %}</h4>
+            <p class="text-muted small mb-0">{% trans "Ping, ARP ve raw-socket/TCP probelarını birleştirerek cihaz, MAC ve üretici bilgilerini yakalayın." %}</p>
         </div>
     </div>
 
@@ -21,29 +22,29 @@
                         <span class="bg-primary bg-opacity-10 text-primary rounded p-2 me-3 d-flex">
                             <span class="iconify fs-4" data-icon="mdi:access-point-network"></span>
                         </span>
-                        <h6 class="fw-bold mb-0">Tarama Parametreleri</h6>
+                        <h6 class="fw-bold mb-0">{% trans "Tarama Parametreleri" %}</h6>
                     </div>
                 </div>
                 <div class="card-body px-4 pb-4">
-                    <p class="text-muted small mb-4">Hybrid mod önce ARP broadcast, sonra ICMP ping ve servis port probe dener. MAC varsa vendor otomatik tespit edilir.</p>
+                    <p class="text-muted small mb-4">{% trans "Hybrid mod önce ARP broadcast, sonra ICMP ping ve servis port probe dener. MAC varsa vendor otomatik tespit edilir." %}</p>
                     
-                    <form method="POST" id="scanForm" onsubmit="showGlobalLoading('scanBtn', 'Ağ Dinleniyor...')">
+                    <form method="POST" id="scanForm" onsubmit="showGlobalLoading('scanBtn', '{% trans "Ağ Dinleniyor..." %}')">
                         {% csrf_token %}
                         <div class="mb-4">
-                            <label class="form-label fw-bold text-muted small mb-2">Hedef Ağ Bloğu</label>
+                            <label class="form-label fw-bold text-muted small mb-2">{% trans "Hedef Ağ Bloğu" %}</label>
                             <input type="text" name="network" class="form-control form-control-lg bg-body-tertiary border-secondary-subtle shadow-sm font-monospace fs-6" 
-                                   placeholder="192.168.1.0/24" required 
+                                   {% trans "placeholder=\"192.168.1.0/24\" required" %}
                                    value="{{ request.POST.network|default:'192.168.1.0/24' }}">
                             <div class="form-text text-muted small mt-2 d-flex align-items-center">
                                 <span class="iconify me-1 text-info" data-icon="mdi:information-outline"></span> Maksimum /24 alt ağı (254 host) desteklenir.
                             </div>
                         </div>
                         <div class="mb-4">
-                            <label class="form-label fw-bold text-muted small mb-2">Tarama Yöntemi</label>
+                            <label class="form-label fw-bold text-muted small mb-2">{% trans "Tarama Yöntemi" %}</label>
                             <select name="method" class="form-select">
-                                <option value="hybrid" {% if selected_method == 'hybrid' %}selected{% endif %}>Hybrid (ARP + Ping + Raw Socket/TCP)</option>
+                                <option value="hybrid" {% if selected_method == 'hybrid' %}selected{% endif %}>{% trans "Hybrid (ARP + Ping + Raw Socket/TCP)" %}</option>
                                 <option value="arp" {% if selected_method == 'arp' %}selected{% endif %}>Sadece ARP</option>
-                                <option value="ping" {% if selected_method == 'ping' %}selected{% endif %}>Sadece Ping</option>
+                                <option value="ping" {% if selected_method == 'ping' %}selected{% endif %}>{% trans "Sadece Ping" %}</option>
                                 <option value="raw_socket" {% if selected_method == 'raw_socket' %}selected{% endif %}>Raw Socket/TCP Probe</option>
                             </select>
                         </div>
@@ -63,7 +64,7 @@
                             <span class="bg-success bg-opacity-10 text-success rounded p-1 me-2"><span class="iconify fs-5" data-icon="mdi:clipboard-check-outline"></span></span>
                             Tarama Raporu
                         </h6>
-                        <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle px-3 py-1 rounded-pill fw-medium">Tamamlandı</span>
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle px-3 py-1 rounded-pill fw-medium">{% trans "Tamamlandı" %}</span>
                     </div>
                     
                     <div class="card-body p-4">
@@ -77,24 +78,24 @@
                                 <div class="col-4">
                                     <div class="p-3 bg-body-tertiary rounded-3 border border-secondary-subtle text-center shadow-sm">
                                         <h3 class="fw-bold mb-0" style="color: var(--text-main);">{{ results.total_scanned }}</h3>
-                                        <span class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Taranan IP</span>
+                                        <span class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;">{% trans "Taranan IP" %}</span>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="p-3 bg-success bg-opacity-10 rounded-3 border border-success-subtle text-center shadow-sm">
                                         <h3 class="text-success fw-bold mb-0">{{ results.active_ips|length }}</h3>
-                                        <span class="text-success small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Aktif Cihaz</span>
+                                        <span class="text-success small fw-bold text-uppercase" style="letter-spacing: 0.5px;">{% trans "Aktif Cihaz" %}</span>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <div class="p-3 bg-danger bg-opacity-10 rounded-3 border border-danger-subtle text-center shadow-sm">
                                         <h3 class="text-danger fw-bold mb-0">{{ results.total_scanned|add:"-"|add:results.active_ips|length|stringformat:"d"|default:"0" }}</h3>
-                                        <span class="text-danger small fw-bold text-uppercase" style="letter-spacing: 0.5px;">Kapalı / Boş</span>
+                                        <span class="text-danger small fw-bold text-uppercase" style="letter-spacing: 0.5px;">{% trans "Kapalı / Boş" %}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <h6 class="fw-bold text-muted small text-uppercase mb-3" style="letter-spacing: 1px;">Tespit Edilen Cihazlar</h6>
+                            <h6 class="fw-bold text-muted small text-uppercase mb-3" style="letter-spacing: 1px;">{% trans "Tespit Edilen Cihazlar" %}</h6>
                             
                             <div class="row g-3">
                                 {% for device in results.active_ips %}
@@ -150,8 +151,8 @@
                     <div class="card-body p-5 d-flex flex-column justify-content-center h-100">
                         <div class="text-center mb-4">
                             <span class="iconify text-info opacity-25 mb-3" data-icon="mdi:radar" style="font-size: 5rem;"></span>
-                            <h5 class="fw-bold mb-2 text-body">Mekanizma Nasıl Çalışır?</h5>
-                            <p class="text-muted small mx-auto" style="max-width: 400px;">Ağ cihazlarını keşfetmek için Scapy ARP, OS ping ve TCP socket probe motorları birlikte kullanılır.</p>
+                            <h5 class="fw-bold mb-2 text-body">{% trans "Mekanizma Nasıl Çalışır?" %}</h5>
+                            <p class="text-muted small mx-auto" style="max-width: 400px;">{% trans "Ağ cihazlarını keşfetmek için Scapy ARP, OS ping ve TCP socket probe motorları birlikte kullanılır." %}</p>
                         </div>
                         
                         <div class="d-flex flex-column gap-4 mx-auto" style="max-width: 450px;">
@@ -161,7 +162,7 @@
                                 </div>
                                 <div>
                                     <h6 class="fw-bold mb-1 text-body">Layer 2 ARP Broadcast</h6>
-                                    <p class="text-muted small mb-0">Ağdaki tüm cihazlara donanım seviyesinde sorgu atarak iletişim kurmayı reddeden güvenlik duvarlarını aşar.</p>
+                                    <p class="text-muted small mb-0">{% trans "Ağdaki tüm cihazlara donanım seviyesinde sorgu atarak iletişim kurmayı reddeden güvenlik duvarlarını aşar." %}</p>
                                 </div>
                             </div>
                             <div class="d-flex align-items-start">
@@ -169,8 +170,8 @@
                                     <span class="iconify fs-4" data-icon="mdi:shield-search"></span>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold mb-1 text-body">Host ve MAC Çözümleme</h6>
-                                    <p class="text-muted small mb-0">Sadece IP adresini bulmakla kalmaz; cihazın fiziksel donanım kimliğini ve yerel ağdaki ismini de çözümler.</p>
+                                    <h6 class="fw-bold mb-1 text-body">{% trans "Host ve MAC Çözümleme" %}</h6>
+                                    <p class="text-muted small mb-0">{% trans "Sadece IP adresini bulmakla kalmaz; cihazın fiziksel donanım kimliğini ve yerel ağdaki ismini de çözümler." %}</p>
                                 </div>
                             </div>
                             <div class="d-flex align-items-start">
@@ -178,8 +179,8 @@
                                     <span class="iconify fs-4" data-icon="mdi:factory"></span>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold mb-1 text-body">Otomatik Vendor Tespiti</h6>
-                                    <p class="text-muted small mb-0">MAC adresi OUI verisi ile eşleştirilerek Apple, Samsung, Cisco gibi üretici bilgisi gösterilir.</p>
+                                    <h6 class="fw-bold mb-1 text-body">{% trans "Otomatik Vendor Tespiti" %}</h6>
+                                    <p class="text-muted small mb-0">{% trans "MAC adresi OUI verisi ile eşleştirilerek Apple, Samsung, Cisco gibi üretici bilgisi gösterilir." %}</p>
                                 </div>
                             </div>
                         </div>
@@ -195,7 +196,7 @@
             <h6 class="fw-bold mb-3">Son Taramalar</h6>
             <div class="table-responsive">
                 <table class="table table-sm align-middle mb-0">
-                    <thead><tr><th>Ağ</th><th>Yöntem</th><th>Aktif</th><th>Süre</th><th>Tarih</th></tr></thead>
+                    <thead><tr><th>{% trans "Ağ" %}</th><th>{% trans "Yöntem" %}</th><th>{% trans "Aktif" %}</th><th>{% trans "Süre" %}</th><th>{% trans "Tarih" %}</th></tr></thead>
                     <tbody>
                     {% for scan in recent_scans %}
                     <tr>

@@ -22,6 +22,7 @@ from .models import (
 # Kullanıcı formu için gerekli importlar
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.utils.translation import gettext_lazy as _
 
 class DeviceForm(forms.ModelForm):
     class Meta:
@@ -58,7 +59,7 @@ class CustomerTicketForm(forms.ModelForm):
         model = Ticket
         fields = ['title', 'description', 'priority', 'category', 'ticket_category']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Başlık Girin'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Başlık Girin')}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Detaylar...'}),
             'priority': forms.Select(attrs={'class': 'form-select'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
@@ -71,7 +72,7 @@ class TicketForm(forms.ModelForm):
         model = Ticket
         fields = ['title', 'description', 'device', 'priority', 'category', 'ticket_category', 'status', 'assigned_to']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Başlık Girin'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Başlık Girin')}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Detaylar...'}),
             'device': forms.Select(attrs={'class': 'form-select'}),
             'priority': forms.Select(attrs={'class': 'form-select'}),
@@ -184,7 +185,7 @@ class IpAddressForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
         if qs.exists():
-            raise forms.ValidationError("Bu IP adresi zaten kullanımda.")
+            raise forms.ValidationError(_("Bu IP adresi zaten kullanımda."))
         return address
 
 
@@ -198,7 +199,7 @@ class TicketCommentForm(forms.ModelForm):
         model = TicketComment
         fields = ['content', 'is_internal']
         widgets = {
-            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Yorumunuzu yazın...'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': _('Yorumunuzu yazın...')}),
             'is_internal': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
         labels = {
@@ -261,7 +262,7 @@ class FactoryAreaForm(forms.ModelForm):
         model = FactoryArea
         fields = ['name', 'code', 'criticality', 'manager_name', 'description']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Paketleme Hattı 1'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Paketleme Hattı 1')}),
             'code': forms.TextInput(attrs={'class': 'form-control font-monospace', 'placeholder': 'PKT-01'}),
             'criticality': forms.Select(attrs={'class': 'form-select'}),
             'manager_name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -306,7 +307,7 @@ class MaintenanceTaskForm(forms.ModelForm):
             'frequency_days': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
             'next_due_at': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
             'status': forms.Select(attrs={'class': 'form-select'}),
-            'checklist': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Her satıra bir kontrol maddesi'}),
+            'checklist': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': _('Her satıra bir kontrol maddesi')}),
             'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
         }
 
@@ -503,7 +504,7 @@ class RunbookForm(forms.ModelForm):
             'category': forms.Select(attrs={'class': 'form-select'}),
             'owner': forms.Select(attrs={'class': 'form-select'}),
             'related_device_type': forms.TextInput(attrs={'class': 'form-control'}),
-            'steps': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Her satıra bir adım yazın'}),
+            'steps': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': _('Her satıra bir adım yazın')}),
             'rollback_steps': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'version': forms.TextInput(attrs={'class': 'form-control'}),
@@ -698,8 +699,8 @@ class DocumentOutputJobForm(forms.ModelForm):
 class DirectoryConnectionForm(forms.ModelForm):
     bind_password = forms.CharField(
         required=False,
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Bind parolası / client secret'}),
-        label='Bind Parolası',
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': _('Bind parolası / client secret')}),
+        label=_('Bind Parolası'),
     )
 
     class Meta:
@@ -844,15 +845,15 @@ class FactorySiteForm(forms.ModelForm):
             'department_label', 'zone_label', 'city', 'country', 'address', 'notes', 'is_active',
         ]
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Vega Otomotiv Üretim Tesisi'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Vega Otomotiv Üretim Tesisi')}),
             'short_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Vega Otomotiv'}),
             'code': forms.TextInput(attrs={'class': 'form-control font-monospace', 'placeholder': 'SITE-AUTO-01'}),
             'industry_type': forms.Select(attrs={'class': 'form-select'}),
-            'custom_industry_label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Örn: Savunma Sanayi'}),
+            'custom_industry_label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Örn: Savunma Sanayi')}),
             'customer_name': forms.TextInput(attrs={'class': 'form-control'}),
             'portfolio_code': forms.TextInput(attrs={'class': 'form-control font-monospace'}),
             'inventory_panel_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Pres & Montaj Envanteri'}),
-            'department_label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Bölüm / Atölye / Birim'}),
+            'department_label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Bölüm / Atölye / Birim')}),
             'zone_label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Alt Alan / Hat'}),
             'city': forms.TextInput(attrs={'class': 'form-control'}),
             'country': forms.TextInput(attrs={'class': 'form-control'}),
@@ -871,7 +872,7 @@ class FactoryDepartmentForm(forms.ModelForm):
         ]
         widgets = {
             'factory_site': forms.Select(attrs={'class': 'form-select'}),
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Üretim Departmanı'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Üretim Departmanı')}),
             'code': forms.TextInput(attrs={'class': 'form-control font-monospace', 'placeholder': 'URETIM-01'}),
             'department_type': forms.Select(attrs={'class': 'form-select'}),
             'criticality': forms.Select(attrs={'class': 'form-select'}),
@@ -893,7 +894,7 @@ class FactoryZoneForm(forms.ModelForm):
         widgets = {
             'department': forms.Select(attrs={'class': 'form-select'}),
             'factory_area': forms.Select(attrs={'class': 'form-select'}),
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Sistem Odası A'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Sistem Odası A')}),
             'code': forms.TextInput(attrs={'class': 'form-control font-monospace', 'placeholder': 'SYS-A'}),
             'zone_type': forms.Select(attrs={'class': 'form-select'}),
             'floor': forms.TextInput(attrs={'class': 'form-control'}),
@@ -924,7 +925,7 @@ class ManagedDocumentForm(forms.ModelForm):
             'version': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '1.0'}),
             'status': forms.Select(attrs={'class': 'form-select'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
-            'tags': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'prosedür, kalite, bakım'}),
+            'tags': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('prosedür, kalite, bakım')}),
             'preview_enabled': forms.CheckboxInput(attrs={'class': 'form-check-input mt-0'}),
             'external_editor_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'OnlyOffice/Collabora URL'}),
             'valid_until': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
@@ -975,7 +976,7 @@ class DepartmentInventoryItemForm(forms.ModelForm):
             'department': forms.Select(attrs={'class': 'form-select'}),
             'zone': forms.Select(attrs={'class': 'form-select'}),
             'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'category_label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Özel kategori adı'}),
+            'category_label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Özel kategori adı')}),
             'item_type': forms.Select(attrs={'class': 'form-select'}),
             'reference_code': forms.TextInput(attrs={'class': 'form-control font-monospace'}),
             'serial_number': forms.TextInput(attrs={'class': 'form-control'}),
@@ -1033,7 +1034,7 @@ class ERPConnectionForm(forms.ModelForm):
             'sync_partners', 'sync_products', 'sync_helpdesk', 'notes',
         ]
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Odoo Üretim'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('Odoo Üretim')}),
             'erp_type': forms.Select(attrs={'class': 'form-select'}),
             'base_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://odoo.example.com'}),
             'database_name': forms.TextInput(attrs={'class': 'form-control font-monospace'}),
@@ -1076,7 +1077,7 @@ class OTConnectionForm(forms.ModelForm):
             'sync_enabled', 'sync_to_inventory', 'notes',
         ]
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'MES Üretim Hattı'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _('MES Üretim Hattı')}),
             'ot_type': forms.Select(attrs={'class': 'form-select'}),
             'base_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://mes.example.com'}),
             'assets_path': forms.TextInput(attrs={'class': 'form-control font-monospace', 'placeholder': '/api/assets'}),

@@ -1,25 +1,26 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}IT Operasyon Merkezi - OmniOps{% endblock %}
+{% block title %}{% trans "IT Operasyon Merkezi - OmniOps" %}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
-        <h2 class="fw-bold mb-1">IT Operasyon Merkezi</h2>
-        <p class="text-muted mb-0">Satın alma, nöbet, yedekleme, tedarikçi destek ve zimmet süreçlerini tek ekrandan yönetin.</p>
+        <h2 class="fw-bold mb-1">{% trans "IT Operasyon Merkezi" %}</h2>
+        <p class="text-muted mb-0">{% trans "Satın alma, nöbet, yedekleme, tedarikçi destek ve zimmet süreçlerini tek ekrandan yönetin." %}</p>
     </div>
 </div>
 
 <div class="row g-3 mb-4">
     <div class="col-md-3">
         <div class="card glass-card h-100"><div class="card-body">
-            <div class="text-muted small">Onay Bekleyen Satın Alma</div>
+            <div class="text-muted small">{% trans "Onay Bekleyen Satın Alma" %}</div>
             <div class="display-6 fw-bold text-warning">{{ metrics.pending_procurements }}</div>
         </div></div>
     </div>
     <div class="col-md-3">
         <div class="card glass-card h-100"><div class="card-body">
-            <div class="text-muted small">Aktif Nöbetçi</div>
+            <div class="text-muted small">{% trans "Aktif Nöbetçi" %}</div>
             <div class="display-6 fw-bold text-primary">{{ metrics.active_oncall }}</div>
         </div></div>
     </div>
@@ -31,7 +32,7 @@
     </div>
     <div class="col-md-3">
         <div class="card glass-card h-100"><div class="card-body">
-            <div class="text-muted small">Açık Tedarikçi Vakası</div>
+            <div class="text-muted small">{% trans "Açık Tedarikçi Vakası" %}</div>
             <div class="display-6 fw-bold">{{ metrics.open_vendor_cases }}</div>
         </div></div>
     </div>
@@ -42,7 +43,7 @@
         <div class="accordion" id="itOpsForms">
             <div class="accordion-item border-0 glass-card mb-3">
                 <h2 class="accordion-header">
-                    <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#procurementForm">Satın Alma Talebi</button>
+                    <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#procurementForm">{% trans "Satın Alma Talebi" %}</button>
                 </h2>
                 <div id="procurementForm" class="accordion-collapse collapse show" data-bs-parent="#itOpsForms">
                     <div class="accordion-body">
@@ -50,7 +51,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="action" value="procurement">
                             {{ forms.procurement.as_p }}
-                            <button class="btn btn-primary w-100">Talep Oluştur</button>
+                            <button class="btn btn-primary w-100">{% trans "Talep Oluştur" %}</button>
                         </form>
                     </div>
                 </div>
@@ -58,7 +59,7 @@
 
             <div class="accordion-item border-0 glass-card mb-3">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#oncallForm">Nöbet Planla</button>
+                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#oncallForm">{% trans "Nöbet Planla" %}</button>
                 </h2>
                 <div id="oncallForm" class="accordion-collapse collapse" data-bs-parent="#itOpsForms">
                     <div class="accordion-body">
@@ -66,7 +67,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="action" value="oncall">
                             {{ forms.oncall.as_p }}
-                            <button class="btn btn-info w-100">Nöbet Kaydet</button>
+                            <button class="btn btn-info w-100">{% trans "Nöbet Kaydet" %}</button>
                         </form>
                     </div>
                 </div>
@@ -74,7 +75,7 @@
 
             <div class="accordion-item border-0 glass-card mb-3">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#backupForm">Yedekleme İşi Ekle</button>
+                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#backupForm">{% trans "Yedekleme İşi Ekle" %}</button>
                 </h2>
                 <div id="backupForm" class="accordion-collapse collapse" data-bs-parent="#itOpsForms">
                     <div class="accordion-body">
@@ -82,7 +83,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="action" value="backup">
                             {{ forms.backup.as_p }}
-                            <button class="btn btn-success w-100">Yedekleme Kaydet</button>
+                            <button class="btn btn-success w-100">{% trans "Yedekleme Kaydet" %}</button>
                         </form>
                     </div>
                 </div>
@@ -90,7 +91,7 @@
 
             <div class="accordion-item border-0 glass-card mb-3">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#vendorForm">Tedarikçi Destek Kaydı</button>
+                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#vendorForm">{% trans "Tedarikçi Destek Kaydı" %}</button>
                 </h2>
                 <div id="vendorForm" class="accordion-collapse collapse" data-bs-parent="#itOpsForms">
                     <div class="accordion-body">
@@ -98,7 +99,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="action" value="vendor_case">
                             {{ forms.vendor_case.as_p }}
-                            <button class="btn btn-warning w-100">Vaka Aç</button>
+                            <button class="btn btn-warning w-100">{% trans "Vaka Aç" %}</button>
                         </form>
                     </div>
                 </div>
@@ -106,7 +107,7 @@
 
             <div class="accordion-item border-0 glass-card">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#handoverForm">Zimmet Teslim / İade</button>
+                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#handoverForm">{% trans "Zimmet Teslim / İade" %}</button>
                 </h2>
                 <div id="handoverForm" class="accordion-collapse collapse" data-bs-parent="#itOpsForms">
                     <div class="accordion-body">
@@ -114,7 +115,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="action" value="handover">
                             {{ forms.handover.as_p }}
-                            <button class="btn btn-secondary w-100">Zimmet Kaydet</button>
+                            <button class="btn btn-secondary w-100">{% trans "Zimmet Kaydet" %}</button>
                         </form>
                     </div>
                 </div>
@@ -126,7 +127,7 @@
         <div class="row g-4">
             <div class="col-lg-6">
                 <div class="card glass-card h-100">
-                    <div class="card-header bg-transparent fw-bold">Aktif Nöbetçiler</div>
+                    <div class="card-header bg-transparent fw-bold">{% trans "Aktif Nöbetçiler" %}</div>
                     <div class="card-body">
                         {% for shift in active_oncall %}
                         <div class="border rounded-3 p-3 mb-2">
@@ -135,7 +136,7 @@
                             {% if shift.phone %}<div class="small">{{ shift.phone }}</div>{% endif %}
                         </div>
                         {% empty %}
-                        <p class="text-muted mb-0">Şu an aktif nöbet kaydı yok.</p>
+                        <p class="text-muted mb-0">{% trans "Şu an aktif nöbet kaydı yok." %}</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -143,7 +144,7 @@
 
             <div class="col-lg-6">
                 <div class="card glass-card h-100">
-                    <div class="card-header bg-transparent fw-bold">Onay Bekleyen Satın Alma</div>
+                    <div class="card-header bg-transparent fw-bold">{% trans "Onay Bekleyen Satın Alma" %}</div>
                     <div class="card-body">
                         {% for item in pending_procurements %}
                         <div class="d-flex justify-content-between align-items-start border-bottom py-2 gap-2">
@@ -159,7 +160,7 @@
                             </form>
                         </div>
                         {% empty %}
-                        <p class="text-muted mb-0">Bekleyen satın alma talebi yok.</p>
+                        <p class="text-muted mb-0">{% trans "Bekleyen satın alma talebi yok." %}</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -180,12 +181,12 @@
                                     {% csrf_token %}
                                     <input type="hidden" name="action" value="mark_backup_success">
                                     <input type="hidden" name="job_id" value="{{ job.id }}">
-                                    <button class="btn btn-sm btn-outline-success">Başarılı</button>
+                                    <button class="btn btn-sm btn-outline-success">{% trans "Başarılı" %}</button>
                                 </form>
                             </div>
                         </div>
                         {% empty %}
-                        <p class="text-muted mb-0">Sorunlu yedekleme kaydı yok.</p>
+                        <p class="text-muted mb-0">{% trans "Sorunlu yedekleme kaydı yok." %}</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -193,7 +194,7 @@
 
             <div class="col-lg-6">
                 <div class="card glass-card h-100">
-                    <div class="card-header bg-transparent fw-bold">Açık Tedarikçi Vakaları</div>
+                    <div class="card-header bg-transparent fw-bold">{% trans "Açık Tedarikçi Vakaları" %}</div>
                     <div class="card-body">
                         {% for case in open_vendor_cases %}
                         <div class="d-flex justify-content-between align-items-start border-bottom py-2 gap-2">
@@ -205,11 +206,11 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="resolve_vendor_case">
                                 <input type="hidden" name="case_id" value="{{ case.id }}">
-                                <button class="btn btn-sm btn-outline-primary">Çöz</button>
+                                <button class="btn btn-sm btn-outline-primary">{% trans "Çöz" %}</button>
                             </form>
                         </div>
                         {% empty %}
-                        <p class="text-muted mb-0">Açık tedarikçi vakası yok.</p>
+                        <p class="text-muted mb-0">{% trans "Açık tedarikçi vakası yok." %}</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -217,16 +218,16 @@
 
             <div class="col-12">
                 <div class="card glass-card">
-                    <div class="card-header bg-transparent fw-bold">Son Zimmet İşlemleri</div>
+                    <div class="card-header bg-transparent fw-bold">{% trans "Son Zimmet İşlemleri" %}</div>
                     <div class="card-body table-responsive">
                         <table class="table align-middle">
                             <thead>
                                 <tr>
-                                    <th>Varlık</th>
+                                    <th>{% trans "Varlık" %}</th>
                                     <th>Personel</th>
-                                    <th>İşlem</th>
-                                    <th>Tarih</th>
-                                    <th>İşlemi Yapan</th>
+                                    <th>{% trans "İşlem" %}</th>
+                                    <th>{% trans "Tarih" %}</th>
+                                    <th>{% trans "İşlemi Yapan" %}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -239,7 +240,7 @@
                                     <td>{{ row.performed_by.username|default:"-" }}</td>
                                 </tr>
                                 {% empty %}
-                                <tr><td colspan="5" class="text-muted">Henüz zimmet kaydı yok.</td></tr>
+                                <tr><td colspan="5" class="text-muted">{% trans "Henüz zimmet kaydı yok." %}</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>

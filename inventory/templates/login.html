@@ -1,10 +1,11 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="tr" data-bs-theme="light">
+<html lang="{{ LANGUAGE_CODE|default:'tr' }}" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OmniOps - Güvenli Giriş</title>
+    <title>OmniOps - {% trans "Güvenli Giriş" %}</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -289,9 +290,37 @@
             .login-story { min-height: auto; padding: 32px; }
             .login-card { padding: 32px !important; }
         }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
+
+    <div class="lang-switch dropdown">
+        <form action="{% url 'set_language' %}" method="post" class="m-0">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.get_full_path }}">
+            <button type="button" class="btn btn-light btn-sm rounded-pill shadow-sm dropdown-toggle" data-bs-toggle="dropdown">
+                <span class="iconify" data-icon="mdi:earth"></span>
+                {% get_current_language as CURRENT_LANG %}{{ CURRENT_LANG|upper }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 p-2">
+                {% get_available_languages as LANGUAGES %}
+                {% for language in LANGUAGES %}
+                <li>
+                    <button type="submit" name="language" value="{{ language.0 }}" class="dropdown-item fw-medium py-2 rounded {% if language.0 == CURRENT_LANG %}active{% endif %}">
+                        {{ language.1 }}
+                    </button>
+                </li>
+                {% endfor %}
+            </ul>
+        </form>
+    </div>
 
     <div class="login-shell">
         <section class="login-story">
@@ -300,16 +329,16 @@
                     <span class="iconify" data-icon="mdi:toolbox-outline"></span>
                     OmniOps Factory IT Suite
                 </span>
-                <h1 class="suite-title">Fabrikanın tüm BT operasyonu tek panelde.</h1>
+                <h1 class="suite-title">{% trans "Fabrikanın tüm BT operasyonu tek panelde." %}</h1>
                 <p class="suite-copy">
-                    Ticket, ağ keşfi, cihaz yedekleri, kamera, VPN erişimi, envanter, uyum, rapor ve yönetici özetleri aynı sade deneyimde birleşir.
+                    {% trans "Ticket, ağ keşfi, cihaz yedekleri, kamera, VPN erişimi, envanter, uyum, rapor ve yönetici özetleri aynı sade deneyimde birleşir." %}
                 </p>
             </div>
             <div class="row g-3 mt-4">
-                <div class="col-sm-6"><div class="feature-pill"><span class="iconify text-primary" data-icon="mdi:radar"></span> Ağ & cihaz görünürlüğü</div></div>
-                <div class="col-sm-6"><div class="feature-pill"><span class="iconify text-success" data-icon="mdi:file-chart-check-outline"></span> PDF / Word rapor</div></div>
-                <div class="col-sm-6"><div class="feature-pill"><span class="iconify text-warning" data-icon="mdi:shield-check-outline"></span> Güvenlik & uyum</div></div>
-                <div class="col-sm-6"><div class="feature-pill"><span class="iconify text-info" data-icon="mdi:factory"></span> Fabrika operasyonları</div></div>
+                <div class="col-sm-6"><div class="feature-pill"><span class="iconify text-primary" data-icon="mdi:radar"></span>{% trans " Ağ & cihaz görünürlüğü" %}</div></div>
+                <div class="col-sm-6"><div class="feature-pill"><span class="iconify text-success" data-icon="mdi:file-chart-check-outline"></span>{% trans " PDF / Word rapor" %}</div></div>
+                <div class="col-sm-6"><div class="feature-pill"><span class="iconify text-warning" data-icon="mdi:shield-check-outline"></span>{% trans " Güvenlik & uyum" %}</div></div>
+                <div class="col-sm-6"><div class="feature-pill"><span class="iconify text-info" data-icon="mdi:factory"></span>{% trans " Fabrika operasyonları" %}</div></div>
             </div>
         </section>
 
@@ -319,19 +348,19 @@
                     <span class="iconify fs-1" data-icon="mdi:toolbox-outline"></span>
                 </div>
                 <h3 class="fw-bold text-dark mb-1">OmniOps</h3>
-                <p class="text-muted small mb-0">Factory IT Suite güvenli giriş</p>
+                <p class="text-muted small mb-0">{% trans "Factory IT Suite güvenli giriş" %}</p>
             </div>
 
             <form method="POST" id="loginForm">
                 {% csrf_token %}
                 
                 <div class="mb-3">
-                    <label class="form-label">Kullanıcı Adı</label>
-                    <input type="text" name="username" class="form-control" placeholder="Kullanıcı adınızı girin" required autofocus>
+                    <label class="form-label">{% trans "Kullanıcı Adı" %}</label>
+                    <input type="text" name="username" class="form-control" placeholder="{% trans 'Kullanıcı adınızı girin' %}" required autofocus>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label">Şifre</label>
+                    <label class="form-label">{% trans "Şifre" %}</label>
                     <div class="input-group">
                         <input type="password" name="password" id="passwordInput" class="form-control" placeholder="••••••••" required>
                         <span class="input-group-text" style="cursor: pointer;" onclick="togglePassword()">
@@ -341,37 +370,37 @@
                 </div>
 
                 <button type="submit" class="btn btn-login w-100 mb-3 shadow-sm" id="submitBtn">
-                    Giriş Yap
+                    {% trans "Giriş Yap" %}
                 </button>
             </form>
 
             {% if form.errors %}
             <div class="alert bg-danger bg-opacity-10 text-danger border-0 small fw-bold py-2 text-center rounded-3 mb-0">
-                <span class="iconify me-1 fs-5 align-middle" data-icon="mdi:alert-circle"></span> Kullanıcı adı veya şifre hatalı!
+                <span class="iconify me-1 fs-5 align-middle" data-icon="mdi:alert-circle"></span> {% trans "Kullanıcı adı veya şifre hatalı!" %}
             </div>
             {% endif %}
 
             {% if azure_sso_enabled or oidc_sso_enabled %}
-            <div class="divider"><span>VEYA</span></div>
+            <div class="divider"><span>{% trans "VEYA" %}</span></div>
 
             <div class="d-grid gap-2 mb-3">
                 {% if azure_sso_enabled %}
                 <a href="{% url 'social:begin' 'azuread-oauth2' %}" class="btn btn-outline-primary rounded-3 py-2 fw-medium border-primary-subtle text-primary">
-                    <span class="iconify me-2 fs-5 align-text-bottom" data-icon="mdi:microsoft"></span> Microsoft ile Giriş Yap
+                    <span class="iconify me-2 fs-5 align-text-bottom" data-icon="mdi:microsoft"></span> {% trans "Microsoft ile Giriş Yap" %}
                 </a>
                 {% endif %}
                 {% if oidc_sso_enabled %}
                 <a href="{% url 'social:begin' 'oidc' %}" class="btn btn-outline-secondary rounded-3 py-2 fw-medium border-secondary-subtle text-dark">
-                    <span class="iconify me-2 fs-5 align-text-bottom" data-icon="mdi:shield-key"></span> Kurumsal SSO ile Giriş Yap
+                    <span class="iconify me-2 fs-5 align-text-bottom" data-icon="mdi:shield-key"></span> {% trans "Kurumsal SSO ile Giriş Yap" %}
                 </a>
                 {% endif %}
             </div>
             {% endif %}
 
             <div class="text-center">
-                <p class="text-muted small mb-3">Henüz bir hesabınız yok mu?</p>
+                <p class="text-muted small mb-3">{% trans "Henüz bir hesabınız yok mu?" %}</p>
                 <a href="/kayit-ol/" class="btn btn-outline-secondary w-100 rounded-3 py-2 fw-medium border-secondary-subtle text-dark">
-                    <span class="iconify me-1 fs-5 align-text-bottom" data-icon="mdi:account-plus-outline"></span> Yeni Hesap Oluştur
+                    <span class="iconify me-1 fs-5 align-text-bottom" data-icon="mdi:account-plus-outline"></span> {% trans "Yeni Hesap Oluştur" %}
                 </a>
             </div>
         </div>
@@ -396,8 +425,9 @@
         document.getElementById('loginForm').onsubmit = function() {
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Giriş Yapılıyor...';
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{% trans "Giriş Yapılıyor..." %}';
         };
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Kayıt Ol - OmniOps{% endblock %}
+{% block title %}{% trans "Kayıt Ol" %} - OmniOps{% endblock %}
 
 {% block content %}
 <div class="container mt-5 mb-5">
@@ -13,8 +14,8 @@
                         <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
                             <span class="iconify fs-1" data-icon="mdi:account-plus-outline"></span>
                         </div>
-                        <h3 class="fw-bold mb-1" style="color: var(--text-main);">OmniOps'e Katıl</h3>
-                        <p class="text-muted small">BT Altyapı yönetimine profesyonel bir adım atın.</p>
+                        <h3 class="fw-bold mb-1" style="color: var(--text-main);">{% trans "OmniOps'e Katıl" %}</h3>
+                        <p class="text-muted small">{% trans "BT Altyapı yönetimine profesyonel bir adım atın." %}</p>
                     </div>
 
                     <form method="POST" id="registerForm">
@@ -43,15 +44,15 @@
                             </div>
                         {% endfor %}
 
-                        <button type="submit" id="btnRegister" class="btn btn-primary w-100 fw-bold py-3 mt-4 rounded-3 shadow-sm" style="background-color: #113231; border: none;" onclick="this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>Hesap Oluşturuluyor...'">
-                            Hesabımı Oluştur
+                        <button type="submit" id="btnRegister" class="btn btn-primary w-100 fw-bold py-3 mt-4 rounded-3 shadow-sm" style="background-color: #113231; border: none;" onclick="this.innerHTML='<span class=\'spinner-border spinner-border-sm me-2\'></span>{% trans "Hesap Oluşturuluyor..." %}'">
+                            {% trans "Hesabımı Oluştur" %}
                         </button>
                     </form>
 
                     <div class="text-center mt-4 pt-4 border-top border-secondary-subtle">
-                        <p class="text-muted small mb-3">Zaten bir hesabınız var mı?</p>
+                        <p class="text-muted small mb-3">{% trans "Zaten bir hesabınız var mı?" %}</p>
                         <a href="/login/" class="btn btn-outline-secondary w-100 fw-medium rounded-3 py-2 text-dark border-secondary-subtle">
-                            <span class="iconify me-1 fs-5 align-text-bottom" data-icon="mdi:login"></span> Sisteme Giriş Yapın
+                            <span class="iconify me-1 fs-5 align-text-bottom" data-icon="mdi:login"></span> {% trans "Sisteme Giriş Yapın" %}
                         </a>
                     </div>
 

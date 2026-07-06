@@ -1,0 +1,6699 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-06 07:48+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\core\settings.py:123
+msgid "Türkçe"
+msgstr "Türkçe"
+
+#: .\core\settings.py:124
+msgid "English"
+msgstr "İngilizce"
+
+#: .\inventory\context_processors.py:10 .\inventory\workspace_registry.py:17
+msgid "Genel Bakış"
+msgstr "Genel Bakış"
+
+#: .\inventory\context_processors.py:11 .\inventory\workspace_registry.py:18
+msgid "Fabrika & Envanter"
+msgstr "Fabrika & Envanter"
+
+#: .\inventory\context_processors.py:12 .\inventory\workspace_registry.py:19
+msgid "Altyapı"
+msgstr "Altyapı"
+
+#: .\inventory\context_processors.py:13 .\inventory\templates\monitor.html:4
+#: .\inventory\templates\monitor.html:5
+msgid "Performans İzleme"
+msgstr "Performans İzleme"
+
+#: .\inventory\context_processors.py:14
+msgid "Bağımsız"
+msgstr "Bağımsız"
+
+#: .\inventory\context_processors.py:15
+msgid "Bilinmiyor"
+msgstr "Bilinmiyor"
+
+#: .\inventory\context_processors.py:16
+msgid "MAC Yok"
+msgstr "MAC Yok"
+
+#: .\inventory\context_processors.py:17
+msgid "Genel / Bağımsız"
+msgstr "Genel / Bağımsız"
+
+#: .\inventory\context_processors.py:18
+msgid "Belirtilmedi"
+msgstr "Belirtilmedi"
+
+#: .\inventory\context_processors.py:19
+msgid "Anahtar Gizli"
+msgstr "Anahtar Gizli"
+
+#: .\inventory\context_processors.py:20
+msgid "Sistem"
+msgstr "Sistem"
+
+#: .\inventory\context_processors.py:21
+msgid "Yazan:"
+msgstr "Yazan:"
+
+#: .\inventory\context_processors.py:22
+msgid "Henüz sync yapılmadı"
+msgstr "Henüz sync yapılmadı"
+
+#: .\inventory\context_processors.py:23
+msgid "Henüz sync yok."
+msgstr "Henüz sync yok."
+
+#: .\inventory\context_processors.py:24
+msgid "URI yok"
+msgstr "URI yok"
+
+#: .\inventory\context_processors.py:25
+msgid "Departman yok"
+msgstr "Departman yok"
+
+#: .\inventory\context_processors.py:26
+msgid "Zimmet yok"
+msgstr "Zimmet yok"
+
+#: .\inventory\context_processors.py:27
+msgid "Sistem eşlemesi yok"
+msgstr "Sistem eşlemesi yok"
+
+#: .\inventory\context_processors.py:28
+msgid "Dış servis"
+msgstr "Dış servis"
+
+#: .\inventory\context_processors.py:29
+msgid "Lokasyon yok"
+msgstr "Lokasyon yok"
+
+#: .\inventory\context_processors.py:30
+msgid "Açıklama girilmemiş."
+msgstr "Açıklama girilmemiş."
+
+#: .\inventory\context_processors.py:31
+msgid "Referans yok"
+msgstr "Referans yok"
+
+#: .\inventory\context_processors.py:32
+msgid "Süresiz"
+msgstr "Süresiz"
+
+#: .\inventory\context_processors.py:33
+msgid "gecikmiş"
+msgstr "gecikmiş"
+
+#: .\inventory\decorators.py:22
+#| msgid "Bu talebe erişim yetkiniz yok."
+msgid "Bu sayfaya erişim yetkiniz bulunmamaktadır."
+msgstr "Bu sayfaya erişim yetkiniz bulunmamaktadır."
+
+#: .\inventory\enterprise_views.py:280
+msgid ""
+"Tesis erişim yetkisi yalnızca global yöneticiler tarafından atanabilir."
+msgstr ""
+"Tesis erişim yetkisi yalnızca global yöneticiler tarafından atanabilir."
+
+#: .\inventory\enterprise_views.py:286
+msgid "Kimlik merkezi kaydı oluşturuldu."
+msgstr "Kimlik merkezi kaydı oluşturuldu."
+
+#: .\inventory\enterprise_views.py:423
+msgid "Satış fırsatı eklendi."
+msgstr "Satış fırsatı eklendi."
+
+#: .\inventory\enterprise_views.py:483
+msgid "Fabrika IT operasyon kaydı oluşturuldu."
+msgstr "Fabrika IT operasyon kaydı oluşturuldu."
+
+#: .\inventory\enterprise_views.py:557
+msgid "IT operasyon kaydı oluşturuldu."
+msgstr "IT operasyon kaydı oluşturuldu."
+
+#: .\inventory\enterprise_views.py:636
+msgid "Servis süreç kaydı oluşturuldu."
+msgstr "Servis süreç kaydı oluşturuldu."
+
+#: .\inventory\enterprise_views.py:717
+msgid "Komuta merkezi kaydı oluşturuldu."
+msgstr "Komuta merkezi kaydı oluşturuldu."
+
+#: .\inventory\enterprise_views.py:790
+msgid "Yönetişim kaydı oluşturuldu."
+msgstr "Yönetişim kaydı oluşturuldu."
+
+#: .\inventory\enterprise_views.py:915
+msgid "Rota en yakın komşu algoritmasıyla optimize edildi."
+msgstr "Rota en yakın komşu algoritmasıyla optimize edildi."
+
+#: .\inventory\enterprise_views.py:1041 .\inventory\enterprise_views.py:1156
+msgid "Bu fabrika tesisine erişim yetkiniz yok."
+msgstr "Bu fabrika tesisine erişim yetkiniz yok."
+
+#: .\inventory\enterprise_views.py:1072
+msgid "Fabrika tesisi kaydedildi."
+msgstr "Fabrika tesisi kaydedildi."
+
+#: .\inventory\enterprise_views.py:1079
+msgid "Tesis başlıkları güncellendi."
+msgstr "Tesis başlıkları güncellendi."
+
+#: .\inventory\enterprise_views.py:1086
+msgid "Envanter kalemi eklendi."
+msgstr "Envanter kalemi eklendi."
+
+#: .\inventory\enterprise_views.py:1183
+msgid "Fabrika komuta merkezi kaydı oluşturuldu."
+msgstr "Fabrika komuta merkezi kaydı oluşturuldu."
+
+#: .\inventory\enterprise_views.py:1313
+msgid "QR etiket kaydı oluşturuldu."
+msgstr "QR etiket kaydı oluşturuldu."
+
+#: .\inventory\enterprise_views.py:1357
+msgid ""
+"Belge editörü yapılandırılmamış. ONLYOFFICE_DOCUMENT_SERVER_URL veya "
+"COLLABORA_SERVER_URL ayarlayın."
+msgstr ""
+"Belge editörü yapılandırılmamış. ONLYOFFICE_DOCUMENT_SERVER_URL veya "
+"COLLABORA_SERVER_URL ayarlayın."
+
+#: .\inventory\enterprise_views.py:1497
+msgid "PDF için aktif QR etiket bulunamadı."
+msgstr "PDF için aktif QR etiket bulunamadı."
+
+#: .\inventory\enterprise_views.py:1520
+msgid "ERP bağlantısı kaydedildi."
+msgstr "ERP bağlantısı kaydedildi."
+
+#: .\inventory\enterprise_views.py:1548
+msgid "Kamera sağlık taraması kuyruğa alındı."
+msgstr "Kamera sağlık taraması kuyruğa alındı."
+
+#: .\inventory\enterprise_views.py:1585
+msgid "OT/MES bağlantısı kaydedildi."
+msgstr "OT/MES bağlantısı kaydedildi."
+
+#: .\inventory\enterprise_views.py:1625
+msgid "Entegrasyon merkezi için yetkiniz yok."
+msgstr "Entegrasyon merkezi için yetkiniz yok."
+
+#: .\inventory\enterprise_views.py:1660
+msgid "Kayıt oluşturuldu."
+msgstr "Kayıt oluşturuldu."
+
+#: .\inventory\enterprise_views.py:1752
+msgid "ITSM olgunluk modülü için yetkiniz yok."
+msgstr "ITSM olgunluk modülü için yetkiniz yok."
+
+#: .\inventory\enterprise_views.py:1781
+msgid "ITSM kaydı oluşturuldu."
+msgstr "ITSM kaydı oluşturuldu."
+
+#: .\inventory\enterprise_views.py:1883
+msgid "Kurum çalışma alanı profili güncellendi."
+msgstr "Kurum çalışma alanı profili güncellendi."
+
+#: .\inventory\enterprise_views.py:1892
+msgid "Kişisel çalışma alanı tercihleri kaydedildi."
+msgstr "Kişisel çalışma alanı tercihleri kaydedildi."
+
+#: .\inventory\enterprise_views.py:1898
+msgid "Panel düzeni varsayılana sıfırlandı."
+msgstr "Panel düzeni varsayılana sıfırlandı."
+
+#: .\inventory\forms.py:62 .\inventory\forms.py:75
+msgid "Başlık Girin"
+msgstr "Başlık Girin"
+
+#: .\inventory\forms.py:188
+msgid "Bu IP adresi zaten kullanımda."
+msgstr "Bu IP adresi zaten kullanımda."
+
+#: .\inventory\forms.py:202
+msgid "Yorumunuzu yazın..."
+msgstr "Yorumunuzu yazın..."
+
+#: .\inventory\forms.py:265
+msgid "Paketleme Hattı 1"
+msgstr "Paketleme Hattı 1"
+
+#: .\inventory\forms.py:310
+msgid "Her satıra bir kontrol maddesi"
+msgstr "Her satıra bir kontrol maddesi"
+
+#: .\inventory\forms.py:507
+msgid "Her satıra bir adım yazın"
+msgstr "Her satıra bir adım yazın"
+
+#: .\inventory\forms.py:702
+msgid "Bind parolası / client secret"
+msgstr "Bind parolası / client secret"
+
+#: .\inventory\forms.py:703
+msgid "Bind Parolası"
+msgstr "Bind Parolası"
+
+#: .\inventory\forms.py:848
+msgid "Vega Otomotiv Üretim Tesisi"
+msgstr "Vega Otomotiv Üretim Tesisi"
+
+#: .\inventory\forms.py:852
+msgid "Örn: Savunma Sanayi"
+msgstr "Örn: Savunma Sanayi"
+
+#: .\inventory\forms.py:856
+msgid "Bölüm / Atölye / Birim"
+msgstr "Bölüm / Atölye / Birim"
+
+#: .\inventory\forms.py:875
+msgid "Üretim Departmanı"
+msgstr "Üretim Departmanı"
+
+#: .\inventory\forms.py:897
+msgid "Sistem Odası A"
+msgstr "Sistem Odası A"
+
+#: .\inventory\forms.py:928
+msgid "prosedür, kalite, bakım"
+msgstr "prosedür, kalite, bakım"
+
+#: .\inventory\forms.py:979
+msgid "Özel kategori adı"
+msgstr "Özel kategori adı"
+
+#: .\inventory\forms.py:1037
+msgid "Odoo Üretim"
+msgstr "Odoo Üretim"
+
+#: .\inventory\forms.py:1080
+msgid "MES Üretim Hattı"
+msgstr "MES Üretim Hattı"
+
+#: .\inventory\helpdesk_views.py:34
+msgid "Bu talebe erişim yetkiniz yok."
+msgstr "Bu talebe erişim yetkiniz yok."
+
+#: .\inventory\helpdesk_views.py:58
+msgid "Yorumunuz eklendi."
+msgstr "Yorumunuz eklendi."
+
+#: .\inventory\helpdesk_views.py:68
+msgid "Dosya eklendi."
+msgstr "Dosya eklendi."
+
+#: .\inventory\helpdesk_views.py:76
+msgid "Talep durumu güncellendi."
+msgstr "Talep durumu güncellendi."
+
+#: .\inventory\helpdesk_views.py:84
+msgid "Talep atandı."
+msgstr "Talep atandı."
+
+#: .\inventory\helpdesk_views.py:130
+msgid "CSV dışa aktarma yetkiniz yok."
+msgstr "CSV dışa aktarma yetkiniz yok."
+
+#: .\inventory\helpdesk_views.py:167
+msgid "Profiliniz güncellendi."
+msgstr "Profiliniz güncellendi."
+
+#: .\inventory\i18n_js.py:8
+msgid "Sonuç bulunamadı. Farklı bir kelime deneyin."
+msgstr "Sonuç bulunamadı. Farklı bir kelime deneyin."
+
+#: .\inventory\i18n_js.py:9
+msgid "Arama servisi şu an yanıt vermiyor."
+msgstr "Arama servisi şu an yanıt vermiyor."
+
+#: .\inventory\i18n_js.py:10
+msgid "İşleniyor..."
+msgstr "İşleniyor..."
+
+#: .\inventory\i18n_js.py:11
+msgid "Bildirim yok."
+msgstr "Bildirim yok."
+
+#: .\inventory\i18n_js.py:12
+msgid "Yok"
+msgstr "Yok"
+
+#: .\inventory\i18n_js.py:13 .\inventory\models.py:231
+#: .\inventory\models.py:439 .\inventory\models.py:743
+#: .\inventory\models.py:1443 .\inventory\models.py:1717
+#: .\inventory\models.py:1974 .\inventory\templates\custom_admin.html:383
+#: .\inventory\templates\offline_field_app.html:29
+msgid "Düşük"
+msgstr "Düşük"
+
+#: .\inventory\i18n_js.py:14 .\inventory\models.py:230
+#: .\inventory\models.py:440 .\inventory\models.py:744
+#: .\inventory\models.py:1444 .\inventory\models.py:1718
+#: .\inventory\models.py:1975
+msgid "Orta"
+msgstr "Orta"
+
+#: .\inventory\i18n_js.py:15 .\inventory\models.py:229
+#: .\inventory\models.py:441 .\inventory\models.py:745
+#: .\inventory\models.py:1445 .\inventory\models.py:1719
+#: .\inventory\models.py:1976 .\inventory\templates\custom_admin.html:381
+#: .\inventory\templates\offline_field_app.html:31
+msgid "Yüksek"
+msgstr "Yüksek"
+
+#: .\inventory\i18n_js.py:16
+msgid "Bekleyen kayıt yok."
+msgstr "Bekleyen kayıt yok."
+
+#: .\inventory\i18n_js.py:17
+msgid "Senkronizasyon uyarısı:"
+msgstr "Senkronizasyon uyarısı:"
+
+#: .\inventory\i18n_js.py:18
+msgid "API yanıtı başarısız"
+msgstr "API yanıtı başarısız"
+
+#: .\inventory\i18n_js.py:19
+#, python-format
+msgid "#%(id)s senkronize edilemedi"
+msgstr "#%(id)s senkronize edilemedi"
+
+#: .\inventory\i18n_js.py:20 .\inventory\templates\erp_integrations.html:44
+msgid "Online"
+msgstr "Online"
+
+#: .\inventory\i18n_js.py:21 .\inventory\templates\erp_integrations.html:46
+msgid "Offline"
+msgstr "Offline"
+
+#: .\inventory\i18n_js.py:23
+msgid ""
+"Kanban güncellemesi kaydedilemedi. Yetki veya oturum durumunu kontrol edin."
+msgstr ""
+"Kanban güncellemesi kaydedilemedi. Yetki veya oturum durumunu kontrol edin."
+
+#: .\inventory\i18n_js.py:25
+msgid "Kanban güncellemesi sırasında ağ hatası oluştu."
+msgstr "Kanban güncellemesi sırasında ağ hatası oluştu."
+
+#: .\inventory\i18n_js.py:26
+#, python-format
+msgid "Kayıt bulunamadı: %(code)s"
+msgstr "Kayıt bulunamadı: %(code)s"
+
+#: .\inventory\i18n_js.py:28
+msgid "Kamera başlatılamadı. Manuel kod girişini kullanın."
+msgstr "Kamera başlatılamadı. Manuel kod girişini kullanın."
+
+#: .\inventory\i18n_js.py:30
+msgid "Kamera erişimi yok. Manuel kod girişini kullanın."
+msgstr "Kamera erişimi yok. Manuel kod girişini kullanın."
+
+#: .\inventory\i18n_js.py:31
+msgid "Kullanıcıyı silmek istediğinize emin misiniz?"
+msgstr "Kullanıcıyı silmek istediğinize emin misiniz?"
+
+#: .\inventory\i18n_js.py:32
+msgid "Uygulandı"
+msgstr "Uygulandı"
+
+#: .\inventory\i18n_js.py:33 .\inventory\templates\custom_admin.html:253
+msgid "Onay Bekliyor"
+msgstr "Onay Bekliyor"
+
+#: .\inventory\i18n_js.py:34 .\inventory\templates\custom_admin.html:255
+msgid "Reddedildi"
+msgstr "Reddedildi"
+
+#: .\inventory\i18n_js.py:35 .\inventory\templates\custom_admin.html:397
+msgid "SLA İHLALİ"
+msgstr "SLA İHLALİ"
+
+#: .\inventory\i18n_js.py:36
+#, python-format
+msgid "%(hours)s Saat, %(minutes)s Dk Kaldı"
+msgstr "%(hours)s Saat, %(minutes)s Dk Kaldı"
+
+#: .\inventory\i18n_js.py:38
+msgid ""
+"CRİTİCAL UYARI: Ağ kurtarma başlatılıyor. Seçilen yedek cihazın hafızasına "
+"yazılacak. Onaylıyor musunuz?"
+msgstr ""
+"CRİTİCAL UYARI: Ağ kurtarma başlatılıyor. Seçilen yedek cihazın hafızasına "
+"yazılacak. Onaylıyor musunuz?"
+
+#: .\inventory\models.py:11 .\inventory\models.py:974
+msgid "Sunucu"
+msgstr "Sunucu"
+
+#: .\inventory\models.py:12
+msgid "Bilgisayar"
+msgstr "Bilgisayar"
+
+#: .\inventory\models.py:18 .\inventory\models.py:238
+#: .\inventory\models.py:637 .\inventory\models.py:665
+#: .\inventory\models.py:773 .\inventory\models.py:810
+#: .\inventory\models.py:1138 .\inventory\models.py:1227
+#: .\inventory\models.py:1375 .\inventory\models.py:1523
+#: .\inventory\models.py:1563 .\inventory\models.py:1802
+#: .\inventory\models.py:1971 .\inventory\models.py:2022
+#: .\inventory\models.py:2089 .\inventory\models.py:2126
+#: .\inventory\models.py:2133 .\inventory\templates\it_inventory.html:247
+#: .\inventory\templates\offline_field_app.html:41
+msgid "Diğer"
+msgstr "Diğer"
+
+#: .\inventory\models.py:21 .\inventory\models.py:1191
+#: .\inventory\templates\generator.html:52
+msgid "Cihaz Adı"
+msgstr "Cihaz Adı"
+
+#: .\inventory\models.py:23 .\inventory\templates\generator.html:43
+msgid "Cihaz Türü"
+msgstr "Cihaz Türü"
+
+#: .\inventory\models.py:26
+msgid "MAC Adresi"
+msgstr "MAC Adresi"
+
+#: .\inventory\models.py:29 .\inventory\models.py:251
+#: .\inventory\models.py:383 .\inventory\models.py:514
+#: .\inventory\models.py:566 .\inventory\models.py:617
+#: .\inventory\models.py:723 .\inventory\models.py:828
+#: .\inventory\models.py:875 .\inventory\models.py:933
+#: .\inventory\models.py:1029 .\inventory\models.py:1103
+#: .\inventory\models.py:1155 .\inventory\models.py:1200
+#: .\inventory\models.py:1276 .\inventory\models.py:1351
+#: .\inventory\models.py:1390 .\inventory\models.py:1466
+#: .\inventory\models.py:1575 .\inventory\models.py:1618
+#: .\inventory\models.py:1763 .\inventory\models.py:1872
+#: .\inventory\models.py:2047 .\inventory\models.py:2152
+#: .\inventory\models.py:2483 .\inventory\models.py:2514
+#: .\inventory\models.py:2552 .\inventory\models.py:2637
+#: .\inventory\models.py:2684 .\inventory\models.py:2833
+#: .\inventory\models.py:2871 .\inventory\templates\helpdesk_analytics.html:50
+msgid "Durum"
+msgstr "Durum"
+
+#: .\inventory\models.py:33
+#: .\inventory\templates\integration_hub_center.html:21
+msgid "İzleme"
+msgstr "İzleme"
+
+#: .\inventory\models.py:35 .\inventory\models.py:1187
+#: .\inventory\models.py:1340 .\inventory\models.py:1380
+#: .\inventory\models.py:2471
+msgid "Çevrimdışı"
+msgstr "Çevrimdışı"
+
+#: .\inventory\models.py:38
+msgid "İzleme Modu"
+msgstr "İzleme Modu"
+
+#: .\inventory\models.py:41
+msgid "Üst Cihaz"
+msgstr "Üst Cihaz"
+
+#: .\inventory\models.py:43
+msgid "Kabin Adı"
+msgstr "Kabin Adı"
+
+#: .\inventory\models.py:44
+msgid "Başlangıç U"
+msgstr "Başlangıç U"
+
+#: .\inventory\models.py:45
+msgid "Yükseklik"
+msgstr "Yükseklik"
+
+#: .\inventory\models.py:47 .\inventory\models.py:116
+#: .\inventory\models.py:583 .\inventory\models.py:718
+#: .\inventory\models.py:2042 .\inventory\templates\backup.html:48
+#: .\inventory\templates\generator.html:36
+#: .\inventory\templates\port_mapping_list.html:23
+msgid "Üretici"
+msgstr "Üretici"
+
+#: .\inventory\models.py:48 .\inventory\models.py:1756
+#: .\inventory\templates\custom_admin.html:429
+#: .\inventory\templates\custom_admin.html:498
+#: .\inventory\templates\login.html:358
+msgid "Kullanıcı Adı"
+msgstr "Kullanıcı Adı"
+
+#: .\inventory\models.py:49 .\inventory\models.py:2718
+msgid "Parola"
+msgstr "Parola"
+
+#: .\inventory\models.py:50
+msgid "Enable Parolası"
+msgstr "Enable Parolası"
+
+#: .\inventory\models.py:52 .\inventory\models.py:1818
+msgid "İşletim Sistemi"
+msgstr "İşletim Sistemi"
+
+#: .\inventory\models.py:53 .\inventory\templates\monitor.html:46
+msgid "CPU Kullanımı"
+msgstr "CPU Kullanımı"
+
+#: .\inventory\models.py:54
+msgid "RAM Kullanımı"
+msgstr "RAM Kullanımı"
+
+#: .\inventory\models.py:55
+msgid "Son Denetim"
+msgstr "Son Denetim"
+
+#: .\inventory\models.py:57
+msgid "Kritik CPU Eşiği (%)"
+msgstr "Kritik CPU Eşiği (%)"
+
+#: .\inventory\models.py:58
+msgid "Kritik RAM Eşiği (%)"
+msgstr "Kritik RAM Eşiği (%)"
+
+#: .\inventory\models.py:76
+msgid "IP Adresi"
+msgstr "IP Adresi"
+
+#: .\inventory\models.py:77
+msgid "Tahsis Durumu"
+msgstr "Tahsis Durumu"
+
+#: .\inventory\models.py:78 .\inventory\models.py:619
+#: .\inventory\templates\port_mapping.html:147
+msgid "Bağlı Cihaz"
+msgstr "Bağlı Cihaz"
+
+#: .\inventory\models.py:93
+msgid "Taramayı Başlatan"
+msgstr "Taramayı Başlatan"
+
+#: .\inventory\models.py:94
+msgid "Ağ Bloğu"
+msgstr "Ağ Bloğu"
+
+#: .\inventory\models.py:95 .\inventory\templates\scanner.html:199
+msgid "Yöntem"
+msgstr "Yöntem"
+
+#: .\inventory\models.py:96
+msgid "Toplam Host"
+msgstr "Toplam Host"
+
+#: .\inventory\models.py:97
+msgid "Aktif Host"
+msgstr "Aktif Host"
+
+#: .\inventory\models.py:98
+msgid "Süre (ms)"
+msgstr "Süre (ms)"
+
+#: .\inventory\models.py:99
+msgid "Hata"
+msgstr "Hata"
+
+#: .\inventory\models.py:100 .\inventory\models.py:120
+#: .\inventory\models.py:301 .\inventory\models.py:350
+#: .\inventory\models.py:451 .\inventory\models.py:473
+#: .\inventory\models.py:486 .\inventory\models.py:645
+#: .\inventory\models.py:727 .\inventory\models.py:1059
+#: .\inventory\models.py:1318 .\inventory\templates\backup.html:83
+#: .\inventory\templates\dlp_events.html:18
+#: .\inventory\templates\it_operations.html:229
+#: .\inventory\templates\scanner.html:199
+#: .\inventory\templates\user_panel.html:141
+msgid "Tarih"
+msgstr "Tarih"
+
+#: .\inventory\models.py:112
+msgid "Tarama"
+msgstr "Tarama"
+
+#: .\inventory\models.py:113 .\inventory\models.py:1193
+#: .\inventory\models.py:1346 .\inventory\models.py:1819
+#: .\inventory\models.py:2766
+msgid "IP"
+msgstr "IP"
+
+#: .\inventory\models.py:114
+msgid "MAC"
+msgstr "MAC"
+
+#: .\inventory\models.py:115
+msgid "Host Adı"
+msgstr "Host Adı"
+
+#: .\inventory\models.py:117
+msgid "Tespit Yöntemi"
+msgstr "Tespit Yöntemi"
+
+#: .\inventory\models.py:118
+msgid "Gecikme (ms)"
+msgstr "Gecikme (ms)"
+
+#: .\inventory\models.py:119
+msgid "Raw Socket Yanıtı"
+msgstr "Raw Socket Yanıtı"
+
+#: .\inventory\models.py:133
+msgid "Yazılım ve Lisans"
+msgstr "Yazılım ve Lisans"
+
+#: .\inventory\models.py:134
+msgid "Donanım Tahsisi"
+msgstr "Donanım Tahsisi"
+
+#: .\inventory\models.py:135
+msgid "Ağ ve VPN Erişimi"
+msgstr "Ağ ve VPN Erişimi"
+
+#: .\inventory\models.py:136
+msgid "Diğer Hizmetler"
+msgstr "Diğer Hizmetler"
+
+#: .\inventory\models.py:139
+msgid "Hizmet Adı"
+msgstr "Hizmet Adı"
+
+#: .\inventory\models.py:140
+msgid "Açıklama ve Şartlar"
+msgstr "Açıklama ve Şartlar"
+
+#: .\inventory\models.py:141
+msgid "Iconify İkon Kodu"
+msgstr "Iconify İkon Kodu"
+
+#: .\inventory\models.py:142 .\inventory\models.py:246
+#: .\inventory\models.py:642 .\inventory\models.py:777
+#: .\inventory\models.py:926 .\inventory\models.py:1231
+#: .\inventory\models.py:2144 .\inventory\templates\custom_admin.html:363
+#: .\inventory\templates\factory_portfolio_inventory.html:121
+#: .\inventory\templates\helpdesk_analytics.html:42
+#: .\inventory\templates\knowledge_base.html:55
+#: .\inventory\templates\offline_field_app.html:36
+#: .\inventory\templates\user_panel.html:138
+msgid "Kategori"
+msgstr "Kategori"
+
+#: .\inventory\models.py:143
+msgid "Yönetici Onayı Gerekli Mi?"
+msgstr "Yönetici Onayı Gerekli Mi?"
+
+#: .\inventory\models.py:150
+msgid "Kategori Adı"
+msgstr "Kategori Adı"
+
+#: .\inventory\models.py:151
+msgid "Slug"
+msgstr "Slug"
+
+#: .\inventory\models.py:152 .\inventory\models.py:620
+#: .\inventory\models.py:682 .\inventory\models.py:751
+#: .\inventory\models.py:925 .\inventory\models.py:1033
+#: .\inventory\models.py:1300 .\inventory\models.py:1417
+#: .\inventory\models.py:1726 .\inventory\models.py:1987
+#: .\inventory\models.py:2102 .\inventory\models.py:2153
+#: .\inventory\models.py:2513 .\inventory\models.py:2551
+#: .\inventory\templates\offline_field_app.html:45
+msgid "Açıklama"
+msgstr "Açıklama"
+
+#: .\inventory\models.py:153
+msgid "İkon"
+msgstr "İkon"
+
+#: .\inventory\models.py:154
+msgid "SLA (Saat)"
+msgstr "SLA (Saat)"
+
+#: .\inventory\models.py:157
+msgid "Otomatik Atama Grubu"
+msgstr "Otomatik Atama Grubu"
+
+#: .\inventory\models.py:159 .\inventory\models.py:203
+#: .\inventory\models.py:997 .\inventory\models.py:1236
+#: .\inventory\models.py:1301 .\inventory\models.py:1420
+#: .\inventory\models.py:1936 .\inventory\models.py:1992
+#: .\inventory\models.py:2058 .\inventory\models.py:2103
+#: .\inventory\models.py:2292 .\inventory\models.py:2592
+#: .\inventory\models.py:2722 .\inventory\models.py:2919
+#: .\inventory\templates\custom_admin.html:319
+#: .\inventory\templates\it_inventory.html:91
+#: .\inventory\templates\monitor.html:38
+#: .\inventory\templates\monitor.html:218
+#: .\inventory\templates\scanner.html:199
+#: .\inventory\templates\user_management.html:64
+msgid "Aktif"
+msgstr "Aktif"
+
+#: .\inventory\models.py:172 .\inventory\models.py:200
+#: .\inventory\models.py:298 .\inventory\models.py:343
+#: .\inventory\models.py:445 .\inventory\models.py:470
+#: .\inventory\models.py:2354 .\inventory\models.py:2634
+#: .\inventory\models.py:2679 .\inventory\models.py:2717
+#: .\inventory\models.py:2762 .\inventory\models.py:2915
+#: .\inventory\models.py:2962 .\inventory\templates\dlp_events.html:19
+#: .\inventory\templates\identity_operations.html:31
+#: .\inventory\templates\itsm_maturity.html:83
+#: .\inventory\templates\system_logs.html:34
+#: .\inventory\templates\user_management.html:44
+msgid "Kullanıcı"
+msgstr "Kullanıcı"
+
+#: .\inventory\models.py:173 .\inventory\models.py:1990
+msgid "Telefon"
+msgstr "Telefon"
+
+#: .\inventory\models.py:174
+msgid "Biyografi"
+msgstr "Biyografi"
+
+#: .\inventory\models.py:175
+msgid "Avatar"
+msgstr "Avatar"
+
+#: .\inventory\models.py:176 .\inventory\models.py:869
+#: .\inventory\models.py:1056 .\inventory\models.py:1150
+#: .\inventory\models.py:1270 .\inventory\models.py:1299
+#: .\inventory\models.py:1759 .\inventory\models.py:1869
+#: .\inventory\models.py:2093 .\inventory\models.py:2148
+#: .\inventory\models.py:2224
+msgid "Departman"
+msgstr "Departman"
+
+#: .\inventory\models.py:195
+msgid "Görüntüleyici"
+msgstr "Görüntüleyici"
+
+#: .\inventory\models.py:196
+msgid "Operatör"
+msgstr "Operatör"
+
+#: .\inventory\models.py:197
+msgid "Tesis Yöneticisi"
+msgstr "Tesis Yöneticisi"
+
+#: .\inventory\models.py:201 .\inventory\models.py:265
+#: .\inventory\models.py:1984 .\inventory\models.py:2032
+#: .\inventory\models.py:2397 .\inventory\models.py:2429
+#: .\inventory\models.py:2519 .\inventory\models.py:2553
+#: .\inventory\models.py:2591 .\inventory\models.py:2640
+#: .\inventory\models.py:2686 .\inventory\models.py:2721
+#: .\inventory\models.py:2802 .\inventory\models.py:2868
+#: .\inventory\models.py:2916
+msgid "Fabrika Tesisi"
+msgstr "Fabrika Tesisi"
+
+#: .\inventory\models.py:202
+msgid "Erişim Seviyesi"
+msgstr "Erişim Seviyesi"
+
+#: .\inventory\models.py:204
+msgid "Yetki Veren"
+msgstr "Yetki Veren"
+
+#: .\inventory\models.py:205
+msgid "Not"
+msgstr "Not"
+
+#: .\inventory\models.py:206 .\inventory\models.py:385
+#: .\inventory\models.py:420 .\inventory\models.py:754
+#: .\inventory\models.py:831 .\inventory\models.py:884
+#: .\inventory\models.py:935 .\inventory\models.py:955
+#: .\inventory\models.py:1034 .\inventory\models.py:1112
+#: .\inventory\models.py:1158 .\inventory\models.py:1239
+#: .\inventory\models.py:1280 .\inventory\models.py:1302
+#: .\inventory\models.py:1467 .\inventory\models.py:1501
+#: .\inventory\models.py:1621 .\inventory\models.py:1770
+#: .\inventory\models.py:1880 .\inventory\models.py:1937
+#: .\inventory\models.py:1993 .\inventory\models.py:2059
+#: .\inventory\models.py:2104 .\inventory\models.py:2158
+#: .\inventory\models.py:2240 .\inventory\models.py:2293
+#: .\inventory\models.py:2523 .\inventory\models.py:2561
+#: .\inventory\models.py:2921
+msgid "Oluşturulma"
+msgstr "Oluşturulma"
+
+#: .\inventory\models.py:207 .\inventory\models.py:386
+#: .\inventory\models.py:421 .\inventory\models.py:646
+#: .\inventory\models.py:728 .\inventory\models.py:785
+#: .\inventory\models.py:832 .\inventory\models.py:885
+#: .\inventory\models.py:936 .\inventory\models.py:999
+#: .\inventory\models.py:1035 .\inventory\models.py:1113
+#: .\inventory\models.py:1159 .\inventory\models.py:1203
+#: .\inventory\models.py:1240 .\inventory\models.py:1281
+#: .\inventory\models.py:1354 .\inventory\models.py:1392
+#: .\inventory\models.py:1422 .\inventory\models.py:1468
+#: .\inventory\models.py:1540 .\inventory\models.py:1580
+#: .\inventory\models.py:1622 .\inventory\models.py:1663
+#: .\inventory\models.py:1771 .\inventory\models.py:1827
+#: .\inventory\models.py:1881 .\inventory\models.py:1938
+#: .\inventory\models.py:1994 .\inventory\models.py:2060
+#: .\inventory\models.py:2105 .\inventory\models.py:2159
+#: .\inventory\models.py:2241 .\inventory\models.py:2294
+#: .\inventory\models.py:2371 .\inventory\models.py:2438
+#: .\inventory\models.py:2524 .\inventory\models.py:2562
+#: .\inventory\models.py:2595 .\inventory\models.py:2641
+#: .\inventory\models.py:2687 .\inventory\models.py:2726
+#: .\inventory\models.py:2755 .\inventory\models.py:2835
+#: .\inventory\models.py:2873 .\inventory\models.py:2950
+#: .\inventory\models.py:2971
+msgid "Güncelleme"
+msgstr "Güncelleme"
+
+#: .\inventory\models.py:221 .\inventory\models.py:862
+#: .\inventory\models.py:1018 .\inventory\models.py:1093
+#: .\inventory\models.py:1857 .\inventory\models.py:2504
+#: .\inventory\templates\custom_admin.html:386
+#: .\inventory\templates\custom_admin.html:558
+#: .\inventory\templates\dashboard.html:154
+#: .\inventory\templates\helpdesk_analytics.html:81
+#: .\inventory\templates\workspace_center.html:42
+msgid "Açık"
+msgstr "Açık"
+
+#: .\inventory\models.py:222 .\inventory\models.py:2505
+#: .\inventory\templates\custom_admin.html:387
+#: .\inventory\templates\custom_admin.html:559
+#: .\inventory\templates\dashboard.html:155
+#: .\inventory\templates\user_panel.html:167
+msgid "İnceleniyor"
+msgstr "İnceleniyor"
+
+#: .\inventory\models.py:223 .\inventory\models.py:1020
+#: .\inventory\models.py:1096 .\inventory\models.py:2507
+#: .\inventory\templates\custom_admin.html:388
+#: .\inventory\templates\custom_admin.html:560
+#: .\inventory\templates\dashboard.html:156
+#: .\inventory\templates\user_panel.html:169
+msgid "Çözüldü"
+msgstr "Çözüldü"
+
+#: .\inventory\models.py:224 .\inventory\models.py:1021
+#: .\inventory\models.py:1098 .\inventory\models.py:2508
+#: .\inventory\templates\custom_admin.html:389
+#: .\inventory\templates\custom_admin.html:561
+#: .\inventory\templates\user_panel.html:171
+msgid "Kapatıldı"
+msgstr "Kapatıldı"
+
+#: .\inventory\models.py:228 .\inventory\models.py:442
+#: .\inventory\models.py:746 .\inventory\models.py:1446
+#: .\inventory\models.py:1720 .\inventory\models.py:1977
+#: .\inventory\templates\custom_admin.html:380
+#: .\inventory\templates\offline_field_app.html:32
+msgid "Kritik"
+msgstr "Kritik"
+
+#: .\inventory\models.py:235 .\inventory\models.py:634
+#: .\inventory\models.py:911 .\inventory\templates\offline_field_app.html:38
+msgid "Donanım"
+msgstr "Donanım"
+
+#: .\inventory\models.py:236 .\inventory\models.py:635
+#: .\inventory\models.py:664 .\inventory\models.py:912
+#: .\inventory\templates\offline_field_app.html:39
+msgid "Yazılım"
+msgstr "Yazılım"
+
+#: .\inventory\models.py:237 .\inventory\models.py:633
+#: .\inventory\models.py:1226 .\inventory\models.py:2903
+#: .\inventory\templates\offline_field_app.html:40
+#: .\inventory\templates\scanner.html:199
+msgid "Ağ"
+msgstr "Ağ"
+
+#: .\inventory\models.py:241 .\inventory\models.py:345
+#: .\inventory\models.py:370 .\inventory\models.py:640
+#: .\inventory\models.py:673 .\inventory\models.py:711
+#: .\inventory\models.py:1230 .\inventory\models.py:1456
+#: .\inventory\models.py:1865 .\inventory\models.py:2142
+#: .\inventory\models.py:2395 .\inventory\models.py:2800
+#: .\inventory\templates\factory_portfolio_inventory.html:120
+#: .\inventory\templates\itsm_maturity.html:46
+#: .\inventory\templates\offline_field_app.html:23
+msgid "Başlık"
+msgstr "Başlık"
+
+#: .\inventory\models.py:242 .\inventory\models.py:472
+#: .\inventory\models.py:2768
+msgid "Detay"
+msgstr "Detay"
+
+#: .\inventory\models.py:245 .\inventory\models.py:1028
+#: .\inventory\models.py:2515 .\inventory\templates\custom_admin.html:364
+#: .\inventory\templates\helpdesk_analytics.html:46
+#: .\inventory\templates\itsm_maturity.html:46
+#: .\inventory\templates\offline_field_app.html:27
+msgid "Öncelik"
+msgstr "Öncelik"
+
+#: .\inventory\models.py:249
+msgid "Kategori (Yönetilebilir)"
+msgstr "Kategori (Yönetilebilir)"
+
+#: .\inventory\models.py:253
+msgid "İlgili Cihaz"
+msgstr "İlgili Cihaz"
+
+#: .\inventory\models.py:254
+msgid "Oluşturan"
+msgstr "Oluşturan"
+
+#: .\inventory\models.py:256
+msgid "Atanan Personel"
+msgstr "Atanan Personel"
+
+#: .\inventory\models.py:257
+msgid "Eskale Edildi Mi?"
+msgstr "Eskale Edildi Mi?"
+
+#: .\inventory\models.py:259
+msgid "Oluşturulma Tarihi"
+msgstr "Oluşturulma Tarihi"
+
+#: .\inventory\models.py:260
+msgid "Güncelleme Tarihi"
+msgstr "Güncelleme Tarihi"
+
+#: .\inventory\models.py:261
+msgid "Kapanış Tarihi"
+msgstr "Kapanış Tarihi"
+
+#: .\inventory\models.py:262
+msgid "SLA Süresi"
+msgstr "SLA Süresi"
+
+#: .\inventory\models.py:297 .\inventory\models.py:313
+#: .\inventory\models.py:344 .\inventory\models.py:372
+msgid "Talep"
+msgstr "Talep"
+
+#: .\inventory\models.py:299 .\inventory\models.py:346
+#: .\inventory\models.py:1316 .\inventory\templates\command_center.html:71
+msgid "Mesaj"
+msgstr "Mesaj"
+
+#: .\inventory\models.py:300
+msgid "Dahili Not (Sadece Personel)"
+msgstr "Dahili Not (Sadece Personel)"
+
+#: .\inventory\models.py:314
+msgid "Yükleyen"
+msgstr "Yükleyen"
+
+#: .\inventory\models.py:315 .\inventory\models.py:1619
+#: .\inventory\models.py:2146
+msgid "Dosya"
+msgstr "Dosya"
+
+#: .\inventory\models.py:316
+msgid "Dosya Adı"
+msgstr "Dosya Adı"
+
+#: .\inventory\models.py:317
+msgid "Yüklenme Tarihi"
+msgstr "Yüklenme Tarihi"
+
+#: .\inventory\models.py:339
+msgid "Kapanış"
+msgstr "Kapanış"
+
+#: .\inventory\models.py:340 .\inventory\models.py:2590
+#: .\inventory\templates\helpdesk_analytics.html:31
+#: .\inventory\templates\ticket_detail.html:16
+msgid "SLA İhlali"
+msgstr "SLA İhlali"
+
+#: .\inventory\models.py:347 .\inventory\templates\monitor.html:36
+#: .\inventory\templates\ot_integrations.html:19
+msgid "Bağlantı"
+msgstr "Bağlantı"
+
+#: .\inventory\models.py:348 .\inventory\models.py:554
+#: .\inventory\models.py:675 .\inventory\templates\it_inventory.html:241
+#: .\inventory\templates\port_mapping_list.html:22
+msgid "Tür"
+msgstr "Tür"
+
+#: .\inventory\models.py:349
+msgid "Okundu"
+msgstr "Okundu"
+
+#: .\inventory\models.py:364 .\inventory\models.py:813
+#: .\inventory\models.py:1449 .\inventory\models.py:2539
+msgid "Planlandı"
+msgstr "Planlandı"
+
+#: .\inventory\models.py:366 .\inventory\models.py:815
+#: .\inventory\models.py:864 .\inventory\models.py:1452
+#: .\inventory\models.py:1861 .\inventory\templates\custom_admin.html:393
+#: .\inventory\templates\scanner.html:67
+msgid "Tamamlandı"
+msgstr "Tamamlandı"
+
+#: .\inventory\models.py:367 .\inventory\models.py:865
+#: .\inventory\models.py:1453 .\inventory\models.py:1862
+#: .\inventory\models.py:2546
+msgid "İptal"
+msgstr "İptal"
+
+#: .\inventory\models.py:371
+msgid "Teknisyen"
+msgstr "Teknisyen"
+
+#: .\inventory\models.py:373
+msgid "Müşteri/Lokasyon"
+msgstr "Müşteri/Lokasyon"
+
+#: .\inventory\models.py:374 .\inventory\models.py:1934
+msgid "Adres"
+msgstr "Adres"
+
+#: .\inventory\models.py:375
+msgid "Enlem"
+msgstr "Enlem"
+
+#: .\inventory\models.py:376
+msgid "Boylam"
+msgstr "Boylam"
+
+#: .\inventory\models.py:377
+msgid "Rota Sırası"
+msgstr "Rota Sırası"
+
+#: .\inventory\models.py:378
+msgid "Mesafe (km)"
+msgstr "Mesafe (km)"
+
+#: .\inventory\models.py:379
+msgid "Araç Modeli"
+msgstr "Araç Modeli"
+
+#: .\inventory\models.py:380
+msgid "Yakıt (L/100km)"
+msgstr "Yakıt (L/100km)"
+
+#: .\inventory\models.py:381
+msgid "Klima Çarpanı"
+msgstr "Klima Çarpanı"
+
+#: .\inventory\models.py:382
+msgid "Tahmini Yakıt (L)"
+msgstr "Tahmini Yakıt (L)"
+
+#: .\inventory\models.py:384
+msgid "Planlanan Zaman"
+msgstr "Planlanan Zaman"
+
+#: .\inventory\models.py:404 .\inventory\templates\sales_kanban.html:12
+msgid "Yeni Fırsat"
+msgstr "Yeni Fırsat"
+
+#: .\inventory\models.py:407
+msgid "Pazarlık"
+msgstr "Pazarlık"
+
+#: .\inventory\models.py:408
+msgid "Kazanıldı"
+msgstr "Kazanıldı"
+
+#: .\inventory\models.py:412 .\inventory\templates\sales_kanban.html:20
+msgid "Fırsat"
+msgstr "Fırsat"
+
+#: .\inventory\models.py:413 .\inventory\models.py:1927
+#: .\inventory\templates\sales_kanban.html:21
+msgid "Müşteri"
+msgstr "Müşteri"
+
+#: .\inventory\models.py:414 .\inventory\models.py:753
+#: .\inventory\models.py:824 .\inventory\models.py:996
+#: .\inventory\models.py:1461 .\inventory\models.py:1535
+#: .\inventory\models.py:1574 .\inventory\models.py:1662
+#: .\inventory\models.py:1989 .\inventory\models.py:2049
+#: .\inventory\models.py:2369 .\inventory\models.py:2436
+#: .\inventory\models.py:2522 .\inventory\models.py:2594
+msgid "Sorumlu"
+msgstr "Sorumlu"
+
+#: .\inventory\models.py:415
+msgid "Aşama"
+msgstr "Aşama"
+
+#: .\inventory\models.py:416
+msgid "Potansiyel Gelir"
+msgstr "Potansiyel Gelir"
+
+#: .\inventory\models.py:417
+msgid "Olasılık (%)"
+msgstr "Olasılık (%)"
+
+#: .\inventory\models.py:418 .\inventory\models.py:830
+#: .\inventory\models.py:883 .\inventory\models.py:954
+#: .\inventory\models.py:998 .\inventory\models.py:1202
+#: .\inventory\models.py:1279 .\inventory\models.py:1353
+#: .\inventory\models.py:1391 .\inventory\models.py:1539
+#: .\inventory\models.py:1620 .\inventory\models.py:1826
+#: .\inventory\models.py:1879 .\inventory\models.py:1935
+#: .\inventory\models.py:2050 .\inventory\models.py:2229
+#: .\inventory\models.py:2370 .\inventory\models.py:2437
+#: .\inventory\models.py:2801
+msgid "Notlar"
+msgstr "Notlar"
+
+#: .\inventory\models.py:419 .\inventory\models.py:2057
+msgid "Sıra"
+msgstr "Sıra"
+
+#: .\inventory\models.py:446
+msgid "Kaynak"
+msgstr "Kaynak"
+
+#: .\inventory\models.py:447
+msgid "Kural"
+msgstr "Kural"
+
+#: .\inventory\models.py:448 .\inventory\models.py:1102
+#: .\inventory\templates\dlp_events.html:22
+msgid "Seviye"
+msgstr "Seviye"
+
+#: .\inventory\models.py:449
+msgid "Örnek"
+msgstr "Örnek"
+
+#: .\inventory\models.py:450 .\inventory\templates\dlp_events.html:34
+msgid "Engellendi"
+msgstr "Engellendi"
+
+#: .\inventory\models.py:463 .\inventory\models.py:485
+#: .\inventory\models.py:720 .\inventory\templates\system_logs.html:55
+msgid "Konfigürasyon"
+msgstr "Konfigürasyon"
+
+#: .\inventory\models.py:464 .\inventory\templates\system_logs.html:57
+msgid "Ağ Taraması"
+msgstr "Ağ Taraması"
+
+#: .\inventory\models.py:465 .\inventory\templates\system_logs.html:59
+msgid "IP İşlemi"
+msgstr "IP İşlemi"
+
+#: .\inventory\models.py:466
+msgid "Talep İşlemi"
+msgstr "Talep İşlemi"
+
+#: .\inventory\models.py:467
+msgid "Sistem Olayı"
+msgstr "Sistem Olayı"
+
+#: .\inventory\models.py:471 .\inventory\templates\system_logs.html:35
+msgid "İşlem Türü"
+msgstr "İşlem Türü"
+
+#: .\inventory\models.py:484 .\inventory\models.py:614
+#: .\inventory\models.py:822 .\inventory\models.py:1497
+#: .\inventory\templates\backup.html:82
+#: .\inventory\templates\port_mapping_list.html:21
+msgid "Cihaz"
+msgstr "Cihaz"
+
+#: .\inventory\models.py:487 .\inventory\models.py:1061
+#: .\inventory\models.py:2805 .\inventory\templates\it_operations.html:230
+msgid "İşlemi Yapan"
+msgstr "İşlemi Yapan"
+
+#: .\inventory\models.py:504 .\inventory\models.py:2470
+msgid "Çevrimiçi"
+msgstr "Çevrimiçi"
+
+#: .\inventory\models.py:505
+msgid "Bağlantı Koptu"
+msgstr "Bağlantı Koptu"
+
+#: .\inventory\models.py:509
+msgid "Probe/Agent Adı"
+msgstr "Probe/Agent Adı"
+
+#: .\inventory\models.py:510
+msgid "Lokasyon/Şube"
+msgstr "Lokasyon/Şube"
+
+#: .\inventory\models.py:511
+msgid "Probe IP Adresi"
+msgstr "Probe IP Adresi"
+
+#: .\inventory\models.py:512
+msgid "Tarama Hedef Subnet"
+msgstr "Tarama Hedef Subnet"
+
+#: .\inventory\models.py:512
+msgid "Örn: 192.168.1.0/24"
+msgstr "Örn: 192.168.1.0/24"
+
+#: .\inventory\models.py:513
+msgid "Ajan Sürümü"
+msgstr "Ajan Sürümü"
+
+#: .\inventory\models.py:515
+msgid "Son İletişim (Heartbeat)"
+msgstr "Son İletişim (Heartbeat)"
+
+#: .\inventory\models.py:545
+msgid "Dizüstü Bilgisayar"
+msgstr "Dizüstü Bilgisayar"
+
+#: .\inventory\models.py:546
+msgid "Masaüstü Bilgisayar"
+msgstr "Masaüstü Bilgisayar"
+
+#: .\inventory\models.py:547
+msgid "Monitör"
+msgstr "Monitör"
+
+#: .\inventory\models.py:548 .\inventory\models.py:1177
+#: .\inventory\models.py:2055 .\inventory\models.py:2209
+#: .\inventory\models.py:2233 .\inventory\models.py:2276
+#: .\inventory\models.py:2289
+msgid "Yazıcı"
+msgstr "Yazıcı"
+
+#: .\inventory\models.py:550
+msgid "Çevre Birimi"
+msgstr "Çevre Birimi"
+
+#: .\inventory\models.py:553
+msgid "Donanım Adı"
+msgstr "Donanım Adı"
+
+#: .\inventory\models.py:555 .\inventory\models.py:1194
+#: .\inventory\models.py:1817 .\inventory\models.py:2039
+msgid "Seri No"
+msgstr "Seri No"
+
+#: .\inventory\models.py:556 .\inventory\models.py:1195
+#: .\inventory\models.py:2043
+msgid "Model"
+msgstr "Model"
+
+#: .\inventory\models.py:557
+msgid "Zimmet"
+msgstr "Zimmet"
+
+#: .\inventory\models.py:558 .\inventory\models.py:2791
+msgid "Satın Alma"
+msgstr "Satın Alma"
+
+#: .\inventory\models.py:559 .\inventory\templates\it_inventory.html:67
+msgid "Garanti Bitiş"
+msgstr "Garanti Bitiş"
+
+#: .\inventory\models.py:577
+msgid "Yazılım Adı"
+msgstr "Yazılım Adı"
+
+#: .\inventory\models.py:578
+msgid "Lisans Anahtarı"
+msgstr "Lisans Anahtarı"
+
+#: .\inventory\models.py:579
+msgid "Toplam Kullanım"
+msgstr "Toplam Kullanım"
+
+#: .\inventory\models.py:580
+msgid "Kullanılan"
+msgstr "Kullanılan"
+
+#: .\inventory\models.py:581 .\inventory\models.py:679
+#: .\inventory\templates\it_inventory.html:265
+#: .\inventory\templates\it_inventory.html:287
+msgid "Bitiş Tarihi"
+msgstr "Bitiş Tarihi"
+
+#: .\inventory\models.py:584 .\inventory\templates\it_inventory.html:170
+msgid "Abonelik"
+msgstr "Abonelik"
+
+#: .\inventory\models.py:615
+msgid "Port No"
+msgstr "Port No"
+
+#: .\inventory\models.py:616
+msgid "Port Adı"
+msgstr "Port Adı"
+
+#: .\inventory\models.py:641
+msgid "İçerik"
+msgstr "İçerik"
+
+#: .\inventory\models.py:644
+msgid "Yazar"
+msgstr "Yazar"
+
+#: .\inventory\models.py:648
+msgid "Görüntülenme"
+msgstr "Görüntülenme"
+
+#: .\inventory\models.py:649
+msgid "Faydalı"
+msgstr "Faydalı"
+
+#: .\inventory\models.py:661
+msgid "İnternet"
+msgstr "İnternet"
+
+#: .\inventory\models.py:663 .\inventory\models.py:1222
+#: .\inventory\models.py:1436 .\inventory\models.py:1965
+#: .\inventory\models.py:2794
+msgid "Bakım"
+msgstr "Bakım"
+
+#: .\inventory\models.py:674 .\inventory\models.py:784
+#: .\inventory\models.py:929 .\inventory\models.py:1025
+#: .\inventory\models.py:2044
+msgid "Tedarikçi"
+msgstr "Tedarikçi"
+
+#: .\inventory\models.py:676
+msgid "SLA"
+msgstr "SLA"
+
+#: .\inventory\models.py:678 .\inventory\templates\it_inventory.html:261
+msgid "Başlangıç Tarihi"
+msgstr "Başlangıç Tarihi"
+
+#: .\inventory\models.py:681
+msgid "Maliyet"
+msgstr "Maliyet"
+
+#: .\inventory\models.py:707 .\inventory\models.py:918
+#: .\inventory\models.py:1142 .\inventory\models.py:1262
+#: .\inventory\models.py:1450 .\inventory\models.py:2543
+#: .\inventory\templates\custom_admin.html:254
+msgid "Onaylandı"
+msgstr "Onaylandı"
+
+#: .\inventory\models.py:709 .\inventory\models.py:982
+msgid "Başarısız"
+msgstr "Başarısız"
+
+#: .\inventory\models.py:714
+msgid "Hedef Cihazlar"
+msgstr "Hedef Cihazlar"
+
+#: .\inventory\models.py:717 .\inventory\templates\backup.html:44
+msgid "Hedef IP"
+msgstr "Hedef IP"
+
+#: .\inventory\models.py:722 .\inventory\models.py:872
+#: .\inventory\models.py:931 .\inventory\models.py:1148
+#: .\inventory\models.py:1615 .\inventory\models.py:1870
+#: .\inventory\templates\custom_admin.html:239
+msgid "Talep Eden"
+msgstr "Talep Eden"
+
+#: .\inventory\models.py:725 .\inventory\models.py:1761
+msgid "Yönetici"
+msgstr "Yönetici"
+
+#: .\inventory\models.py:729
+msgid "İşlem Logu"
+msgstr "İşlem Logu"
+
+#: .\inventory\models.py:749
+msgid "Alan/Hat Adı"
+msgstr "Alan/Hat Adı"
+
+#: .\inventory\models.py:750 .\inventory\models.py:1981
+#: .\inventory\models.py:2096
+msgid "Kod"
+msgstr "Kod"
+
+#: .\inventory\models.py:752 .\inventory\models.py:1499
+#: .\inventory\models.py:1988 .\inventory\models.py:2101
+msgid "Kritiklik"
+msgstr "Kritiklik"
+
+#: .\inventory\models.py:768
+msgid "Toner/Kartuş"
+msgstr "Toner/Kartuş"
+
+#: .\inventory\models.py:770
+msgid "Yedek Parça"
+msgstr "Yedek Parça"
+
+#: .\inventory\models.py:771
+msgid "Kablo/Adaptör"
+msgstr "Kablo/Adaptör"
+
+#: .\inventory\models.py:772
+msgid "Yedekleme Medyası"
+msgstr "Yedekleme Medyası"
+
+#: .\inventory\models.py:776
+msgid "Kalem Adı"
+msgstr "Kalem Adı"
+
+#: .\inventory\models.py:778
+msgid "Stok Kodu"
+msgstr "Stok Kodu"
+
+#: .\inventory\models.py:779
+msgid "Uyumlu Cihaz/Model"
+msgstr "Uyumlu Cihaz/Model"
+
+#: .\inventory\models.py:780
+msgid "Depo/Lokasyon"
+msgstr "Depo/Lokasyon"
+
+#: .\inventory\models.py:781
+msgid "Mevcut Stok"
+msgstr "Mevcut Stok"
+
+#: .\inventory\models.py:782
+msgid "Minimum Stok"
+msgstr "Minimum Stok"
+
+#: .\inventory\models.py:783 .\inventory\models.py:2046
+msgid "Birim"
+msgstr "Birim"
+
+#: .\inventory\models.py:803
+msgid "Yedek Kontrolü"
+msgstr "Yedek Kontrolü"
+
+#: .\inventory\models.py:804
+msgid "Patch/Güncelleme"
+msgstr "Patch/Güncelleme"
+
+#: .\inventory\models.py:805
+msgid "Yazıcı/Barkod"
+msgstr "Yazıcı/Barkod"
+
+#: .\inventory\models.py:806
+msgid "Ağ Kontrolü"
+msgstr "Ağ Kontrolü"
+
+#: .\inventory\models.py:808 .\inventory\models.py:1223
+#: .\inventory\models.py:1408 .\inventory\models.py:1967
+#: .\inventory\models.py:2759
+msgid "Güvenlik"
+msgstr "Güvenlik"
+
+#: .\inventory\models.py:809
+msgid "Üretim Hattı IT"
+msgstr "Üretim Hattı IT"
+
+#: .\inventory\models.py:819 .\inventory\models.py:1613
+msgid "İş Başlığı"
+msgstr "İş Başlığı"
+
+#: .\inventory\models.py:820
+msgid "İş Tipi"
+msgstr "İş Tipi"
+
+#: .\inventory\models.py:821 .\inventory\models.py:871
+#: .\inventory\models.py:930 .\inventory\models.py:1057
+#: .\inventory\models.py:1349 .\inventory\models.py:2094
+#: .\inventory\models.py:2277 .\inventory\models.py:2290
+#: .\inventory\templates\factory_operations.html:18
+msgid "Fabrika Alanı"
+msgstr "Fabrika Alanı"
+
+#: .\inventory\models.py:823 .\inventory\models.py:1054
+#: .\inventory\models.py:1813 .\inventory\templates\it_operations.html:226
+msgid "Varlık"
+msgstr "Varlık"
+
+#: .\inventory\models.py:825
+msgid "Periyot (Gün)"
+msgstr "Periyot (Gün)"
+
+#: .\inventory\models.py:826
+msgid "Son Tamamlanma"
+msgstr "Son Tamamlanma"
+
+#: .\inventory\models.py:827
+msgid "Sonraki Tarih"
+msgstr "Sonraki Tarih"
+
+#: .\inventory\models.py:829
+msgid "Checklist"
+msgstr "Checklist"
+
+#: .\inventory\models.py:857
+msgid "İşe Giriş"
+msgstr "İşe Giriş"
+
+#: .\inventory\models.py:858 .\inventory\models.py:1852
+msgid "İşten Çıkış"
+msgstr "İşten Çıkış"
+
+#: .\inventory\models.py:859
+msgid "Departman Değişikliği"
+msgstr "Departman Değişikliği"
+
+#: .\inventory\models.py:868 .\inventory\models.py:1055
+#: .\inventory\models.py:1868 .\inventory\templates\helpdesk_analytics.html:81
+msgid "Personel"
+msgstr "Personel"
+
+#: .\inventory\models.py:870 .\inventory\models.py:1866
+#: .\inventory\templates\factory_operations.html:169
+msgid "Süreç"
+msgstr "Süreç"
+
+#: .\inventory\models.py:873 .\inventory\models.py:1030
+#: .\inventory\models.py:1871
+msgid "Sorumlu IT"
+msgstr "Sorumlu IT"
+
+#: .\inventory\models.py:874 .\inventory\models.py:1578
+#: .\inventory\models.py:1873
+msgid "Hedef Tarih"
+msgstr "Hedef Tarih"
+
+#: .\inventory\models.py:876
+msgid "AD/Hesap"
+msgstr "AD/Hesap"
+
+#: .\inventory\models.py:877 .\inventory\models.py:1758
+#: .\inventory\models.py:1875
+msgid "E-posta"
+msgstr "E-posta"
+
+#: .\inventory\models.py:878
+msgid "ERP/MES"
+msgstr "ERP/MES"
+
+#: .\inventory\models.py:879
+msgid "VPN/Uzak Erişim"
+msgstr "VPN/Uzak Erişim"
+
+#: .\inventory\models.py:880 .\inventory\models.py:1877
+msgid "Cihaz/Zimmet"
+msgstr "Cihaz/Zimmet"
+
+#: .\inventory\models.py:881
+msgid "Kart/Yetki"
+msgstr "Kart/Yetki"
+
+#: .\inventory\models.py:882
+msgid "Veri Yedek/Devir"
+msgstr "Veri Yedek/Devir"
+
+#: .\inventory\models.py:919
+msgid "Sipariş Verildi"
+msgstr "Sipariş Verildi"
+
+#: .\inventory\models.py:920
+msgid "Teslim Alındı"
+msgstr "Teslim Alındı"
+
+#: .\inventory\models.py:924
+msgid "Talep Başlığı"
+msgstr "Talep Başlığı"
+
+#: .\inventory\models.py:927
+msgid "Adet"
+msgstr "Adet"
+
+#: .\inventory\models.py:928
+msgid "Tahmini Maliyet"
+msgstr "Tahmini Maliyet"
+
+#: .\inventory\models.py:932 .\inventory\models.py:1154
+#: .\inventory\models.py:1277
+msgid "Onaylayan"
+msgstr "Onaylayan"
+
+#: .\inventory\models.py:934
+msgid "İhtiyaç Tarihi"
+msgstr "İhtiyaç Tarihi"
+
+#: .\inventory\models.py:949
+msgid "Nöbetçi"
+msgstr "Nöbetçi"
+
+#: .\inventory\models.py:950 .\inventory\models.py:1107
+#: .\inventory\models.py:1462
+msgid "Başlangıç"
+msgstr "Başlangıç"
+
+#: .\inventory\models.py:951 .\inventory\models.py:1463
+msgid "Bitiş"
+msgstr "Bitiş"
+
+#: .\inventory\models.py:952
+msgid "İletişim"
+msgstr "İletişim"
+
+#: .\inventory\models.py:953
+msgid "Birincil Nöbetçi"
+msgstr "Birincil Nöbetçi"
+
+#: .\inventory\models.py:975 .\inventory\models.py:2353
+msgid "Veritabanı"
+msgstr "Veritabanı"
+
+#: .\inventory\models.py:978 .\inventory\models.py:1133
+msgid "Dosya Paylaşımı"
+msgstr "Dosya Paylaşımı"
+
+#: .\inventory\models.py:981 .\inventory\templates\it_operations.html:184
+msgid "Başarılı"
+msgstr "Başarılı"
+
+#: .\inventory\models.py:983 .\inventory\models.py:1185
+#: .\inventory\models.py:1339 .\inventory\models.py:1644
+#: .\inventory\models.py:2346 .\inventory\templates\erp_integrations.html:45
+msgid "Uyarı"
+msgstr "Uyarı"
+
+#: .\inventory\models.py:984
+msgid "Kaçırıldı"
+msgstr "Kaçırıldı"
+
+#: .\inventory\models.py:988
+msgid "Yedekleme Adı"
+msgstr "Yedekleme Adı"
+
+#: .\inventory\models.py:989
+msgid "Sistem Tipi"
+msgstr "Sistem Tipi"
+
+#: .\inventory\models.py:990
+msgid "Hedef Sunucu"
+msgstr "Hedef Sunucu"
+
+#: .\inventory\models.py:991
+msgid "Plan"
+msgstr "Plan"
+
+#: .\inventory\models.py:992
+msgid "Son Çalışma"
+msgstr "Son Çalışma"
+
+#: .\inventory\models.py:993 .\inventory\models.py:1536
+#: .\inventory\models.py:1660
+msgid "Son Durum"
+msgstr "Son Durum"
+
+#: .\inventory\models.py:994
+msgid "Sonraki Çalışma"
+msgstr "Sonraki Çalışma"
+
+#: .\inventory\models.py:995
+msgid "Saklama (Gün)"
+msgstr "Saklama (Gün)"
+
+#: .\inventory\models.py:1019
+msgid "Tedarikçi Bekleniyor"
+msgstr "Tedarikçi Bekleniyor"
+
+#: .\inventory\models.py:1024
+msgid "Konu"
+msgstr "Konu"
+
+#: .\inventory\models.py:1026 .\inventory\models.py:2122
+msgid "Sözleşme"
+msgstr "Sözleşme"
+
+#: .\inventory\models.py:1027
+msgid "Tedarikçi Vaka No"
+msgstr "Tedarikçi Vaka No"
+
+#: .\inventory\models.py:1031
+msgid "Açılış"
+msgstr "Açılış"
+
+#: .\inventory\models.py:1032 .\inventory\models.py:2525
+msgid "Çözüm Tarihi"
+msgstr "Çözüm Tarihi"
+
+#: .\inventory\models.py:1050
+msgid "Zimmet İade"
+msgstr "Zimmet İade"
+
+#: .\inventory\models.py:1058 .\inventory\templates\custom_admin.html:367
+#: .\inventory\templates\integration_hub_center.html:49
+#: .\inventory\templates\it_operations.html:228
+#: .\inventory\templates\itsm_maturity.html:46
+#: .\inventory\templates\itsm_maturity.html:64
+#: .\inventory\templates\ot_integrations.html:40
+#: .\inventory\templates\port_mapping_list.html:25
+#: .\inventory\templates\user_panel.html:140
+msgid "İşlem"
+msgstr "İşlem"
+
+#: .\inventory\models.py:1060
+msgid "Durum Notu"
+msgstr "Durum Notu"
+
+#: .\inventory\models.py:1062 .\inventory\templates\custom_admin.html:430
+msgid "Kayıt Tarihi"
+msgstr "Kayıt Tarihi"
+
+#: .\inventory\models.py:1087
+msgid "SEV1 - Üretim Durdu"
+msgstr "SEV1 - Üretim Durdu"
+
+#: .\inventory\models.py:1089
+msgid "SEV3 - Sınırlı Etki"
+msgstr "SEV3 - Sınırlı Etki"
+
+#: .\inventory\models.py:1090
+msgid "SEV4 - Düşük Etki"
+msgstr "SEV4 - Düşük Etki"
+
+#: .\inventory\models.py:1094
+msgid "Savaş Odası"
+msgstr "Savaş Odası"
+
+#: .\inventory\models.py:1095
+msgid "İzlemede"
+msgstr "İzlemede"
+
+#: .\inventory\models.py:1101
+msgid "Olay Başlığı"
+msgstr "Olay Başlığı"
+
+#: .\inventory\models.py:1104 .\inventory\models.py:1459
+msgid "Etkilenen Alan"
+msgstr "Etkilenen Alan"
+
+#: .\inventory\models.py:1105
+msgid "İlgili Talep"
+msgstr "İlgili Talep"
+
+#: .\inventory\models.py:1106
+msgid "Olay Lideri"
+msgstr "Olay Lideri"
+
+#: .\inventory\models.py:1108
+msgid "Çözüm"
+msgstr "Çözüm"
+
+#: .\inventory\models.py:1109
+msgid "Etki Özeti"
+msgstr "Etki Özeti"
+
+#: .\inventory\models.py:1110 .\inventory\models.py:2516
+msgid "Kök Neden"
+msgstr "Kök Neden"
+
+#: .\inventory\models.py:1111
+msgid "Kalıcı Aksiyonlar"
+msgstr "Kalıcı Aksiyonlar"
+
+#: .\inventory\models.py:1137
+msgid "Geçici Admin Yetkisi"
+msgstr "Geçici Admin Yetkisi"
+
+#: .\inventory\models.py:1145 .\inventory\models.py:2545
+msgid "Geri Alındı"
+msgstr "Geri Alındı"
+
+#: .\inventory\models.py:1149 .\inventory\models.py:1269
+msgid "Kullanıcı/Personel"
+msgstr "Kullanıcı/Personel"
+
+#: .\inventory\models.py:1151
+msgid "Erişim Tipi"
+msgstr "Erişim Tipi"
+
+#: .\inventory\models.py:1152
+msgid "Hedef Sistem/Paylaşım"
+msgstr "Hedef Sistem/Paylaşım"
+
+#: .\inventory\models.py:1153
+msgid "Gerekçe"
+msgstr "Gerekçe"
+
+#: .\inventory\models.py:1156 .\inventory\models.py:1278
+msgid "Süre Sonu"
+msgstr "Süre Sonu"
+
+#: .\inventory\models.py:1157
+msgid "Yetki Verilme"
+msgstr "Yetki Verilme"
+
+#: .\inventory\models.py:1178
+msgid "Barkod Yazıcı"
+msgstr "Barkod Yazıcı"
+
+#: .\inventory\models.py:1179
+msgid "Etiket Yazıcı"
+msgstr "Etiket Yazıcı"
+
+#: .\inventory\models.py:1180
+msgid "Tarayıcı"
+msgstr "Tarayıcı"
+
+#: .\inventory\models.py:1181
+msgid "Çok Fonksiyonlu"
+msgstr "Çok Fonksiyonlu"
+
+#: .\inventory\models.py:1186 .\inventory\models.py:1341
+#: .\inventory\models.py:1381 .\inventory\models.py:2027
+#: .\inventory\models.py:2472 .\inventory\templates\erp_integrations.html:47
+msgid "Bakımda"
+msgstr "Bakımda"
+
+#: .\inventory\models.py:1192 .\inventory\models.py:1345
+#: .\inventory\models.py:1385 .\inventory\models.py:1457
+#: .\inventory\models.py:1533 .\inventory\models.py:1614
+#: .\inventory\models.py:1649 .\inventory\models.py:1816
+#: .\inventory\models.py:1986 .\inventory\models.py:2584
+#: .\inventory\models.py:2631
+#: .\inventory\templates\factory_portfolio_inventory.html:122
+#: .\inventory\templates\integration_hub_center.html:49
+#: .\inventory\templates\integration_hub_center.html:67
+#: .\inventory\templates\ot_integrations.html:40
+msgid "Tip"
+msgstr "Tip"
+
+#: .\inventory\models.py:1196 .\inventory\models.py:1820
+#: .\inventory\models.py:2149 .\inventory\models.py:2225
+msgid "Alan"
+msgstr "Alan"
+
+#: .\inventory\models.py:1197
+msgid "Toner/Ribon"
+msgstr "Toner/Ribon"
+
+#: .\inventory\models.py:1198
+msgid "Sayaç"
+msgstr "Sayaç"
+
+#: .\inventory\models.py:1199
+msgid "Toner/Ribon (%)"
+msgstr "Toner/Ribon (%)"
+
+#: .\inventory\models.py:1201
+msgid "Son Bakım"
+msgstr "Son Bakım"
+
+#: .\inventory\models.py:1221
+msgid "Olay Müdahalesi"
+msgstr "Olay Müdahalesi"
+
+#: .\inventory\models.py:1225
+msgid "Personel Süreci"
+msgstr "Personel Süreci"
+
+#: .\inventory\models.py:1232 .\inventory\models.py:1421
+#: .\inventory\models.py:1730 .\inventory\models.py:2150
+msgid "Sahip"
+msgstr "Sahip"
+
+#: .\inventory\models.py:1233
+msgid "İlgili Cihaz Tipi"
+msgstr "İlgili Cihaz Tipi"
+
+#: .\inventory\models.py:1234
+msgid "Adımlar"
+msgstr "Adımlar"
+
+#: .\inventory\models.py:1235
+msgid "Geri Dönüş Adımları"
+msgstr "Geri Dönüş Adımları"
+
+#: .\inventory\models.py:1237 .\inventory\models.py:2151
+msgid "Versiyon"
+msgstr "Versiyon"
+
+#: .\inventory\models.py:1238
+msgid "Son Gözden Geçirme"
+msgstr "Son Gözden Geçirme"
+
+#: .\inventory\models.py:1264
+msgid "Askıya Alındı"
+msgstr "Askıya Alındı"
+
+#: .\inventory\models.py:1265 .\inventory\models.py:1750
+#: .\inventory\templates\it_inventory.html:153
+#: .\inventory\templates\it_inventory.html:306
+msgid "Süresi Doldu"
+msgstr "Süresi Doldu"
+
+#: .\inventory\models.py:1266
+msgid "İptal Edildi"
+msgstr "İptal Edildi"
+
+#: .\inventory\models.py:1271
+msgid "Erişim Yöntemi"
+msgstr "Erişim Yöntemi"
+
+#: .\inventory\models.py:1272
+msgid "Hedef Kaynak"
+msgstr "Hedef Kaynak"
+
+#: .\inventory\models.py:1273
+msgid "VPN Gateway / Portal"
+msgstr "VPN Gateway / Portal"
+
+#: .\inventory\models.py:1274
+msgid "İzinli Kaynak IP"
+msgstr "İzinli Kaynak IP"
+
+#: .\inventory\models.py:1275
+msgid "MFA Zorunlu"
+msgstr "MFA Zorunlu"
+
+#: .\inventory\models.py:1298 .\inventory\models.py:2583
+msgid "Kanal Adı"
+msgstr "Kanal Adı"
+
+#: .\inventory\models.py:1314 .\inventory\templates\command_center.html:168
+msgid "Kanal"
+msgstr "Kanal"
+
+#: .\inventory\models.py:1315
+msgid "Yazan"
+msgstr "Yazan"
+
+#: .\inventory\models.py:1317
+msgid "Duyuru"
+msgstr "Duyuru"
+
+#: .\inventory\models.py:1344
+msgid "Kamera/NVR Adı"
+msgstr "Kamera/NVR Adı"
+
+#: .\inventory\models.py:1347
+msgid "Canlı İzleme URL"
+msgstr "Canlı İzleme URL"
+
+#: .\inventory\models.py:1348
+msgid "Lokasyon"
+msgstr "Lokasyon"
+
+#: .\inventory\models.py:1350
+msgid "Kayıt Saklama (Gün)"
+msgstr "Kayıt Saklama (Gün)"
+
+#: .\inventory\models.py:1352 .\inventory\models.py:1537
+#: .\inventory\models.py:1579 .\inventory\models.py:2723
+msgid "Son Kontrol"
+msgstr "Son Kontrol"
+
+#: .\inventory\models.py:1371
+msgid "İK"
+msgstr "İK"
+
+#: .\inventory\models.py:1373 .\inventory\models.py:2212
+#: .\inventory\models.py:2236 .\inventory\models.py:2905
+#: .\inventory\templates\factory_command_center.html:31
+msgid "Doküman"
+msgstr "Doküman"
+
+#: .\inventory\models.py:1379
+msgid "Kısmi Sorun"
+msgstr "Kısmi Sorun"
+
+#: .\inventory\models.py:1384
+msgid "Uygulama Adı"
+msgstr "Uygulama Adı"
+
+#: .\inventory\models.py:1386
+msgid "URL"
+msgstr "URL"
+
+#: .\inventory\models.py:1387
+msgid "Sahip Departman"
+msgstr "Sahip Departman"
+
+#: .\inventory\models.py:1388
+msgid "Teknik Sorumlu"
+msgstr "Teknik Sorumlu"
+
+#: .\inventory\models.py:1389
+msgid "SSO Aktif"
+msgstr "SSO Aktif"
+
+#: .\inventory\models.py:1412 .\inventory\models.py:1603
+msgid "Özel"
+msgstr "Özel"
+
+#: .\inventory\models.py:1415
+msgid "Rapor Adı"
+msgstr "Rapor Adı"
+
+#: .\inventory\models.py:1416
+msgid "Rapor Tipi"
+msgstr "Rapor Tipi"
+
+#: .\inventory\models.py:1418
+msgid "Veri Kaynağı / Filtre Notu"
+msgstr "Veri Kaynağı / Filtre Notu"
+
+#: .\inventory\models.py:1419
+msgid "Çıktı Formatları"
+msgstr "Çıktı Formatları"
+
+#: .\inventory\models.py:1437
+msgid "Değişiklik"
+msgstr "Değişiklik"
+
+#: .\inventory\models.py:1438
+msgid "Planlı Kesinti"
+msgstr "Planlı Kesinti"
+
+#: .\inventory\models.py:1439
+msgid "Sürüm Geçişi"
+msgstr "Sürüm Geçişi"
+
+#: .\inventory\models.py:1458 .\inventory\models.py:1729
+msgid "Risk"
+msgstr "Risk"
+
+#: .\inventory\models.py:1460
+msgid "CAB Kaydı"
+msgstr "CAB Kaydı"
+
+#: .\inventory\models.py:1464
+msgid "Beklenen Etki"
+msgstr "Beklenen Etki"
+
+#: .\inventory\models.py:1465
+msgid "Geri Dönüş Planı"
+msgstr "Geri Dönüş Planı"
+
+#: .\inventory\models.py:1487
+msgid "Üzerinde Çalışır"
+msgstr "Üzerinde Çalışır"
+
+#: .\inventory\models.py:1488
+msgid "Bağlanır"
+msgstr "Bağlanır"
+
+#: .\inventory\models.py:1489
+msgid "Bağımlı"
+msgstr "Bağımlı"
+
+#: .\inventory\models.py:1491
+msgid "İzler"
+msgstr "İzler"
+
+#: .\inventory\models.py:1495
+msgid "İlişki Adı"
+msgstr "İlişki Adı"
+
+#: .\inventory\models.py:1496 .\inventory\models.py:2234
+#: .\inventory\templates\command_center.html:73
+#: .\inventory\templates\command_center.html:168
+msgid "Uygulama"
+msgstr "Uygulama"
+
+#: .\inventory\models.py:1498
+msgid "Bağımlılık Tipi"
+msgstr "Bağımlılık Tipi"
+
+#: .\inventory\models.py:1500
+msgid "Etki Açıklaması"
+msgstr "Etki Açıklaması"
+
+#: .\inventory\models.py:1526 .\inventory\models.py:1643
+#: .\inventory\models.py:2345 .\inventory\templates\governance_center.html:42
+#: .\inventory\templates\ot_integrations.html:20
+msgid "Sağlıklı"
+msgstr "Sağlıklı"
+
+#: .\inventory\models.py:1527
+msgid "Yavaş/Sorunlu"
+msgstr "Yavaş/Sorunlu"
+
+#: .\inventory\models.py:1528
+msgid "Çalışmıyor"
+msgstr "Çalışmıyor"
+
+#: .\inventory\models.py:1532
+msgid "Entegrasyon"
+msgstr "Entegrasyon"
+
+#: .\inventory\models.py:1534
+msgid "Endpoint/URL"
+msgstr "Endpoint/URL"
+
+#: .\inventory\models.py:1538
+msgid "Yanıt Süresi (ms)"
+msgstr "Yanıt Süresi (ms)"
+
+#: .\inventory\models.py:1560
+msgid "İç Denetim"
+msgstr "İç Denetim"
+
+#: .\inventory\models.py:1561
+msgid "Yedekleme Politikası"
+msgstr "Yedekleme Politikası"
+
+#: .\inventory\models.py:1562
+msgid "Erişim Denetimi"
+msgstr "Erişim Denetimi"
+
+#: .\inventory\models.py:1567
+msgid "Açık Var"
+msgstr "Açık Var"
+
+#: .\inventory\models.py:1572
+msgid "Kontrol"
+msgstr "Kontrol"
+
+#: .\inventory\models.py:1573
+msgid "Çerçeve"
+msgstr "Çerçeve"
+
+#: .\inventory\models.py:1576
+msgid "Kanıt / Bulgu"
+msgstr "Kanıt / Bulgu"
+
+#: .\inventory\models.py:1577
+msgid "İyileştirme Planı"
+msgstr "İyileştirme Planı"
+
+#: .\inventory\models.py:1600
+msgid "Bakım Formu"
+msgstr "Bakım Formu"
+
+#: .\inventory\models.py:1602
+msgid "Denetim Kanıtı"
+msgstr "Denetim Kanıtı"
+
+#: .\inventory\models.py:1607 .\inventory\templates\offline_field_app.html:17
+msgid "Hazırlanıyor"
+msgstr "Hazırlanıyor"
+
+#: .\inventory\models.py:1608 .\inventory\templates\governance_center.html:52
+msgid "Hazır"
+msgstr "Hazır"
+
+#: .\inventory\models.py:1616
+msgid "Rapor Şablonu"
+msgstr "Rapor Şablonu"
+
+#: .\inventory\models.py:1617
+msgid "Format"
+msgstr "Format"
+
+#: .\inventory\models.py:1642
+msgid "Yapılandırılmadı"
+msgstr "Yapılandırılmadı"
+
+#: .\inventory\models.py:1648 .\inventory\models.py:2350
+#: .\inventory\models.py:2424 .\inventory\models.py:2630
+#: .\inventory\models.py:2676 .\inventory\models.py:2827
+#: .\inventory\models.py:2864
+msgid "Bağlantı Adı"
+msgstr "Bağlantı Adı"
+
+#: .\inventory\models.py:1650
+msgid "Sunucu URI"
+msgstr "Sunucu URI"
+
+#: .\inventory\models.py:1651
+msgid "Base DN"
+msgstr "Base DN"
+
+#: .\inventory\models.py:1652
+msgid "Bind Kullanıcısı"
+msgstr "Bind Kullanıcısı"
+
+#: .\inventory\models.py:1653
+msgid "Bind Parolası / Client Secret"
+msgstr "Bind Parolası / Client Secret"
+
+#: .\inventory\models.py:1654
+msgid "Azure Tenant ID"
+msgstr "Azure Tenant ID"
+
+#: .\inventory\models.py:1655
+msgid "Kullanıcı Filtresi"
+msgstr "Kullanıcı Filtresi"
+
+#: .\inventory\models.py:1656
+msgid "Grup Filtresi"
+msgstr "Grup Filtresi"
+
+#: .\inventory\models.py:1657
+msgid "OmniOps Kullanıcısı Oluştur"
+msgstr "OmniOps Kullanıcısı Oluştur"
+
+#: .\inventory\models.py:1658 .\inventory\models.py:2635
+#: .\inventory\models.py:2681 .\inventory\models.py:2831
+#: .\inventory\models.py:2869
+msgid "Sync Aktif"
+msgstr "Sync Aktif"
+
+#: .\inventory\models.py:1659 .\inventory\models.py:2365
+#: .\inventory\models.py:2432 .\inventory\models.py:2636
+#: .\inventory\models.py:2683 .\inventory\models.py:2832
+#: .\inventory\models.py:2870
+msgid "Son Sync"
+msgstr "Son Sync"
+
+#: .\inventory\models.py:1661 .\inventory\models.py:2367
+#: .\inventory\models.py:2434
+msgid "Son Sync Mesajı"
+msgstr "Son Sync Mesajı"
+
+#: .\inventory\models.py:1723 .\inventory\models.py:1754
+#: .\inventory\templates\identity_operations.html:30
+msgid "Directory"
+msgstr "Directory"
+
+#: .\inventory\models.py:1724
+msgid "Grup Adı"
+msgstr "Grup Adı"
+
+#: .\inventory\models.py:1725 .\inventory\models.py:1762
+msgid "DN"
+msgstr "DN"
+
+#: .\inventory\models.py:1727
+msgid "OmniOps Rolü"
+msgstr "OmniOps Rolü"
+
+#: .\inventory\models.py:1728
+msgid "İş Uygulaması / Sistem"
+msgstr "İş Uygulaması / Sistem"
+
+#: .\inventory\models.py:1731 .\inventory\models.py:1825
+#: .\inventory\models.py:2485
+msgid "Son Görülme"
+msgstr "Son Görülme"
+
+#: .\inventory\models.py:1732
+msgid "Ayrıcalıklı Grup"
+msgstr "Ayrıcalıklı Grup"
+
+#: .\inventory\models.py:1755
+msgid "OmniOps Kullanıcısı"
+msgstr "OmniOps Kullanıcısı"
+
+#: .\inventory\models.py:1757
+msgid "Ad Soyad"
+msgstr "Ad Soyad"
+
+#: .\inventory\models.py:1760
+msgid "Unvan"
+msgstr "Unvan"
+
+#: .\inventory\models.py:1764
+msgid "Gruplar"
+msgstr "Gruplar"
+
+#: .\inventory\models.py:1765
+msgid "MFA"
+msgstr "MFA"
+
+#: .\inventory\models.py:1766
+msgid "Parola Son Değişim"
+msgstr "Parola Son Değişim"
+
+#: .\inventory\models.py:1767
+msgid "Son Oturum"
+msgstr "Son Oturum"
+
+#: .\inventory\models.py:1768
+msgid "Son Sync Görülme"
+msgstr "Son Sync Görülme"
+
+#: .\inventory\models.py:1769
+msgid "Risk Notu"
+msgstr "Risk Notu"
+
+#: .\inventory\models.py:1796
+msgid "Masaüstü"
+msgstr "Masaüstü"
+
+#: .\inventory\models.py:1801
+msgid "Endüstriyel PC"
+msgstr "Endüstriyel PC"
+
+#: .\inventory\models.py:1808
+msgid "Kayıp"
+msgstr "Kayıp"
+
+#: .\inventory\models.py:1812
+msgid "Hostname"
+msgstr "Hostname"
+
+#: .\inventory\models.py:1814 .\inventory\models.py:1867
+#: .\inventory\templates\identity_operations.html:48
+msgid "Directory Kullanıcısı"
+msgstr "Directory Kullanıcısı"
+
+#: .\inventory\models.py:1815
+msgid "Zimmetli"
+msgstr "Zimmetli"
+
+#: .\inventory\models.py:1821
+msgid "Uyum Durumu"
+msgstr "Uyum Durumu"
+
+#: .\inventory\models.py:1822
+msgid "Antivirüs OK"
+msgstr "Antivirüs OK"
+
+#: .\inventory\models.py:1823
+msgid "Disk Şifreli"
+msgstr "Disk Şifreli"
+
+#: .\inventory\models.py:1824
+msgid "Patch Seviyesi"
+msgstr "Patch Seviyesi"
+
+#: .\inventory\models.py:1851
+msgid "İşe Başlama"
+msgstr "İşe Başlama"
+
+#: .\inventory\models.py:1854
+msgid "Erişim Gözden Geçirme"
+msgstr "Erişim Gözden Geçirme"
+
+#: .\inventory\models.py:1874
+msgid "AD Hesabı"
+msgstr "AD Hesabı"
+
+#: .\inventory\models.py:1876
+msgid "Grup/Erişim"
+msgstr "Grup/Erişim"
+
+#: .\inventory\models.py:1878
+msgid "VPN/MFA"
+msgstr "VPN/MFA"
+
+#: .\inventory\models.py:1908
+msgid "Gıda & İçecek"
+msgstr "Gıda & İçecek"
+
+#: .\inventory\models.py:1912
+msgid "İlaç & Sağlık"
+msgstr "İlaç & Sağlık"
+
+#: .\inventory\models.py:1916
+msgid "Güneş Enerjisi"
+msgstr "Güneş Enerjisi"
+
+#: .\inventory\models.py:1917
+msgid "Kağıt & Ambalaj"
+msgstr "Kağıt & Ambalaj"
+
+#: .\inventory\models.py:1918
+msgid "Genel Endüstri"
+msgstr "Genel Endüstri"
+
+#: .\inventory\models.py:1919
+msgid "Özel Sektör Tanımı"
+msgstr "Özel Sektör Tanımı"
+
+#: .\inventory\models.py:1922
+msgid "Tesis Başlığı"
+msgstr "Tesis Başlığı"
+
+#: .\inventory\models.py:1923
+msgid "Kısa Ad"
+msgstr "Kısa Ad"
+
+#: .\inventory\models.py:1924
+msgid "Tesis Kodu"
+msgstr "Tesis Kodu"
+
+#: .\inventory\models.py:1925 .\inventory\templates\workspace_center.html:29
+msgid "Sektör"
+msgstr "Sektör"
+
+#: .\inventory\models.py:1926 .\inventory\models.py:2943
+msgid "Özel Sektör Adı"
+msgstr "Özel Sektör Adı"
+
+#: .\inventory\models.py:1928
+msgid "Portföy Kodu"
+msgstr "Portföy Kodu"
+
+#: .\inventory\models.py:1929
+msgid "Envanter Panel Başlığı"
+msgstr "Envanter Panel Başlığı"
+
+#: .\inventory\models.py:1930
+msgid "Bölüm Etiketi"
+msgstr "Bölüm Etiketi"
+
+#: .\inventory\models.py:1931
+msgid "Alt Alan Etiketi"
+msgstr "Alt Alan Etiketi"
+
+#: .\inventory\models.py:1932
+msgid "Şehir"
+msgstr "Şehir"
+
+#: .\inventory\models.py:1933
+msgid "Ülke"
+msgstr "Ülke"
+
+#: .\inventory\models.py:1962
+msgid "Üretim"
+msgstr "Üretim"
+
+#: .\inventory\models.py:1966
+msgid "İdari İşler"
+msgstr "İdari İşler"
+
+#: .\inventory\models.py:1968
+msgid "Bilgi İşlem"
+msgstr "Bilgi İşlem"
+
+#: .\inventory\models.py:1969
+msgid "İnsan Kaynakları"
+msgstr "İnsan Kaynakları"
+
+#: .\inventory\models.py:1980
+msgid "Departman Adı"
+msgstr "Departman Adı"
+
+#: .\inventory\models.py:1991
+msgid "Kat/Bölge"
+msgstr "Kat/Bölge"
+
+#: .\inventory\models.py:2013 .\inventory\models.py:2052
+#: .\inventory\models.py:2215 .\inventory\models.py:2239
+#: .\inventory\models.py:2274 .\inventory\models.py:2287
+#: .\inventory\models.py:2400 .\inventory\models.py:2803
+msgid "IT Varlık"
+msgstr "IT Varlık"
+
+#: .\inventory\models.py:2014 .\inventory\models.py:2051
+#: .\inventory\models.py:2206 .\inventory\models.py:2230
+#: .\inventory\models.py:2272 .\inventory\models.py:2285
+msgid "Ağ Cihazı"
+msgstr "Ağ Cihazı"
+
+#: .\inventory\models.py:2016
+msgid "Üretim Ekipmanı"
+msgstr "Üretim Ekipmanı"
+
+#: .\inventory\models.py:2019
+msgid "Yazılım/Lisans"
+msgstr "Yazılım/Lisans"
+
+#: .\inventory\models.py:2020
+msgid "Araç/Forklift"
+msgstr "Araç/Forklift"
+
+#: .\inventory\models.py:2021
+msgid "Mobilya/Donanım"
+msgstr "Mobilya/Donanım"
+
+#: .\inventory\models.py:2033 .\inventory\models.py:2481
+msgid "Bölüm"
+msgstr "Bölüm"
+
+#: .\inventory\models.py:2034
+msgid "Alt Alan"
+msgstr "Alt Alan"
+
+#: .\inventory\models.py:2035
+msgid "Envanter Başlığı"
+msgstr "Envanter Başlığı"
+
+#: .\inventory\models.py:2036
+msgid "Özel Kategori"
+msgstr "Özel Kategori"
+
+#: .\inventory\models.py:2037
+msgid "Kalem Tipi"
+msgstr "Kalem Tipi"
+
+#: .\inventory\models.py:2038 .\inventory\models.py:2143
+msgid "Referans Kodu"
+msgstr "Referans Kodu"
+
+#: .\inventory\models.py:2040
+msgid "Varlık Etiketi"
+msgstr "Varlık Etiketi"
+
+#: .\inventory\models.py:2041
+msgid "Barkod"
+msgstr "Barkod"
+
+#: .\inventory\models.py:2045
+#: .\inventory\templates\factory_portfolio_inventory.html:123
+msgid "Miktar"
+msgstr "Miktar"
+
+#: .\inventory\models.py:2048 .\inventory\models.py:2284
+msgid "Fiziksel Konum"
+msgstr "Fiziksel Konum"
+
+#: .\inventory\models.py:2053 .\inventory\models.py:2232
+#: .\inventory\models.py:2286
+msgid "Endpoint"
+msgstr "Endpoint"
+
+#: .\inventory\models.py:2054 .\inventory\models.py:2231
+#: .\inventory\models.py:2288 .\inventory\templates\command_center.html:72
+#: .\inventory\templates\command_center.html:168
+msgid "Kamera"
+msgstr "Kamera"
+
+#: .\inventory\models.py:2056 .\inventory\models.py:2238
+#: .\inventory\models.py:2291 .\inventory\models.py:2398
+msgid "Sarf Stok"
+msgstr "Sarf Stok"
+
+#: .\inventory\models.py:2081
+msgid "Üretim Hattı"
+msgstr "Üretim Hattı"
+
+#: .\inventory\models.py:2083
+msgid "Sistem Odası"
+msgstr "Sistem Odası"
+
+#: .\inventory\models.py:2084
+msgid "Kamera Bölgesi"
+msgstr "Kamera Bölgesi"
+
+#: .\inventory\models.py:2087
+msgid "Güvenlik Noktası"
+msgstr "Güvenlik Noktası"
+
+#: .\inventory\models.py:2088
+msgid "Toplantı"
+msgstr "Toplantı"
+
+#: .\inventory\models.py:2095
+msgid "Alan Adı"
+msgstr "Alan Adı"
+
+#: .\inventory\models.py:2097
+msgid "Alan Tipi"
+msgstr "Alan Tipi"
+
+#: .\inventory\models.py:2098
+msgid "Kat"
+msgstr "Kat"
+
+#: .\inventory\models.py:2099
+msgid "Bina"
+msgstr "Bina"
+
+#: .\inventory\models.py:2100
+msgid "Kapasite"
+msgstr "Kapasite"
+
+#: .\inventory\models.py:2120
+msgid "Prosedür/SOP"
+msgstr "Prosedür/SOP"
+
+#: .\inventory\models.py:2123
+msgid "Kullanım Kılavuzu"
+msgstr "Kullanım Kılavuzu"
+
+#: .\inventory\models.py:2137
+msgid "İncelemede"
+msgstr "İncelemede"
+
+#: .\inventory\models.py:2138
+msgid "Onaylı"
+msgstr "Onaylı"
+
+#: .\inventory\models.py:2139
+msgid "Arşiv"
+msgstr "Arşiv"
+
+#: .\inventory\models.py:2145
+msgid "Dosya Tipi"
+msgstr "Dosya Tipi"
+
+#: .\inventory\models.py:2147
+msgid "Boyut (byte)"
+msgstr "Boyut (byte)"
+
+#: .\inventory\models.py:2154
+msgid "Etiketler"
+msgstr "Etiketler"
+
+#: .\inventory\models.py:2155
+msgid "Önizleme Açık"
+msgstr "Önizleme Açık"
+
+#: .\inventory\models.py:2156
+msgid "Harici Editör URL"
+msgstr "Harici Editör URL"
+
+#: .\inventory\models.py:2157
+msgid "Geçerlilik Tarihi"
+msgstr "Geçerlilik Tarihi"
+
+#: .\inventory\models.py:2213 .\inventory\models.py:2237
+msgid "Bakım İşi"
+msgstr "Bakım İşi"
+
+#: .\inventory\models.py:2219
+msgid "İkincil"
+msgstr "İkincil"
+
+#: .\inventory\models.py:2220
+msgid "İzlenen"
+msgstr "İzlenen"
+
+#: .\inventory\models.py:2226
+msgid "Varlık Tipi"
+msgstr "Varlık Tipi"
+
+#: .\inventory\models.py:2227
+msgid "Rol"
+msgstr "Rol"
+
+#: .\inventory\models.py:2228
+msgid "Etiket"
+msgstr "Etiket"
+
+#: .\inventory\models.py:2235
+msgid "Ticket"
+msgstr "Ticket"
+
+#: .\inventory\models.py:2281
+msgid "QR/Barkod Kodu"
+msgstr "QR/Barkod Kodu"
+
+#: .\inventory\models.py:2282
+msgid "Etiket Tipi"
+msgstr "Etiket Tipi"
+
+#: .\inventory\models.py:2283
+msgid "Etiket Adı"
+msgstr "Etiket Adı"
+
+#: .\inventory\models.py:2341
+msgid "Diğer ERP"
+msgstr "Diğer ERP"
+
+#: .\inventory\models.py:2344
+msgid "Hiç Senkronize Edilmedi"
+msgstr "Hiç Senkronize Edilmedi"
+
+#: .\inventory\models.py:2351
+msgid "ERP Tipi"
+msgstr "ERP Tipi"
+
+#: .\inventory\models.py:2352 .\inventory\models.py:2426
+#: .\inventory\models.py:2632 .\inventory\models.py:2678
+msgid "Sunucu URL"
+msgstr "Sunucu URL"
+
+#: .\inventory\models.py:2355
+msgid "API Key / Parola"
+msgstr "API Key / Parola"
+
+#: .\inventory\models.py:2356 .\inventory\models.py:2430
+msgid "Senkronizasyon Aktif"
+msgstr "Senkronizasyon Aktif"
+
+#: .\inventory\models.py:2357
+msgid "Cari/Partner Sync"
+msgstr "Cari/Partner Sync"
+
+#: .\inventory\models.py:2358
+msgid "Ürün/Stok Sync"
+msgstr "Ürün/Stok Sync"
+
+#: .\inventory\models.py:2359
+msgid "Helpdesk/Ticket Sync"
+msgstr "Helpdesk/Ticket Sync"
+
+#: .\inventory\models.py:2360
+msgid "CMDB/Envantere Yaz"
+msgstr "CMDB/Envantere Yaz"
+
+#: .\inventory\models.py:2363
+msgid "Hedef Fabrika Tesisi"
+msgstr "Hedef Fabrika Tesisi"
+
+#: .\inventory\models.py:2366 .\inventory\models.py:2433
+msgid "Sync Durumu"
+msgstr "Sync Durumu"
+
+#: .\inventory\models.py:2368 .\inventory\models.py:2435
+msgid "Son Sync Kayıt Sayısı"
+msgstr "Son Sync Kayıt Sayısı"
+
+#: .\inventory\models.py:2392
+msgid "ERP Bağlantısı"
+msgstr "ERP Bağlantısı"
+
+#: .\inventory\models.py:2393
+msgid "Harici Model"
+msgstr "Harici Model"
+
+#: .\inventory\models.py:2394 .\inventory\models.py:2477
+msgid "Harici ID"
+msgstr "Harici ID"
+
+#: .\inventory\models.py:2396 .\inventory\models.py:2484
+msgid "Ham Veri"
+msgstr "Ham Veri"
+
+#: .\inventory\models.py:2399
+msgid "Bölüm Envanteri"
+msgstr "Bölüm Envanteri"
+
+#: .\inventory\models.py:2401 .\inventory\models.py:2486
+msgid "Son Eşleme"
+msgstr "Son Eşleme"
+
+#: .\inventory\models.py:2425
+msgid "OT Tipi"
+msgstr "OT Tipi"
+
+#: .\inventory\models.py:2427
+msgid "Varlık API Yolu"
+msgstr "Varlık API Yolu"
+
+#: .\inventory\models.py:2428
+msgid "API Key / Token"
+msgstr "API Key / Token"
+
+#: .\inventory\models.py:2431
+msgid "Bölüm Envanterine Yaz"
+msgstr "Bölüm Envanterine Yaz"
+
+#: .\inventory\models.py:2476
+msgid "OT Bağlantısı"
+msgstr "OT Bağlantısı"
+
+#: .\inventory\models.py:2478
+msgid "Tag/PLC Adresi"
+msgstr "Tag/PLC Adresi"
+
+#: .\inventory\models.py:2479
+msgid "Varlık Adı"
+msgstr "Varlık Adı"
+
+#: .\inventory\models.py:2480
+msgid "OT Varlık Tipi"
+msgstr "OT Varlık Tipi"
+
+#: .\inventory\models.py:2482 .\inventory\models.py:2804
+#: .\inventory\templates\factory_portfolio_inventory.html:36
+msgid "Envanter Kalemi"
+msgstr "Envanter Kalemi"
+
+#: .\inventory\models.py:2512
+msgid "Problem Başlığı"
+msgstr "Problem Başlığı"
+
+#: .\inventory\models.py:2517
+msgid "Geçici Çözüm"
+msgstr "Geçici Çözüm"
+
+#: .\inventory\models.py:2518
+msgid "Kalıcı Çözüm"
+msgstr "Kalıcı Çözüm"
+
+#: .\inventory\models.py:2520
+msgid "Major Incident"
+msgstr "Major Incident"
+
+#: .\inventory\models.py:2521
+msgid "İlişkili Ticketlar"
+msgstr "İlişkili Ticketlar"
+
+#: .\inventory\models.py:2542
+msgid "CAB İncelemesi"
+msgstr "CAB İncelemesi"
+
+#: .\inventory\models.py:2544
+msgid "Yayında"
+msgstr "Yayında"
+
+#: .\inventory\models.py:2549
+msgid "Release Adı"
+msgstr "Release Adı"
+
+#: .\inventory\models.py:2550 .\inventory\templates\itsm_maturity.html:64
+msgid "Sürüm"
+msgstr "Sürüm"
+
+#: .\inventory\models.py:2554
+msgid "Change Request"
+msgstr "Change Request"
+
+#: .\inventory\models.py:2555
+msgid "Takvim Etkinliği"
+msgstr "Takvim Etkinliği"
+
+#: .\inventory\models.py:2556
+msgid "Planlanan Başlangıç"
+msgstr "Planlanan Başlangıç"
+
+#: .\inventory\models.py:2557
+msgid "Planlanan Bitiş"
+msgstr "Planlanan Bitiş"
+
+#: .\inventory\models.py:2558
+msgid "CAB Onayı"
+msgstr "CAB Onayı"
+
+#: .\inventory\models.py:2559
+msgid "CAB Notları"
+msgstr "CAB Notları"
+
+#: .\inventory\models.py:2560
+msgid "Release Yöneticisi"
+msgstr "Release Yöneticisi"
+
+#: .\inventory\models.py:2585
+msgid "Webhook URL"
+msgstr "Webhook URL"
+
+#: .\inventory\models.py:2586
+msgid "E-posta Alıcıları (virgülle)"
+msgstr "E-posta Alıcıları (virgülle)"
+
+#: .\inventory\models.py:2587
+msgid "Secret / Token"
+msgstr "Secret / Token"
+
+#: .\inventory\models.py:2588
+msgid "Ticket Bildirimi"
+msgstr "Ticket Bildirimi"
+
+#: .\inventory\models.py:2589
+msgid "Incident Bildirimi"
+msgstr "Incident Bildirimi"
+
+#: .\inventory\models.py:2593
+msgid "Son Gönderim"
+msgstr "Son Gönderim"
+
+#: .\inventory\models.py:2633 .\inventory\models.py:2830
+#: .\inventory\models.py:2867
+msgid "API Token"
+msgstr "API Token"
+
+#: .\inventory\models.py:2638 .\inventory\models.py:2685
+#: .\inventory\models.py:2724 .\inventory\models.py:2834
+#: .\inventory\models.py:2872
+msgid "Son Mesaj"
+msgstr "Son Mesaj"
+
+#: .\inventory\models.py:2639
+msgid "Son Kayıt"
+msgstr "Son Kayıt"
+
+#: .\inventory\models.py:2677
+msgid "VMS Tipi"
+msgstr "VMS Tipi"
+
+#: .\inventory\models.py:2680
+msgid "Parola/Token"
+msgstr "Parola/Token"
+
+#: .\inventory\models.py:2682
+msgid "CameraDevice Güncelle"
+msgstr "CameraDevice Güncelle"
+
+#: .\inventory\models.py:2714
+msgid "Inbox Adı"
+msgstr "Inbox Adı"
+
+#: .\inventory\models.py:2715
+msgid "IMAP Sunucu"
+msgstr "IMAP Sunucu"
+
+#: .\inventory\models.py:2716
+msgid "Port"
+msgstr "Port"
+
+#: .\inventory\models.py:2719
+msgid "Klasör"
+msgstr "Klasör"
+
+#: .\inventory\models.py:2720
+msgid "Varsayılan Öncelik"
+msgstr "Varsayılan Öncelik"
+
+#: .\inventory\models.py:2725
+msgid "Oluşturulan Ticket"
+msgstr "Oluşturulan Ticket"
+
+#: .\inventory\models.py:2752
+msgid "Giriş"
+msgstr "Giriş"
+
+#: .\inventory\models.py:2753
+msgid "Çıkış"
+msgstr "Çıkış"
+
+#: .\inventory\models.py:2754
+msgid "Oluşturma"
+msgstr "Oluşturma"
+
+#: .\inventory\models.py:2757
+msgid "Dışa Aktarma"
+msgstr "Dışa Aktarma"
+
+#: .\inventory\models.py:2763 .\inventory\templates\itsm_maturity.html:83
+#: .\inventory\views.py:78 .\inventory\views.py:79 .\inventory\views.py:80
+#: .\inventory\views.py:81 .\inventory\views.py:82 .\inventory\views.py:83
+#: .\inventory\views.py:84 .\inventory\views.py:85 .\inventory\views.py:86
+#: .\inventory\views.py:87 .\inventory\views.py:88
+msgid "Aksiyon"
+msgstr "Aksiyon"
+
+#: .\inventory\models.py:2764
+msgid "Kaynak Tipi"
+msgstr "Kaynak Tipi"
+
+#: .\inventory\models.py:2765
+msgid "Kaynak ID"
+msgstr "Kaynak ID"
+
+#: .\inventory\models.py:2767
+msgid "User Agent"
+msgstr "User Agent"
+
+#: .\inventory\models.py:2769
+msgid "Zaman"
+msgstr "Zaman"
+
+#: .\inventory\models.py:2796
+msgid "İmha"
+msgstr "İmha"
+
+#: .\inventory\models.py:2799
+msgid "Olay Tipi"
+msgstr "Olay Tipi"
+
+#: .\inventory\models.py:2806
+msgid "Olay Tarihi"
+msgstr "Olay Tarihi"
+
+#: .\inventory\models.py:2807
+msgid "Kayıt Zamanı"
+msgstr "Kayıt Zamanı"
+
+#: .\inventory\models.py:2828
+msgid "Vendor"
+msgstr "Vendor"
+
+#: .\inventory\models.py:2829
+msgid "API URL"
+msgstr "API URL"
+
+#: .\inventory\models.py:2865
+msgid "WMS API URL"
+msgstr "WMS API URL"
+
+#: .\inventory\models.py:2866
+msgid "Stok API Yolu"
+msgstr "Stok API Yolu"
+
+#: .\inventory\models.py:2907 .\inventory\templates\itsm_maturity.html:14
+msgid "Yönetişim"
+msgstr "Yönetişim"
+
+#: .\inventory\models.py:2910
+msgid "Görüntüle"
+msgstr "Görüntüle"
+
+#: .\inventory\models.py:2911 .\inventory\templates\custom_admin.html:337
+#: .\inventory\templates\factory_command_center.html:172
+#: .\inventory\templates\it_inventory.html:99
+#: .\inventory\templates\it_inventory.html:163
+#: .\inventory\templates\it_inventory.html:314
+msgid "Düzenle"
+msgstr "Düzenle"
+
+#: .\inventory\models.py:2912
+msgid "Yönet"
+msgstr "Yönet"
+
+#: .\inventory\models.py:2917
+msgid "Modül"
+msgstr "Modül"
+
+#: .\inventory\models.py:2918
+msgid "Yetki"
+msgstr "Yetki"
+
+#: .\inventory\models.py:2920
+msgid "Veren"
+msgstr "Veren"
+
+#: .\inventory\models.py:2938
+msgid "Çalışma Alanı Adı"
+msgstr "Çalışma Alanı Adı"
+
+#: .\inventory\models.py:2941
+msgid "Birincil Sektör"
+msgstr "Birincil Sektör"
+
+#: .\inventory\models.py:2944
+msgid "Alt Başlık"
+msgstr "Alt Başlık"
+
+#: .\inventory\models.py:2945
+msgid "Aktif Modüller"
+msgstr "Aktif Modüller"
+
+#: .\inventory\models.py:2946
+msgid "Modül Etiketleri"
+msgstr "Modül Etiketleri"
+
+#: .\inventory\models.py:2947
+msgid "Terminoloji"
+msgstr "Terminoloji"
+
+#: .\inventory\models.py:2948
+msgid "Özellik Bayrakları"
+msgstr "Özellik Bayrakları"
+
+#: .\inventory\models.py:2949 .\inventory\templates\workspace_center.html:23
+msgid "Aktif Profil"
+msgstr "Aktif Profil"
+
+#: .\inventory\models.py:2965
+#: .\inventory\templates\factory_portfolio_inventory.html:34
+msgid "Aktif Tesis"
+msgstr "Aktif Tesis"
+
+#: .\inventory\models.py:2967
+msgid "Panel Widget Sırası"
+msgstr "Panel Widget Sırası"
+
+#: .\inventory\models.py:2968
+msgid "Menü Grup Sırası"
+msgstr "Menü Grup Sırası"
+
+#: .\inventory\models.py:2969
+msgid "Gizli Widget'lar"
+msgstr "Gizli Widget'lar"
+
+#: .\inventory\models.py:2970
+msgid "Sürükle-Bırak Aktif"
+msgstr "Sürükle-Bırak Aktif"
+
+#: .\inventory\models.py:2985
+msgid "Yüzdelik CPU Kullanımı"
+msgstr "Yüzdelik CPU Kullanımı"
+
+#: .\inventory\models.py:2986
+msgid "Yüzdelik RAM Kullanımı"
+msgstr "Yüzdelik RAM Kullanımı"
+
+#: .\inventory\models.py:2987
+msgid "Yüzdelik Disk Kullanımı"
+msgstr "Yüzdelik Disk Kullanımı"
+
+#: .\inventory\templates\asset_qr_scanner.html:4
+msgid "Varlık QR/Barkod Tarayıcı - OmniOps"
+msgstr "Varlık QR/Barkod Tarayıcı - OmniOps"
+
+#: .\inventory\templates\asset_qr_scanner.html:10
+msgid "Varlık QR / Barkod Tarayıcı"
+msgstr "Varlık QR / Barkod Tarayıcı"
+
+#: .\inventory\templates\asset_qr_scanner.html:11
+msgid ""
+"Fabrika zemininde etiket okutarak switch, endpoint, kamera veya IT varlığına"
+" anında gidin."
+msgstr ""
+"Fabrika zemininde etiket okutarak switch, endpoint, kamera veya IT varlığına"
+" anında gidin."
+
+#: .\inventory\templates\asset_qr_scanner.html:24
+msgid "Kamera ile Tara"
+msgstr "Kamera ile Tara"
+
+#: .\inventory\templates\asset_qr_scanner.html:27
+msgid ""
+"Kamera izni verin ve QR/barkod okutun. Mobil cihazlarda arka kamera otomatik"
+" seçilir."
+msgstr ""
+"Kamera izni verin ve QR/barkod okutun. Mobil cihazlarda arka kamera otomatik"
+" seçilir."
+
+#: .\inventory\templates\asset_qr_scanner.html:31
+msgid "Manuel Kod Girişi"
+msgstr "Manuel Kod Girişi"
+
+#: .\inventory\templates\asset_qr_scanner.html:47
+msgid "Varlığa Git"
+msgstr "Varlığa Git"
+
+#: .\inventory\templates\asset_qr_scanner.html:56
+msgid "Yeni QR Etiket Kaydı"
+msgstr "Yeni QR Etiket Kaydı"
+
+#: .\inventory\templates\asset_qr_scanner.html:62
+msgid "Etiket Kaydet"
+msgstr "Etiket Kaydet"
+
+#: .\inventory\templates\asset_qr_scanner.html:67
+msgid "Son Etiketler"
+msgstr "Son Etiketler"
+
+#: .\inventory\templates\asset_qr_scanner.html:77
+msgid "Aç"
+msgstr "Aç"
+
+#: .\inventory\templates\asset_qr_scanner.html:81
+msgid "Henüz QR etiket yok."
+msgstr "Henüz QR etiket yok."
+
+#: .\inventory\templates\backup.html:4
+msgid "OmniOps - Yedekleme Merkezi"
+msgstr "OmniOps - Yedekleme Merkezi"
+
+#: .\inventory\templates\backup.html:11
+msgid "Yedekleme Merkezi"
+msgstr "Yedekleme Merkezi"
+
+#: .\inventory\templates\backup.html:12
+msgid ""
+"Cihazlarınızı versiyonlayın ve ihtiyaç anında tek tıkla geri yükleyin (DR)."
+msgstr ""
+"Cihazlarınızı versiyonlayın ve ihtiyaç anında tek tıkla geri yükleyin (DR)."
+
+#: .\inventory\templates\backup.html:25
+msgid "Canlı Yedek Al"
+msgstr "Canlı Yedek Al"
+
+#: .\inventory\templates\backup.html:29
+msgid ""
+"Cihazın o anki konfigürasyonunu çeker ve güvenli kasaya (Vault) kaydeder."
+msgstr ""
+"Cihazın o anki konfigürasyonunu çeker ve güvenli kasaya (Vault) kaydeder."
+
+#: .\inventory\templates\backup.html:31
+msgid "Bağlantı Kuruluyor..."
+msgstr "Bağlantı Kuruluyor..."
+
+#: .\inventory\templates\backup.html:34
+msgid "Hedef Cihaz"
+msgstr "Hedef Cihaz"
+
+#: .\inventory\templates\backup.html:36
+msgid "Bir cihaz seçin..."
+msgstr "Bir cihaz seçin..."
+
+#: .\inventory\templates\backup.html:50
+#: .\inventory\templates\generator.html:38
+msgid "Cisco IOS"
+msgstr "Cisco IOS"
+
+#: .\inventory\templates\backup.html:51
+#: .\inventory\templates\generator.html:39
+msgid "Huawei VRP"
+msgstr "Huawei VRP"
+
+#: .\inventory\templates\backup.html:57
+msgid "SSH Kullanıcı"
+msgstr "SSH Kullanıcı"
+
+#: .\inventory\templates\backup.html:76
+msgid "Son Alınan Yedekler"
+msgstr "Son Alınan Yedekler"
+
+#: .\inventory\templates\backup.html:84
+msgid "Aksiyonlar"
+msgstr "Aksiyonlar"
+
+#: .\inventory\templates\backup.html:97
+msgid "Tek Tıkla Geri Yükle"
+msgstr "Tek Tıkla Geri Yükle"
+
+#: .\inventory\templates\backup.html:103
+msgid "İncele"
+msgstr "İncele"
+
+#: .\inventory\templates\backup.html:110
+msgid "Henüz yedek alınmamış."
+msgstr "Henüz yedek alınmamış."
+
+#: .\inventory\templates\base.html:46
+msgid "Factory IT Suite"
+msgstr "Factory IT Suite"
+
+#: .\inventory\templates\base.html:67 .\inventory\templates\base.html:359
+#: .\inventory\templates\dashboard.html:6
+msgid "Ana Panel"
+msgstr "Ana Panel"
+
+#: .\inventory\templates\base.html:70
+#: .\inventory\templates\command_center.html:4
+#: .\inventory\templates\command_center.html:5
+msgid "Operasyon Merkezi"
+msgstr "Operasyon Merkezi"
+
+#: .\inventory\templates\base.html:71
+msgid "Fabrika Merkezi"
+msgstr "Fabrika Merkezi"
+
+#: .\inventory\templates\base.html:72
+msgid "Sistem Sağlığı"
+msgstr "Sistem Sağlığı"
+
+#: .\inventory\templates\base.html:73
+#: .\inventory\templates\workspace_center.html:4
+msgid "Çalışma Alanı"
+msgstr "Çalışma Alanı"
+
+#: .\inventory\templates\base.html:76
+msgid "Yönetici Raporu"
+msgstr "Yönetici Raporu"
+
+#: .\inventory\templates\base.html:91
+msgid "Portföy Envanteri"
+msgstr "Portföy Envanteri"
+
+#: .\inventory\templates\base.html:92
+msgid "Departman Panosu"
+msgstr "Departman Panosu"
+
+#: .\inventory\templates\base.html:93
+msgid "QR Tarayıcı"
+msgstr "QR Tarayıcı"
+
+#: .\inventory\templates\base.html:94
+msgid "Fabrika Süreçleri"
+msgstr "Fabrika Süreçleri"
+
+#: .\inventory\templates\base.html:95
+msgid "IT Süreçleri"
+msgstr "IT Süreçleri"
+
+#: .\inventory\templates\base.html:110
+msgid "Topoloji Haritası"
+msgstr "Topoloji Haritası"
+
+#: .\inventory\templates\base.html:111
+msgid "Kabin & Rack"
+msgstr "Kabin & Rack"
+
+#: .\inventory\templates\base.html:113
+msgid "BT Envanteri"
+msgstr "BT Envanteri"
+
+#: .\inventory\templates\base.html:115
+msgid "Ağ Keşfi"
+msgstr "Ağ Keşfi"
+
+#: .\inventory\templates\base.html:116
+msgid "IP Adresleri"
+msgstr "IP Adresleri"
+
+#: .\inventory\templates\base.html:117
+msgid "Subnet Hesapla"
+msgstr "Subnet Hesapla"
+
+#: .\inventory\templates\base.html:119
+msgid "Toplu Config"
+msgstr "Toplu Config"
+
+#: .\inventory\templates\base.html:120
+msgid "Config Üretici"
+msgstr "Config Üretici"
+
+#: .\inventory\templates\base.html:121
+#: .\inventory\templates\port_mapping_list.html:10
+msgid "Port Haritaları"
+msgstr "Port Haritaları"
+
+#: .\inventory\templates\base.html:122
+msgid "Yedekleme & Kurtarma"
+msgstr "Yedekleme & Kurtarma"
+
+#: .\inventory\templates\base.html:132 .\inventory\workspace_registry.py:20
+msgid "Kimlik & Erişim"
+msgstr "Kimlik & Erişim"
+
+#: .\inventory\templates\base.html:137
+msgid "Dizin & Kimlik"
+msgstr "Dizin & Kimlik"
+
+#: .\inventory\templates\base.html:139
+#: .\inventory\templates\user_management.html:8
+msgid "Kullanıcı Yönetimi"
+msgstr "Kullanıcı Yönetimi"
+
+#: .\inventory\templates\base.html:149 .\inventory\workspace_registry.py:21
+msgid "Servis Masası"
+msgstr "Servis Masası"
+
+#: .\inventory\templates\base.html:154
+#: .\inventory\templates\helpdesk_analytics.html:17
+msgid "Ticket Paneli"
+msgstr "Ticket Paneli"
+
+#: .\inventory\templates\base.html:155
+#: .\inventory\templates\helpdesk_analytics.html:4
+#: .\inventory\templates\helpdesk_analytics.html:5
+msgid "Destek Analitiği"
+msgstr "Destek Analitiği"
+
+#: .\inventory\templates\base.html:156
+msgid "Servis Süreçleri"
+msgstr "Servis Süreçleri"
+
+#: .\inventory\templates\base.html:157
+msgid "Saha Rotaları"
+msgstr "Saha Rotaları"
+
+#: .\inventory\templates\base.html:159
+msgid "Satış Kanban"
+msgstr "Satış Kanban"
+
+#: .\inventory\templates\base.html:161
+msgid "Offline Saha"
+msgstr "Offline Saha"
+
+#: .\inventory\templates\base.html:170 .\inventory\workspace_registry.py:22
+msgid "Güvenlik & Uyum"
+msgstr "Güvenlik & Uyum"
+
+#: .\inventory\templates\base.html:175
+#: .\inventory\templates\governance_center.html:9 .\inventory\views.py:83
+msgid "Yönetişim Merkezi"
+msgstr "Yönetişim Merkezi"
+
+#: .\inventory\templates\base.html:176
+#: .\inventory\templates\erp_integrations.html:53
+msgid "ERP Bağlantıları"
+msgstr "ERP Bağlantıları"
+
+#: .\inventory\templates\base.html:177
+#: .\inventory\templates\integration_hub_center.html:10
+#: .\inventory\templates\itsm_maturity.html:15
+msgid "Entegrasyon Merkezi"
+msgstr "Entegrasyon Merkezi"
+
+#: .\inventory\templates\base.html:178
+msgid "OT/MES Köprüsü"
+msgstr "OT/MES Köprüsü"
+
+#: .\inventory\templates\base.html:179
+msgid "Problem & Release"
+msgstr "Problem & Release"
+
+#: .\inventory\templates\base.html:180 .\inventory\templates\dlp_events.html:9
+msgid "DLP Olayları"
+msgstr "DLP Olayları"
+
+#: .\inventory\templates\base.html:181
+msgid "Denetim Kayıtları"
+msgstr "Denetim Kayıtları"
+
+#: .\inventory\templates\base.html:190 .\inventory\workspace_registry.py:23
+msgid "Rapor & Doküman"
+msgstr "Rapor & Doküman"
+
+#: .\inventory\templates\base.html:195
+#: .\inventory\templates\reporting_hub.html:12 .\inventory\views.py:87
+msgid "Raporlama Merkezi"
+msgstr "Raporlama Merkezi"
+
+#: .\inventory\templates\base.html:196
+#: .\inventory\templates\factory_command_center.html:154
+msgid "Doküman Merkezi"
+msgstr "Doküman Merkezi"
+
+#: .\inventory\templates\base.html:197 .\inventory\templates\base.html:238
+#: .\inventory\templates\dashboard.html:93
+msgid "Bilgi Bankası"
+msgstr "Bilgi Bankası"
+
+#: .\inventory\templates\base.html:199
+msgid "Hizmet Kataloğu"
+msgstr "Hizmet Kataloğu"
+
+#: .\inventory\templates\base.html:209 .\inventory\workspace_registry.py:24
+msgid "Yönetim"
+msgstr "Yönetim"
+
+#: .\inventory\templates\base.html:214
+msgid "Sistem Ayarları ve IAM"
+msgstr "Sistem Ayarları ve IAM"
+
+#: .\inventory\templates\base.html:224
+msgid "Kurumsal Hizmetler"
+msgstr "Kurumsal Hizmetler"
+
+#: .\inventory\templates\base.html:228
+msgid "Hizmet Kataloğu & Destek"
+msgstr "Hizmet Kataloğu & Destek"
+
+#: .\inventory\templates\base.html:233 .\inventory\templates\base.html:319
+#: .\inventory\templates\profile.html:4
+msgid "Profilim"
+msgstr "Profilim"
+
+#: .\inventory\templates\base.html:255
+msgid "OmniOps içinde ara veya komut çalıştır"
+msgstr "OmniOps içinde ara veya komut çalıştır"
+
+#: .\inventory\templates\base.html:265 .\inventory\templates\base.html:273
+msgid "Bildirimler"
+msgstr "Bildirimler"
+
+#: .\inventory\templates\base.html:274
+msgid "Tümünü okundu işaretle"
+msgstr "Tümünü okundu işaretle"
+
+#: .\inventory\templates\base.html:277
+#: .\inventory\templates\offline_field_app.html:59
+msgid "Yükleniyor..."
+msgstr "Yükleniyor..."
+
+#: .\inventory\templates\base.html:282
+msgid "Bu sayfa nasıl çalışır?"
+msgstr "Bu sayfa nasıl çalışır?"
+
+#: .\inventory\templates\base.html:324 .\inventory\templates\base.html:467
+msgid "Gece Modu"
+msgstr "Gece Modu"
+
+#: .\inventory\templates\base.html:330
+msgid "API Dokümanı"
+msgstr "API Dokümanı"
+
+#: .\inventory\templates\base.html:335
+msgid "Gelişmiş Ayarlar"
+msgstr "Gelişmiş Ayarlar"
+
+#: .\inventory\templates\base.html:344
+msgid "Çıkış Yap"
+msgstr "Çıkış Yap"
+
+#: .\inventory\templates\base.html:363
+msgid "Yönetici Özeti"
+msgstr "Yönetici Özeti"
+
+#: .\inventory\templates\base.html:378
+msgid "Sistem Bilgi Dokümanı"
+msgstr "Sistem Bilgi Dokümanı"
+
+#: .\inventory\templates\base.html:383
+msgid "Hizmet Kataloğu & ITSM"
+msgstr "Hizmet Kataloğu & ITSM"
+
+#: .\inventory\templates\base.html:384
+msgid ""
+"Kullanıcılar sisteme girdiklerinde sıradan arıza kaydı açmak yerine, sizin "
+"oluşturduğunuz Hizmet Kataloğundan sipariş verir gibi teknik talepte "
+"bulunabilirler."
+msgstr ""
+"Kullanıcılar sisteme girdiklerinde sıradan arıza kaydı açmak yerine, sizin "
+"oluşturduğunuz Hizmet Kataloğundan sipariş verir gibi teknik talepte "
+"bulunabilirler."
+
+#: .\inventory\templates\base.html:386
+msgid "AIOps & PRTG Alarmları"
+msgstr "AIOps & PRTG Alarmları"
+
+#: .\inventory\templates\base.html:387
+msgid ""
+"Yapay Zeka Destekli Tahminleyici Bakım (Predictive Maintenance) modülü, "
+"cihazların doluluk oranını Linear Regression ile hesaplar ve sistem çökmeden"
+" 14 gün önce otonom olarak bilet açar."
+msgstr ""
+"Yapay Zeka Destekli Tahminleyici Bakım (Predictive Maintenance) modülü, "
+"cihazların doluluk oranını Linear Regression ile hesaplar ve sistem çökmeden"
+" 14 gün önce otonom olarak bilet açar."
+
+#: .\inventory\templates\base.html:389
+msgid "Otonom Savunma (Active Response)"
+msgstr "Otonom Savunma (Active Response)"
+
+#: .\inventory\templates\base.html:390
+msgid ""
+"Dışarıdan gelen Wazuh veya SIEM logları Webhook ile içeri alınır. Cihazlara "
+"yapılan Brute-Force gibi saldırılar tespit edildiğinde sistem, ilgili IP'yi "
+"cihaz üzerinde otomatik olarak karantinaya alır."
+msgstr ""
+"Dışarıdan gelen Wazuh veya SIEM logları Webhook ile içeri alınır. Cihazlara "
+"yapılan Brute-Force gibi saldırılar tespit edildiğinde sistem, ilgili IP'yi "
+"cihaz üzerinde otomatik olarak karantinaya alır."
+
+#: .\inventory\templates\base.html:392
+msgid "Toplu İşlem (Bulk Operation)"
+msgstr "Toplu İşlem (Bulk Operation)"
+
+#: .\inventory\templates\base.html:393
+msgid ""
+"Toplu Konfigürasyon menüsünü kullanarak 100 cihaza aynı anda, cihazları "
+"yormadan (Asenkron Celery ile) tek tıkla konfigürasyon basabilirsiniz."
+msgstr ""
+"Toplu Konfigürasyon menüsünü kullanarak 100 cihaza aynı anda, cihazları "
+"yormadan (Asenkron Celery ile) tek tıkla konfigürasyon basabilirsiniz."
+
+#: .\inventory\templates\base.html:396
+msgid "Anladım, Kapat"
+msgstr "Anladım, Kapat"
+
+#: .\inventory\templates\base.html:409
+msgid "Cihaz, ticket, kamera, Odoo, runbook, rapor ara..."
+msgstr "Cihaz, ticket, kamera, Odoo, runbook, rapor ara..."
+
+#: .\inventory\templates\base.html:413
+msgid "Komutlar ve hızlı aksiyonlar yükleniyor..."
+msgstr "Komutlar ve hızlı aksiyonlar yükleniyor..."
+
+#: .\inventory\templates\base.html:463
+msgid "Gündüz Modu"
+msgstr "Gündüz Modu"
+
+#: .\inventory\templates\bulk_generator.html:4
+msgid "OmniOps - Bulk Konfigürasyon"
+msgstr "OmniOps - Bulk Konfigürasyon"
+
+#: .\inventory\templates\bulk_generator.html:10
+msgid "Toplu Konfigürasyon İşlemleri"
+msgstr "Toplu Konfigürasyon İşlemleri"
+
+#: .\inventory\templates\bulk_generator.html:11
+msgid ""
+"Aşağıdaki listeden hedef cihazları seçin ve uygulamak istediğiniz komutları "
+"girin."
+msgstr ""
+"Aşağıdaki listeden hedef cihazları seçin ve uygulamak istediğiniz komutları "
+"girin."
+
+#: .\inventory\templates\bulk_generator.html:20
+msgid "Hedef Cihazları Seçin"
+msgstr "Hedef Cihazları Seçin"
+
+#: .\inventory\templates\bulk_generator.html:26
+msgid " Ctrl tuşuna basılı tutarak çoklu seçim yapabilirsiniz."
+msgstr " Ctrl tuşuna basılı tutarak çoklu seçim yapabilirsiniz."
+
+#: .\inventory\templates\bulk_generator.html:32
+msgid "Komut Bloğu"
+msgstr "Komut Bloğu"
+
+#: .\inventory\templates\bulk_generator.html:33
+msgid "Örn:"
+msgstr "Örn:"
+
+#: .\inventory\templates\bulk_generator.html:36
+msgid "Toplu İşlemi Başlat"
+msgstr "Toplu İşlemi Başlat"
+
+#: .\inventory\templates\command_center.html:11
+msgid ""
+"Uzaktan erişim, kameralar, iş uygulamaları ve departman iletişimini tek "
+"ekrandan yönetin."
+msgstr ""
+"Uzaktan erişim, kameralar, iş uygulamaları ve departman iletişimini tek "
+"ekrandan yönetin."
+
+#: .\inventory\templates\command_center.html:19
+#: .\inventory\templates\command_center.html:99
+msgid "Uzaktan Erişim"
+msgstr "Uzaktan Erişim"
+
+#: .\inventory\templates\command_center.html:28
+msgid "Kamera Uyarısı"
+msgstr "Kamera Uyarısı"
+
+#: .\inventory\templates\command_center.html:37
+msgid "İş Uygulaması"
+msgstr "İş Uygulaması"
+
+#: .\inventory\templates\command_center.html:46
+msgid "Chat Kanalı"
+msgstr "Chat Kanalı"
+
+#: .\inventory\templates\command_center.html:57
+msgid "Kaynak Dağılımı"
+msgstr "Kaynak Dağılımı"
+
+#: .\inventory\templates\command_center.html:66
+msgid "Hızlı Kayıt"
+msgstr "Hızlı Kayıt"
+
+#: .\inventory\templates\command_center.html:70
+#: .\inventory\templates\command_center.html:168
+msgid "Erişim"
+msgstr "Erişim"
+
+#: .\inventory\templates\command_center.html:74
+msgid "Rapor"
+msgstr "Rapor"
+
+#: .\inventory\templates\command_center.html:78
+msgid "Erişimi Kaydet"
+msgstr "Erişimi Kaydet"
+
+#: .\inventory\templates\command_center.html:81
+msgid "Mesaj Gönder"
+msgstr "Mesaj Gönder"
+
+#: .\inventory\templates\command_center.html:83
+msgid "Kanal Oluştur"
+msgstr "Kanal Oluştur"
+
+#: .\inventory\templates\command_center.html:86
+msgid "Kamerayı Kaydet"
+msgstr "Kamerayı Kaydet"
+
+#: .\inventory\templates\command_center.html:89
+msgid "Uygulamayı Kaydet"
+msgstr "Uygulamayı Kaydet"
+
+#: .\inventory\templates\command_center.html:92
+msgid "Şablon Kaydet"
+msgstr "Şablon Kaydet"
+
+#: .\inventory\templates\command_center.html:108
+msgid "Aktif Et"
+msgstr "Aktif Et"
+
+#: .\inventory\templates\command_center.html:111
+msgid "Kayıt yok."
+msgstr "Kayıt yok."
+
+#: .\inventory\templates\command_center.html:116
+msgid "Kamera Uyarıları"
+msgstr "Kamera Uyarıları"
+
+#: .\inventory\templates\command_center.html:126
+msgid "Uyarı yok."
+msgstr "Uyarı yok."
+
+#: .\inventory\templates\command_center.html:131
+msgid "İş Uygulamaları"
+msgstr "İş Uygulamaları"
+
+#: .\inventory\templates\command_center.html:140
+msgid "Uygulama yok."
+msgstr "Uygulama yok."
+
+#: .\inventory\templates\command_center.html:145
+msgid "Departman Mesajları"
+msgstr "Departman Mesajları"
+
+#: .\inventory\templates\command_center.html:154
+msgid "Mesaj yok."
+msgstr "Mesaj yok."
+
+#: .\inventory\templates\custom_admin.html:4
+#: .\inventory\templates\custom_admin.html:22
+msgid "Sistem Yönetim Paneli"
+msgstr "Sistem Yönetim Paneli"
+
+#: .\inventory\templates\custom_admin.html:23
+msgid ""
+"Cihaz, kullanıcı, destek talepleri ve konfigürasyon değişiklikleri yönetim "
+"ekranı."
+msgstr ""
+"Cihaz, kullanıcı, destek talepleri ve konfigürasyon değişiklikleri yönetim "
+"ekranı."
+
+#: .\inventory\templates\custom_admin.html:34
+msgid "Yeni Cihaz Ekle"
+msgstr "Yeni Cihaz Ekle"
+
+#: .\inventory\templates\custom_admin.html:66
+msgid " Zabbix İzleme (Eşik Değerleri)"
+msgstr " Zabbix İzleme (Eşik Değerleri)"
+
+#: .\inventory\templates\custom_admin.html:80
+msgid " Veri Merkezi Konumu"
+msgstr " Veri Merkezi Konumu"
+
+#: .\inventory\templates\custom_admin.html:98
+msgid " SSH ve Otomasyon Bilgileri"
+msgstr " SSH ve Otomasyon Bilgileri"
+
+#: .\inventory\templates\custom_admin.html:110
+msgid "Enable Şifresi"
+msgstr "Enable Şifresi"
+
+#: .\inventory\templates\custom_admin.html:111
+msgid "İsteğe bağlı"
+msgstr "İsteğe bağlı"
+
+#: .\inventory\templates\custom_admin.html:117
+msgid "Cihaz Aktif Mi?"
+msgstr "Cihaz Aktif Mi?"
+
+#: .\inventory\templates\custom_admin.html:119
+#: .\inventory\templates\custom_admin.html:199
+#: .\inventory\templates\custom_admin.html:564
+#: .\inventory\templates\it_inventory.html:407
+msgid "Kaydediliyor..."
+msgstr "Kaydediliyor..."
+
+#: .\inventory\templates\custom_admin.html:132
+msgid "Manuel Destek Kaydı"
+msgstr "Manuel Destek Kaydı"
+
+#: .\inventory\templates\custom_admin.html:166
+msgid "Kayıt Oluşturuluyor..."
+msgstr "Kayıt Oluşturuluyor..."
+
+#: .\inventory\templates\custom_admin.html:179
+msgid "Yeni Kullanıcı Ekle"
+msgstr "Yeni Kullanıcı Ekle"
+
+#: .\inventory\templates\custom_admin.html:192
+msgid "Yönetici Yetkisi"
+msgstr "Yönetici Yetkisi"
+
+#: .\inventory\templates\custom_admin.html:211
+msgid "Active Directory Senkronizasyonu"
+msgstr "Active Directory Senkronizasyonu"
+
+#: .\inventory\templates\custom_admin.html:212
+msgid "LDAP sunucusundan kullanıcıları çekin."
+msgstr "LDAP sunucusundan kullanıcıları çekin."
+
+#: .\inventory\templates\custom_admin.html:217
+msgid "Bağlanılıyor..."
+msgstr "Bağlanılıyor..."
+
+#: .\inventory\templates\custom_admin.html:217
+msgid "Senkronize Et"
+msgstr "Senkronize Et"
+
+#: .\inventory\templates\custom_admin.html:230
+msgid "Değişiklik Yönetimi"
+msgstr "Değişiklik Yönetimi"
+
+#: .\inventory\templates\custom_admin.html:232
+msgid ""
+"Sistem üzerinden cihaza gönderilmek istenen komutlar güvenlik gereği "
+"onayınıza sunulmuştur."
+msgstr ""
+"Sistem üzerinden cihaza gönderilmek istenen komutlar güvenlik gereği "
+"onayınıza sunulmuştur."
+
+#: .\inventory\templates\custom_admin.html:238
+msgid "Talep Başlığı / IP"
+msgstr "Talep Başlığı / IP"
+
+#: .\inventory\templates\custom_admin.html:241
+msgid "Gözden Geçir"
+msgstr "Gözden Geçir"
+
+#: .\inventory\templates\custom_admin.html:264
+msgid "Onay bekleyen değişiklik talebi bulunmuyor."
+msgstr "Onay bekleyen değişiklik talebi bulunmuyor."
+
+#: .\inventory\templates\custom_admin.html:278
+msgid " Sistemdeki Tüm Cihazlar"
+msgstr " Sistemdeki Tüm Cihazlar"
+
+#: .\inventory\templates\custom_admin.html:284
+#: .\inventory\templates\custom_admin.html:361
+#: .\inventory\templates\custom_admin.html:428
+msgid "ID"
+msgstr "ID"
+
+#: .\inventory\templates\custom_admin.html:285
+msgid "Cihaz Adı / Donanım"
+msgstr "Cihaz Adı / Donanım"
+
+#: .\inventory\templates\custom_admin.html:286
+msgid "Tür / Üretici"
+msgstr "Tür / Üretici"
+
+#: .\inventory\templates\custom_admin.html:287
+msgid "IP / MAC Adresi"
+msgstr "IP / MAC Adresi"
+
+#: .\inventory\templates\custom_admin.html:289
+#: .\inventory\templates\custom_admin.html:432
+msgid "İşlemler"
+msgstr "İşlemler"
+
+#: .\inventory\templates\custom_admin.html:314
+msgid "IP Yok"
+msgstr "IP Yok"
+
+#: .\inventory\templates\custom_admin.html:320
+#: .\inventory\templates\user_management.html:64
+msgid "Pasif"
+msgstr "Pasif"
+
+#: .\inventory\templates\custom_admin.html:327
+msgid "Donanım Verisini Güncelle"
+msgstr "Donanım Verisini Güncelle"
+
+#: .\inventory\templates\custom_admin.html:332
+msgid "Fiziksel Port Haritası"
+msgstr "Fiziksel Port Haritası"
+
+#: .\inventory\templates\custom_admin.html:346
+msgid "Cihaz bulunmuyor."
+msgstr "Cihaz bulunmuyor."
+
+#: .\inventory\templates\custom_admin.html:355
+msgid " Aktif Destek Talepleri"
+msgstr " Aktif Destek Talepleri"
+
+#: .\inventory\templates\custom_admin.html:362
+msgid "Başlık / Kullanıcı"
+msgstr "Başlık / Kullanıcı"
+
+#: .\inventory\templates\custom_admin.html:366
+msgid "Kalan Süre"
+msgstr "Kalan Süre"
+
+#: .\inventory\templates\custom_admin.html:399
+msgid "Hesaplanıyor..."
+msgstr "Hesaplanıyor..."
+
+#: .\inventory\templates\custom_admin.html:402
+msgid "SLA Atanmamış"
+msgstr "SLA Atanmamış"
+
+#: .\inventory\templates\custom_admin.html:413
+msgid "Sistemde aktif destek talebi bulunmuyor."
+msgstr "Sistemde aktif destek talebi bulunmuyor."
+
+#: .\inventory\templates\custom_admin.html:422
+msgid " Sistemdeki Kullanıcılar"
+msgstr " Sistemdeki Kullanıcılar"
+
+#: .\inventory\templates\custom_admin.html:443
+#: .\inventory\templates\custom_admin.html:513
+msgid "Süper Admin"
+msgstr "Süper Admin"
+
+#: .\inventory\templates\custom_admin.html:445
+#: .\inventory\templates\custom_admin.html:505
+msgid "BT Personeli"
+msgstr "BT Personeli"
+
+#: .\inventory\templates\custom_admin.html:447
+msgid "Standart Kullanıcı"
+msgstr "Standart Kullanıcı"
+
+#: .\inventory\templates\custom_admin.html:471
+msgid "Kayıtlı kullanıcı bulunmuyor."
+msgstr "Kayıtlı kullanıcı bulunmuyor."
+
+#: .\inventory\templates\custom_admin.html:488
+msgid "Yetkileri Düzenle"
+msgstr "Yetkileri Düzenle"
+
+#: .\inventory\templates\custom_admin.html:506
+msgid "Yönetim paneline erişebilir."
+msgstr "Yönetim paneline erişebilir."
+
+#: .\inventory\templates\custom_admin.html:514
+msgid "Sistemde tam yetkiye sahiptir."
+msgstr "Sistemde tam yetkiye sahiptir."
+
+#: .\inventory\templates\custom_admin.html:518
+msgid "Güncelleniyor..."
+msgstr "Güncelleniyor..."
+
+#: .\inventory\templates\custom_admin.html:533
+msgid "Talebi Güncelle"
+msgstr "Talebi Güncelle"
+
+#: .\inventory\templates\custom_admin.html:539
+msgid "İşlem Yapılan Talep:"
+msgstr "İşlem Yapılan Talep:"
+
+#: .\inventory\templates\custom_admin.html:547
+msgid "Öncelik Derecesi"
+msgstr "Öncelik Derecesi"
+
+#: .\inventory\templates\custom_admin.html:549
+msgid "🔴 Kritik (4 Saat SLA)"
+msgstr "🔴 Kritik (4 Saat SLA)"
+
+#: .\inventory\templates\custom_admin.html:550
+msgid "🟠 Yüksek (8 Saat SLA)"
+msgstr "🟠 Yüksek (8 Saat SLA)"
+
+#: .\inventory\templates\custom_admin.html:551
+msgid "🟡 Orta (24 Saat SLA)"
+msgstr "🟡 Orta (24 Saat SLA)"
+
+#: .\inventory\templates\custom_admin.html:552
+msgid "🟢 Düşük (48 Saat SLA)"
+msgstr "🟢 Düşük (48 Saat SLA)"
+
+#: .\inventory\templates\custom_admin.html:556
+msgid "Talep Durumu"
+msgstr "Talep Durumu"
+
+#: .\inventory\templates\custom_admin.html:579
+msgid "Güvenlik Denetimi: Konfigürasyon İncelemesi"
+msgstr "Güvenlik Denetimi: Konfigürasyon İncelemesi"
+
+#: .\inventory\templates\custom_admin.html:587
+msgid "Hedef Cihaz (IP)"
+msgstr "Hedef Cihaz (IP)"
+
+#: .\inventory\templates\custom_admin.html:594
+msgid "Yazılacak Kod (Payload):"
+msgstr "Yazılacak Kod (Payload):"
+
+#: .\inventory\templates\custom_admin.html:599
+msgid "Sistem Logu:"
+msgstr "Sistem Logu:"
+
+#: .\inventory\templates\dashboard.html:5
+msgid "OmniOps - Ana Panel"
+msgstr "OmniOps - Ana Panel"
+
+#: .\inventory\templates\dashboard.html:12
+msgid ""
+"Altyapı sağlığı, servis talepleri ve operasyonel yoğunluğu tek ekranda "
+"izleyin."
+msgstr ""
+"Altyapı sağlığı, servis talepleri ve operasyonel yoğunluğu tek ekranda "
+"izleyin."
+
+#: .\inventory\templates\dashboard.html:15
+msgid "Canlı veri"
+msgstr "Canlı veri"
+
+#: .\inventory\templates\dashboard.html:26
+msgid "AIOps Önerileri"
+msgstr "AIOps Önerileri"
+
+#: .\inventory\templates\dashboard.html:51
+msgid "Ağ Cihazları"
+msgstr "Ağ Cihazları"
+
+#: .\inventory\templates\dashboard.html:55
+#: .\inventory\templates\dashboard.html:261
+msgid "çevrimdışı"
+msgstr "çevrimdışı"
+
+#: .\inventory\templates\dashboard.html:55
+#: .\inventory\templates\dashboard.html:262
+msgid "Tümü çevrimiçi"
+msgstr "Tümü çevrimiçi"
+
+#: .\inventory\templates\dashboard.html:65
+msgid "Açık Talepler"
+msgstr "Açık Talepler"
+
+#: .\inventory\templates\dashboard.html:69
+#: .\inventory\templates\dashboard.html:254
+msgid "son 24s"
+msgstr "son 24s"
+
+#: .\inventory\templates\dashboard.html:69
+#: .\inventory\templates\dashboard.html:255
+msgid "Yeni talep yok"
+msgstr "Yeni talep yok"
+
+#: .\inventory\templates\dashboard.html:79
+msgid "Kritik Lisanslar"
+msgstr "Kritik Lisanslar"
+
+#: .\inventory\templates\dashboard.html:83
+msgid "30 gün içinde"
+msgstr "30 gün içinde"
+
+#: .\inventory\templates\dashboard.html:97
+msgid "Dokümantasyon"
+msgstr "Dokümantasyon"
+
+#: .\inventory\templates\dashboard.html:109
+msgid "Sürükle"
+msgstr "Sürükle"
+
+#: .\inventory\templates\dashboard.html:110
+msgid "Aktivite Isı Haritası"
+msgstr "Aktivite Isı Haritası"
+
+#: .\inventory\templates\dashboard.html:110
+msgid "Son 30 gün"
+msgstr "Son 30 gün"
+
+#: .\inventory\templates\dashboard.html:112
+msgid "Gizle"
+msgstr "Gizle"
+
+#: .\inventory\templates\dashboard.html:121
+msgid "Cihaz Dağılımı"
+msgstr "Cihaz Dağılımı"
+
+#: .\inventory\templates\dashboard.html:130
+msgid "Talep Durumları"
+msgstr "Talep Durumları"
+
+#: .\inventory\templates\dashboard.html:139
+msgid "Son Olaylar"
+msgstr "Son Olaylar"
+
+#: .\inventory\templates\dashboard.html:140
+msgid "Tümünü gör"
+msgstr "Tümünü gör"
+
+#: .\inventory\templates\dashboard.html:157
+#: .\inventory\templates\workspace_center.html:42
+msgid "Kapalı"
+msgstr "Kapalı"
+
+#: .\inventory\templates\dashboard.html:163
+msgid "Kayıtlı olay bulunmuyor."
+msgstr "Kayıtlı olay bulunmuyor."
+
+#: .\inventory\templates\dashboard.html:171
+msgid "Omurga Cihazlar"
+msgstr "Omurga Cihazlar"
+
+#: .\inventory\templates\dashboard.html:183
+msgid "Kök cihaz tanımlanmamış."
+msgstr "Kök cihaz tanımlanmamış."
+
+#: .\inventory\templates\dashboard.html:189
+msgid "Yaklaşan Yenilemeler"
+msgstr "Yaklaşan Yenilemeler"
+
+#: .\inventory\templates\dashboard.html:194
+msgid "gün"
+msgstr "gün"
+
+#: .\inventory\templates\diff.html:4
+msgid "OmniOps - Config Diff"
+msgstr "OmniOps - Config Diff"
+
+#: .\inventory\templates\diff.html:12
+msgid "Konfigürasyon Karşılaştırma"
+msgstr "Konfigürasyon Karşılaştırma"
+
+#: .\inventory\templates\diff.html:14
+msgid "cihazının geçmiş yedekleri arasındaki değişiklikleri denetleyin."
+msgstr "cihazının geçmiş yedekleri arasındaki değişiklikleri denetleyin."
+
+#: .\inventory\templates\diff.html:17
+#| msgid "Yedekleme Adı"
+msgid "Yedeklere Dön"
+msgstr "Yedeklere Dön"
+
+#: .\inventory\templates\diff.html:25
+msgid "🔴 Referans Yedek (Eski)"
+msgstr "🔴 Referans Yedek (Eski)"
+
+#: .\inventory\templates\diff.html:27
+msgid "-- Referans Yedeği Seçin --"
+msgstr "-- Referans Yedeği Seçin --"
+
+#: .\inventory\templates\diff.html:36
+msgid "🟢 Karşılaştırılacak Yedek (Yeni)"
+msgstr "🟢 Karşılaştırılacak Yedek (Yeni)"
+
+#: .\inventory\templates\diff.html:38
+msgid "-- Yeni Yedeği Seçin --"
+msgstr "-- Yeni Yedeği Seçin --"
+
+#: .\inventory\templates\diff.html:58
+msgid "Diff Analyzer Engine"
+msgstr "Diff Analyzer Engine"
+
+#: .\inventory\templates\diff.html:59
+msgid "Satır Satır Analiz"
+msgstr "Satır Satır Analiz"
+
+#: .\inventory\templates\diff.html:87
+msgid "Mükemmel Uyum"
+msgstr "Mükemmel Uyum"
+
+#: .\inventory\templates\diff.html:88
+msgid ""
+"Seçilen iki yedek arasında hiçbir konfigürasyon değişikliği bulunmamaktadır."
+" Cihaz güvenli durumdadır."
+msgstr ""
+"Seçilen iki yedek arasında hiçbir konfigürasyon değişikliği bulunmamaktadır."
+" Cihaz güvenli durumdadır."
+
+#: .\inventory\templates\dlp_events.html:4
+msgid "DLP Olayları - OmniOps"
+msgstr "DLP Olayları - OmniOps"
+
+#: .\inventory\templates\dlp_events.html:10
+msgid "Hassas veri sızıntısı riskleri ve engellenen kayıtlar."
+msgstr "Hassas veri sızıntısı riskleri ve engellenen kayıtlar."
+
+#: .\inventory\templates\dlp_events.html:34
+msgid "Kaydedildi"
+msgstr "Kaydedildi"
+
+#: .\inventory\templates\dlp_events.html:37
+msgid "DLP olayı yok."
+msgstr "DLP olayı yok."
+
+#: .\inventory\templates\erp_integrations.html:4
+msgid "ERP & Entegrasyon Merkezi - OmniOps"
+msgstr "ERP & Entegrasyon Merkezi - OmniOps"
+
+#: .\inventory\templates\erp_integrations.html:10
+msgid "ERP & Entegrasyon Merkezi"
+msgstr "ERP & Entegrasyon Merkezi"
+
+#: .\inventory\templates\erp_integrations.html:11
+msgid ""
+"Odoo, ERPNext ve SAP OData bağlantıları; senkronizasyon, kamera sağlık "
+"taraması ve entegrasyon durumu."
+msgstr ""
+"Odoo, ERPNext ve SAP OData bağlantıları; senkronizasyon, kamera sağlık "
+"taraması ve entegrasyon durumu."
+
+#: .\inventory\templates\erp_integrations.html:21
+msgid "ERP Bağlantı"
+msgstr "ERP Bağlantı"
+
+#: .\inventory\templates\erp_integrations.html:22
+msgid "Sağlıklı Sync"
+msgstr "Sağlıklı Sync"
+
+#: .\inventory\templates\erp_integrations.html:23
+msgid "Sync Hatası"
+msgstr "Sync Hatası"
+
+#: .\inventory\templates\erp_integrations.html:24
+msgid "Kamera Online"
+msgstr "Kamera Online"
+
+#: .\inventory\templates\erp_integrations.html:30
+msgid "ERP Bağlantısı Ekle"
+msgstr "ERP Bağlantısı Ekle"
+
+#: .\inventory\templates\erp_integrations.html:32
+msgid ""
+"Odoo: veritabanı adı zorunlu. ERPNext: kullanıcı=API Key, parola=API Secret."
+" SAP: parola=HTTP Basic Auth, veritabanı=OData servis yolu. Diğer: genel "
+"REST sağlık kontrolü."
+msgstr ""
+"Odoo: veritabanı adı zorunlu. ERPNext: kullanıcı=API Key, parola=API Secret."
+" SAP: parola=HTTP Basic Auth, veritabanı=OData servis yolu. Diğer: genel "
+"REST sağlık kontrolü."
+
+#: .\inventory\templates\erp_integrations.html:37
+#: .\inventory\templates\identity_operations.html:44
+msgid "Bağlantıyı Kaydet"
+msgstr "Bağlantıyı Kaydet"
+
+#: .\inventory\templates\erp_integrations.html:42
+msgid "Kamera Durum Özeti"
+msgstr "Kamera Durum Özeti"
+
+#: .\inventory\templates\erp_integrations.html:71
+msgid "Odoo/ERP bağlantısı yok. Sol panelden ilk bağlantıyı ekleyin."
+msgstr "Odoo/ERP bağlantısı yok. Sol panelden ilk bağlantıyı ekleyin."
+
+#: .\inventory\templates\executive_summary.html:4
+msgid "Yönetici Bilgilendirme - OmniOps Factory IT Suite"
+msgstr "Yönetici Bilgilendirme - OmniOps Factory IT Suite"
+
+#: .\inventory\templates\executive_summary.html:10
+msgid "Yönetici Bilgilendirme Paneli"
+msgstr "Yönetici Bilgilendirme Paneli"
+
+#: .\inventory\templates\executive_summary.html:11
+msgid ""
+"Fabrika BT operasyonlarının sağlık, risk, servis, güvenlik, uyum ve "
+"süreklilik özetini tek sayfada görün."
+msgstr ""
+"Fabrika BT operasyonlarının sağlık, risk, servis, güvenlik, uyum ve "
+"süreklilik özetini tek sayfada görün."
+
+#: .\inventory\templates\executive_summary.html:66
+msgid "Yönetici Öncelikleri"
+msgstr "Yönetici Öncelikleri"
+
+#: .\inventory\templates\executive_summary.html:81
+msgid "Rapor Notları"
+msgstr "Rapor Notları"
+
+#: .\inventory\templates\factory_command_center.html:4
+msgid "Fabrika BT Komuta Merkezi - OmniOps"
+msgstr "Fabrika BT Komuta Merkezi - OmniOps"
+
+#: .\inventory\templates\factory_command_center.html:10
+#: .\inventory\views.py:79
+msgid "Fabrika BT Komuta Merkezi"
+msgstr "Fabrika BT Komuta Merkezi"
+
+#: .\inventory\templates\factory_command_center.html:11
+msgid ""
+"Departman kartelasından bölüm seçin; kameralar, switchler, endpointler, "
+"ticketlar ve dokümanlar aynı ekranda açılsın."
+msgstr ""
+"Departman kartelasından bölüm seçin; kameralar, switchler, endpointler, "
+"ticketlar ve dokümanlar aynı ekranda açılsın."
+
+#: .\inventory\templates\factory_command_center.html:32
+#: .\inventory\templates\factory_command_center.html:75
+msgid "Varlık İlişkisi"
+msgstr "Varlık İlişkisi"
+
+#: .\inventory\templates\factory_command_center.html:33
+msgid "İnceleme Bekleyen"
+msgstr "İnceleme Bekleyen"
+
+#: .\inventory\templates\factory_command_center.html:34
+msgid "Kapsam Riski"
+msgstr "Kapsam Riski"
+
+#: .\inventory\templates\factory_command_center.html:40
+msgid "Fabrika / Tesis Seçimi"
+msgstr "Fabrika / Tesis Seçimi"
+
+#: .\inventory\templates\factory_command_center.html:41
+msgid "Portföy filtresi"
+msgstr "Portföy filtresi"
+
+#: .\inventory\templates\factory_command_center.html:57
+msgid "Departman Kartela Kaydı"
+msgstr "Departman Kartela Kaydı"
+
+#: .\inventory\templates\factory_command_center.html:59
+msgid "Departman Kaydet"
+msgstr "Departman Kaydet"
+
+#: .\inventory\templates\factory_command_center.html:63
+msgid "Alt Alan / Sistem Odası"
+msgstr "Alt Alan / Sistem Odası"
+
+#: .\inventory\templates\factory_command_center.html:65
+msgid "Alan Kaydet"
+msgstr "Alan Kaydet"
+
+#: .\inventory\templates\factory_command_center.html:69
+msgid "Doküman Yükle"
+msgstr "Doküman Yükle"
+
+#: .\inventory\templates\factory_command_center.html:71
+msgid "Doküman Kaydet"
+msgstr "Doküman Kaydet"
+
+#: .\inventory\templates\factory_command_center.html:77
+msgid "İlişki Kaydet"
+msgstr "İlişki Kaydet"
+
+#: .\inventory\templates\factory_command_center.html:87
+msgid "Bölüm seçince modüller açılır"
+msgstr "Bölüm seçince modüller açılır"
+
+#: .\inventory\templates\factory_command_center.html:102
+msgid ""
+"Henüz departman kartela kaydı yok. Sol panelden ilk departmanı ekleyin."
+msgstr ""
+"Henüz departman kartela kaydı yok. Sol panelden ilk departmanı ekleyin."
+
+#: .\inventory\templates\factory_command_center.html:116
+msgid "Tüm Departman"
+msgstr "Tüm Departman"
+
+#: .\inventory\templates\factory_command_center.html:122
+msgid "Bu departman için alt alan tanımlanmadı."
+msgstr "Bu departman için alt alan tanımlanmadı."
+
+#: .\inventory\templates\factory_command_center.html:141
+msgid "Modüle git →"
+msgstr "Modüle git →"
+
+#: .\inventory\templates\factory_command_center.html:167
+#: .\inventory\templates\managed_document_editor.html:14
+msgid "İndir"
+msgstr "İndir"
+
+#: .\inventory\templates\factory_command_center.html:169
+msgid "PDF Önizle"
+msgstr "PDF Önizle"
+
+#: .\inventory\templates\factory_command_center.html:175
+msgid "Harici Editör"
+msgstr "Harici Editör"
+
+#: .\inventory\templates\factory_command_center.html:178
+msgid "Dosya bekleniyor"
+msgstr "Dosya bekleniyor"
+
+#: .\inventory\templates\factory_command_center.html:183
+msgid ""
+"Seçili kapsamda doküman yok. DOCX/PDF/XLSX dosyalarını sol panelden "
+"yükleyin."
+msgstr ""
+"Seçili kapsamda doküman yok. DOCX/PDF/XLSX dosyalarını sol panelden "
+"yükleyin."
+
+#: .\inventory\templates\factory_command_center.html:192
+msgid "Doküman Detayı"
+msgstr "Doküman Detayı"
+
+#: .\inventory\templates\factory_command_center.html:198
+#: .\inventory\templates\ticket_detail.html:34
+msgid "Kategori:"
+msgstr "Kategori:"
+
+#: .\inventory\templates\factory_command_center.html:199
+msgid "Tip:"
+msgstr "Tip:"
+
+#: .\inventory\templates\factory_command_center.html:202
+msgid "Etiketler:"
+msgstr "Etiketler:"
+
+#: .\inventory\templates\factory_command_center.html:203
+msgid "Geçerlilik:"
+msgstr "Geçerlilik:"
+
+#: .\inventory\templates\factory_command_center.html:207
+msgid "Dosyayı İndir / Aç"
+msgstr "Dosyayı İndir / Aç"
+
+#: .\inventory\templates\factory_command_center.html:209
+msgid "Tarayıcıda PDF Önizle"
+msgstr "Tarayıcıda PDF Önizle"
+
+#: .\inventory\templates\factory_command_center.html:211
+msgid "Tarayıcıda Düzenle"
+msgstr "Tarayıcıda Düzenle"
+
+#: .\inventory\templates\factory_command_center.html:213
+msgid "DOCX için OnlyOffice/Collabora entegrasyon alanı hazır"
+msgstr "DOCX için OnlyOffice/Collabora entegrasyon alanı hazır"
+
+#: .\inventory\templates\factory_command_center.html:235
+msgid "Varlık İlişkileri"
+msgstr "Varlık İlişkileri"
+
+#: .\inventory\templates\factory_command_center.html:243
+msgid ""
+"Seçili kapsamda varlık ilişkisi yok. Sol panelden switch, kamera, endpoint "
+"veya doküman bağlayın."
+msgstr ""
+"Seçili kapsamda varlık ilişkisi yok. Sol panelden switch, kamera, endpoint "
+"veya doküman bağlayın."
+
+#: .\inventory\templates\factory_operations.html:4
+msgid "Fabrika IT Operasyon Merkezi - OmniOps"
+msgstr "Fabrika IT Operasyon Merkezi - OmniOps"
+
+#: .\inventory\templates\factory_operations.html:9
+msgid "Fabrika IT Operasyon Merkezi"
+msgstr "Fabrika IT Operasyon Merkezi"
+
+#: .\inventory\templates\factory_operations.html:10
+msgid ""
+"Üretim alanları, sarf stokları, periyodik bakım ve personel IT süreçlerini "
+"tek ekrandan yönetin."
+msgstr ""
+"Üretim alanları, sarf stokları, periyodik bakım ve personel IT süreçlerini "
+"tek ekrandan yönetin."
+
+#: .\inventory\templates\factory_operations.html:12
+msgid "Swiss-army IT paneli"
+msgstr "Swiss-army IT paneli"
+
+#: .\inventory\templates\factory_operations.html:24
+msgid "Minimum Altı Stok"
+msgstr "Minimum Altı Stok"
+
+#: .\inventory\templates\factory_operations.html:30
+msgid "7 Gün İçinde Bakım"
+msgstr "7 Gün İçinde Bakım"
+
+#: .\inventory\templates\factory_operations.html:36
+msgid "Açık Personel Süreci"
+msgstr "Açık Personel Süreci"
+
+#: .\inventory\templates\factory_operations.html:50
+msgid "Üretim Alanı / Hat Ekle"
+msgstr "Üretim Alanı / Hat Ekle"
+
+#: .\inventory\templates\factory_operations.html:58
+msgid "Alanı Kaydet"
+msgstr "Alanı Kaydet"
+
+#: .\inventory\templates\factory_operations.html:66
+msgid "Sarf / Yedek Stok Ekle"
+msgstr "Sarf / Yedek Stok Ekle"
+
+#: .\inventory\templates\factory_operations.html:74
+msgid "Stok Kalemini Kaydet"
+msgstr "Stok Kalemini Kaydet"
+
+#: .\inventory\templates\factory_operations.html:82
+msgid "Bakım / Checklist Planla"
+msgstr "Bakım / Checklist Planla"
+
+#: .\inventory\templates\factory_operations.html:90
+msgid "Bakımı Planla"
+msgstr "Bakımı Planla"
+
+#: .\inventory\templates\factory_operations.html:98
+msgid "Personel IT Süreci Aç"
+msgstr "Personel IT Süreci Aç"
+
+#: .\inventory\templates\factory_operations.html:106
+msgid "Süreci Başlat"
+msgstr "Süreci Başlat"
+
+#: .\inventory\templates\factory_operations.html:118
+msgid "Kritik Stok Uyarıları"
+msgstr "Kritik Stok Uyarıları"
+
+#: .\inventory\templates\factory_operations.html:129
+msgid "Minimum altı stok bulunmuyor."
+msgstr "Minimum altı stok bulunmuyor."
+
+#: .\inventory\templates\factory_operations.html:137
+msgid "Yaklaşan Bakımlar"
+msgstr "Yaklaşan Bakımlar"
+
+#: .\inventory\templates\factory_operations.html:155
+msgid "Yaklaşan bakım bulunmuyor."
+msgstr "Yaklaşan bakım bulunmuyor."
+
+#: .\inventory\templates\factory_operations.html:163
+msgid "Açık Personel IT Süreçleri"
+msgstr "Açık Personel IT Süreçleri"
+
+#: .\inventory\templates\factory_operations.html:171
+msgid "İlerleme"
+msgstr "İlerleme"
+
+#: .\inventory\templates\factory_operations.html:203
+msgid "Açık personel IT süreci yok."
+msgstr "Açık personel IT süreci yok."
+
+#: .\inventory\templates\factory_operations.html:213
+msgid "Fabrika Alanları"
+msgstr "Fabrika Alanları"
+
+#: .\inventory\templates\factory_operations.html:220
+msgid "Henüz fabrika alanı tanımlanmadı."
+msgstr "Henüz fabrika alanı tanımlanmadı."
+
+#: .\inventory\templates\factory_portfolio_inventory.html:4
+msgid "Fabrika Portföy Envanteri - OmniOps"
+msgstr "Fabrika Portföy Envanteri - OmniOps"
+
+#: .\inventory\templates\factory_portfolio_inventory.html:14
+msgid ""
+"Müşteri portföyündeki her fabrika/tesis için özelleştirilebilir bölüm "
+"envanteri."
+msgstr ""
+"Müşteri portföyündeki her fabrika/tesis için özelleştirilebilir bölüm "
+"envanteri."
+
+#: .\inventory\templates\factory_portfolio_inventory.html:37
+msgid "Sektör Çeşitliliği"
+msgstr "Sektör Çeşitliliği"
+
+#: .\inventory\templates\factory_portfolio_inventory.html:42
+msgid "Fabrika / Tesis Portföyü"
+msgstr "Fabrika / Tesis Portföyü"
+
+#: .\inventory\templates\factory_portfolio_inventory.html:70
+msgid "Başlıkları Güncelle"
+msgstr "Başlıkları Güncelle"
+
+#: .\inventory\templates\factory_portfolio_inventory.html:74
+msgid "Yeni Tesis Ekle"
+msgstr "Yeni Tesis Ekle"
+
+#: .\inventory\templates\factory_portfolio_inventory.html:78
+msgid "Tesis Kaydet"
+msgstr "Tesis Kaydet"
+
+#: .\inventory\templates\factory_portfolio_inventory.html:82
+msgid "Envanter Kalemi Ekle"
+msgstr "Envanter Kalemi Ekle"
+
+#: .\inventory\templates\factory_portfolio_inventory.html:86
+msgid "Envantere Ekle"
+msgstr "Envantere Ekle"
+
+#: .\inventory\templates\factory_portfolio_inventory.html:152
+msgid "Bu kapsamda envanter kaydı yok. Sol panelden kalem ekleyin veya "
+msgstr "Bu kapsamda envanter kaydı yok. Sol panelden kalem ekleyin veya "
+
+#: .\inventory\templates\factory_portfolio_inventory.html:152
+msgid "python manage.py omniops_doctor --bootstrap"
+msgstr "python manage.py omniops_doctor --bootstrap"
+
+#: .\inventory\templates\factory_portfolio_inventory.html:152
+msgid " çalıştırın."
+msgstr " çalıştırın."
+
+#: .\inventory\templates\factory_portfolio_inventory.html:161
+msgid "Henüz fabrika tesisi tanımlı değil."
+msgstr "Henüz fabrika tesisi tanımlı değil."
+
+#: .\inventory\templates\factory_portfolio_inventory.html:162
+msgid "Sol panelden yeni tesis ekleyin veya bootstrap komutunu çalıştırın."
+msgstr "Sol panelden yeni tesis ekleyin veya bootstrap komutunu çalıştırın."
+
+#: .\inventory\templates\field_routes.html:4
+msgid "Saha Rota Planlama - OmniOps"
+msgstr "Saha Rota Planlama - OmniOps"
+
+#: .\inventory\templates\field_routes.html:11
+msgid "AI Destekli Rota & Yakıt Planlama"
+msgstr "AI Destekli Rota & Yakıt Planlama"
+
+#: .\inventory\templates\field_routes.html:12
+msgid ""
+"OpenStreetMap üzerinde saha ziyaretlerini, mesafeyi ve klima çarpanlı yakıt "
+"tahminini izleyin."
+msgstr ""
+"OpenStreetMap üzerinde saha ziyaretlerini, mesafeyi ve klima çarpanlı yakıt "
+"tahminini izleyin."
+
+#: .\inventory\templates\field_routes.html:26
+msgid "Yeni Durak"
+msgstr "Yeni Durak"
+
+#: .\inventory\templates\field_routes.html:29
+msgid "Ziyaret başlığı"
+msgstr "Ziyaret başlığı"
+
+#: .\inventory\templates\field_routes.html:30
+msgid "Müşteri / Lokasyon"
+msgstr "Müşteri / Lokasyon"
+
+#: .\inventory\templates\field_routes.html:40
+msgid "Klima çarpanı"
+msgstr "Klima çarpanı"
+
+#: .\inventory\templates\field_routes.html:41
+msgid "Durağı Ekle"
+msgstr "Durağı Ekle"
+
+#: .\inventory\templates\field_routes.html:59
+msgid "Henüz rota durağı yok."
+msgstr "Henüz rota durağı yok."
+
+#: .\inventory\templates\generator.html:4
+msgid "OmniOps - CLI Konfigürasyon Üretici"
+msgstr "OmniOps - CLI Konfigürasyon Üretici"
+
+#: .\inventory\templates\generator.html:11
+msgid "Dinamik CLI Üretici"
+msgstr "Dinamik CLI Üretici"
+
+#: .\inventory\templates\generator.html:12
+msgid ""
+"Cisco ve Huawei cihazları için sıfırdan kurulum komutlarını anında "
+"oluşturun."
+msgstr ""
+"Cisco ve Huawei cihazları için sıfırdan kurulum komutlarını anında "
+"oluşturun."
+
+#: .\inventory\templates\generator.html:26
+msgid "Cihaz Parametreleri"
+msgstr "Cihaz Parametreleri"
+
+#: .\inventory\templates\generator.html:31
+msgid "Komutlar Derleniyor..."
+msgstr "Komutlar Derleniyor..."
+
+#: .\inventory\templates\generator.html:45
+#: .\inventory\templates\topology.html:45
+msgid "Switch"
+msgstr "Switch"
+
+#: .\inventory\templates\generator.html:58
+msgid "VLAN ID"
+msgstr "VLAN ID"
+
+#: .\inventory\templates\generator.html:62
+msgid "VLAN Adı"
+msgstr "VLAN Adı"
+
+#: .\inventory\templates\generator.html:68
+msgid "Arayüz"
+msgstr "Arayüz"
+
+#: .\inventory\templates\generator.html:74
+msgid "Gelişmiş Protokoller"
+msgstr "Gelişmiş Protokoller"
+
+#: .\inventory\templates\generator.html:79
+msgid "OSPF Yönlendirme"
+msgstr "OSPF Yönlendirme"
+
+#: .\inventory\templates\generator.html:82
+msgid "Network & Wildcard Mask"
+msgstr "Network & Wildcard Mask"
+
+#: .\inventory\templates\generator.html:84
+msgid "OSPF Area ID"
+msgstr "OSPF Area ID"
+
+#: .\inventory\templates\generator.html:90
+msgid "Port Security"
+msgstr "Port Security"
+
+#: .\inventory\templates\generator.html:93
+msgid "Maksimum MAC Limiti"
+msgstr "Maksimum MAC Limiti"
+
+#: .\inventory\templates\generator.html:155
+msgid "! OmniOps Otomatik Konfigürasyon Üretici"
+msgstr "! OmniOps Otomatik Konfigürasyon Üretici"
+
+#: .\inventory\templates\generator.html:173
+msgid "root@omniops:~$_ "
+msgstr "root@omniops:~$_ "
+
+#: .\inventory\templates\generator.html:174
+msgid "Sistemi yapılandırmak için sol taraftan parametreleri girip \\"
+msgstr "Sistemi yapılandırmak için sol taraftan parametreleri girip \\"
+
+#: .\inventory\templates\generator.html:191
+msgid "Otomatik SSH Push"
+msgstr "Otomatik SSH Push"
+
+#: .\inventory\templates\generator.html:197
+msgid ""
+"Ürettiğiniz konfigürasyon kodları ağdaki fiziksel cihaza arka planda güvenli"
+" bir şekilde iletilecektir. Lütfen cihaz kimlik bilgilerini girin."
+msgstr ""
+"Ürettiğiniz konfigürasyon kodları ağdaki fiziksel cihaza arka planda güvenli"
+" bir şekilde iletilecektir. Lütfen cihaz kimlik bilgilerini girin."
+
+#: .\inventory\templates\generator.html:216
+msgid "Hedef Cihaz IP Adresi"
+msgstr "Hedef Cihaz IP Adresi"
+
+#: .\inventory\templates\generator.html:222
+msgid "SSH Kullanıcı Adı"
+msgstr "SSH Kullanıcı Adı"
+
+#: .\inventory\templates\generator.html:226
+msgid "SSH Şifresi"
+msgstr "SSH Şifresi"
+
+#: .\inventory\templates\generator.html:231
+msgid "Enable Şifresi (Secret)"
+msgstr "Enable Şifresi (Secret)"
+
+#: .\inventory\templates\generator.html:236
+msgid "SSH ile İletiliyor..."
+msgstr "SSH ile İletiliyor..."
+
+#: .\inventory\templates\governance_center.html:4
+msgid "Yönetişim Merkezi - OmniOps"
+msgstr "Yönetişim Merkezi - OmniOps"
+
+#: .\inventory\templates\governance_center.html:10
+msgid ""
+"Değişiklik takvimi, CMDB bağımlılıkları, entegrasyon sağlığı, uyum "
+"kontrolleri ve doküman çıktıları."
+msgstr ""
+"Değişiklik takvimi, CMDB bağımlılıkları, entegrasyon sağlığı, uyum "
+"kontrolleri ve doküman çıktıları."
+
+#: .\inventory\templates\governance_center.html:15
+msgid "Yaklaşan Değişiklik"
+msgstr "Yaklaşan Değişiklik"
+
+#: .\inventory\templates\governance_center.html:16
+#: .\inventory\templates\governance_center.html:26
+msgid "CMDB Bağımlılığı"
+msgstr "CMDB Bağımlılığı"
+
+#: .\inventory\templates\governance_center.html:18
+msgid "Açık Uyum Kontrolü"
+msgstr "Açık Uyum Kontrolü"
+
+#: .\inventory\templates\governance_center.html:19
+msgid "Çıktı İşi"
+msgstr "Çıktı İşi"
+
+#: .\inventory\templates\governance_center.html:25
+msgid "Değişiklik / Bakım Takvimi"
+msgstr "Değişiklik / Bakım Takvimi"
+
+#: .\inventory\templates\governance_center.html:25
+msgid "Takvime Ekle"
+msgstr "Takvime Ekle"
+
+#: .\inventory\templates\governance_center.html:26
+msgid "Bağımlılığı Kaydet"
+msgstr "Bağımlılığı Kaydet"
+
+#: .\inventory\templates\governance_center.html:27
+msgid "Entegrasyon Sağlığı"
+msgstr "Entegrasyon Sağlığı"
+
+#: .\inventory\templates\governance_center.html:27
+msgid "Entegrasyonu Kaydet"
+msgstr "Entegrasyonu Kaydet"
+
+#: .\inventory\templates\governance_center.html:28
+msgid "Uyum / Denetim Kontrolü"
+msgstr "Uyum / Denetim Kontrolü"
+
+#: .\inventory\templates\governance_center.html:28
+msgid "Kontrolü Kaydet"
+msgstr "Kontrolü Kaydet"
+
+#: .\inventory\templates\governance_center.html:29
+msgid "Doküman / Çıktı İşi"
+msgstr "Doküman / Çıktı İşi"
+
+#: .\inventory\templates\governance_center.html:29
+msgid "Çıktı İşi Aç"
+msgstr "Çıktı İşi Aç"
+
+#: .\inventory\templates\governance_center.html:35
+msgid "Yaklaşan Değişiklikler"
+msgstr "Yaklaşan Değişiklikler"
+
+#: .\inventory\templates\governance_center.html:38
+msgid "Yaklaşan değişiklik yok."
+msgstr "Yaklaşan değişiklik yok."
+
+#: .\inventory\templates\governance_center.html:45
+msgid "Açık Uyum Kontrolleri"
+msgstr "Açık Uyum Kontrolleri"
+
+#: .\inventory\templates\governance_center.html:48
+msgid "Açık uyum kontrolü yok."
+msgstr "Açık uyum kontrolü yok."
+
+#: .\inventory\templates\governance_center.html:50
+msgid "Doküman / Çıktı İşleri"
+msgstr "Doküman / Çıktı İşleri"
+
+#: .\inventory\templates\governance_center.html:53
+msgid "Açık çıktı işi yok."
+msgstr "Açık çıktı işi yok."
+
+#: .\inventory\templates\governance_center.html:55
+msgid "CMDB Bağımlılıkları"
+msgstr "CMDB Bağımlılıkları"
+
+#: .\inventory\templates\governance_center.html:58
+msgid "CMDB bağımlılığı yok."
+msgstr "CMDB bağımlılığı yok."
+
+#: .\inventory\templates\helpdesk_analytics.html:11
+msgid "SLA uyumu, talep dağılımı ve ekip iş yükünü grafiklerle takip edin."
+msgstr "SLA uyumu, talep dağılımı ve ekip iş yükünü grafiklerle takip edin."
+
+#: .\inventory\templates\helpdesk_analytics.html:23
+msgid "Toplam Talep"
+msgstr "Toplam Talep"
+
+#: .\inventory\templates\helpdesk_analytics.html:27
+msgid "Açık Talep"
+msgstr "Açık Talep"
+
+#: .\inventory\templates\helpdesk_analytics.html:35
+msgid "SLA Uyumu"
+msgstr "SLA Uyumu"
+
+#: .\inventory\templates\helpdesk_analytics.html:55
+msgid "Performans Özeti"
+msgstr "Performans Özeti"
+
+#: .\inventory\templates\helpdesk_analytics.html:58
+msgid "Ort. çözüm süresi"
+msgstr "Ort. çözüm süresi"
+
+#: .\inventory\templates\helpdesk_analytics.html:59
+msgid "saat"
+msgstr "saat"
+
+#: .\inventory\templates\helpdesk_analytics.html:62
+msgid "Bu hafta oluşturulan"
+msgstr "Bu hafta oluşturulan"
+
+#: .\inventory\templates\helpdesk_analytics.html:66
+msgid "Bu hafta kapatılan"
+msgstr "Bu hafta kapatılan"
+
+#: .\inventory\templates\helpdesk_analytics.html:70
+msgid "Eskale talepler"
+msgstr "Eskale talepler"
+
+#: .\inventory\templates\helpdesk_analytics.html:77
+msgid "Ekip İş Yükü"
+msgstr "Ekip İş Yükü"
+
+#: .\inventory\templates\helpdesk_analytics.html:86
+msgid "Veri yok"
+msgstr "Veri yok"
+
+#: .\inventory\templates\identity_operations.html:4
+msgid "Kimlik & Uç Nokta Merkezi - OmniOps"
+msgstr "Kimlik & Uç Nokta Merkezi - OmniOps"
+
+#: .\inventory\templates\identity_operations.html:10
+msgid "Kimlik & Uç Nokta Operasyon Merkezi"
+msgstr "Kimlik & Uç Nokta Operasyon Merkezi"
+
+#: .\inventory\templates\identity_operations.html:11
+msgid ""
+"Active Directory, kullanıcı yaşam döngüsü, endpoint uyumu, MFA ve erişim "
+"risklerini tek merkezden yönetin."
+msgstr ""
+"Active Directory, kullanıcı yaşam döngüsü, endpoint uyumu, MFA ve erişim "
+"risklerini tek merkezden yönetin."
+
+#: .\inventory\templates\identity_operations.html:24
+msgid "Directory bağlantısı yok"
+msgstr "Directory bağlantısı yok"
+
+#: .\inventory\templates\identity_operations.html:32
+msgid "Dikkat Kullanıcı"
+msgstr "Dikkat Kullanıcı"
+
+#: .\inventory\templates\identity_operations.html:33
+msgid "Endpoint Alarm"
+msgstr "Endpoint Alarm"
+
+#: .\inventory\templates\identity_operations.html:34
+msgid "Lifecycle"
+msgstr "Lifecycle"
+
+#: .\inventory\templates\identity_operations.html:35
+msgid "Tesis Yetkisi"
+msgstr "Tesis Yetkisi"
+
+#: .\inventory\templates\identity_operations.html:42
+msgid "Directory Bağlantısı"
+msgstr "Directory Bağlantısı"
+
+#: .\inventory\templates\identity_operations.html:50
+msgid "Kullanıcı Snapshot Kaydet"
+msgstr "Kullanıcı Snapshot Kaydet"
+
+#: .\inventory\templates\identity_operations.html:54
+msgid "Directory Grubu"
+msgstr "Directory Grubu"
+
+#: .\inventory\templates\identity_operations.html:56
+msgid "Grubu Kaydet"
+msgstr "Grubu Kaydet"
+
+#: .\inventory\templates\identity_operations.html:60
+msgid "Endpoint Cihazı"
+msgstr "Endpoint Cihazı"
+
+#: .\inventory\templates\identity_operations.html:62
+msgid "Endpoint Kaydet"
+msgstr "Endpoint Kaydet"
+
+#: .\inventory\templates\identity_operations.html:67
+msgid "Fabrika Tesis Erişimi"
+msgstr "Fabrika Tesis Erişimi"
+
+#: .\inventory\templates\identity_operations.html:69
+msgid "Tesis Yetkisi Ver"
+msgstr "Tesis Yetkisi Ver"
+
+#: .\inventory\templates\identity_operations.html:74
+msgid "Lifecycle İşi"
+msgstr "Lifecycle İşi"
+
+#: .\inventory\templates\identity_operations.html:76
+msgid "İşi Oluştur"
+msgstr "İşi Oluştur"
+
+#: .\inventory\templates\identity_operations.html:86
+msgid "Directory Bağlantıları"
+msgstr "Directory Bağlantıları"
+
+#: .\inventory\templates\identity_operations.html:100
+msgid "Henüz Directory bağlantısı yok."
+msgstr "Henüz Directory bağlantısı yok."
+
+#: .\inventory\templates\identity_operations.html:108
+msgid "Dikkat Gerektiren Kullanıcılar"
+msgstr "Dikkat Gerektiren Kullanıcılar"
+
+#: .\inventory\templates\identity_operations.html:116
+msgid "Riskli kullanıcı görünmüyor."
+msgstr "Riskli kullanıcı görünmüyor."
+
+#: .\inventory\templates\identity_operations.html:124
+msgid "Endpoint Uyum Uyarıları"
+msgstr "Endpoint Uyum Uyarıları"
+
+#: .\inventory\templates\identity_operations.html:140
+msgid "Endpoint alarmı yok."
+msgstr "Endpoint alarmı yok."
+
+#: .\inventory\templates\identity_operations.html:148
+msgid "Kimlik Lifecycle İşleri"
+msgstr "Kimlik Lifecycle İşleri"
+
+#: .\inventory\templates\identity_operations.html:174
+msgid "Açık lifecycle işi yok."
+msgstr "Açık lifecycle işi yok."
+
+#: .\inventory\templates\identity_operations.html:182
+msgid "Ayrıcalıklı Gruplar"
+msgstr "Ayrıcalıklı Gruplar"
+
+#: .\inventory\templates\identity_operations.html:193
+msgid "Ayrıcalıklı grup kaydı yok."
+msgstr "Ayrıcalıklı grup kaydı yok."
+
+#: .\inventory\templates\integration_hub_center.html:4
+msgid "Entegrasyon Merkezi - OmniOps"
+msgstr "Entegrasyon Merkezi - OmniOps"
+
+#: .\inventory\templates\integration_hub_center.html:11
+msgid ""
+"İzleme, VMS, bildirim kanalları, e-posta ticket, yedekleme vendor ve WMS "
+"köprüleri."
+msgstr ""
+"İzleme, VMS, bildirim kanalları, e-posta ticket, yedekleme vendor ve WMS "
+"köprüleri."
+
+#: .\inventory\templates\integration_hub_center.html:16
+#: .\inventory\templates\itsm_maturity.html:10
+msgid "ITSM Olgunluk"
+msgstr "ITSM Olgunluk"
+
+#: .\inventory\templates\integration_hub_center.html:23
+msgid "Bildirim"
+msgstr "Bildirim"
+
+#: .\inventory\templates\integration_hub_center.html:32
+msgid "Bildirim Kanalı"
+msgstr "Bildirim Kanalı"
+
+#: .\inventory\templates\integration_hub_center.html:33
+#: .\inventory\templates\integration_hub_center.html:37
+#: .\inventory\templates\itsm_maturity.html:30
+#: .\inventory\templates\itsm_maturity.html:34
+#: .\inventory\templates\itsm_maturity.html:38
+#: .\inventory\templates\ot_integrations.html:31
+#: .\inventory\templates\workspace_center.html:89
+msgid "Kaydet"
+msgstr "Kaydet"
+
+#: .\inventory\templates\integration_hub_center.html:36
+msgid "İzleme Bağlantısı"
+msgstr "İzleme Bağlantısı"
+
+#: .\inventory\templates\integration_hub_center.html:40
+msgid "Modül Yetkisi"
+msgstr "Modül Yetkisi"
+
+#: .\inventory\templates\integration_hub_center.html:41
+msgid "Yetki Ver"
+msgstr "Yetki Ver"
+
+#: .\inventory\templates\integration_hub_center.html:46
+msgid "Aktif Bildirim Kanalları"
+msgstr "Aktif Bildirim Kanalları"
+
+#: .\inventory\templates\integration_hub_center.html:49
+#: .\inventory\templates\ot_integrations.html:40
+msgid "Tesis"
+msgstr "Tesis"
+
+#: .\inventory\templates\integration_hub_center.html:64
+msgid "İzleme / VMS / WMS / Backup"
+msgstr "İzleme / VMS / WMS / Backup"
+
+#: .\inventory\templates\integration_hub_center.html:70
+msgid "Monitoring"
+msgstr "Monitoring"
+
+#: .\inventory\templates\integration_hub_center.html:89
+msgid "VMS / E-posta / WMS Formları"
+msgstr "VMS / E-posta / WMS Formları"
+
+#: .\inventory\templates\integration_hub_center.html:91
+msgid "VMS Kaydet"
+msgstr "VMS Kaydet"
+
+#: .\inventory\templates\integration_hub_center.html:92
+msgid "Inbox Kaydet"
+msgstr "Inbox Kaydet"
+
+#: .\inventory\templates\integration_hub_center.html:93
+msgid "WMS Kaydet"
+msgstr "WMS Kaydet"
+
+#: .\inventory\templates\integration_hub_center.html:94
+msgid "Backup Vendor Kaydet"
+msgstr "Backup Vendor Kaydet"
+
+#: .\inventory\templates\inventory\generic_confirm_delete.html:8
+msgid " Silme İşlemi Onayı"
+msgstr " Silme İşlemi Onayı"
+
+#: .\inventory\templates\inventory\generic_confirm_delete.html:11
+msgid "kaydını tamamen silmek üzeresiniz."
+msgstr "kaydını tamamen silmek üzeresiniz."
+
+#: .\inventory\templates\inventory\generic_confirm_delete.html:12
+msgid "Bu işlem geri alınamaz. Emin misiniz?"
+msgstr "Bu işlem geri alınamaz. Emin misiniz?"
+
+#: .\inventory\templates\inventory\generic_confirm_delete.html:15
+msgid " Evet, Kalıcı Olarak Sil"
+msgstr " Evet, Kalıcı Olarak Sil"
+
+#: .\inventory\templates\inventory\generic_confirm_delete.html:16
+msgid " Vazgeç"
+msgstr " Vazgeç"
+
+#: .\inventory\templates\inventory\generic_form.html:5
+msgid " Kaydı Düzenle"
+msgstr " Kaydı Düzenle"
+
+#: .\inventory\templates\inventory\generic_form.html:12
+msgid " Kaydet"
+msgstr " Kaydet"
+
+#: .\inventory\templates\inventory\generic_form.html:13
+msgid " İptal"
+msgstr " İptal"
+
+#: .\inventory\templates\ipam.html:4
+msgid "OmniOps - Akıllı IPAM Haritası"
+msgstr "OmniOps - Akıllı IPAM Haritası"
+
+#: .\inventory\templates\ipam.html:49
+msgid "IP Adres Yönetimi"
+msgstr "IP Adres Yönetimi"
+
+#: .\inventory\templates\ipam.html:50
+msgid ""
+"Ağınızdaki cihazlara IP adreslerini görsel harita üzerinden güvenle "
+"zimmetleyin."
+msgstr ""
+"Ağınızdaki cihazlara IP adreslerini görsel harita üzerinden güvenle "
+"zimmetleyin."
+
+#: .\inventory\templates\ipam.html:62
+msgid "Güvenli IP Atama"
+msgstr "Güvenli IP Atama"
+
+#: .\inventory\templates\ipam.html:88
+msgid "Zimmetleniyor..."
+msgstr "Zimmetleniyor..."
+
+#: .\inventory\templates\ipam.html:98
+msgid "Algoritma cihaz grupları için sıradaki ilk boş IP'leri tespit etti:"
+msgstr "Algoritma cihaz grupları için sıradaki ilk boş IP'leri tespit etti:"
+
+#: .\inventory\templates\ipam.html:120
+msgid "Ağ Bloğu Görüntüleyici"
+msgstr "Ağ Bloğu Görüntüleyici"
+
+#: .\inventory\templates\ipam.html:127
+msgid "Harita Çiziliyor..."
+msgstr "Harita Çiziliyor..."
+
+#: .\inventory\templates\ipam.html:148
+msgid "Atanmaya Hazır"
+msgstr "Atanmaya Hazır"
+
+#: .\inventory\templates\ipam.html:154
+msgid "Zimmetli Cihaz"
+msgstr "Zimmetli Cihaz"
+
+#: .\inventory\templates\ipam.html:202
+msgid "BOŞ"
+msgstr "BOŞ"
+
+#: .\inventory\templates\it_inventory.html:4
+msgid "OmniOps - BT Envanter ve Lisans Yönetimi"
+msgstr "OmniOps - BT Envanter ve Lisans Yönetimi"
+
+#: .\inventory\templates\it_inventory.html:22
+msgid "BT Varlık Yönetimi"
+msgstr "BT Varlık Yönetimi"
+
+#: .\inventory\templates\it_inventory.html:23
+msgid ""
+"Donanım envanterini, yazılım lisanslarını ve kurum sözleşmelerini yönetin."
+msgstr ""
+"Donanım envanterini, yazılım lisanslarını ve kurum sözleşmelerini yönetin."
+
+#: .\inventory\templates\it_inventory.html:58
+msgid "Sistemdeki Fiziksel Varlıklar"
+msgstr "Sistemdeki Fiziksel Varlıklar"
+
+#: .\inventory\templates\it_inventory.html:64
+msgid "Varlık Adı / Model"
+msgstr "Varlık Adı / Model"
+
+#: .\inventory\templates\it_inventory.html:65
+msgid "Seri Numarası"
+msgstr "Seri Numarası"
+
+#: .\inventory\templates\it_inventory.html:66
+msgid "Zimmet Durumu"
+msgstr "Zimmet Durumu"
+
+#: .\inventory\templates\it_inventory.html:68
+msgid "Durum & İşlemler"
+msgstr "Durum & İşlemler"
+
+#: .\inventory\templates\it_inventory.html:93
+msgid "Tamirde"
+msgstr "Tamirde"
+
+#: .\inventory\templates\it_inventory.html:108
+msgid "Henüz donanım envanteri eklenmemiş."
+msgstr "Henüz donanım envanteri eklenmemiş."
+
+#: .\inventory\templates\it_inventory.html:189
+msgid "Kayıtlı Lisans Bulunmuyor"
+msgstr "Kayıtlı Lisans Bulunmuyor"
+
+#: .\inventory\templates\it_inventory.html:190
+msgid ""
+"Şirketinizin yazılım maliyetlerini takip etmek için sağ üstten lisans "
+"ekleyin."
+msgstr ""
+"Şirketinizin yazılım maliyetlerini takip etmek için sağ üstten lisans "
+"ekleyin."
+
+#: .\inventory\templates\it_inventory.html:225
+msgid "Yeni Sözleşme Ekle"
+msgstr "Yeni Sözleşme Ekle"
+
+#: .\inventory\templates\it_inventory.html:232
+msgid "Tedarikçi Firma"
+msgstr "Tedarikçi Firma"
+
+#: .\inventory\templates\it_inventory.html:233
+msgid "Türk Telekom"
+msgstr "Türk Telekom"
+
+#: .\inventory\templates\it_inventory.html:236
+msgid "Sözleşme Başlığı"
+msgstr "Sözleşme Başlığı"
+
+#: .\inventory\templates\it_inventory.html:243
+msgid "İnternet / ISP"
+msgstr "İnternet / ISP"
+
+#: .\inventory\templates\it_inventory.html:244
+msgid "Bulut / Hosting"
+msgstr "Bulut / Hosting"
+
+#: .\inventory\templates\it_inventory.html:245
+msgid "Donanım Bakım"
+msgstr "Donanım Bakım"
+
+#: .\inventory\templates\it_inventory.html:246
+msgid "Yazılım Desteği"
+msgstr "Yazılım Desteği"
+
+#: .\inventory\templates\it_inventory.html:251
+#: .\inventory\templates\it_inventory.html:286
+msgid "SLA Seviyesi"
+msgstr "SLA Seviyesi"
+
+#: .\inventory\templates\it_inventory.html:253
+msgid "7/24 Kritik Çözüm"
+msgstr "7/24 Kritik Çözüm"
+
+#: .\inventory\templates\it_inventory.html:254
+msgid "8x5 Mesai (NBD)"
+msgstr "8x5 Mesai (NBD)"
+
+#: .\inventory\templates\it_inventory.html:270
+msgid "Yıllık Maliyet - Opsiyonel"
+msgstr "Yıllık Maliyet - Opsiyonel"
+
+#: .\inventory\templates\it_inventory.html:273
+msgid "Sözleşmeyi Ekle"
+msgstr "Sözleşmeyi Ekle"
+
+#: .\inventory\templates\it_inventory.html:285
+msgid "Firma ve Sözleşme"
+msgstr "Firma ve Sözleşme"
+
+#: .\inventory\templates\it_inventory.html:288
+msgid "Kalan Süre & İşlemler"
+msgstr "Kalan Süre & İşlemler"
+
+#: .\inventory\templates\it_inventory.html:299
+msgid "7/24 Kritik"
+msgstr "7/24 Kritik"
+
+#: .\inventory\templates\it_inventory.html:300
+msgid "8x5 Ertesi Gün"
+msgstr "8x5 Ertesi Gün"
+
+#: .\inventory\templates\it_inventory.html:320
+msgid "Kayıtlı sözleşme bulunmuyor."
+msgstr "Kayıtlı sözleşme bulunmuyor."
+
+#: .\inventory\templates\it_inventory.html:361
+msgid "Yeni Donanım Varlığı Ekle"
+msgstr "Yeni Donanım Varlığı Ekle"
+
+#: .\inventory\templates\it_inventory.html:422
+msgid "Yazılım Lisansı Ekle"
+msgstr "Yazılım Lisansı Ekle"
+
+#: .\inventory\templates\it_inventory.html:461
+msgid "Aylık/Yıllık Abonelik Mi?"
+msgstr "Aylık/Yıllık Abonelik Mi?"
+
+#: .\inventory\templates\it_inventory.html:464
+msgid "Lisans Kaydediliyor..."
+msgstr "Lisans Kaydediliyor..."
+
+#: .\inventory\templates\it_operations.html:4
+msgid "IT Operasyon Merkezi - OmniOps"
+msgstr "IT Operasyon Merkezi - OmniOps"
+
+#: .\inventory\templates\it_operations.html:9
+msgid "IT Operasyon Merkezi"
+msgstr "IT Operasyon Merkezi"
+
+#: .\inventory\templates\it_operations.html:10
+msgid ""
+"Satın alma, nöbet, yedekleme, tedarikçi destek ve zimmet süreçlerini tek "
+"ekrandan yönetin."
+msgstr ""
+"Satın alma, nöbet, yedekleme, tedarikçi destek ve zimmet süreçlerini tek "
+"ekrandan yönetin."
+
+#: .\inventory\templates\it_operations.html:17
+#: .\inventory\templates\it_operations.html:147
+msgid "Onay Bekleyen Satın Alma"
+msgstr "Onay Bekleyen Satın Alma"
+
+#: .\inventory\templates\it_operations.html:23
+msgid "Aktif Nöbetçi"
+msgstr "Aktif Nöbetçi"
+
+#: .\inventory\templates\it_operations.html:35
+msgid "Açık Tedarikçi Vakası"
+msgstr "Açık Tedarikçi Vakası"
+
+#: .\inventory\templates\it_operations.html:46
+msgid "Satın Alma Talebi"
+msgstr "Satın Alma Talebi"
+
+#: .\inventory\templates\it_operations.html:54
+msgid "Talep Oluştur"
+msgstr "Talep Oluştur"
+
+#: .\inventory\templates\it_operations.html:62
+msgid "Nöbet Planla"
+msgstr "Nöbet Planla"
+
+#: .\inventory\templates\it_operations.html:70
+msgid "Nöbet Kaydet"
+msgstr "Nöbet Kaydet"
+
+#: .\inventory\templates\it_operations.html:78
+msgid "Yedekleme İşi Ekle"
+msgstr "Yedekleme İşi Ekle"
+
+#: .\inventory\templates\it_operations.html:86
+msgid "Yedekleme Kaydet"
+msgstr "Yedekleme Kaydet"
+
+#: .\inventory\templates\it_operations.html:94
+msgid "Tedarikçi Destek Kaydı"
+msgstr "Tedarikçi Destek Kaydı"
+
+#: .\inventory\templates\it_operations.html:102
+msgid "Vaka Aç"
+msgstr "Vaka Aç"
+
+#: .\inventory\templates\it_operations.html:110
+msgid "Zimmet Teslim / İade"
+msgstr "Zimmet Teslim / İade"
+
+#: .\inventory\templates\it_operations.html:118
+msgid "Zimmet Kaydet"
+msgstr "Zimmet Kaydet"
+
+#: .\inventory\templates\it_operations.html:130
+msgid "Aktif Nöbetçiler"
+msgstr "Aktif Nöbetçiler"
+
+#: .\inventory\templates\it_operations.html:139
+msgid "Şu an aktif nöbet kaydı yok."
+msgstr "Şu an aktif nöbet kaydı yok."
+
+#: .\inventory\templates\it_operations.html:163
+msgid "Bekleyen satın alma talebi yok."
+msgstr "Bekleyen satın alma talebi yok."
+
+#: .\inventory\templates\it_operations.html:189
+msgid "Sorunlu yedekleme kaydı yok."
+msgstr "Sorunlu yedekleme kaydı yok."
+
+#: .\inventory\templates\it_operations.html:197
+msgid "Açık Tedarikçi Vakaları"
+msgstr "Açık Tedarikçi Vakaları"
+
+#: .\inventory\templates\it_operations.html:209
+#: .\inventory\templates\itsm_maturity.html:53
+#: .\inventory\templates\service_operations.html:73
+msgid "Çöz"
+msgstr "Çöz"
+
+#: .\inventory\templates\it_operations.html:213
+msgid "Açık tedarikçi vakası yok."
+msgstr "Açık tedarikçi vakası yok."
+
+#: .\inventory\templates\it_operations.html:221
+msgid "Son Zimmet İşlemleri"
+msgstr "Son Zimmet İşlemleri"
+
+#: .\inventory\templates\it_operations.html:243
+msgid "Henüz zimmet kaydı yok."
+msgstr "Henüz zimmet kaydı yok."
+
+#: .\inventory\templates\itsm_maturity.html:4
+msgid "ITSM Olgunluk - OmniOps"
+msgstr "ITSM Olgunluk - OmniOps"
+
+#: .\inventory\templates\itsm_maturity.html:11
+msgid "Problem yönetimi, release/CAB, varlık yaşam döngüsü ve denetim izi."
+msgstr "Problem yönetimi, release/CAB, varlık yaşam döngüsü ve denetim izi."
+
+#: .\inventory\templates\itsm_maturity.html:20
+msgid "Açık Problem"
+msgstr "Açık Problem"
+
+#: .\inventory\templates\itsm_maturity.html:22
+msgid "Lifecycle Olay"
+msgstr "Lifecycle Olay"
+
+#: .\inventory\templates\itsm_maturity.html:23
+msgid "Denetim İzi"
+msgstr "Denetim İzi"
+
+#: .\inventory\templates\itsm_maturity.html:29
+msgid "Problem Kaydı"
+msgstr "Problem Kaydı"
+
+#: .\inventory\templates\itsm_maturity.html:37
+msgid "Varlık Yaşam Döngüsü"
+msgstr "Varlık Yaşam Döngüsü"
+
+#: .\inventory\templates\itsm_maturity.html:43
+msgid "Problem Kayıtları"
+msgstr "Problem Kayıtları"
+
+#: .\inventory\templates\itsm_maturity.html:61
+msgid "Release Kayıtları"
+msgstr "Release Kayıtları"
+
+#: .\inventory\templates\itsm_maturity.html:72
+msgid "CAB Onay"
+msgstr "CAB Onay"
+
+#: .\inventory\templates\itsm_maturity.html:80
+msgid "Son Denetim İzleri"
+msgstr "Son Denetim İzleri"
+
+#: .\inventory\templates\itsm_maturity.html:87
+msgid "Denetim kaydı yok."
+msgstr "Denetim kaydı yok."
+
+#: .\inventory\templates\knowledge_base.html:4
+msgid "Bilgi Bankası - OmniOps"
+msgstr "Bilgi Bankası - OmniOps"
+
+#: .\inventory\templates\knowledge_base.html:28
+msgid ""
+"Nasıl yardımcı olabiliriz? Arıza kaydı açmadan önce çözüm rehberlerimize göz"
+" atın."
+msgstr ""
+"Nasıl yardımcı olabiliriz? Arıza kaydı açmadan önce çözüm rehberlerimize göz"
+" atın."
+
+#: .\inventory\templates\knowledge_base.html:48
+msgid "Yeni Doküman Ekle"
+msgstr "Yeni Doküman Ekle"
+
+#: .\inventory\templates\knowledge_base.html:63
+msgid "Makale Başlığı"
+msgstr "Makale Başlığı"
+
+#: .\inventory\templates\knowledge_base.html:64
+msgid "Ortak Yazıcı Çevrimdışı Sorunu"
+msgstr "Ortak Yazıcı Çevrimdışı Sorunu"
+
+#: .\inventory\templates\knowledge_base.html:67
+msgid "Çözüm / İçerik"
+msgstr "Çözüm / İçerik"
+
+#: .\inventory\templates\knowledge_base.html:68
+msgid "Çözüm adımlarını buraya girin..."
+msgstr "Çözüm adımlarını buraya girin..."
+
+#: .\inventory\templates\knowledge_base.html:116
+msgid "Makale Bulunamadı"
+msgstr "Makale Bulunamadı"
+
+#: .\inventory\templates\knowledge_base.html:117
+msgid ""
+"Arama kriterlerinize uygun bir çözüm bulamadık. Aradığınız kelimeleri "
+"değiştirerek tekrar deneyebilirsiniz."
+msgstr ""
+"Arama kriterlerinize uygun bir çözüm bulamadık. Aradığınız kelimeleri "
+"değiştirerek tekrar deneyebilirsiniz."
+
+#: .\inventory\templates\login.html:8
+msgid "Güvenli Giriş"
+msgstr "Güvenli Giriş"
+
+#: .\inventory\templates\login.html:332
+msgid "Fabrikanın tüm BT operasyonu tek panelde."
+msgstr "Fabrikanın tüm BT operasyonu tek panelde."
+
+#: .\inventory\templates\login.html:334
+msgid ""
+"Ticket, ağ keşfi, cihaz yedekleri, kamera, VPN erişimi, envanter, uyum, "
+"rapor ve yönetici özetleri aynı sade deneyimde birleşir."
+msgstr ""
+"Ticket, ağ keşfi, cihaz yedekleri, kamera, VPN erişimi, envanter, uyum, "
+"rapor ve yönetici özetleri aynı sade deneyimde birleşir."
+
+#: .\inventory\templates\login.html:338
+msgid " Ağ & cihaz görünürlüğü"
+msgstr " Ağ & cihaz görünürlüğü"
+
+#: .\inventory\templates\login.html:339
+msgid " PDF / Word rapor"
+msgstr " PDF / Word rapor"
+
+#: .\inventory\templates\login.html:340
+msgid " Güvenlik & uyum"
+msgstr " Güvenlik & uyum"
+
+#: .\inventory\templates\login.html:341
+msgid " Fabrika operasyonları"
+msgstr " Fabrika operasyonları"
+
+#: .\inventory\templates\login.html:351
+msgid "Factory IT Suite güvenli giriş"
+msgstr "Factory IT Suite güvenli giriş"
+
+#: .\inventory\templates\login.html:359
+msgid "Kullanıcı adınızı girin"
+msgstr "Kullanıcı adınızı girin"
+
+#: .\inventory\templates\login.html:363
+msgid "Şifre"
+msgstr "Şifre"
+
+#: .\inventory\templates\login.html:373
+msgid "Giriş Yap"
+msgstr "Giriş Yap"
+
+#: .\inventory\templates\login.html:379
+msgid "Kullanıcı adı veya şifre hatalı!"
+msgstr "Kullanıcı adı veya şifre hatalı!"
+
+#: .\inventory\templates\login.html:384
+msgid "VEYA"
+msgstr "VEYA"
+
+#: .\inventory\templates\login.html:389
+msgid "Microsoft ile Giriş Yap"
+msgstr "Microsoft ile Giriş Yap"
+
+#: .\inventory\templates\login.html:394
+msgid "Kurumsal SSO ile Giriş Yap"
+msgstr "Kurumsal SSO ile Giriş Yap"
+
+#: .\inventory\templates\login.html:401
+msgid "Henüz bir hesabınız yok mu?"
+msgstr "Henüz bir hesabınız yok mu?"
+
+#: .\inventory\templates\login.html:403
+msgid "Yeni Hesap Oluştur"
+msgstr "Yeni Hesap Oluştur"
+
+#: .\inventory\templates\login.html:428
+msgid "Giriş Yapılıyor..."
+msgstr "Giriş Yapılıyor..."
+
+#: .\inventory\templates\managed_document_editor.html:15
+#: .\inventory\views.py:82
+msgid "Komuta Merkezi"
+msgstr "Komuta Merkezi"
+
+#: .\inventory\templates\monitor.html:11
+msgid ""
+"Seçili cihazın CPU, bellek ve ağ trafiğini gerçek zamanlı grafiklerle "
+"izleyin."
+msgstr ""
+"Seçili cihazın CPU, bellek ve ağ trafiğini gerçek zamanlı grafiklerle "
+"izleyin."
+
+#: .\inventory\templates\monitor.html:13
+msgid "2 sn güncelleme"
+msgstr "2 sn güncelleme"
+
+#: .\inventory\templates\monitor.html:20
+msgid "İzlenen cihaz"
+msgstr "İzlenen cihaz"
+
+#: .\inventory\templates\monitor.html:22
+msgid "Yerel sunucu"
+msgstr "Yerel sunucu"
+
+#: .\inventory\templates\monitor.html:32
+msgid "Gecikme"
+msgstr "Gecikme"
+
+#: .\inventory\templates\monitor.html:56
+msgid "Bellek Kullanımı"
+msgstr "Bellek Kullanımı"
+
+#: .\inventory\templates\monitor.html:66
+msgid "Ağ Trafiği (Mbps)"
+msgstr "Ağ Trafiği (Mbps)"
+
+#: .\inventory\templates\monitor.html:156
+msgid "Gelen"
+msgstr "Gelen"
+
+#: .\inventory\templates\monitor.html:165
+msgid "Giden"
+msgstr "Giden"
+
+#: .\inventory\templates\monitor.html:225
+#| msgid "Canlı veri"
+msgid "Sınırlı veri"
+msgstr "Sınırlı veri"
+
+#: .\inventory\templates\monitor.html:232
+msgid "Bağlantı yok"
+msgstr "Bağlantı yok"
+
+#: .\inventory\templates\offline_field_app.html:5
+msgid "Offline Saha Uygulaması - OmniOps"
+msgstr "Offline Saha Uygulaması - OmniOps"
+
+#: .\inventory\templates\offline_field_app.html:14
+msgid "Offline-First Saha Talebi"
+msgstr "Offline-First Saha Talebi"
+
+#: .\inventory\templates\offline_field_app.html:15
+msgid ""
+"İnternet yokken kayıtlar IndexedDB kuyruğuna alınır, bağlantı gelince "
+"senkronize edilir."
+msgstr ""
+"İnternet yokken kayıtlar IndexedDB kuyruğuna alınır, bağlantı gelince "
+"senkronize edilir."
+
+#: .\inventory\templates\offline_field_app.html:49
+msgid "Kaydet / Kuyruğa Al"
+msgstr "Kaydet / Kuyruğa Al"
+
+#: .\inventory\templates\offline_field_app.html:50
+msgid "Şimdi Senkronize Et"
+msgstr "Şimdi Senkronize Et"
+
+#: .\inventory\templates\ot_integrations.html:4
+msgid "OT/MES Entegrasyonları - OmniOps"
+msgstr "OT/MES Entegrasyonları - OmniOps"
+
+#: .\inventory\templates\ot_integrations.html:10
+msgid "OT / MES Köprüsü"
+msgstr "OT / MES Köprüsü"
+
+#: .\inventory\templates\ot_integrations.html:11
+msgid ""
+"MES, SCADA REST gateway veya OPC köprüsünden üretim varlıklarını fabrika "
+"envanterine aktarın."
+msgstr ""
+"MES, SCADA REST gateway veya OPC köprüsünden üretim varlıklarını fabrika "
+"envanterine aktarın."
+
+#: .\inventory\templates\ot_integrations.html:14
+msgid "ERP Entegrasyonları"
+msgstr "ERP Entegrasyonları"
+
+#: .\inventory\templates\ot_integrations.html:27
+msgid "Yeni OT Bağlantısı"
+msgstr "Yeni OT Bağlantısı"
+
+#: .\inventory\templates\ot_integrations.html:37
+msgid "Aktif Bağlantılar"
+msgstr "Aktif Bağlantılar"
+
+#: .\inventory\templates\ot_integrations.html:54
+msgid "OT bağlantısı yok."
+msgstr "OT bağlantısı yok."
+
+#: .\inventory\templates\port_mapping.html:23
+msgid "Geri Dön"
+msgstr "Geri Dön"
+
+#: .\inventory\templates\port_mapping.html:29
+msgid " Aktif"
+msgstr " Aktif"
+
+#: .\inventory\templates\port_mapping.html:30
+msgid " Boş"
+msgstr " Boş"
+
+#: .\inventory\templates\port_mapping.html:31
+msgid " Kapalı"
+msgstr " Kapalı"
+
+#: .\inventory\templates\port_mapping.html:76
+msgid "Tüm Portların Detaylı Listesi"
+msgstr "Tüm Portların Detaylı Listesi"
+
+#: .\inventory\templates\port_mapping.html:83
+msgid "Arayüz Adı"
+msgstr "Arayüz Adı"
+
+#: .\inventory\templates\port_mapping.html:85
+msgid "Zimmetli / Bağlı Cihaz"
+msgstr "Zimmetli / Bağlı Cihaz"
+
+#: .\inventory\templates\port_mapping.html:86
+msgid "Kablo Açıklaması"
+msgstr "Kablo Açıklaması"
+
+#: .\inventory\templates\port_mapping.html:97
+msgid "DISABLED"
+msgstr "DISABLED"
+
+#: .\inventory\templates\port_mapping.html:103
+msgid "Bağlı cihaz yok"
+msgstr "Bağlı cihaz yok"
+
+#: .\inventory\templates\port_mapping.html:122
+msgid "Port Bağlantısını Düzenle"
+msgstr "Port Bağlantısını Düzenle"
+
+#: .\inventory\templates\port_mapping.html:129
+msgid "Seçilen Arayüz:"
+msgstr "Seçilen Arayüz:"
+
+#: .\inventory\templates\port_mapping.html:140
+msgid "🟢 Aktif"
+msgstr "🟢 Aktif"
+
+#: .\inventory\templates\port_mapping.html:141
+msgid "🔴 Boş"
+msgstr "🔴 Boş"
+
+#: .\inventory\templates\port_mapping.html:142
+msgid "⚫ Kapalı"
+msgstr "⚫ Kapalı"
+
+#: .\inventory\templates\port_mapping.html:149
+msgid "-- Cihaz Bağlı Değil --"
+msgstr "-- Cihaz Bağlı Değil --"
+
+#: .\inventory\templates\port_mapping.html:157
+msgid "Kablo / Duvar Prizi Açıklaması"
+msgstr "Kablo / Duvar Prizi Açıklaması"
+
+#: .\inventory\templates\port_mapping.html:158
+msgid "Kat 2, Muhasebe Odası Priz-05"
+msgstr "Kat 2, Muhasebe Odası Priz-05"
+
+#: .\inventory\templates\port_mapping_list.html:4
+msgid "Port Haritaları - OmniOps"
+msgstr "Port Haritaları - OmniOps"
+
+#: .\inventory\templates\port_mapping_list.html:11
+msgid ""
+"Cihaz bazlı port haritasına gitmek için aşağıdaki cihazlardan birini seçin."
+msgstr ""
+"Cihaz bazlı port haritasına gitmek için aşağıdaki cihazlardan birini seçin."
+
+#: .\inventory\templates\port_mapping_list.html:24
+msgid "Port Sayısı"
+msgstr "Port Sayısı"
+
+#: .\inventory\templates\port_mapping_list.html:36
+msgid "Port Haritasını Gör"
+msgstr "Port Haritasını Gör"
+
+#: .\inventory\templates\port_mapping_list.html:42
+msgid ""
+"Henüz port yapılandırılmış cihaz bulunamadı. Lütfen cihaz port kayıtlarını "
+"ekleyin."
+msgstr ""
+"Henüz port yapılandırılmış cihaz bulunamadı. Lütfen cihaz port kayıtlarını "
+"ekleyin."
+
+#: .\inventory\templates\profile.html:21
+msgid "E-posta eklenmemiş"
+msgstr "E-posta eklenmemiş"
+
+#: .\inventory\templates\profile.html:57
+msgid "Profili Kaydet"
+msgstr "Profili Kaydet"
+
+#: .\inventory\templates\rack.html:3
+msgid "OmniOps - Veri Merkezi Kabin Görünümü"
+msgstr "OmniOps - Veri Merkezi Kabin Görünümü"
+
+#: .\inventory\templates\rack.html:8
+msgid " Veri Merkezi - Kabin Haritası"
+msgstr " Veri Merkezi - Kabin Haritası"
+
+#: .\inventory\templates\register.html:4
+msgid "Kayıt Ol"
+msgstr "Kayıt Ol"
+
+#: .\inventory\templates\register.html:17
+msgid "OmniOps'e Katıl"
+msgstr "OmniOps'e Katıl"
+
+#: .\inventory\templates\register.html:18
+msgid "BT Altyapı yönetimine profesyonel bir adım atın."
+msgstr "BT Altyapı yönetimine profesyonel bir adım atın."
+
+#: .\inventory\templates\register.html:47
+msgid "Hesap Oluşturuluyor..."
+msgstr "Hesap Oluşturuluyor..."
+
+#: .\inventory\templates\register.html:48
+msgid "Hesabımı Oluştur"
+msgstr "Hesabımı Oluştur"
+
+#: .\inventory\templates\register.html:53
+msgid "Zaten bir hesabınız var mı?"
+msgstr "Zaten bir hesabınız var mı?"
+
+#: .\inventory\templates\register.html:55
+msgid "Sisteme Giriş Yapın"
+msgstr "Sisteme Giriş Yapın"
+
+#: .\inventory\templates\reporting_hub.html:5
+msgid "OmniOps - Raporlama Merkezi"
+msgstr "OmniOps - Raporlama Merkezi"
+
+#: .\inventory\templates\reporting_hub.html:13
+msgid ""
+"Yönetici bilgilendirme, denetim izi, ticket performansı ve operasyon "
+"çıktılarınızı PDF/Word olarak dışa aktarın."
+msgstr ""
+"Yönetici bilgilendirme, denetim izi, ticket performansı ve operasyon "
+"çıktılarınızı PDF/Word olarak dışa aktarın."
+
+#: .\inventory\templates\reporting_hub.html:31
+msgid "Yönetici PDF Özeti"
+msgstr "Yönetici PDF Özeti"
+
+#: .\inventory\templates\reporting_hub.html:32
+msgid "Tek sayfa durum ve risk çıktısı"
+msgstr "Tek sayfa durum ve risk çıktısı"
+
+#: .\inventory\templates\reporting_hub.html:42
+msgid "Word Yönetici Raporu"
+msgstr "Word Yönetici Raporu"
+
+#: .\inventory\templates\reporting_hub.html:43
+msgid "Düzenlenebilir toplantı dokümanı"
+msgstr "Düzenlenebilir toplantı dokümanı"
+
+#: .\inventory\templates\reporting_hub.html:53
+msgid "Tek Ekran Bilgilendirme"
+msgstr "Tek Ekran Bilgilendirme"
+
+#: .\inventory\templates\reporting_hub.html:54
+msgid "Yöneticiye sunum hazır özet"
+msgstr "Yöneticiye sunum hazır özet"
+
+#: .\inventory\templates\reporting_hub.html:67
+msgid "Özel Rapor Oluşturucu"
+msgstr "Özel Rapor Oluşturucu"
+
+#: .\inventory\templates\reporting_hub.html:76
+msgid "1. Rapor Türünü Seçin"
+msgstr "1. Rapor Türünü Seçin"
+
+#: .\inventory\templates\reporting_hub.html:86
+msgid "Bilet & Performans Raporu"
+msgstr "Bilet & Performans Raporu"
+
+#: .\inventory\templates\reporting_hub.html:87
+msgid "ITIL SLA İhlalleri, Çözüm Süreleri"
+msgstr "ITIL SLA İhlalleri, Çözüm Süreleri"
+
+#: .\inventory\templates\reporting_hub.html:99
+msgid "ISO/KVKK Denetim Raporu"
+msgstr "ISO/KVKK Denetim Raporu"
+
+#: .\inventory\templates\reporting_hub.html:100
+msgid "Oturumlar, Konfigürasyon Logları"
+msgstr "Oturumlar, Konfigürasyon Logları"
+
+#: .\inventory\templates\reporting_hub.html:108
+msgid "2. Tarih Aralığını Belirleyin"
+msgstr "2. Tarih Aralığını Belirleyin"
+
+#: .\inventory\templates\sales_kanban.html:4
+msgid "Satış Kanban - OmniOps"
+msgstr "Satış Kanban - OmniOps"
+
+#: .\inventory\templates\sales_kanban.html:9
+msgid "Dinamik Kanban Panosu"
+msgstr "Dinamik Kanban Panosu"
+
+#: .\inventory\templates\sales_kanban.html:10
+msgid "Sürükle-bırak satış hunisi ve optimistic gelir güncellemesi."
+msgstr "Sürükle-bırak satış hunisi ve optimistic gelir güncellemesi."
+
+#: .\inventory\templates\sales_kanban.html:24
+msgid "Ekle"
+msgstr "Ekle"
+
+#: .\inventory\templates\sales_kanban.html:49
+msgid "Kart yok"
+msgstr "Kart yok"
+
+#: .\inventory\templates\scanner.html:4
+msgid "OmniOps - Canlı Ağ Tarayıcı"
+msgstr "OmniOps - Canlı Ağ Tarayıcı"
+
+#: .\inventory\templates\scanner.html:11
+msgid "Gelişmiş Ağ Tarayıcı"
+msgstr "Gelişmiş Ağ Tarayıcı"
+
+#: .\inventory\templates\scanner.html:12
+msgid ""
+"Ping, ARP ve raw-socket/TCP probelarını birleştirerek cihaz, MAC ve üretici "
+"bilgilerini yakalayın."
+msgstr ""
+"Ping, ARP ve raw-socket/TCP probelarını birleştirerek cihaz, MAC ve üretici "
+"bilgilerini yakalayın."
+
+#: .\inventory\templates\scanner.html:25
+msgid "Tarama Parametreleri"
+msgstr "Tarama Parametreleri"
+
+#: .\inventory\templates\scanner.html:29
+msgid ""
+"Hybrid mod önce ARP broadcast, sonra ICMP ping ve servis port probe dener. "
+"MAC varsa vendor otomatik tespit edilir."
+msgstr ""
+"Hybrid mod önce ARP broadcast, sonra ICMP ping ve servis port probe dener. "
+"MAC varsa vendor otomatik tespit edilir."
+
+#: .\inventory\templates\scanner.html:31
+msgid "Ağ Dinleniyor..."
+msgstr "Ağ Dinleniyor..."
+
+#: .\inventory\templates\scanner.html:34
+msgid "Hedef Ağ Bloğu"
+msgstr "Hedef Ağ Bloğu"
+
+#: .\inventory\templates\scanner.html:36
+#: .\inventory\templates\subnet_calc.html:35
+#: .\inventory\templates\subnet_calc.html:43
+msgid "placeholder=\\"
+msgstr "placeholder=\\"
+
+#: .\inventory\templates\scanner.html:43
+msgid "Tarama Yöntemi"
+msgstr "Tarama Yöntemi"
+
+#: .\inventory\templates\scanner.html:45
+msgid "Hybrid (ARP + Ping + Raw Socket/TCP)"
+msgstr "Hybrid (ARP + Ping + Raw Socket/TCP)"
+
+#: .\inventory\templates\scanner.html:47
+msgid "Sadece Ping"
+msgstr "Sadece Ping"
+
+#: .\inventory\templates\scanner.html:81
+msgid "Taranan IP"
+msgstr "Taranan IP"
+
+#: .\inventory\templates\scanner.html:87
+msgid "Aktif Cihaz"
+msgstr "Aktif Cihaz"
+
+#: .\inventory\templates\scanner.html:93
+msgid "Kapalı / Boş"
+msgstr "Kapalı / Boş"
+
+#: .\inventory\templates\scanner.html:98
+msgid "Tespit Edilen Cihazlar"
+msgstr "Tespit Edilen Cihazlar"
+
+#: .\inventory\templates\scanner.html:154
+msgid "Mekanizma Nasıl Çalışır?"
+msgstr "Mekanizma Nasıl Çalışır?"
+
+#: .\inventory\templates\scanner.html:155
+msgid ""
+"Ağ cihazlarını keşfetmek için Scapy ARP, OS ping ve TCP socket probe "
+"motorları birlikte kullanılır."
+msgstr ""
+"Ağ cihazlarını keşfetmek için Scapy ARP, OS ping ve TCP socket probe "
+"motorları birlikte kullanılır."
+
+#: .\inventory\templates\scanner.html:165
+msgid ""
+"Ağdaki tüm cihazlara donanım seviyesinde sorgu atarak iletişim kurmayı "
+"reddeden güvenlik duvarlarını aşar."
+msgstr ""
+"Ağdaki tüm cihazlara donanım seviyesinde sorgu atarak iletişim kurmayı "
+"reddeden güvenlik duvarlarını aşar."
+
+#: .\inventory\templates\scanner.html:173
+msgid "Host ve MAC Çözümleme"
+msgstr "Host ve MAC Çözümleme"
+
+#: .\inventory\templates\scanner.html:174
+msgid ""
+"Sadece IP adresini bulmakla kalmaz; cihazın fiziksel donanım kimliğini ve "
+"yerel ağdaki ismini de çözümler."
+msgstr ""
+"Sadece IP adresini bulmakla kalmaz; cihazın fiziksel donanım kimliğini ve "
+"yerel ağdaki ismini de çözümler."
+
+#: .\inventory\templates\scanner.html:182
+msgid "Otomatik Vendor Tespiti"
+msgstr "Otomatik Vendor Tespiti"
+
+#: .\inventory\templates\scanner.html:183
+msgid ""
+"MAC adresi OUI verisi ile eşleştirilerek Apple, Samsung, Cisco gibi üretici "
+"bilgisi gösterilir."
+msgstr ""
+"MAC adresi OUI verisi ile eşleştirilerek Apple, Samsung, Cisco gibi üretici "
+"bilgisi gösterilir."
+
+#: .\inventory\templates\scanner.html:199
+msgid "Süre"
+msgstr "Süre"
+
+#: .\inventory\templates\service_operations.html:4
+msgid "Servis Süreç Merkezi - OmniOps"
+msgstr "Servis Süreç Merkezi - OmniOps"
+
+#: .\inventory\templates\service_operations.html:9
+msgid "Servis Süreç Merkezi"
+msgstr "Servis Süreç Merkezi"
+
+#: .\inventory\templates\service_operations.html:10
+msgid ""
+"Major incident, erişim yetkileri, yazıcı filosu ve runbook/SOP süreçlerini "
+"yönetin."
+msgstr ""
+"Major incident, erişim yetkileri, yazıcı filosu ve runbook/SOP süreçlerini "
+"yönetin."
+
+#: .\inventory\templates\service_operations.html:16
+#: .\inventory\templates\service_operations.html:66
+msgid "Açık Major Incident"
+msgstr "Açık Major Incident"
+
+#: .\inventory\templates\service_operations.html:20
+msgid "Onay Bekleyen Erişim"
+msgstr "Onay Bekleyen Erişim"
+
+#: .\inventory\templates\service_operations.html:24
+msgid "Yazıcı/Toner Uyarısı"
+msgstr "Yazıcı/Toner Uyarısı"
+
+#: .\inventory\templates\service_operations.html:28
+msgid "Aktif Runbook"
+msgstr "Aktif Runbook"
+
+#: .\inventory\templates\service_operations.html:37
+msgid "Major Incident Aç"
+msgstr "Major Incident Aç"
+
+#: .\inventory\templates\service_operations.html:39
+msgid "Olayı Kaydet"
+msgstr "Olayı Kaydet"
+
+#: .\inventory\templates\service_operations.html:43
+msgid "Erişim Talebi"
+msgstr "Erişim Talebi"
+
+#: .\inventory\templates\service_operations.html:45
+msgid "Erişim Talebi Aç"
+msgstr "Erişim Talebi Aç"
+
+#: .\inventory\templates\service_operations.html:49
+msgid "Yazıcı / Barkod Cihazı"
+msgstr "Yazıcı / Barkod Cihazı"
+
+#: .\inventory\templates\service_operations.html:51
+msgid "Yazıcıyı Kaydet"
+msgstr "Yazıcıyı Kaydet"
+
+#: .\inventory\templates\service_operations.html:57
+msgid "Runbook Kaydet"
+msgstr "Runbook Kaydet"
+
+#: .\inventory\templates\service_operations.html:75
+msgid "Açık major incident yok."
+msgstr "Açık major incident yok."
+
+#: .\inventory\templates\service_operations.html:79
+msgid "Bekleyen Erişim Talepleri"
+msgstr "Bekleyen Erişim Talepleri"
+
+#: .\inventory\templates\service_operations.html:88
+msgid "Bekleyen erişim talebi yok."
+msgstr "Bekleyen erişim talebi yok."
+
+#: .\inventory\templates\service_operations.html:92
+msgid "Yazıcı / Toner Uyarıları"
+msgstr "Yazıcı / Toner Uyarıları"
+
+#: .\inventory\templates\service_operations.html:99
+msgid "Bakım OK"
+msgstr "Bakım OK"
+
+#: .\inventory\templates\service_operations.html:101
+msgid "Yazıcı uyarısı yok."
+msgstr "Yazıcı uyarısı yok."
+
+#: .\inventory\templates\service_operations.html:105
+msgid "Aktif Runbook / SOP"
+msgstr "Aktif Runbook / SOP"
+
+#: .\inventory\templates\service_operations.html:111
+msgid "Aktif runbook yok."
+msgstr "Aktif runbook yok."
+
+#: .\inventory\templates\setup_center.html:4
+msgid "Kurulum & Sağlık Merkezi - OmniOps"
+msgstr "Kurulum & Sağlık Merkezi - OmniOps"
+
+#: .\inventory\templates\setup_center.html:9 .\inventory\views.py:85
+msgid "Kurulum & Sağlık Merkezi"
+msgstr "Kurulum & Sağlık Merkezi"
+
+#: .\inventory\templates\setup_center.html:10
+msgid ""
+"İlk kurulumdan canlı kullanıma kadar OmniOps hazır olma durumunu tek "
+"ekrandan takip edin."
+msgstr ""
+"İlk kurulumdan canlı kullanıma kadar OmniOps hazır olma durumunu tek "
+"ekrandan takip edin."
+
+#: .\inventory\templates\setup_center.html:17
+msgid "Başarılı Kontrol"
+msgstr "Başarılı Kontrol"
+
+#: .\inventory\templates\setup_center.html:21
+msgid "Kritik Eksik"
+msgstr "Kritik Eksik"
+
+#: .\inventory\templates\setup_center.html:25
+msgid "Opsiyonel Uyarı"
+msgstr "Opsiyonel Uyarı"
+
+#: .\inventory\templates\setup_center.html:29
+msgid "Modül Kapsamı"
+msgstr "Modül Kapsamı"
+
+#: .\inventory\templates\setup_center.html:37
+msgid "Canlıya Alma Kontrol Listesi"
+msgstr "Canlıya Alma Kontrol Listesi"
+
+#: .\inventory\templates\setup_center.html:59
+msgid "Hızlı Başlangıç"
+msgstr "Hızlı Başlangıç"
+
+#: .\inventory\templates\setup_center.html:71
+msgid "Modül Doluluk Durumu"
+msgstr "Modül Doluluk Durumu"
+
+#: .\inventory\templates\subnet_calc.html:4
+msgid "OmniOps - IP Bloğu Bölücü"
+msgstr "OmniOps - IP Bloğu Bölücü"
+
+#: .\inventory\templates\subnet_calc.html:11
+msgid "Gelişmiş Subnet Bölücü"
+msgstr "Gelişmiş Subnet Bölücü"
+
+#: .\inventory\templates\subnet_calc.html:12
+msgid ""
+"Ana ağ bloğunuzu daha küçük alt ağlara ayırın, netmask ve kullanılabilir IP "
+"aralıklarını anında hesaplayın."
+msgstr ""
+"Ana ağ bloğunuzu daha küçük alt ağlara ayırın, netmask ve kullanılabilir IP "
+"aralıklarını anında hesaplayın."
+
+#: .\inventory\templates\subnet_calc.html:25
+msgid "Bölme Parametreleri"
+msgstr "Bölme Parametreleri"
+
+#: .\inventory\templates\subnet_calc.html:30
+msgid "Ağlar Oluşturuluyor..."
+msgstr "Ağlar Oluşturuluyor..."
+
+#: .\inventory\templates\subnet_calc.html:33
+msgid "Ana Ağ Adresi"
+msgstr "Ana Ağ Adresi"
+
+#: .\inventory\templates\subnet_calc.html:39
+msgid "Hedef Alt Ağ Prefix Değeri"
+msgstr "Hedef Alt Ağ Prefix Değeri"
+
+#: .\inventory\templates\subnet_calc.html:56
+msgid "Mantık:"
+msgstr "Mantık:"
+
+#: .\inventory\templates\subnet_calc.html:56
+msgid " Girdiğiniz yeni hedef prefix değeri, ana ağın prefix değerinden "
+msgstr " Girdiğiniz yeni hedef prefix değeri, ana ağın prefix değerinden "
+
+#: .\inventory\templates\subnet_calc.html:56
+msgid "büyük"
+msgstr "büyük"
+
+#: .\inventory\templates\subnet_calc.html:71
+msgid "Hesaplama Hatası"
+msgstr "Hesaplama Hatası"
+
+#: .\inventory\templates\subnet_calc.html:80
+msgid "Alt Ağ Analiz Sonuçları"
+msgstr "Alt Ağ Analiz Sonuçları"
+
+#: .\inventory\templates\subnet_calc.html:91
+msgid "Ağ Adresi"
+msgstr "Ağ Adresi"
+
+#: .\inventory\templates\subnet_calc.html:93
+msgid "Kullanılabilir IP Aralığı"
+msgstr "Kullanılabilir IP Aralığı"
+
+#: .\inventory\templates\subnet_calc.html:123
+msgid "Subnetting Nasıl Yapılır?"
+msgstr "Subnetting Nasıl Yapılır?"
+
+#: .\inventory\templates\subnet_calc.html:125
+msgid ""
+"Bölmek istediğiniz ana ağ adresini ve her bir alt ağın sahip olmasını "
+"istediğiniz yeni prefix değerini sol panele girin. Sistem alt ağları "
+"otomatik olarak hesaplar."
+msgstr ""
+"Bölmek istediğiniz ana ağ adresini ve her bir alt ağın sahip olmasını "
+"istediğiniz yeni prefix değerini sol panele girin. Sistem alt ağları "
+"otomatik olarak hesaplar."
+
+#: .\inventory\templates\subnet_calc.html:132
+msgid "Otomatik Netmask"
+msgstr "Otomatik Netmask"
+
+#: .\inventory\templates\subnet_calc.html:138
+msgid "IP Aralığı Tespiti"
+msgstr "IP Aralığı Tespiti"
+
+#: .\inventory\templates\system_logs.html:4
+msgid "Sistem Olayları ve Loglar - OmniOps"
+msgstr "Sistem Olayları ve Loglar - OmniOps"
+
+#: .\inventory\templates\system_logs.html:11
+msgid "Sistem Olayları"
+msgstr "Sistem Olayları"
+
+#: .\inventory\templates\system_logs.html:12
+msgid ""
+"Platform üzerinde gerçekleştirilen kritik işlemlerin geçmişini buradan "
+"inceleyebilirsiniz."
+msgstr ""
+"Platform üzerinde gerçekleştirilen kritik işlemlerin geçmişini buradan "
+"inceleyebilirsiniz."
+
+#: .\inventory\templates\system_logs.html:17
+msgid "Tüm İşlemler"
+msgstr "Tüm İşlemler"
+
+#: .\inventory\templates\system_logs.html:33
+msgid "Tarih / Saat"
+msgstr "Tarih / Saat"
+
+#: .\inventory\templates\system_logs.html:50
+msgid "Sistem / API"
+msgstr "Sistem / API"
+
+#: .\inventory\templates\system_logs.html:61
+msgid "Destek Talebi"
+msgstr "Destek Talebi"
+
+#: .\inventory\templates\system_logs.html:63
+msgid "Sistem İşlemi"
+msgstr "Sistem İşlemi"
+
+#: .\inventory\templates\system_logs.html:72
+msgid "Kayıtlı sistem olayı bulunamadı."
+msgstr "Kayıtlı sistem olayı bulunamadı."
+
+#: .\inventory\templates\system_logs.html:85
+msgid "Önceki"
+msgstr "Önceki"
+
+#: .\inventory\templates\system_logs.html:91
+msgid "Sonraki"
+msgstr "Sonraki"
+
+#: .\inventory\templates\ticket_detail.html:29
+msgid "Talep Detayı"
+msgstr "Talep Detayı"
+
+#: .\inventory\templates\ticket_detail.html:33
+msgid "Öncelik:"
+msgstr "Öncelik:"
+
+#: .\inventory\templates\ticket_detail.html:35
+msgid "Oluşturan:"
+msgstr "Oluşturan:"
+
+#: .\inventory\templates\ticket_detail.html:37
+msgid "Oluşturulma:"
+msgstr "Oluşturulma:"
+
+#: .\inventory\templates\ticket_detail.html:52
+msgid "Dahili"
+msgstr "Dahili"
+
+#: .\inventory\templates\ticket_detail.html:56
+msgid "Henüz yorum yok."
+msgstr "Henüz yorum yok."
+
+#: .\inventory\templates\ticket_detail.html:69
+msgid "Yorum Ekle"
+msgstr "Yorum Ekle"
+
+#: .\inventory\templates\ticket_detail.html:79
+msgid "Durum Güncelle"
+msgstr "Durum Güncelle"
+
+#: .\inventory\templates\ticket_detail.html:88
+msgid "Güncelle"
+msgstr "Güncelle"
+
+#: .\inventory\templates\ticket_detail.html:100
+msgid "— Seçin —"
+msgstr "— Seçin —"
+
+#: .\inventory\templates\ticket_detail.html:113
+msgid "Dosya Ekleri"
+msgstr "Dosya Ekleri"
+
+#: .\inventory\templates\ticket_detail.html:126
+msgid "Dosya Yükle"
+msgstr "Dosya Yükle"
+
+#: .\inventory\templates\topology.html:4
+msgid "OmniOps - Ağ Topolojisi"
+msgstr "OmniOps - Ağ Topolojisi"
+
+#: .\inventory\templates\topology.html:11
+msgid "Dinamik Ağ Topolojisi"
+msgstr "Dinamik Ağ Topolojisi"
+
+#: .\inventory\templates\topology.html:12
+msgid ""
+"Cihazlar arası hiyerarşik bağlantıları ve ağ haritasını interaktif olarak "
+"inceleyin."
+msgstr ""
+"Cihazlar arası hiyerarşik bağlantıları ve ağ haritasını interaktif olarak "
+"inceleyin."
+
+#: .\inventory\templates\topology.html:34
+msgid "Topoloji Rehberi"
+msgstr "Topoloji Rehberi"
+
+#: .\inventory\templates\topology.html:36
+msgid "Cihazları sürükleyebilir, tekerlek ile yakınlaşabilirsiniz."
+msgstr "Cihazları sürükleyebilir, tekerlek ile yakınlaşabilirsiniz."
+
+#: .\inventory\templates\topology.html:41
+msgid "Router / Firewall"
+msgstr "Router / Firewall"
+
+#: .\inventory\templates\topology.html:49
+msgid "Uç Cihazlar"
+msgstr "Uç Cihazlar"
+
+#: .\inventory\templates\user_management.html:4
+msgid "Kullanıcı Yönetimi - OmniOps"
+msgstr "Kullanıcı Yönetimi - OmniOps"
+
+#: .\inventory\templates\user_management.html:9
+msgid "Analitik Paneli"
+msgstr "Analitik Paneli"
+
+#: .\inventory\templates\user_management.html:16
+msgid "Yeni Kullanıcı"
+msgstr "Yeni Kullanıcı"
+
+#: .\inventory\templates\user_management.html:34
+msgid "Oluştur"
+msgstr "Oluştur"
+
+#: .\inventory\templates\user_management.html:48
+msgid "Kayıt"
+msgstr "Kayıt"
+
+#: .\inventory\templates\user_panel.html:4
+msgid "Destek Taleplerim"
+msgstr "Destek Taleplerim"
+
+#: .\inventory\templates\user_panel.html:24
+msgid "Destek ve Talep Merkezi"
+msgstr "Destek ve Talep Merkezi"
+
+#: .\inventory\templates\user_panel.html:25
+msgid ""
+"Hızlı hizmet kataloğundan seçim yapabilir veya özel teknik sorunlarınızı "
+"bildirebilirsiniz."
+msgstr ""
+"Hızlı hizmet kataloğundan seçim yapabilir veya özel teknik sorunlarınızı "
+"bildirebilirsiniz."
+
+#: .\inventory\templates\user_panel.html:33
+msgid "Hızlı Hizmet Kataloğu"
+msgstr "Hızlı Hizmet Kataloğu"
+
+#: .\inventory\templates\user_panel.html:41
+msgid "Yönetici Onayı Gerektirir"
+msgstr "Yönetici Onayı Gerektirir"
+
+#: .\inventory\templates\user_panel.html:70
+msgid "Manuel Arıza Bildirimi"
+msgstr "Manuel Arıza Bildirimi"
+
+#: .\inventory\templates\user_panel.html:74
+msgid "Talep İletiliyor..."
+msgstr "Talep İletiliyor..."
+
+#: .\inventory\templates\user_panel.html:129
+msgid "Talep Geçmişiniz"
+msgstr "Talep Geçmişiniz"
+
+#: .\inventory\templates\user_panel.html:137
+msgid "Konu ve Cihaz"
+msgstr "Konu ve Cihaz"
+
+#: .\inventory\templates\user_panel.html:165
+msgid "İşlem Bekliyor"
+msgstr "İşlem Bekliyor"
+
+#: .\inventory\templates\user_panel.html:190
+msgid "Henüz bir destek talebi oluşturmadınız."
+msgstr "Henüz bir destek talebi oluşturmadınız."
+
+#: .\inventory\templates\workspace_center.html:5
+msgid "Çalışma Alanı Studio"
+msgstr "Çalışma Alanı Studio"
+
+#: .\inventory\templates\workspace_center.html:12
+msgid ""
+"Sektörünüze göre modülleri, etiketleri ve panel düzenini özelleştirin. "
+"Tekstil tesisindeki BT ekranı ile güneş santrali operasyonu aynı olmamalı."
+msgstr ""
+"Sektörünüze göre modülleri, etiketleri ve panel düzenini özelleştirin. "
+"Tekstil tesisindeki BT ekranı ile güneş santrali operasyonu aynı olmamalı."
+
+#: .\inventory\templates\workspace_center.html:35
+msgid "Aktif Modül"
+msgstr "Aktif Modül"
+
+#: .\inventory\templates\workspace_center.html:41
+msgid "Sürükle-Bırak"
+msgstr "Sürükle-Bırak"
+
+#: .\inventory\templates\workspace_center.html:47
+msgid "Sektör Şablonları"
+msgstr "Sektör Şablonları"
+
+#: .\inventory\templates\workspace_center.html:68
+msgid "Kişisel Tercihler"
+msgstr "Kişisel Tercihler"
+
+#: .\inventory\templates\workspace_center.html:75
+msgid "Aktif tesis"
+msgstr "Aktif tesis"
+
+#: .\inventory\templates\workspace_center.html:77
+msgid "Otomatik (sektöre göre)"
+msgstr "Otomatik (sektöre göre)"
+
+#: .\inventory\templates\workspace_center.html:87
+msgid "Sürükle-bırak düzenleme"
+msgstr "Sürükle-bırak düzenleme"
+
+#: .\inventory\templates\workspace_center.html:94
+msgid "Panel düzenini sıfırla"
+msgstr "Panel düzenini sıfırla"
+
+#: .\inventory\templates\workspace_center.html:102
+msgid "Kurum Profili (Yönetici)"
+msgstr "Kurum Profili (Yönetici)"
+
+#: .\inventory\templates\workspace_center.html:110
+msgid "Birincil sektör"
+msgstr "Birincil sektör"
+
+#: .\inventory\templates\workspace_center.html:118
+msgid "Özel sektör adı"
+msgstr "Özel sektör adı"
+
+#: .\inventory\templates\workspace_center.html:119
+msgid "Örn: Güneş Paneli Üretimi"
+msgstr "Örn: Güneş Paneli Üretimi"
+
+#: .\inventory\templates\workspace_center.html:122
+msgid "Alt başlık"
+msgstr "Alt başlık"
+
+#: .\inventory\templates\workspace_center.html:126
+msgid "Aktif modüller"
+msgstr "Aktif modüller"
+
+#: .\inventory\templates\workspace_center.html:138
+msgid "Kurum profilini kaydet"
+msgstr "Kurum profilini kaydet"
+
+#: .\inventory\templates\workspace_center.html:147
+msgid "Sürükle-Bırak İpuçları"
+msgstr "Sürükle-Bırak İpuçları"
+
+#: .\inventory\templates\workspace_center.html:151
+msgid ""
+"Ana Panel'de widget başlıklarından tutup sıralamayı değiştirebilirsiniz."
+msgstr ""
+"Ana Panel'de widget başlıklarından tutup sıralamayı değiştirebilirsiniz."
+
+#: .\inventory\templates\workspace_center.html:152
+msgid "Satış Kanban kartlarını sütunlar arasında sürükleyin."
+msgstr "Satış Kanban kartlarını sütunlar arasında sürükleyin."
+
+#: .\inventory\templates\workspace_center.html:153
+msgid "Portföy envanterinde satır sırasını sürükleyerek düzenleyin."
+msgstr "Portföy envanterinde satır sırasını sürükleyerek düzenleyin."
+
+#: .\inventory\templates\workspace_center.html:154
+msgid "Düzen otomatik kaydedilir; sıfırlamak için yukarıdaki butonu kullanın."
+msgstr ""
+"Düzen otomatik kaydedilir; sıfırlamak için yukarıdaki butonu kullanın."
+
+#: .\inventory\views.py:78
+#| msgid "Yeni Tesis Ekle"
+msgid "Yeni Ticket Aç"
+msgstr "Yeni Ticket Aç"
+
+#: .\inventory\views.py:78
+msgid "Servis masası ve sistem biletleri"
+msgstr "Servis masası ve sistem biletleri"
+
+#: .\inventory\views.py:79
+msgid "Departman kartelası, modüller ve doküman merkezi"
+msgstr "Departman kartelası, modüller ve doküman merkezi"
+
+#: .\inventory\views.py:80
+#| msgid "Varlık QR / Barkod Tarayıcı"
+msgid "QR/Barkod Tarayıcı"
+msgstr "QR/Barkod Tarayıcı"
+
+#: .\inventory\views.py:80
+msgid "Etiket okut, varlığa anında git"
+msgstr "Etiket okut, varlığa anında git"
+
+#: .\inventory\views.py:81
+#| msgid "ERP Entegrasyonları"
+msgid "ERP & Entegrasyon"
+msgstr "ERP & Entegrasyon"
+
+#: .\inventory\views.py:81
+msgid "Odoo bağlantıları ve kamera health poll"
+msgstr "Odoo bağlantıları ve kamera health poll"
+
+#: .\inventory\views.py:82
+msgid "VPN, chat, kamera ve uygulama portalı"
+msgstr "VPN, chat, kamera ve uygulama portalı"
+
+#: .\inventory\views.py:83
+msgid "Takvim, CMDB, denetim ve çıktılar"
+msgstr "Takvim, CMDB, denetim ve çıktılar"
+
+#: .\inventory\views.py:84
+#| msgid "Kimlik & Uç Nokta Merkezi - OmniOps"
+msgid "Kimlik & Uç Nokta Merkezi"
+msgstr "Kimlik & Uç Nokta Merkezi"
+
+#: .\inventory\views.py:84
+msgid "AD, LDAP, endpoint, MFA ve lifecycle"
+msgstr "AD, LDAP, endpoint, MFA ve lifecycle"
+
+#: .\inventory\views.py:85
+msgid "Canlıya alma, readiness ve ilk kurulum kontrolleri"
+msgstr "Canlıya alma, readiness ve ilk kurulum kontrolleri"
+
+#: .\inventory\views.py:86
+#| msgid "Ağ Keşfi"
+msgid "Derin Ağ Keşfi"
+msgstr "Derin Ağ Keşfi"
+
+#: .\inventory\views.py:86
+msgid "Ping, ARP ve raw socket tarama"
+msgstr "Ping, ARP ve raw socket tarama"
+
+#: .\inventory\views.py:87
+msgid "PDF ve CSV çıktıları"
+msgstr "PDF ve CSV çıktıları"
+
+#: .\inventory\views.py:88
+#| msgid "Yönetici Bilgilendirme Paneli"
+msgid "Yönetici Bilgilendirme"
+msgstr "Yönetici Bilgilendirme"
+
+#: .\inventory\views.py:88
+#| msgid "Tek sayfa durum ve risk çıktısı"
+msgid "Tek sayfa özet, PDF ve Word çıktıları"
+msgstr "Tek sayfa özet, PDF ve Word çıktıları"
+
+#: .\inventory\views.py:386
+msgid "Yeni donanım envantere başarıyla eklendi."
+msgstr "Yeni donanım envantere başarıyla eklendi."
+
+#: .\inventory\views.py:392
+msgid "Yazılım lisansı başarıyla kaydedildi."
+msgstr "Yazılım lisansı başarıyla kaydedildi."
+
+#: .\inventory\views.py:401
+msgid "Tedarikçi sözleşmesi başarıyla kaydedildi."
+msgstr "Tedarikçi sözleşmesi başarıyla kaydedildi."
+
+#: .\inventory\views.py:449
+msgid ""
+"🛡️ ITIL Kuralı: Sistem güvenliği gereği konfigürasyonlar doğrudan cihaza "
+"yazılamaz. Talebiniz 'Değişiklik Onay Havuzuna (CAB)' iletildi. Yetkili "
+"onayından sonra uygulanacaktır."
+msgstr ""
+"🛡️ ITIL Kuralı: Sistem güvenliği gereği konfigürasyonlar doğrudan cihaza "
+"yazılamaz. Talebiniz 'Değişiklik Onay Havuzuna (CAB)' iletildi. Yetkili "
+"onayından sonra uygulanacaktır."
+
+#: .\inventory\views.py:471
+msgid ""
+"SSH kullanıcı adı veya şifresi tanımlı değil. Cihaz profilinde SSH "
+"bilgilerini girin."
+msgstr ""
+"SSH kullanıcı adı veya şifresi tanımlı değil. Cihaz profilinde SSH "
+"bilgilerini girin."
+
+#: .\inventory\views.py:481
+msgid ""
+"✅ Disaster Recovery Başarılı: Eski konfigürasyon cihaza yazıldı ve ağ "
+"saniyeler içinde kurtarıldı!"
+msgstr ""
+"✅ Disaster Recovery Başarılı: Eski konfigürasyon cihaza yazıldı ve ağ "
+"saniyeler içinde kurtarıldı!"
+
+#: .\inventory\views.py:594
+msgid "IP adresi başarıyla atandı ve kayıt edildi."
+msgstr "IP adresi başarıyla atandı ve kayıt edildi."
+
+#: .\inventory\views.py:689
+msgid ""
+"Uzak cihaz CPU/RAM metrikleri için SNMP veya ajan entegrasyonu gerekir."
+msgstr ""
+"Uzak cihaz CPU/RAM metrikleri için SNMP veya ajan entegrasyonu gerekir."
+
+#: .\inventory\views.py:727
+msgid "Port haritası bilgileri başarıyla güncellendi."
+msgstr "Port haritası bilgileri başarıyla güncellendi."
+
+#: .\inventory\views.py:780
+msgid "Yeni bilgi bankası makalesi başarıyla eklendi."
+msgstr "Yeni bilgi bankası makalesi başarıyla eklendi."
+
+#: .\inventory\views.py:928
+msgid ""
+"Talep metni hassas veri içerdiği için DLP politikası tarafından engellendi."
+msgstr ""
+"Talep metni hassas veri içerdiği için DLP politikası tarafından engellendi."
+
+#: .\inventory\views.py:933
+msgid "Destek talebiniz başarıyla alındı."
+msgstr "Destek talebiniz başarıyla alındı."
+
+#: .\inventory\views.py:953
+msgid "Cihaz ve konfigürasyon alanı boş bırakılamaz."
+msgstr "Cihaz ve konfigürasyon alanı boş bırakılamaz."
+
+#: .\inventory\views.py:1003
+#| msgid "Kullanıcı adı veya şifre hatalı!"
+msgid "SSH kullanıcı adı veya şifresi tanımlı değil."
+msgstr "SSH kullanıcı adı veya şifresi tanımlı değil."
+
+#: .\inventory\views.py:1040
+msgid "Talep formu geçersiz."
+msgstr "Talep formu geçersiz."
+
+#: .\inventory\views.py:1066
+msgid "Kullanıcı formu geçersiz."
+msgstr "Kullanıcı formu geçersiz."
+
+#: .\inventory\views.py:1073
+msgid "Cihaz eklendi."
+msgstr "Cihaz eklendi."
+
+#: .\inventory\workspace_service.py:90
+msgid "Bilgi işlem için tek çalışma alanı"
+msgstr "Bilgi işlem için tek çalışma alanı"

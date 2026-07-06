@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Fabrika BT Komuta Merkezi - OmniOps{% endblock %}
+{% block title %}{% trans "Fabrika BT Komuta Merkezi - OmniOps" %}{% endblock %}
 
 {% block content %}
 <section class="suite-hero mb-4">
     <div>
         <span class="suite-eyebrow">OmniOps Factory IT Suite</span>
-        <h1 class="suite-title">Fabrika BT Komuta Merkezi</h1>
-        <p class="suite-subtitle">Departman kartelasından bölüm seçin; kameralar, switchler, endpointler, ticketlar ve dokümanlar aynı ekranda açılsın.</p>
+        <h1 class="suite-title">{% trans "Fabrika BT Komuta Merkezi" %}</h1>
+        <p class="suite-subtitle">{% trans "Departman kartelasından bölüm seçin; kameralar, switchler, endpointler, ticketlar ve dokümanlar aynı ekranda açılsın." %}</p>
     </div>
     <div class="d-flex flex-wrap gap-2">
         <a href="{% url 'factory_portfolio_inventory' %}{% if selected_site %}?site={{ selected_site.id }}{% endif %}" class="btn btn-outline-secondary">
@@ -27,17 +28,17 @@
 <div class="row g-3 mb-4">
     <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Departman</div><div class="display-6 fw-bold">{{ metrics.departments }}</div></div></div></div>
     <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Alt Alan</div><div class="display-6 fw-bold text-primary">{{ metrics.zones }}</div></div></div></div>
-    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Doküman</div><div class="display-6 fw-bold">{{ metrics.documents }}</div></div></div></div>
-    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Varlık İlişkisi</div><div class="display-6 fw-bold">{{ metrics.relations }}</div></div></div></div>
-    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">İnceleme Bekleyen</div><div class="display-6 fw-bold text-warning">{{ metrics.review_documents }}</div></div></div></div>
-    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Kapsam Riski</div><div class="display-6 fw-bold text-danger">{{ metrics.risk_items }}</div></div></div></div>
+    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "Doküman" %}</div><div class="display-6 fw-bold">{{ metrics.documents }}</div></div></div></div>
+    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "Varlık İlişkisi" %}</div><div class="display-6 fw-bold">{{ metrics.relations }}</div></div></div></div>
+    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "İnceleme Bekleyen" %}</div><div class="display-6 fw-bold text-warning">{{ metrics.review_documents }}</div></div></div></div>
+    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "Kapsam Riski" %}</div><div class="display-6 fw-bold text-danger">{{ metrics.risk_items }}</div></div></div></div>
 </div>
 
 {% if factory_sites %}
 <div class="card glass-card mb-4">
     <div class="card-header bg-transparent fw-bold d-flex justify-content-between align-items-center">
-        <span>Fabrika / Tesis Seçimi</span>
-        <span class="text-muted small">Portföy filtresi</span>
+        <span>{% trans "Fabrika / Tesis Seçimi" %}</span>
+        <span class="text-muted small">{% trans "Portföy filtresi" %}</span>
     </div>
     <div class="card-body d-flex flex-wrap gap-2">
         {% for site in factory_sites %}
@@ -53,27 +54,27 @@
     <div class="col-xl-4">
         <div class="accordion" id="factoryForms">
             <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#departmentForm">Departman Kartela Kaydı</button></h2>
+                <h2 class="accordion-header"><button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#departmentForm">{% trans "Departman Kartela Kaydı" %}</button></h2>
                 <div id="departmentForm" class="accordion-collapse collapse show" data-bs-parent="#factoryForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="department">{{ forms.department.as_p }}<button class="btn btn-primary w-100">Departman Kaydet</button></form>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="department">{{ forms.department.as_p }}<button class="btn btn-primary w-100">{% trans "Departman Kaydet" %}</button></form>
                 </div></div>
             </div>
             <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#zoneForm">Alt Alan / Sistem Odası</button></h2>
+                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#zoneForm">{% trans "Alt Alan / Sistem Odası" %}</button></h2>
                 <div id="zoneForm" class="accordion-collapse collapse" data-bs-parent="#factoryForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="zone">{{ forms.zone.as_p }}<button class="btn btn-info w-100">Alan Kaydet</button></form>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="zone">{{ forms.zone.as_p }}<button class="btn btn-info w-100">{% trans "Alan Kaydet" %}</button></form>
                 </div></div>
             </div>
             <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#documentForm">Doküman Yükle</button></h2>
+                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#documentForm">{% trans "Doküman Yükle" %}</button></h2>
                 <div id="documentForm" class="accordion-collapse collapse" data-bs-parent="#factoryForms"><div class="accordion-body">
-                    <form method="post" enctype="multipart/form-data">{% csrf_token %}<input type="hidden" name="action" value="document">{{ forms.document.as_p }}<button class="btn btn-success w-100">Doküman Kaydet</button></form>
+                    <form method="post" enctype="multipart/form-data">{% csrf_token %}<input type="hidden" name="action" value="document">{{ forms.document.as_p }}<button class="btn btn-success w-100">{% trans "Doküman Kaydet" %}</button></form>
                 </div></div>
             </div>
             <div class="accordion-item border-0 glass-card">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#relationForm">Varlık İlişkisi</button></h2>
+                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#relationForm">{% trans "Varlık İlişkisi" %}</button></h2>
                 <div id="relationForm" class="accordion-collapse collapse" data-bs-parent="#factoryForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="relation">{{ forms.relation.as_p }}<button class="btn btn-secondary w-100">İlişki Kaydet</button></form>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="relation">{{ forms.relation.as_p }}<button class="btn btn-secondary w-100">{% trans "İlişki Kaydet" %}</button></form>
                 </div></div>
             </div>
         </div>
@@ -83,7 +84,7 @@
         <div class="card glass-card mb-4">
             <div class="card-header bg-transparent fw-bold d-flex justify-content-between align-items-center">
                 <span>{% if selected_site %}{{ selected_site.department_label }} Kartelası · {{ selected_site.display_title }}{% else %}Departman Kartelası{% endif %}</span>
-                <span class="text-muted small">Bölüm seçince modüller açılır</span>
+                <span class="text-muted small">{% trans "Bölüm seçince modüller açılır" %}</span>
             </div>
             <div class="card-body">
                 <div class="factory-card-grid">
@@ -98,7 +99,7 @@
                         <span class="iconify factory-dept-arrow" data-icon="mdi:chevron-right"></span>
                     </a>
                     {% empty %}
-                    <div class="text-muted">Henüz departman kartela kaydı yok. Sol panelden ilk departmanı ekleyin.</div>
+                    <div class="text-muted">{% trans "Henüz departman kartela kaydı yok. Sol panelden ilk departmanı ekleyin." %}</div>
                     {% endfor %}
                 </div>
             </div>
@@ -112,13 +113,13 @@
             </div>
             <div class="card-body">
                 <div class="d-flex flex-wrap gap-2 mb-3">
-                    <a href="{% url 'factory_command_center' %}?department={{ selected_department.id }}" class="btn btn-sm {% if not selected_zone %}btn-primary{% else %}btn-outline-primary{% endif %}">Tüm Departman</a>
+                    <a href="{% url 'factory_command_center' %}?department={{ selected_department.id }}" class="btn btn-sm {% if not selected_zone %}btn-primary{% else %}btn-outline-primary{% endif %}">{% trans "Tüm Departman" %}</a>
                     {% for zone in zones %}
                     <a href="{% url 'factory_command_center' %}?department={{ selected_department.id }}&zone={{ zone.id }}" class="btn btn-sm {% if selected_zone and selected_zone.id == zone.id %}btn-primary{% else %}btn-outline-secondary{% endif %}">
                         {{ zone.name }} · {{ zone.get_zone_type_display }}
                     </a>
                     {% empty %}
-                    <span class="text-muted small">Bu departman için alt alan tanımlanmadı.</span>
+                    <span class="text-muted small">{% trans "Bu departman için alt alan tanımlanmadı." %}</span>
                     {% endfor %}
                 </div>
 
@@ -137,7 +138,7 @@
                                 <li class="mb-1 text-truncate">{{ item }}</li>
                                 {% endfor %}
                             </ul>
-                            <a href="{{ module.url }}" class="small text-decoration-none">Modüle git →</a>
+                            <a href="{{ module.url }}" class="small text-decoration-none">{% trans "Modüle git →" %}</a>
                         </div>
                     </div>
                     {% endif %}
@@ -150,7 +151,7 @@
         <div class="row g-4" id="documents-panel">
             <div class="col-lg-6">
                 <div class="card glass-card h-100">
-                    <div class="card-header bg-transparent fw-bold">Doküman Merkezi</div>
+                    <div class="card-header bg-transparent fw-bold">{% trans "Doküman Merkezi" %}</div>
                     <div class="card-body">
                         {% for document in scope.documents %}
                         <div class="document-card mb-2">
@@ -163,23 +164,23 @@
                             </div>
                             <div class="d-flex flex-wrap gap-2 mt-2">
                                 {% if document.file %}
-                                <a href="{% url 'managed_document_download' document.id %}" class="btn btn-sm btn-outline-primary">İndir</a>
+                                <a href="{% url 'managed_document_download' document.id %}" class="btn btn-sm btn-outline-primary">{% trans "İndir" %}</a>
                                 {% if document.can_browser_preview %}
-                                <a href="{% url 'managed_document_preview' document.id %}" target="_blank" class="btn btn-sm btn-outline-info">PDF Önizle</a>
+                                <a href="{% url 'managed_document_preview' document.id %}" target="_blank" class="btn btn-sm btn-outline-info">{% trans "PDF Önizle" %}</a>
                                 {% endif %}
                                 {% if document.can_office_edit %}
-                                <a href="{% url 'managed_document_editor' document.id %}" class="btn btn-sm btn-warning">Düzenle</a>
+                                <a href="{% url 'managed_document_editor' document.id %}" class="btn btn-sm btn-warning">{% trans "Düzenle" %}</a>
                                 {% endif %}
                                 {% if document.external_editor_url %}
-                                <a href="{{ document.external_editor_url }}" target="_blank" class="btn btn-sm btn-outline-secondary">Harici Editör</a>
+                                <a href="{{ document.external_editor_url }}" target="_blank" class="btn btn-sm btn-outline-secondary">{% trans "Harici Editör" %}</a>
                                 {% endif %}
                                 {% else %}
-                                <span class="small text-muted">Dosya bekleniyor</span>
+                                <span class="small text-muted">{% trans "Dosya bekleniyor" %}</span>
                                 {% endif %}
                             </div>
                         </div>
                         {% empty %}
-                        <div class="text-muted">Seçili kapsamda doküman yok. DOCX/PDF/XLSX dosyalarını sol panelden yükleyin.</div>
+                        <div class="text-muted">{% trans "Seçili kapsamda doküman yok. DOCX/PDF/XLSX dosyalarını sol panelden yükleyin." %}</div>
                         {% endfor %}
                     </div>
                 </div>
@@ -188,28 +189,28 @@
             <div class="col-lg-6">
                 {% if selected_document %}
                 <div class="card glass-card h-100">
-                    <div class="card-header bg-transparent fw-bold">Doküman Detayı</div>
+                    <div class="card-header bg-transparent fw-bold">{% trans "Doküman Detayı" %}</div>
                     <div class="card-body">
                         <h2 class="h5 fw-bold">{{ selected_document.title }}</h2>
                         <p class="text-muted small mb-3">{{ selected_document.reference_code|default:"Referans yok" }} · {{ selected_document.get_status_display }}</p>
                         <p>{{ selected_document.description|default:"Açıklama girilmemiş." }}</p>
                         <ul class="list-unstyled small">
-                            <li><strong>Kategori:</strong> {{ selected_document.get_category_display }}</li>
-                            <li><strong>Tip:</strong> {{ selected_document.get_file_type_display }}</li>
+                            <li><strong>{% trans "Kategori:" %}</strong> {{ selected_document.get_category_display }}</li>
+                            <li><strong>{% trans "Tip:" %}</strong> {{ selected_document.get_file_type_display }}</li>
                             <li><strong>Departman:</strong> {{ selected_document.department|default:"-" }}</li>
                             <li><strong>Alan:</strong> {{ selected_document.zone|default:"-" }}</li>
-                            <li><strong>Etiketler:</strong> {{ selected_document.tags|default:"-" }}</li>
-                            <li><strong>Geçerlilik:</strong> {{ selected_document.valid_until|default:"Süresiz" }}</li>
+                            <li><strong>{% trans "Etiketler:" %}</strong> {{ selected_document.tags|default:"-" }}</li>
+                            <li><strong>{% trans "Geçerlilik:" %}</strong> {{ selected_document.valid_until|default:"Süresiz" }}</li>
                         </ul>
                         <div class="d-flex flex-wrap gap-2 mt-3">
                             {% if selected_document.file %}
-                            <a href="{% url 'managed_document_download' selected_document.id %}" class="btn btn-primary btn-sm">Dosyayı İndir / Aç</a>
+                            <a href="{% url 'managed_document_download' selected_document.id %}" class="btn btn-primary btn-sm">{% trans "Dosyayı İndir / Aç" %}</a>
                             {% if selected_document.can_browser_preview %}
-                            <a href="{% url 'managed_document_preview' selected_document.id %}" target="_blank" class="btn btn-info btn-sm">Tarayıcıda PDF Önizle</a>
+                            <a href="{% url 'managed_document_preview' selected_document.id %}" target="_blank" class="btn btn-info btn-sm">{% trans "Tarayıcıda PDF Önizle" %}</a>
                             {% if selected_document.can_office_edit %}
-                            <a href="{% url 'managed_document_editor' selected_document.id %}" class="btn btn-warning btn-sm">Tarayıcıda Düzenle</a>
+                            <a href="{% url 'managed_document_editor' selected_document.id %}" class="btn btn-warning btn-sm">{% trans "Tarayıcıda Düzenle" %}</a>
                             {% elif selected_document.file_type == 'docx' %}
-                            <span class="badge bg-light text-dark px-3 py-2">DOCX için OnlyOffice/Collabora entegrasyon alanı hazır</span>
+                            <span class="badge bg-light text-dark px-3 py-2">{% trans "DOCX için OnlyOffice/Collabora entegrasyon alanı hazır" %}</span>
                             {% endif %}
                             {% endif %}
                             {% endif %}
@@ -231,7 +232,7 @@
                 </div>
                 {% else %}
                 <div class="card glass-card h-100">
-                    <div class="card-header bg-transparent fw-bold">Varlık İlişkileri</div>
+                    <div class="card-header bg-transparent fw-bold">{% trans "Varlık İlişkileri" %}</div>
                     <div class="card-body">
                         {% for relation in scope.relations %}
                         <div class="border rounded-3 p-3 mb-2">
@@ -239,7 +240,7 @@
                             <div class="small text-muted">{{ relation.get_asset_type_display }} · {{ relation.get_role_display }}{% if relation.zone %} · {{ relation.zone.name }}{% elif relation.department %} · {{ relation.department.name }}{% endif %}</div>
                         </div>
                         {% empty %}
-                        <div class="text-muted">Seçili kapsamda varlık ilişkisi yok. Sol panelden switch, kamera, endpoint veya doküman bağlayın.</div>
+                        <div class="text-muted">{% trans "Seçili kapsamda varlık ilişkisi yok. Sol panelden switch, kamera, endpoint veya doküman bağlayın." %}</div>
                         {% endfor %}
                     </div>
                 </div>

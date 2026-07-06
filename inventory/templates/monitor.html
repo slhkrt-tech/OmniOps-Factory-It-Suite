@@ -213,13 +213,20 @@ document.addEventListener("DOMContentLoaded", function() {
                 const now = new Date();
                 const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-                if (data.status === "success") {
+                if (data.status === "ok" || data.status === "success") {
                     document.getElementById('connectionStatus').className = "badge bg-success bg-opacity-10 text-success border border-success-subtle px-3 py-2";
-                    document.getElementById('connectionStatus').innerHTML = '<span class="spinner-grow spinner-grow-sm me-1" style="width:8px;height:8px;"></span> Aktif';
+                    document.getElementById('connectionStatus').innerHTML = '<span class="spinner-grow spinner-grow-sm me-1" style="width:8px;height:8px;"></span> {% trans "Aktif" %}';
                     document.getElementById('latencyValue').innerText = data.latency + (data.latency === "<1" ? "" : " ms");
                     document.getElementById('liveCpuText').innerText = data.cpu + "%";
                     document.getElementById('liveRamText').innerText = data.ram + "%";
                     shiftSeries(timeStr, data.cpu, data.ram, data.traffic_in, data.traffic_out);
+                } else if (data.status === "limited") {
+                    document.getElementById('connectionStatus').className = "badge bg-warning bg-opacity-10 text-warning border border-warning-subtle px-3 py-2";
+                    document.getElementById('connectionStatus').innerText = data.message || "{% trans 'Sınırlı veri' %}";
+                    document.getElementById('latencyValue').innerText = data.latency + (String(data.latency).includes('—') ? "" : " ms");
+                    document.getElementById('liveCpuText').innerText = "—";
+                    document.getElementById('liveRamText').innerText = "—";
+                    shiftSeries(timeStr, 0, 0, 0, 0);
                 } else {
                     document.getElementById('connectionStatus').className = "badge bg-danger bg-opacity-10 text-danger border border-danger-subtle px-3 py-2";
                     document.getElementById('connectionStatus').innerText = "{% trans 'Bağlantı yok' %}";

@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}OmniOps - Ağ Topolojisi{% endblock %}
+{% block title %}{% trans "OmniOps - Ağ Topolojisi" %}{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-0 mb-5">
     
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h4 class="fw-bold mb-1">Dinamik Ağ Topolojisi</h4>
-            <p class="text-muted small mb-0">Cihazlar arası hiyerarşik bağlantıları ve ağ haritasını interaktif olarak inceleyin.</p>
+            <h4 class="fw-bold mb-1">{% trans "Dinamik Ağ Topolojisi" %}</h4>
+            <p class="text-muted small mb-0">{% trans "Cihazlar arası hiyerarşik bağlantıları ve ağ haritasını interaktif olarak inceleyin." %}</p>
         </div>
         <div class="d-flex gap-2">
             <button onclick="location.reload()" class="btn btn-light border-secondary-subtle shadow-sm fw-medium rounded-pill px-3">
@@ -30,22 +31,22 @@
                 <div class="position-absolute top-0 start-0 m-4 p-3 rounded-4 shadow-sm border border-secondary-subtle" style="z-index: 10; max-width: 250px; background-color: var(--card-bg);">
                     <h6 class="fw-bold d-flex align-items-center mb-2" style="color: var(--text-main);">
                         <span class="bg-info bg-opacity-10 text-info rounded p-1 me-2"><span class="iconify" data-icon="mdi:map-legend"></span></span>
-                        Topoloji Rehberi
+                        {% trans "Topoloji Rehberi" %}
                     </h6>
-                    <p class="text-muted mb-3" style="font-size: 0.75rem;">Cihazları sürükleyebilir, tekerlek ile yakınlaşabilirsiniz.</p>
+                    <p class="text-muted mb-3" style="font-size: 0.75rem;">{% trans "Cihazları sürükleyebilir, tekerlek ile yakınlaşabilirsiniz." %}</p>
                     
                     <div class="d-flex flex-column gap-2">
                         <div class="d-flex align-items-center">
                             <span class="badge bg-danger me-2 shadow-sm" style="width: 12px; height: 12px; border-radius: 50%; padding: 0;"> </span>
-                            <span class="small fw-semibold text-muted">Router / Firewall</span>
+                            <span class="small fw-semibold text-muted">{% trans "Router / Firewall" %}</span>
                         </div>
                         <div class="d-flex align-items-center">
                             <span class="badge bg-success me-2 shadow-sm" style="width: 12px; height: 12px; border-radius: 50%; padding: 0;"> </span>
-                            <span class="small fw-semibold text-muted">Switch</span>
+                            <span class="small fw-semibold text-muted">{% trans "Switch" %}</span>
                         </div>
                         <div class="d-flex align-items-center">
                             <span class="badge bg-primary me-2 shadow-sm" style="width: 12px; height: 12px; border-radius: 50%; padding: 0;"> </span>
-                            <span class="small fw-semibold text-muted">Uç Cihazlar</span>
+                            <span class="small fw-semibold text-muted">{% trans "Uç Cihazlar" %}</span>
                         </div>
                     </div>
                 </div>

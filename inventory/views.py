@@ -11,6 +11,7 @@ from datetime import timedelta
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.conf import settings
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -34,7 +35,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from .utils import (
     generate_device_config, calculate_subnets, scan_network, 
     push_config_to_device, backup_device_config,
-    decrypt_vault_password
+    decrypt_vault_password, get_device_ssh_credentials,
 )
 from .tasks import active_response_block_ip
 
@@ -74,17 +75,17 @@ def global_search_api(request):
     limit = 6
 
     quick_actions = [
-        {'type': 'Aksiyon', 'title': 'Yeni Ticket Aç', 'subtitle': 'Servis masası ve sistem biletleri', 'url': '/panel/', 'icon': 'mdi:ticket-plus-outline'},
-        {'type': 'Aksiyon', 'title': 'Fabrika BT Komuta Merkezi', 'subtitle': 'Departman kartelası, modüller ve doküman merkezi', 'url': '/fabrika-komuta-merkezi/', 'icon': 'mdi:factory'},
-        {'type': 'Aksiyon', 'title': 'QR/Barkod Tarayıcı', 'subtitle': 'Etiket okut, varlığa anında git', 'url': '/varlik-qr-tara/', 'icon': 'mdi:qrcode-scan'},
-        {'type': 'Aksiyon', 'title': 'ERP & Entegrasyon', 'subtitle': 'Odoo bağlantıları ve kamera health poll', 'url': '/erp-entegrasyonlari/', 'icon': 'mdi:connection'},
-        {'type': 'Aksiyon', 'title': 'Komuta Merkezi', 'subtitle': 'VPN, chat, kamera ve uygulama portalı', 'url': '/komuta-merkezi/', 'icon': 'mdi:view-dashboard-edit-outline'},
-        {'type': 'Aksiyon', 'title': 'Yönetişim Merkezi', 'subtitle': 'Takvim, CMDB, denetim ve çıktılar', 'url': '/yonetisim-merkezi/', 'icon': 'mdi:calendar-check-outline'},
-        {'type': 'Aksiyon', 'title': 'Kimlik & Uç Nokta Merkezi', 'subtitle': 'AD, LDAP, endpoint, MFA ve lifecycle', 'url': '/kimlik-operasyonlari/', 'icon': 'mdi:account-key-outline'},
-        {'type': 'Aksiyon', 'title': 'Kurulum & Sağlık Merkezi', 'subtitle': 'Canlıya alma, readiness ve ilk kurulum kontrolleri', 'url': '/kurulum-merkezi/', 'icon': 'mdi:progress-wrench'},
-        {'type': 'Aksiyon', 'title': 'Derin Ağ Keşfi', 'subtitle': 'Ping, ARP ve raw socket tarama', 'url': '/ag-tarayici/', 'icon': 'mdi:radar'},
-        {'type': 'Aksiyon', 'title': 'Raporlama Merkezi', 'subtitle': 'PDF ve CSV çıktıları', 'url': '/raporlar/', 'icon': 'mdi:file-chart-outline'},
-        {'type': 'Aksiyon', 'title': 'Yönetici Bilgilendirme', 'subtitle': 'Tek sayfa özet, PDF ve Word çıktıları', 'url': '/yonetici-bilgilendirme/', 'icon': 'mdi:chart-box-outline'},
+        {'type': _('Aksiyon'), 'title': _('Yeni Ticket Aç'), 'subtitle': _('Servis masası ve sistem biletleri'), 'url': '/panel/', 'icon': 'mdi:ticket-plus-outline'},
+        {'type': _('Aksiyon'), 'title': _('Fabrika BT Komuta Merkezi'), 'subtitle': _('Departman kartelası, modüller ve doküman merkezi'), 'url': '/fabrika-komuta-merkezi/', 'icon': 'mdi:factory'},
+        {'type': _('Aksiyon'), 'title': _('QR/Barkod Tarayıcı'), 'subtitle': _('Etiket okut, varlığa anında git'), 'url': '/varlik-qr-tara/', 'icon': 'mdi:qrcode-scan'},
+        {'type': _('Aksiyon'), 'title': _('ERP & Entegrasyon'), 'subtitle': _('Odoo bağlantıları ve kamera health poll'), 'url': '/erp-entegrasyonlari/', 'icon': 'mdi:connection'},
+        {'type': _('Aksiyon'), 'title': _('Komuta Merkezi'), 'subtitle': _('VPN, chat, kamera ve uygulama portalı'), 'url': '/komuta-merkezi/', 'icon': 'mdi:view-dashboard-edit-outline'},
+        {'type': _('Aksiyon'), 'title': _('Yönetişim Merkezi'), 'subtitle': _('Takvim, CMDB, denetim ve çıktılar'), 'url': '/yonetisim-merkezi/', 'icon': 'mdi:calendar-check-outline'},
+        {'type': _('Aksiyon'), 'title': _('Kimlik & Uç Nokta Merkezi'), 'subtitle': _('AD, LDAP, endpoint, MFA ve lifecycle'), 'url': '/kimlik-operasyonlari/', 'icon': 'mdi:account-key-outline'},
+        {'type': _('Aksiyon'), 'title': _('Kurulum & Sağlık Merkezi'), 'subtitle': _('Canlıya alma, readiness ve ilk kurulum kontrolleri'), 'url': '/kurulum-merkezi/', 'icon': 'mdi:progress-wrench'},
+        {'type': _('Aksiyon'), 'title': _('Derin Ağ Keşfi'), 'subtitle': _('Ping, ARP ve raw socket tarama'), 'url': '/ag-tarayici/', 'icon': 'mdi:radar'},
+        {'type': _('Aksiyon'), 'title': _('Raporlama Merkezi'), 'subtitle': _('PDF ve CSV çıktıları'), 'url': '/raporlar/', 'icon': 'mdi:file-chart-outline'},
+        {'type': _('Aksiyon'), 'title': _('Yönetici Bilgilendirme'), 'subtitle': _('Tek sayfa özet, PDF ve Word çıktıları'), 'url': '/yonetici-bilgilendirme/', 'icon': 'mdi:chart-box-outline'},
     ]
 
     results = []
@@ -382,13 +383,13 @@ def it_inventory_view(request):
             asset_form = ITAssetForm(request.POST)
             if asset_form.is_valid():
                 asset_form.save()
-                messages.success(request, "Yeni donanım envantere başarıyla eklendi.")
+                messages.success(request, _("Yeni donanım envantere başarıyla eklendi."))
                 return redirect('it_inventory')
         elif 'submit_license' in request.POST:
             license_form = LicenseForm(request.POST)
             if license_form.is_valid():
                 license_form.save()
-                messages.success(request, "Yazılım lisansı başarıyla kaydedildi.")
+                messages.success(request, _("Yazılım lisansı başarıyla kaydedildi."))
                 return redirect('it_inventory')
         elif 'submit_contract' in request.POST:
             VendorContract.objects.create(
@@ -397,7 +398,7 @@ def it_inventory_view(request):
                 start_date=request.POST.get('start_date'), end_date=request.POST.get('end_date'),
                 cost=request.POST.get('cost') or 0, description=request.POST.get('description')
             )
-            messages.success(request, "Tedarikçi sözleşmesi başarıyla kaydedildi.")
+            messages.success(request, _("Tedarikçi sözleşmesi başarıyla kaydedildi."))
             return redirect('it_inventory')
 
     if request.user.is_superuser:
@@ -445,7 +446,7 @@ def config_generator(request):
                 requester=request.user, status='pending'
             )
             SystemLog.objects.create(user=request.user, action='SYSTEM', details=f"ITIL: {target_ip} cihazı için değişiklik talep edildi. CAB onayı bekleniyor.")
-            messages.info(request, "🛡️ ITIL Kuralı: Sistem güvenliği gereği konfigürasyonlar doğrudan cihaza yazılamaz. Talebiniz 'Değişiklik Onay Havuzuna (CAB)' iletildi. Yetkili onayından sonra uygulanacaktır.")
+            messages.info(request, _("🛡️ ITIL Kuralı: Sistem güvenliği gereği konfigürasyonlar doğrudan cihaza yazılamaz. Talebiniz 'Değişiklik Onay Havuzuna (CAB)' iletildi. Yetkili onayından sonra uygulanacaktır."))
 
         elif action == 'download_cfg':
             response = HttpResponse(generated_config, content_type='text/plain')
@@ -465,15 +466,19 @@ def device_backup_view(request):
             backup_obj = get_object_or_404(DeviceBackup, id=request.POST.get('backup_id'))
             device = backup_obj.device
             target_ip = device.ipaddress_set.first().address if device.ipaddress_set.exists() else '192.168.1.1'
+            username, password, enable_secret = get_device_ssh_credentials(device)
+            if not username or not password:
+                messages.error(request, _('SSH kullanıcı adı veya şifresi tanımlı değil. Cihaz profilinde SSH bilgilerini girin.'))
+                return redirect('device_backup')
             success, msg = push_config_to_device(
-                ip_address=target_ip, username=device.ssh_user or 'admin',
-                password=decrypt_vault_password(device.ssh_password) or 'admin',
-                enable_secret=decrypt_vault_password(device.enable_password) or '',
+                ip_address=target_ip, username=username,
+                password=password,
+                enable_secret=enable_secret,
                 vendor=device.vendor or 'cisco', config_payload=backup_obj.config_text
             )
             if success:
                 SystemLog.objects.create(user=request.user, action='SYSTEM', details=f"🚀 DISASTER RECOVERY: {device.name} cihazına eski yedek geri yüklendi!")
-                messages.success(request, "✅ Disaster Recovery Başarılı: Eski konfigürasyon cihaza yazıldı ve ağ saniyeler içinde kurtarıldı!")
+                messages.success(request, _("✅ Disaster Recovery Başarılı: Eski konfigürasyon cihaza yazıldı ve ağ saniyeler içinde kurtarıldı!"))
             else:
                 messages.error(request, f"❌ Kurtarma Başarısız: {msg}")
             return redirect('device_backup')
@@ -586,7 +591,7 @@ def visual_ipam(request):
     if request.method == 'POST':
         if ip_form.is_valid():
             ip_form.save()
-            messages.success(request, 'IP adresi başarıyla atandı ve kayıt edildi.')
+            messages.success(request, _('IP adresi başarıyla atandı ve kayıt edildi.'))
             return redirect('visual_ipam')
 
     ip_grid = []
@@ -627,44 +632,71 @@ def live_monitor(request):
 @login_required
 @role_required(['Ağ Ekibi', 'Sistem Ekibi', 'Yönetim'])
 def get_monitor_data(request):
-    import random
-    
+    import platform
+    import subprocess
+
     target_ip = request.GET.get('ip', '127.0.0.1')
-    
+
     try:
         if target_ip in ['127.0.0.1', 'localhost']:
             try:
                 import psutil
                 cpu_val = round(psutil.cpu_percent(interval=0.1), 1)
                 ram_val = round(psutil.virtual_memory().percent, 1)
+                net = psutil.net_io_counters()
+                traffic_in = round(net.bytes_recv / (1024 * 1024), 1)
+                traffic_out = round(net.bytes_sent / (1024 * 1024), 1)
             except ImportError:
-                cpu_val = random.randint(10, 30)
-                ram_val = random.randint(40, 60)
-                
-            latency = "<1"
-            status = "success"
+                cpu_val = 0
+                ram_val = 0
+                traffic_in = 0
+                traffic_out = 0
+            payload = {
+                'status': 'ok',
+                'demo': False,
+                'ip': target_ip,
+                'cpu': cpu_val,
+                'ram': ram_val,
+                'traffic_in': traffic_in,
+                'traffic_out': traffic_out,
+                'latency': '<1',
+            }
         else:
-            cpu_val = random.randint(15, 65)
-            ram_val = random.randint(40, 85)
-            latency = str(random.randint(2, 45))
-            status = "success"
-            
-        payload = {
-            'status': status,
-            'ip': target_ip,
-            'cpu': cpu_val,
-            'ram': ram_val,
-            'traffic_in': round(random.uniform(10.5, 120.0), 1),
-            'traffic_out': round(random.uniform(5.1, 85.0), 1),
-            'latency': latency,
-        }
-        
-    except Exception as e:
-        payload = {
-            'status': 'error',
-            'message': str(e)
-        }
-        
+            latency = None
+            if platform.system().lower() == 'windows':
+                result = subprocess.run(
+                    ['ping', '-n', '1', '-w', '1000', target_ip],
+                    capture_output=True,
+                    text=True,
+                    timeout=3,
+                )
+                match = re.search(r'(?:time=|time[<=])([\d.]+)\s*ms', result.stdout, re.I)
+                if match:
+                    latency = match.group(1)
+            else:
+                result = subprocess.run(
+                    ['ping', '-c', '1', '-W', '1', target_ip],
+                    capture_output=True,
+                    text=True,
+                    timeout=3,
+                )
+                match = re.search(r'time=([\d.]+)\s*ms', result.stdout)
+                if match:
+                    latency = match.group(1)
+            payload = {
+                'status': 'limited',
+                'demo': True,
+                'message': str(_('Uzak cihaz CPU/RAM metrikleri için SNMP veya ajan entegrasyonu gerekir.')),
+                'ip': target_ip,
+                'cpu': None,
+                'ram': None,
+                'traffic_in': None,
+                'traffic_out': None,
+                'latency': latency or '—',
+            }
+    except Exception as exc:
+        payload = {'status': 'error', 'message': str(exc)}
+
     return JsonResponse(payload)
 
 @login_required
@@ -692,7 +724,7 @@ def port_mapping_view(request, device_id):
         port.connected_asset = ITAsset.objects.filter(id=connected_asset_id).first() if connected_asset_id else None
         port.description = request.POST.get('description', port.description)
         port.save()
-        messages.success(request, 'Port haritası bilgileri başarıyla güncellendi.')
+        messages.success(request, _('Port haritası bilgileri başarıyla güncellendi.'))
         return redirect('port_mapping', device_id=device.id)
 
     ports = Port.objects.filter(device=device).order_by('port_number')
@@ -745,7 +777,7 @@ def knowledge_base_view(request):
                 category=category,
                 author=request.user,
             )
-            messages.success(request, 'Yeni bilgi bankası makalesi başarıyla eklendi.')
+            messages.success(request, _('Yeni bilgi bankası makalesi başarıyla eklendi.'))
             return redirect('knowledge_base')
 
     return render(request, 'knowledge_base.html', {
@@ -855,10 +887,7 @@ def register_page(request):
     if request.method == 'POST':
         form = PublicRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            if request.POST.get('password'):
-                user.set_password(request.POST.get('password'))
-            user.save()
+            user = form.save()
             from .helpdesk import assign_customer_role
             assign_customer_role(user)
             from django.conf import settings as _settings
@@ -896,12 +925,12 @@ def user_panel(request):
                     block=True,
                 )
                 if has_blocking_dlp_event(dlp_events):
-                    messages.error(request, "Talep metni hassas veri içerdiği için DLP politikası tarafından engellendi.")
+                    messages.error(request, _("Talep metni hassas veri içerdiği için DLP politikası tarafından engellendi."))
                     return redirect('user_panel')
                 ticket = form.save(commit=False)
                 ticket.created_by = request.user
                 ticket.save()
-                messages.success(request, "Destek talebiniz başarıyla alındı.")
+                messages.success(request, _("Destek talebiniz başarıyla alındı."))
                 return redirect('user_panel')
     context = {
         'form': form, 
@@ -921,7 +950,7 @@ def bulk_config_generator(request):
         config_payload = request.POST.get('config_payload')
         
         if not selected_device_ids or not config_payload:
-            messages.error(request, "Cihaz ve konfigürasyon alanı boş bırakılamaz.")
+            messages.error(request, _("Cihaz ve konfigürasyon alanı boş bırakılamaz."))
             return redirect('bulk_config_generator')
             
         # Ana toplu işlem kaydını oluşturuyoruz
@@ -950,7 +979,7 @@ def bulk_config_generator(request):
 @login_required
 def custom_admin(request):
     if not request.user.is_staff:
-        return redirect('dashboard')
+        return redirect('user_panel')
     if request.method == 'POST':
         action = request.POST.get('action')
         if action == 'approve_change':
@@ -966,10 +995,17 @@ def custom_admin(request):
                 ip_obj = IpAddress.objects.filter(address=target_ip).first()
                 device = ip_obj.device if ip_obj else None
                 if device:
+                    username, password, enable_secret = get_device_ssh_credentials(device)
+                    if not username or not password:
+                        change_req.status = 'failed'
+                        change_req.execution_log = 'SSH kullanıcı adı veya şifresi tanımlı değil.'
+                        change_req.save()
+                        messages.error(request, _('SSH kullanıcı adı veya şifresi tanımlı değil.'))
+                        return redirect('custom_admin')
                     success, msg = push_config_to_device(
-                        ip_address=target_ip, username=device.ssh_user or 'admin',
-                        password=decrypt_vault_password(device.ssh_password) or 'admin',
-                        enable_secret=decrypt_vault_password(device.enable_password) or '',
+                        ip_address=target_ip, username=username,
+                        password=password,
+                        enable_secret=enable_secret,
                         vendor=change_req.vendor or device.vendor, config_payload=change_req.config_payload,
                         device_obj=device, change_request_id=change_req.id
                     )
@@ -1001,7 +1037,7 @@ def custom_admin(request):
                 ticket.save()
                 messages.success(request, f'Talep #{ticket.id} oluşturuldu.')
             else:
-                messages.error(request, 'Talep formu geçersiz.')
+                messages.error(request, _('Talep formu geçersiz.'))
             return redirect('custom_admin')
 
         elif action == 'edit_ticket':
@@ -1027,14 +1063,14 @@ def custom_admin(request):
                 UserProfile.objects.get_or_create(user=user)
                 messages.success(request, f'Kullanıcı oluşturuldu: {user.username}')
             else:
-                messages.error(request, 'Kullanıcı formu geçersiz.')
+                messages.error(request, _('Kullanıcı formu geçersiz.'))
             return redirect('custom_admin')
 
         elif action == 'submit_device':
             form = DeviceForm(request.POST)
             if form.is_valid():
                 form.save()
-                messages.success(request, 'Cihaz eklendi.')
+                messages.success(request, _('Cihaz eklendi.'))
             return redirect('custom_admin')
 
     context = {

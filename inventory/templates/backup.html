@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}OmniOps - Yedekleme Merkezi{% endblock %}
+{% block title %}{% trans "OmniOps - Yedekleme Merkezi" %}{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-0 mb-5">
     
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h4 class="fw-bold mb-1">Yedekleme Merkezi</h4>
-            <p class="text-muted small mb-0">Cihazlarınızı versiyonlayın ve ihtiyaç anında tek tıkla geri yükleyin (DR).</p>
+            <h4 class="fw-bold mb-1">{% trans "Yedekleme Merkezi" %}</h4>
+            <p class="text-muted small mb-0">{% trans "Cihazlarınızı versiyonlayın ve ihtiyaç anında tek tıkla geri yükleyin (DR)." %}</p>
         </div>
     </div>
 
@@ -21,18 +22,18 @@
                         <span class="bg-warning bg-opacity-10 text-warning rounded p-2 me-3 d-flex">
                             <span class="iconify fs-4" data-icon="mdi:cloud-download"></span>
                         </span>
-                        <h6 class="fw-bold mb-0">Canlı Yedek Al</h6>
+                        <h6 class="fw-bold mb-0">{% trans "Canlı Yedek Al" %}</h6>
                     </div>
                 </div>
                 <div class="card-body px-4 pb-4">
-                    <p class="text-muted small mb-4">Cihazın o anki konfigürasyonunu çeker ve güvenli kasaya (Vault) kaydeder.</p>
+                    <p class="text-muted small mb-4">{% trans "Cihazın o anki konfigürasyonunu çeker ve güvenli kasaya (Vault) kaydeder." %}</p>
                     
-                    <form method="POST" id="backupForm" onsubmit="showGlobalLoading('backupBtn', 'Bağlantı Kuruluyor...')">
+                    <form method="POST" id="backupForm" onsubmit="showGlobalLoading('backupBtn', '{% trans "Bağlantı Kuruluyor..." %}')">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-muted small mb-1">Hedef Cihaz</label>
+                            <label class="form-label fw-bold text-muted small mb-1">{% trans "Hedef Cihaz" %}</label>
                             <select name="device_id" class="form-select bg-body-tertiary text-body border-secondary-subtle shadow-sm" required>
-                                <option value="" disabled selected>Bir cihaz seçin...</option>
+                                <option value="" disabled selected>{% trans "Bir cihaz seçin..." %}</option>
                                 {% for dev in devices %}
                                     <option value="{{ dev.id }}">{{ dev.name }}</option>
                                 {% endfor %}
@@ -40,20 +41,20 @@
                         </div>
                         <div class="row g-2 mb-3">
                             <div class="col-6">
-                                <label class="form-label fw-bold text-muted small mb-1">Hedef IP</label>
+                                <label class="form-label fw-bold text-muted small mb-1">{% trans "Hedef IP" %}</label>
                                 <input type="text" name="target_ip" class="form-control bg-body-tertiary text-body border-secondary-subtle font-monospace" required>
                             </div>
                             <div class="col-6">
-                                <label class="form-label fw-bold text-muted small mb-1">Üretici</label>
+                                <label class="form-label fw-bold text-muted small mb-1">{% trans "Üretici" %}</label>
                                 <select name="vendor" class="form-select bg-body-tertiary text-body border-secondary-subtle">
-                                    <option value="cisco">Cisco IOS</option>
-                                    <option value="huawei">Huawei VRP</option>
+                                    <option value="cisco">{% trans "Cisco IOS" %}</option>
+                                    <option value="huawei">{% trans "Huawei VRP" %}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row g-2 mb-4">
                             <div class="col-6">
-                                <label class="form-label fw-bold text-muted small mb-1">SSH Kullanıcı</label>
+                                <label class="form-label fw-bold text-muted small mb-1">{% trans "SSH Kullanıcı" %}</label>
                                 <input type="text" name="ssh_user" class="form-control bg-body-tertiary text-body border-secondary-subtle" required>
                             </div>
                             <div class="col-6">
@@ -72,15 +73,15 @@
         <div class="col-md-7 col-xl-8">
             <div class="pro-table-wrapper p-0 overflow-hidden h-100">
                 <div class="p-4 pb-2 border-bottom border-secondary-subtle">
-                    <h6 class="fw-bold mb-0 text-primary small text-uppercase" style="letter-spacing: 0.5px;">Son Alınan Yedekler</h6>
+                    <h6 class="fw-bold mb-0 text-primary small text-uppercase" style="letter-spacing: 0.5px;">{% trans "Son Alınan Yedekler" %}</h6>
                 </div>
                 <div class="table-responsive px-2 pb-2" style="max-height: 600px;">
                     <table class="pro-table mb-0">
                         <thead class="sticky-top">
                             <tr>
-                                <th class="py-3 ps-4">Cihaz</th>
-                                <th class="py-3">Tarih</th>
-                                <th class="py-3 text-end pe-4">Aksiyonlar</th>
+                                <th class="py-3 ps-4">{% trans "Cihaz" %}</th>
+                                <th class="py-3">{% trans "Tarih" %}</th>
+                                <th class="py-3 text-end pe-4">{% trans "Aksiyonlar" %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -89,24 +90,24 @@
                                 <td class="ps-4 fw-bold text-body">{{ b.device.name }}</td>
                                 <td><span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2">{{ b.created_at|date:"d.m.Y H:i" }}</span></td>
                                 <td class="text-end pe-4">
-                                    <form method="POST" action="{% url 'device_backup' %}" class="d-inline" onsubmit="return confirm('CRİTİCAL UYARI: Ağ kurtarma başlatılıyor. Seçilen yedek cihazın hafızasına yazılacak. Onaylıyor musunuz?');">
+                                    <form method="POST" action="{% url 'device_backup' %}" class="d-inline" onsubmit="return confirm(window.OmniOpsI18n.backupCriticalConfirm);">
                                         {% csrf_token %}
                                         <input type="hidden" name="action" value="restore_backup">
                                         <input type="hidden" name="backup_id" value="{{ b.id }}">
-                                        <button type="submit" class="btn btn-sm btn-danger fw-bold rounded-pill px-3 shadow-sm me-1" title="Tek Tıkla Geri Yükle">
+                                        <button type="submit" class="btn btn-sm btn-danger fw-bold rounded-pill px-3 shadow-sm me-1" title="{% trans 'Tek Tıkla Geri Yükle' %}">
                                             <span class="iconify align-text-bottom" data-icon="mdi:backup-restore"></span> Geri Yükle
                                         </button>
                                     </form>
                                     
                                     <a href="{% url 'config_diff' b.device.id %}" class="btn btn-sm btn-light border text-primary fw-bold rounded-pill px-3 shadow-sm me-1">Fark Bul</a>
-                                    <a href="/admin/inventory/devicebackup/{{ b.id }}/change/" target="_blank" class="btn btn-sm btn-light border text-muted fw-bold rounded-pill px-3 shadow-sm">İncele</a>
+                                    <a href="/admin/inventory/devicebackup/{{ b.id }}/change/" target="_blank" class="btn btn-sm btn-light border text-muted fw-bold rounded-pill px-3 shadow-sm">{% trans "İncele" %}</a>
                                 </td>
                             </tr>
                             {% empty %}
                             <tr>
                                 <td colspan="3" class="text-center py-5 text-muted border-0">
                                     <span class="iconify fs-1 opacity-50 mb-2" data-icon="mdi:database-off"></span>
-                                    <p class="mb-0">Henüz yedek alınmamış.</p>
+                                    <p class="mb-0">{% trans "Henüz yedek alınmamış." %}</p>
                                 </td>
                             </tr>
                             {% endfor %}

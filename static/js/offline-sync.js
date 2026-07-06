@@ -2,6 +2,13 @@
     const DB_NAME = 'omniops-offline';
     const STORE = 'ticketQueue';
 
+    function t(key, fallback) {
+        if (window.OmniOpsI18n && window.OmniOpsI18n[key]) {
+            return window.OmniOpsI18n[key];
+        }
+        return fallback;
+    }
+
     function openDb() {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open(DB_NAME, 1);
@@ -60,7 +67,7 @@
             if (response.ok) {
                 await deleteQueuedTicket(item.id);
             } else {
-                let message = `#${item.id} senkronize edilemedi`;
+                let message = t('syncFailed', `#${item.id} senkronize edilemedi`).replace('%(id)s', item.id);
                 try {
                     const payload = await response.json();
                     message = payload.detail || payload.error || JSON.stringify(payload);
@@ -75,7 +82,7 @@
 
     function renderQueue(items, queueList) {
         if (!items.length) {
-            queueList.innerHTML = '<span class="text-muted">Bekleyen kayıt yok.</span>';
+            queueList.innerHTML = `<span class="text-muted">${t('queueEmpty', 'Bekleyen kayıt yok.')}</span>`;
             return;
         }
         queueList.innerHTML = items.map(item => `
@@ -96,7 +103,7 @@
             const refresh = async () => {
                 const items = await listQueuedTickets();
                 renderQueue(items, queueList);
-                status.textContent = navigator.onLine ? 'Online' : 'Offline';
+                status.textContent = navigator.onLine ? t('online', 'Online') : t('offline', 'Offline');
                 status.className = `badge ${navigator.onLine ? 'bg-success' : 'bg-danger'}`;
             };
 
@@ -110,10 +117,12 @@
                             headers: {'Content-Type': 'application/json', 'X-CSRFToken': config.csrfToken},
                             body: JSON.stringify(data)
                         });
-                        if (!response.ok) throw new Error('API yanıtı başarısız');
+                        if (!response.ok) throw new Error(t('apiResponseFailed', 'API yanıtı başarısız'));
                         form.reset();
                         const errors = await syncQueuedTickets(config);
-                        if (errors.length) alert(`Senkronizasyon uyarısı:\n${errors.join('\n')}`);
+                        if (errors.length) {
+                            alert(`${t('syncWarning', 'Senkronizasyon uyarısı:')}\n${errors.join('\n')}`);
+                        }
                     } catch (error) {
                         await addQueuedTicket(data);
                     }
@@ -125,7 +134,9 @@
 
             syncButton.addEventListener('click', async () => {
                 const errors = await syncQueuedTickets(config);
-                if (errors.length) alert(`Senkronizasyon uyarısı:\n${errors.join('\n')}`);
+                if (errors.length) {
+                    alert(`${t('syncWarning', 'Senkronizasyon uyarısı:')}\n${errors.join('\n')}`);
+                }
                 await refresh();
             });
             window.addEventListener('online', async () => {

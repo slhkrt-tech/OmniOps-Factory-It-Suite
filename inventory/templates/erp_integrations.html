@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}ERP & Entegrasyon Merkezi - OmniOps{% endblock %}
+{% block title %}{% trans "ERP & Entegrasyon Merkezi - OmniOps" %}{% endblock %}
 
 {% block content %}
 <section class="suite-hero mb-4">
     <div>
         <span class="suite-eyebrow">OmniOps Factory IT Suite</span>
-        <h1 class="suite-title">ERP & Entegrasyon Merkezi</h1>
-        <p class="suite-subtitle">Odoo, ERPNext ve SAP OData bağlantıları; senkronizasyon, kamera sağlık taraması ve entegrasyon durumu.</p>
+        <h1 class="suite-title">{% trans "ERP & Entegrasyon Merkezi" %}</h1>
+        <p class="suite-subtitle">{% trans "Odoo, ERPNext ve SAP OData bağlantıları; senkronizasyon, kamera sağlık taraması ve entegrasyon durumu." %}</p>
     </div>
     <form method="post" class="d-inline">
         {% csrf_token %}
@@ -17,39 +18,39 @@
 </section>
 
 <div class="row g-3 mb-4">
-    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">ERP Bağlantı</div><div class="display-6 fw-bold">{{ metrics.connections }}</div></div></div></div>
-    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Sağlıklı Sync</div><div class="display-6 fw-bold text-success">{{ metrics.healthy }}</div></div></div></div>
-    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Sync Hatası</div><div class="display-6 fw-bold text-danger">{{ metrics.errors }}</div></div></div></div>
-    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Kamera Online</div><div class="display-6 fw-bold text-primary">{{ camera_summary.online }}</div></div></div></div>
+    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "ERP Bağlantı" %}</div><div class="display-6 fw-bold">{{ metrics.connections }}</div></div></div></div>
+    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "Sağlıklı Sync" %}</div><div class="display-6 fw-bold text-success">{{ metrics.healthy }}</div></div></div></div>
+    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "Sync Hatası" %}</div><div class="display-6 fw-bold text-danger">{{ metrics.errors }}</div></div></div></div>
+    <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "Kamera Online" %}</div><div class="display-6 fw-bold text-primary">{{ camera_summary.online }}</div></div></div></div>
 </div>
 
 <div class="row g-4">
     <div class="col-lg-4">
         <div class="card glass-card">
-            <div class="card-header bg-transparent fw-bold">ERP Bağlantısı Ekle</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "ERP Bağlantısı Ekle" %}</div>
             <div class="card-body">
-                <p class="small text-muted">Odoo: veritabanı adı zorunlu. ERPNext: kullanıcı=API Key, parola=API Secret. SAP: parola=HTTP Basic Auth, veritabanı=OData servis yolu. Diğer: genel REST sağlık kontrolü.</p>
+                <p class="small text-muted">{% trans "Odoo: veritabanı adı zorunlu. ERPNext: kullanıcı=API Key, parola=API Secret. SAP: parola=HTTP Basic Auth, veritabanı=OData servis yolu. Diğer: genel REST sağlık kontrolü." %}</p>
                 <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="connection">
                     {{ form.as_p }}
-                    <button class="btn btn-primary w-100">Bağlantıyı Kaydet</button>
+                    <button class="btn btn-primary w-100">{% trans "Bağlantıyı Kaydet" %}</button>
                 </form>
             </div>
         </div>
         <div class="card glass-card mt-4">
-            <div class="card-header bg-transparent fw-bold">Kamera Durum Özeti</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Kamera Durum Özeti" %}</div>
             <div class="card-body small">
-                <div class="d-flex justify-content-between mb-2"><span>Online</span><span class="badge bg-success">{{ camera_summary.online }}</span></div>
-                <div class="d-flex justify-content-between mb-2"><span>Uyarı</span><span class="badge bg-warning">{{ camera_summary.warning }}</span></div>
-                <div class="d-flex justify-content-between mb-2"><span>Offline</span><span class="badge bg-danger">{{ camera_summary.offline }}</span></div>
-                <div class="d-flex justify-content-between"><span>Bakımda</span><span class="badge bg-secondary">{{ camera_summary.maintenance }}</span></div>
+                <div class="d-flex justify-content-between mb-2"><span>{% trans "Online" %}</span><span class="badge bg-success">{{ camera_summary.online }}</span></div>
+                <div class="d-flex justify-content-between mb-2"><span>{% trans "Uyarı" %}</span><span class="badge bg-warning">{{ camera_summary.warning }}</span></div>
+                <div class="d-flex justify-content-between mb-2"><span>{% trans "Offline" %}</span><span class="badge bg-danger">{{ camera_summary.offline }}</span></div>
+                <div class="d-flex justify-content-between"><span>{% trans "Bakımda" %}</span><span class="badge bg-secondary">{{ camera_summary.maintenance }}</span></div>
             </div>
         </div>
     </div>
     <div class="col-lg-8">
         <div class="card glass-card">
-            <div class="card-header bg-transparent fw-bold">ERP Bağlantıları</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "ERP Bağlantıları" %}</div>
             <div class="card-body">
                 {% for connection in connections %}
                 <div class="border rounded-3 p-3 mb-3">
@@ -67,7 +68,7 @@
                     </div>
                 </div>
                 {% empty %}
-                <div class="text-muted">Odoo/ERP bağlantısı yok. Sol panelden ilk bağlantıyı ekleyin.</div>
+                <div class="text-muted">{% trans "Odoo/ERP bağlantısı yok. Sol panelden ilk bağlantıyı ekleyin." %}</div>
                 {% endfor %}
             </div>
         </div>

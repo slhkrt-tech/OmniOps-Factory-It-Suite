@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
     initSidebarGroups();
 });
 
+function omniopsT(key, fallback) {
+    if (window.OmniOpsI18n && window.OmniOpsI18n[key]) {
+        return window.OmniOpsI18n[key];
+    }
+    return fallback;
+}
+
 function initSidebarGroups() {
     const groups = document.querySelectorAll('.sidebar-group');
     if (!groups.length || typeof bootstrap === 'undefined') return;
@@ -54,7 +61,7 @@ function initCommandPalette() {
 
     function render(items) {
         if (!items.length) {
-            results.innerHTML = '<div class="command-empty">Sonuç bulunamadı. Farklı bir kelime deneyin.</div>';
+            results.innerHTML = `<div class="command-empty">${omniopsT('noResults', 'Sonuç bulunamadı. Farklı bir kelime deneyin.')}</div>`;
             return;
         }
         results.innerHTML = items.map(item => `
@@ -74,7 +81,7 @@ function initCommandPalette() {
             .then(response => response.ok ? response.json() : Promise.reject(response))
             .then(data => render(data.results || []))
             .catch(() => {
-                results.innerHTML = '<div class="command-empty text-danger">Arama servisi şu an yanıt vermiyor.</div>';
+                results.innerHTML = `<div class="command-empty text-danger">${omniopsT('searchServiceDown', 'Arama servisi şu an yanıt vermiyor.')}</div>`;
             });
     }
 
@@ -106,34 +113,26 @@ function escapeHtml(value) {
         .replaceAll("'", '&#039;');
 }
 
-// ==========================================
-// ORTAK FONKSİYONLAR
-// Herhangi bir HTML sayfasından çağrılabilir.
-// ==========================================
-
-// --- 3. ŞİFRE GİZLE / GÖSTER (Iconify Destekli) ---
-// Örnek kullanım: onclick="togglePasswordVisibility('loginPassword', 'eyeIcon')"
 function togglePasswordVisibility(inputId, iconId) {
     const passInput = document.getElementById(inputId);
     const eyeIcon = document.getElementById(iconId);
-    
+
     if (passInput && eyeIcon) {
         if (passInput.type === 'password') {
             passInput.type = 'text';
-            eyeIcon.setAttribute('data-icon', 'mdi:eye-off-outline'); // Çizgili göz ikonu
+            eyeIcon.setAttribute('data-icon', 'mdi:eye-off-outline');
         } else {
             passInput.type = 'password';
-            eyeIcon.setAttribute('data-icon', 'mdi:eye-outline'); // Normal göz ikonu
+            eyeIcon.setAttribute('data-icon', 'mdi:eye-outline');
         }
     }
 }
 
-// --- 4. BUTON YÜKLENİYOR ---
-// Örnek kullanım: onclick="showGlobalLoading('submitBtn', 'Kaydediliyor...')"
-function showGlobalLoading(btnId, loadingText = "İşleniyor...") {
+function showGlobalLoading(btnId, loadingText) {
     const btn = document.getElementById(btnId);
-    
+    const text = loadingText || omniopsT('processing', 'İşleniyor...');
+
     if (btn) {
-        btn.innerHTML = `<span class="iconify me-2 animate-spin" data-icon="mdi:loading"></span> ${loadingText}`;
+        btn.innerHTML = `<span class="iconify me-2 animate-spin" data-icon="mdi:loading"></span> ${text}`;
     }
 }

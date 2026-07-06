@@ -1,42 +1,43 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}OT/MES Entegrasyonları - OmniOps{% endblock %}
+{% block title %}{% trans "OT/MES Entegrasyonları - OmniOps" %}{% endblock %}
 
 {% block content %}
 <section class="suite-hero mb-4">
     <div>
         <span class="suite-eyebrow">OmniOps Factory IT Suite</span>
-        <h1 class="suite-title">OT / MES Köprüsü</h1>
-        <p class="suite-subtitle">MES, SCADA REST gateway veya OPC köprüsünden üretim varlıklarını fabrika envanterine aktarın.</p>
+        <h1 class="suite-title">{% trans "OT / MES Köprüsü" %}</h1>
+        <p class="suite-subtitle">{% trans "MES, SCADA REST gateway veya OPC köprüsünden üretim varlıklarını fabrika envanterine aktarın." %}</p>
     </div>
     <div class="d-flex gap-2">
-        <a href="{% url 'erp_integrations' %}" class="btn btn-outline-secondary">ERP Entegrasyonları</a>
+        <a href="{% url 'erp_integrations' %}" class="btn btn-outline-secondary">{% trans "ERP Entegrasyonları" %}</a>
     </div>
 </section>
 
 <div class="row g-3 mb-4">
-    <div class="col-md-4"><div class="card glass-card"><div class="card-body"><div class="text-muted small">Bağlantı</div><div class="display-6 fw-bold">{{ metrics.connections }}</div></div></div></div>
-    <div class="col-md-4"><div class="card glass-card"><div class="card-body"><div class="text-muted small">Sağlıklı</div><div class="display-6 fw-bold text-success">{{ metrics.healthy }}</div></div></div></div>
+    <div class="col-md-4"><div class="card glass-card"><div class="card-body"><div class="text-muted small">{% trans "Bağlantı" %}</div><div class="display-6 fw-bold">{{ metrics.connections }}</div></div></div></div>
+    <div class="col-md-4"><div class="card glass-card"><div class="card-body"><div class="text-muted small">{% trans "Sağlıklı" %}</div><div class="display-6 fw-bold text-success">{{ metrics.healthy }}</div></div></div></div>
     <div class="col-md-4"><div class="card glass-card"><div class="card-body"><div class="text-muted small">Hata</div><div class="display-6 fw-bold text-danger">{{ metrics.errors }}</div></div></div></div>
 </div>
 
 <div class="row g-4">
     <div class="col-lg-4">
         <div class="card glass-card">
-            <div class="card-header bg-transparent fw-bold">Yeni OT Bağlantısı</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Yeni OT Bağlantısı" %}</div>
             <div class="card-body">
                 <form method="post">{% csrf_token %}<input type="hidden" name="action" value="connection">
                 {{ form.as_p }}
-                <button class="btn btn-primary w-100">Kaydet</button></form>
+                <button class="btn btn-primary w-100">{% trans "Kaydet" %}</button></form>
             </div>
         </div>
     </div>
     <div class="col-lg-8">
         <div class="card glass-card">
-            <div class="card-header bg-transparent fw-bold">Aktif Bağlantılar</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Aktif Bağlantılar" %}</div>
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead><tr><th>Ad</th><th>Tip</th><th>Tesis</th><th>Durum</th><th>İşlem</th></tr></thead>
+                    <thead><tr><th>Ad</th><th>{% trans "Tip" %}</th><th>{% trans "Tesis" %}</th><th>Durum</th><th>{% trans "İşlem" %}</th></tr></thead>
                     <tbody>
                         {% for connection in connections %}
                         <tr>
@@ -50,7 +51,7 @@
                             </td>
                         </tr>
                         {% empty %}
-                        <tr><td colspan="5" class="text-muted text-center py-4">OT bağlantısı yok.</td></tr>
+                        <tr><td colspan="5" class="text-muted text-center py-4">{% trans "OT bağlantısı yok." %}</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>

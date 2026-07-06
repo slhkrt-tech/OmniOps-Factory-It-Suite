@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Bilgi Bankası - OmniOps{% endblock %}
+{% block title %}{% trans "Bilgi Bankası - OmniOps" %}{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-0 mb-5">
@@ -24,7 +25,7 @@
                 </div>
                 <div class="position-relative z-index-1">
                     <h2 class="fw-bold mb-2">OmniOps Bilgi Bankası</h2>
-                    <p class="fs-5 opacity-75 mb-4">Nasıl yardımcı olabiliriz? Arıza kaydı açmadan önce çözüm rehberlerimize göz atın.</p>
+                    <p class="fs-5 opacity-75 mb-4">{% trans "Nasıl yardımcı olabiliriz? Arıza kaydı açmadan önce çözüm rehberlerimize göz atın." %}</p>
                     
                     <form method="GET" class="position-relative w-75" style="max-width: 600px;">
                         <span class="iconify position-absolute top-50 start-0 translate-middle-y ms-4 text-muted fs-4" data-icon="mdi:magnify"></span>
@@ -44,14 +45,14 @@
                 <div class="card-header bg-transparent border-bottom-0 pt-4 px-4 pb-2">
                     <h6 class="fw-bold mb-0 d-flex align-items-center">
                         <span class="bg-success bg-opacity-10 text-success rounded p-2 me-3"><span class="iconify fs-5" data-icon="mdi:file-document-edit-outline"></span></span>
-                        Yeni Doküman Ekle
+                        {% trans "Yeni Doküman Ekle" %}
                     </h6>
                 </div>
                 <div class="card-body px-4 pb-4">
                     <form method="POST" class="admin-forms">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label class="form-label text-muted small fw-bold mb-1">Kategori</label>
+                            <label class="form-label text-muted small fw-bold mb-1">{% trans "Kategori" %}</label>
                             <select name="category" class="form-select bg-body-tertiary text-body border-secondary-subtle" required>
                                 {% for val, name in categories %}
                                 <option value="{{ val }}">{{ name }}</option>
@@ -59,12 +60,12 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label text-muted small fw-bold mb-1">Makale Başlığı</label>
-                            <input type="text" name="title" class="form-control bg-body-tertiary text-body border-secondary-subtle" required placeholder="Ortak Yazıcı Çevrimdışı Sorunu">
+                            <label class="form-label text-muted small fw-bold mb-1">{% trans "Makale Başlığı" %}</label>
+                            <input type="text" name="title" class="form-control bg-body-tertiary text-body border-secondary-subtle" required placeholder="{% trans 'Ortak Yazıcı Çevrimdışı Sorunu' %}">
                         </div>
                         <div class="mb-4">
-                            <label class="form-label text-muted small fw-bold mb-1">Çözüm / İçerik</label>
-                            <textarea name="content" class="form-control bg-body-tertiary text-body border-secondary-subtle font-monospace small" rows="8" required placeholder="Çözüm adımlarını buraya girin..."></textarea>
+                            <label class="form-label text-muted small fw-bold mb-1">{% trans "Çözüm / İçerik" %}</label>
+                            <textarea name="content" class="form-control bg-body-tertiary text-body border-secondary-subtle font-monospace small" rows="8" required placeholder="{% trans 'Çözüm adımlarını buraya girin...' %}"></textarea>
                         </div>
                         <button type="submit" class="btn btn-success w-100 fw-bold shadow-sm rounded-3 py-2 text-white">
                             <span class="iconify me-1 align-text-bottom" data-icon="mdi:publish"></span> Makaleyi Yayınla
@@ -112,8 +113,8 @@
                     {% else %}
                         <div class="text-center p-5">
                             <span class="iconify text-muted mb-3 opacity-25" data-icon="mdi:feature-search-outline" style="font-size: 5rem;"></span>
-                            <h5 class="text-muted fw-bold">Makale Bulunamadı</h5>
-                            <p class="text-muted small">Arama kriterlerinize uygun bir çözüm bulamadık. Aradığınız kelimeleri değiştirerek tekrar deneyebilirsiniz.</p>
+                            <h5 class="text-muted fw-bold">{% trans "Makale Bulunamadı" %}</h5>
+                            <p class="text-muted small">{% trans "Arama kriterlerinize uygun bir çözüm bulamadık. Aradığınız kelimeleri değiştirerek tekrar deneyebilirsiniz." %}</p>
                         </div>
                     {% endif %}
                     

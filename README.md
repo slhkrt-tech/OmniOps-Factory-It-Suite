@@ -1,72 +1,115 @@
 # OmniOps Factory IT Suite
 
-OmniOps, fabrika ve kurumsal BT ekiplerinin **ITSM, ITOM, ağ yönetimi, envanter, kimlik, entegrasyon, güvenlik ve raporlama** süreçlerini tek panelde birleştiren açık kaynaklı bir operasyon platformudur.
+**Fabrika ve kurumsal BT operasyonlarını tek panelde birleştiren açık kaynak platform.**
 
-Tekstil, gıda, otomotiv veya karma üretim tesislerinde; servis masasından OT/MES köprüsüne, fabrika portföy envanterinden Prometheus metriklerine kadar uçtan uca yönetim sağlar.
+OmniOps; servis masası (ITSM), ağ operasyonları (ITOM), fabrika envanteri, kimlik yönetimi, entegrasyonlar, güvenlik ve raporlamayı **tek Django tabanlı uygulamada** toplar. Tekstil, gıda, otomotiv veya karma üretim tesislerinde; ticket açılışından OT/MES köprüsüne, QR varlık taramasından Prometheus metriklerine kadar uçtan uca yönetim sağlar.
 
-![Python](https://img.shields.io/badge/Python-3.11+-blue?style=flat-square&logo=python)
-![Django](https://img.shields.io/badge/Django-5.x-092E20?style=flat-square&logo=django)
-![DRF](https://img.shields.io/badge/REST-DRF-red?style=flat-square)
-![PostgreSQL](https://img.shields.io/badge/DB-PostgreSQL-4169E1?style=flat-square&logo=postgresql)
-![Redis](https://img.shields.io/badge/Queue-Redis-DC382D?style=flat-square&logo=redis)
-![Docker](https://img.shields.io/badge/Deploy-Docker-2496ED?style=flat-square&logo=docker)
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-5.x-092E20?style=flat-square&logo=django&logoColor=white)
+![DRF](https://img.shields.io/badge/API-Django_REST-ff1709?style=flat-square)
+![PostgreSQL](https://img.shields.io/badge/DB-PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
+![Redis](https://img.shields.io/badge/Queue-Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
+![Docker](https://img.shields.io/badge/Deploy-Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
+![i18n](https://img.shields.io/badge/i18n-TR%20%7C%20EN-7c3aed?style=flat-square)
 
 ---
 
 ## İçindekiler
 
-1. [Mimari](#mimari)
-2. [Teknoloji yığını](#teknoloji-yığını)
-3. [Modül haritası](#modül-haritası)
-4. [Hızlı başlangıç (Docker)](#hızlı-başlangıç-docker)
-5. [Geliştirici kurulumu](#geliştirici-kurulumu)
-6. [İlk kurulum ve readiness](#ilk-kurulum-ve-readiness)
-7. [Entegrasyonlar](#entegrasyonlar)
-8. [API ve dokümantasyon](#api-ve-dokümantasyon)
-9. [Güvenlik modeli](#güvenlik-modeli)
-10. [Celery zamanlanmış görevler](#celery-zamanlanmış-görevler)
-11. [Production kontrol listesi](#production-kontrol-listesi)
-12. [Doğrulama komutları](#doğrulama-komutları)
-13. [Proje yapısı](#proje-yapısı)
+1. [OmniOps nedir?](#omniops-nedir)
+2. [Görseller ve mimari](#görseller-ve-mimari)
+3. [Kimler kullanır?](#kimler-kullanır)
+4. [Uçtan uca kullanıcı yolculuğu](#uçtan-uca-kullanıcı-yolculuğu)
+5. [Teknoloji yığını (detaylı)](#teknoloji-yığını-detaylı)
+6. [Modül haritası](#modül-haritası)
+7. [Veri ve güvenlik modeli](#veri-ve-güvenlik-modeli)
+8. [Çoklu dil desteği (i18n)](#çoklu-dil-desteği-i18n)
+9. [Kurulum](#kurulum)
+10. [Entegrasyonlar](#entegrasyonlar)
+11. [API](#api)
+12. [Arka plan görevleri (Celery)](#arka-plan-görevleri-celery)
+13. [Production kontrol listesi](#production-kontrol-listesi)
+14. [Proje yapısı](#proje-yapısı)
+15. [CI/CD ve doğrulama](#cicd-ve-doğrulama)
 
 ---
 
-## Mimari
+## OmniOps nedir?
+
+### Çözdüğü problem
+
+Fabrika IT ekipleri genelde **parçalı araçlar** kullanır: ayrı bir ticket sistemi, ayrı IPAM, ayrı envanter Excel’i, ERP’ye manuel veri girişi, AD’de elle kullanıcı kapatma… OmniOps bu süreçleri **tek veri modeli** ve **tek yetki katmanı** altında birleştirir.
+
+### Ne sunar?
+
+| Alan | OmniOps karşılığı |
+|------|-------------------|
+| ITSM | Ticket, SLA, hizmet kataloğu, bilgi bankası, ITSM olgunluk |
+| ITOM | Ağ tarama, IPAM, topoloji, config üretici, yedekleme, canlı izleme |
+| Fabrika IT | Tesis/portföy envanteri, departman kartelası, QR varlık, doküman merkezi |
+| Kimlik | AD/LDAP/Azure sync, lifecycle (onboarding/offboarding), endpoint |
+| Entegrasyon | Odoo, ERPNext, SAP, OT/MES, Zabbix, Teams/Slack, VMS |
+| Güvenlik | DLP, denetim izi, webhook/SIEM, vault şifreleme, RBAC |
+| Raporlama | PDF/CSV, yönetici özeti, Prometheus `/metrics/` |
+
+### Temel tasarım ilkeleri
+
+- **Tek panel, modüler sidebar** — Sektör profiline göre (tekstil, gıda, otomotiv, solar) modüller açılır/kapanır.
+- **Tesis bazlı erişim** — Kullanıcı yalnızca yetkili olduğu fabrika tesislerini görür.
+- **API-first** — Aynı iş kuralları web arayüzü ve REST/JWT API üzerinden çalışır.
+- **Production-ready** — Docker Compose, Gunicorn, Nginx, HTTPS cookie’leri, readiness merkezi.
+- **Türkçe + İngilizce** — 1500+ çeviri girdisi, dil seçici, JS i18n kataloğu.
+
+---
+
+## Görseller ve mimari
+
+### Katman mimarisi
+
+![OmniOps katman mimarisi](docs/images/architecture-layers.svg)
+
+### Modül ekosistemi
+
+![OmniOps modül halkaları](docs/images/module-rings.svg)
+
+### Sistem akış diyagramı
 
 ```mermaid
 flowchart TB
     subgraph clients [İstemciler]
         Browser[Web tarayıcı / PWA]
-        API[REST / JWT istemcileri]
+        Mobile[Saha tablet / offline kuyruk]
+        APIClient[REST + JWT istemcileri]
         Prom[Prometheus scraper]
     end
 
-    subgraph edge [Kenar katman]
+    subgraph edge [Kenar]
         Nginx[Nginx :8080]
     end
 
-    subgraph app [Uygulama katmanı]
+    subgraph app [Uygulama]
         Gunicorn[Django + Gunicorn :8000]
         Worker[Celery Worker]
         Beat[Celery Beat]
     end
 
-    subgraph data [Veri katmanı]
+    subgraph data [Veri]
         PG[(PostgreSQL)]
         Redis[(Redis)]
-        Media[Media / Static volumes]
+        Media[Media / Static]
     end
 
     subgraph external [Dış sistemler]
         AD[AD / LDAP / Azure AD]
         ERP[Odoo / ERPNext / SAP]
-        OT[MES / SCADA / OT REST]
-        Mon[Zabbix / Prometheus]
-        Notify[Teams / Slack / SMTP]
+        OT[MES / SCADA]
+        Mon[Zabbix / SNMP]
+        SIEM[Wazuh / Webhook]
     end
 
     Browser --> Nginx --> Gunicorn
-    API --> Gunicorn
+    Mobile --> Nginx
+    APIClient --> Gunicorn
     Prom --> Gunicorn
     Gunicorn --> PG
     Gunicorn --> Redis
@@ -77,75 +120,210 @@ flowchart TB
     Worker --> ERP
     Worker --> OT
     Worker --> Mon
-    Worker --> Notify
+    Gunicorn --> SIEM
     Gunicorn --> Media
 ```
 
-**Katmanlar**
+### Sidebar modül grupları (UI)
 
-| Katman | Bileşen | Görev |
-|--------|---------|-------|
-| Sunum | Django Templates, Bootstrap 5, Chart.js, Leaflet, vis-network | Operatör arayüzü, PWA, offline saha |
-| Uygulama | Django 5, DRF, Celery | İş kuralları, API, asenkron görevler |
-| Güvenlik | Guardian OLP, JWT, SSO, tesis RBAC | Rol, nesne ve tesis bazlı yetki |
-| Veri | PostgreSQL (prod), SQLite (dev) | Kalıcı veri |
-| Kuyruk | Redis | Celery broker ve sonuç backend |
-| Dağıtım | Docker Compose, Gunicorn, Nginx, WhiteNoise | Konteyner orkestrasyonu |
+```mermaid
+mindmap
+  root((OmniOps))
+    Genel Bakış
+      Ana Panel
+      Komuta Merkezi
+      Kurulum Merkezi
+      Yönetici Raporu
+    Fabrika
+      Portföy Envanteri
+      BT Komuta Merkezi
+      QR Tarayıcı
+      Fabrika Süreçleri
+    Altyapı
+      Canlı İzleme
+      Topoloji
+      IPAM
+      Config Generator
+      Yedekleme
+    Servis Masası
+      Ticket Paneli
+      Bilgi Bankası
+      ITSM Olgunluk
+    Kimlik
+      Directory Sync
+      Endpoint
+      Lifecycle
+    Entegrasyon
+      ERP
+      OT/MES
+      Hub Merkezi
+```
 
 ---
 
-## Teknoloji yığını
+## Kimler kullanır?
 
-### Backend
+| Rol | Django grubu | Tipik kullanım |
+|-----|--------------|----------------|
+| BT yöneticisi | Admin, Yönetim | Onay, rapor, readiness, entegrasyon |
+| Sistem ekibi | Sistem Ekibi | Sunucu, yedek, IT envanter, kabin |
+| Ağ ekibi | Ağ Ekibi | IPAM, tarama, topoloji, config push |
+| Help desk | Help Desk Ekibi | Ticket, SLA, müşteri paneli |
+| Son kullanıcı | — (müşteri) | Hizmet kataloğu, arıza bildirimi |
+| Entegrasyon | API + JWT | ERP sync, probe agent, webhook |
 
-| Teknoloji | Sürüm / Not | Kullanım |
-|-----------|-------------|----------|
-| Python | 3.11+ | Ana dil |
-| Django | 5.x | Web framework, ORM, admin |
-| Django REST Framework | — | REST API, filtreleme, pagination |
-| SimpleJWT | — | API token kimlik doğrulama |
-| drf-spectacular | — | OpenAPI / Swagger / ReDoc |
-| django-guardian | — | Nesne bazlı izinler (OLP) |
-| django-filter | — | API queryset filtreleme |
-| Celery + Redis | — | Arka plan ve zamanlanmış işler |
-| ldap3 | 2.9+ | AD/LDAP directory sync |
-| requests | — | HTTP entegrasyon istemcileri |
-| netmiko / scapy / pysnmp | — | Ağ cihaz yönetimi ve tarama |
-| ReportLab | — | PDF rapor üretimi |
-| boto3 | — | S3 yedekleme (opsiyonel) |
-| cryptography | — | Vault alan şifreleme (Fernet) |
+**Panel yönlendirme mantığı**
 
-### Frontend
+- `is_staff` → Ana panel (`/`) ve yönetim modülleri
+- Müşteri → Kullanıcı paneli (`/kullanici-paneli/`)
+- Yetkisiz modül → Anlamlı mesaj + doğru panele yönlendirme (403 yerine UX)
 
-| Teknoloji | Kullanım |
+---
+
+## Uçtan uca kullanıcı yolculuğu
+
+Aşağıdaki akış, projeyi “baştan sona” anlamak için tipik bir senaryodur.
+
+```mermaid
+sequenceDiagram
+    actor User as Kullanıcı
+    participant UI as OmniOps Web
+    participant Auth as Django Auth / SSO
+    participant API as REST API
+    participant Celery as Celery Worker
+    participant ERP as ERP / AD
+
+    User->>UI: /login/ (TR veya EN)
+    UI->>Auth: Kimlik doğrulama
+    Auth-->>UI: Oturum / JWT
+    User->>UI: Hizmet kataloğundan talep aç
+    UI->>API: POST /api/tickets/
+    API-->>UI: Ticket #123
+    Celery->>API: SLA kontrolü (15 dk)
+    User->>UI: QR ile varlık tara
+    UI->>API: GET /api/qr-lookup/
+    Celery->>ERP: Saat :15 ERP sync
+    Celery->>ERP: Saat :45 Directory sync
+    User->>UI: Çıkış Yap (POST + CSRF)
+    UI->>Auth: Oturum sonlandır
+    Auth-->>User: /login/ yönlendirme
+```
+
+**Adım adım özet**
+
+1. **Giriş** — Yerel hesap, Azure AD, OIDC veya SAML (`/oauth/`).
+2. **Dil seçimi** — Sağ üst TR/EN; çeviriler `locale/` + `compilemessages`.
+3. **Talep** — Müşteri `user_panel`, staff `custom_admin` veya API.
+4. **Operasyon** — Ağ tarama, config yedek, IPAM atama (rol + tesis kontrolü).
+5. **Entegrasyon** — Celery ile ERP/AD/OT arka planda senkronize edilir.
+6. **Rapor** — Yönetici özeti PDF/Word, Prometheus metrik scrape.
+7. **Çıkış** — Güvenli POST logout; oturum temizlenir.
+
+---
+
+## Teknoloji yığını (detaylı)
+
+Her teknoloji **neden** projede ve **ne için** kullanılıyor — satır satır.
+
+### Backend çekirdeği
+
+| Teknoloji | Paket / sürüm | Ne için kullanılır? |
+|-----------|---------------|---------------------|
+| **Python** | 3.11+ | Ana geliştirme dili; ağ otomasyonu, entegrasyon, ML-lite AIOps |
+| **Django** | 5.x | Web framework: ORM, admin, auth, template, middleware, i18n |
+| **Django REST Framework** | djangorestframework | REST API, ViewSet’ler, pagination, throttle |
+| **SimpleJWT** | djangorestframework-simplejwt | Mobil/entegrasyon için Bearer token kimlik doğrulama |
+| **drf-spectacular** | OpenAPI 3 | Swagger `/api/docs/` ve ReDoc `/api/redoc/` |
+| **django-filter** | API queryset filtreleme | Cihaz/ticket listelerinde parametreli arama |
+| **django-guardian** | Nesne bazlı izin (OLP) | `view_device` gibi cihaz/varlık düzeyinde yetki |
+| **python-dotenv** | `.env` yükleme | Gizli anahtarların koddan ayrılması |
+| **dj-database-url** | DATABASE_URL parse | SQLite (dev) ↔ PostgreSQL (prod) tek satır geçiş |
+| **psycopg2-binary** | PostgreSQL sürücüsü | Production veritabanı bağlantısı |
+| **gunicorn** | WSGI sunucusu | Production HTTP worker (Docker `web` servisi) |
+| **whitenoise** | Statik dosya | CSS/JS manifest; Nginx olmadan da statik sunum |
+
+### Asenkron işler
+
+| Teknoloji | Ne için? |
 |-----------|----------|
-| Django Templates | Sunucu taraflı render |
-| Bootstrap 5 | Responsive UI |
-| Custom CSS design system | Glass card, sidebar grupları |
-| Chart.js | Dashboard grafikleri |
-| Leaflet | Saha rota haritası |
-| vis-network | Ağ topolojisi |
-| Service Worker | PWA, offline saha kuyruğu |
+| **Celery** | Gece yedekleme, ERP sync, SLA eskalasyon, AIOps, e-posta raporu |
+| **Redis** | Celery broker + result backend; yüksek frekanslı kuyruk |
+| **celery.schedules (crontab)** | `core/settings.py` içinde zamanlanmış görev takvimi |
 
-### Veritabanı ve depolama
+### Ağ ve altyapı otomasyonu
 
-| Ortam | Veritabanı | Not |
-|-------|------------|-----|
-| Geliştirme | SQLite | `DATABASE_URL=sqlite:///db.sqlite3` |
-| Production | PostgreSQL 15 | Docker Compose `omniops_db` |
-| Medya | Dosya sistemi | `media_data` volume |
-| Statik | WhiteNoise + Nginx | `staticfiles_data` paylaşımlı volume |
+| Teknoloji | Ne için? |
+|-----------|----------|
+| **netmiko** | Cisco/Huawei SSH: config push, yedek alma, vendor tespiti |
+| **scapy** | ARP broadcast, Layer-2 ağ tarama (`/ag-tarayici/`) |
+| **pysnmp** | SNMP ile cihaz metrikleri (entegrasyon hub) |
+| **psutil** | Localhost CPU/RAM/traffic (`/api/monitor-data/`) |
+| **mac-vendor-lookup** | MAC → üretici adı (tarama sonuçları) |
+| **networkx** | Topoloji graf analizi |
+| **ipaddress** (stdlib) | Subnet hesaplayıcı, IPAM doğrulama |
 
-### Dağıtım
+### Belge, rapor, görsel
 
-| Bileşen | Port | Açıklama |
-|---------|------|----------|
-| Gunicorn (web) | 8000 | Django uygulaması |
-| Nginx | 8080 | Reverse proxy, statik dosya |
-| OnlyOffice | 8082 | DOCX/XLSX editör (opsiyonel) |
-| Collabora | 9980 | WOPI editör (opsiyonel) |
-| PostgreSQL | 5432 | Veritabanı (internal) |
-| Redis | 6379 | Celery broker (internal) |
+| Teknoloji | Ne için? |
+|-----------|----------|
+| **ReportLab** | PDF raporlar, yönetici özeti, QR etiket PDF |
+| **Jinja2** | Vendor CLI şablonları (Cisco/Huawei config generator) |
+| **Pillow** | Görsel işleme, QR/thumbnail |
+| **matplotlib** | Grafik export (raporlama hub) |
+
+### Güvenlik ve kimlik
+
+| Teknoloji | Ne için? |
+|-----------|----------|
+| **cryptography (Fernet)** | `VAULT_KEY` ile SSH/API parola şifreleme |
+| **PyJWT** | OnlyOffice JWT imzalama |
+| **social-auth-app-django** | Azure AD, OIDC OAuth2 giriş |
+| **python3-saml** | Kurumsal SAML SSO |
+| **ldap3** | AD/LDAP directory sync ve lifecycle |
+| **django CSRF + secure cookies** | Production’da HTTPS cookie zorunluluğu |
+
+### Entegrasyon ve bulut
+
+| Teknoloji | Ne için? |
+|-----------|----------|
+| **requests** | ERP, OT, Zabbix, webhook HTTP istemcileri |
+| **boto3** | PostgreSQL dump → S3 yedekleme (opsiyonel) |
+
+### Frontend (sunucu taraflı + statik)
+
+| Teknoloji | Ne için? |
+|-----------|----------|
+| **Django Templates** | Tüm operatör panelleri; `{% trans %}` ile i18n |
+| **Bootstrap 5** | Responsive layout, modal, dropdown, grid |
+| **Iconify** | Tutarlı MDI ikon seti |
+| **Chart.js + ApexCharts** | Dashboard grafikleri, heatmap |
+| **SortableJS** | Widget sürükle-bırak (`workspace.js`) |
+| **Leaflet** | Saha rota haritası |
+| **vis-network** | Ağ topolojisi görselleştirme |
+| **Service Worker + IndexedDB** | Offline saha PWA, ticket kuyruğu |
+| **Custom CSS (`static/css/style.css`)** | Glass card, sidebar grupları, komut paleti |
+
+### Veritabanı stratejisi
+
+| Ortam | Motor | Kullanım |
+|-------|-------|----------|
+| Geliştirme | SQLite | `DATABASE_URL=sqlite:///db.sqlite3` — hızlı başlangıç |
+| Production | PostgreSQL 15 | Docker `omniops_db`, connection pooling |
+| Medya | Dosya sistemi | Yedek config, doküman, QR PDF |
+| Statik | WhiteNoise + Nginx volume | `collectstatic` → paylaşımlı volume |
+
+### Dağıtım topolojisi (Docker)
+
+| Servis | Port | Görev |
+|--------|------|-------|
+| `web` (Gunicorn) | 8000 | Django uygulaması |
+| `nginx` | 8080 | Reverse proxy, TLS terminasyonu (harici) |
+| `worker` | — | Celery işleri |
+| `beat` | — | Zamanlanmış görevler |
+| `db` | 5432 (internal) | PostgreSQL |
+| `redis` | 6379 (internal) | Kuyruk |
+| `onlyoffice` | 8082 | DOCX/XLSX tarayıcı editörü (opsiyonel) |
+| `collabora` | 9980 | WOPI alternatif editör (opsiyonel) |
 
 ---
 
@@ -155,77 +333,133 @@ flowchart TB
 
 | Modül | URL | Açıklama |
 |-------|-----|----------|
-| Dashboard | `/` | KPI, ticket özeti, AIOps önerileri |
-| Komuta Merkezi | `/komuta-merkezi/` | VPN, kamera, iş uygulamaları, kanallar |
-| Yönetişim Merkezi | `/yonetisim-merkezi/` | Change calendar, CMDB bağımlılık, uyum |
-| Kurulum Merkezi | `/kurulum-merkezi/` | Readiness skoru, ortam kontrolleri |
-| Yönetici Özeti | `/yonetici-bilgilendirme/` | PDF/Word operasyon raporu |
+| Ana Panel | `/` | KPI, ticket trend, cihaz özeti, heatmap |
+| Komuta Merkezi | `/komuta-merkezi/` | VPN, kamera, iş uygulamaları |
+| Yönetişim Merkezi | `/yonetisim-merkezi/` | Change calendar, CMDB, uyum |
+| Kurulum Merkezi | `/kurulum-merkezi/` | Readiness skoru (%), ortam kontrolleri |
+| Yönetici Özeti | `/yonetici-bilgilendirme/` | Tek sayfa PDF/Word rapor |
+| Çalışma Alanı | `/calisma-alani/` | Widget sırası, sektör profili |
 
 ### Fabrika ve envanter
 
 | Modül | URL | Açıklama |
 |-------|-----|----------|
-| Fabrika BT Komuta Merkezi | `/fabrika-komuta-merkezi/` | Departman kartelası, doküman, alt alanlar |
-| Portföy Envanteri | `/fabrika-portfoy-envanter/` | Tesis bazlı bölüm envanteri (esnek başlıklar) |
+| Fabrika BT Komuta Merkezi | `/fabrika-komuta-merkezi/` | Departman kartelası, dokümanlar |
+| Portföy Envanteri | `/fabrika-portfoy-envanter/` | Tesis bazlı bölüm envanteri |
 | Fabrika Operasyonları | `/fabrika-operasyonlari/` | Sarf, bakım, personel IT süreçleri |
-| QR Tarayıcı | `/varlik-qr-tara/` | Barkod/QR ile varlık çözümleme |
+| QR Tarayıcı | `/varlik-qr-tara/` | Barkod/QR → varlık sayfası |
 
 ### Ağ ve altyapı
 
 | Modül | URL | Açıklama |
 |-------|-----|----------|
-| Ağ Tarayıcı | `/ag-tarayici/` | Ping/ARP/hybrid tarama |
-| IPAM | `/ipam/` | Görsel IP adres yönetimi |
-| Topoloji | `/topoloji/` | Ağ haritası (vis-network) |
-| Kabin / Rack | `/veri-merkezi/` | Rack elevation görünümü |
-| Config Generator | `/uretici/` | Vendor CLI konfigürasyon üretimi |
-| Yedekleme | `/yedekleme/` | Cihaz konfig yedekleri |
-| Canlı İzleme | `/monitor/` | Performans metrikleri |
+| Ağ Tarayıcı | `/ag-tarayici/` | Ping + ARP + hybrid tarama |
+| IPAM | `/ipam/` | Görsel IP yönetimi |
+| Topoloji | `/topoloji/` | vis-network haritası |
+| Kabin / Rack | `/veri-merkezi/` | Rack elevation |
+| Config Generator | `/uretici/` | Jinja2 → vendor CLI |
+| Toplu Generator | `/toplu-generator/` | Celery ile toplu config push |
+| Yedekleme | `/yedekleme/` | Running-config yedekleri |
+| Canlı İzleme | `/monitor/` | localhost gerçek / uzak ping metrikleri |
+| Port Haritası | `/port-haritasi/` | Fiziksel port bağlantıları |
 
-### Servis masası ve ITSM
+### Servis masası (ITSM)
 
 | Modül | URL | Açıklama |
 |-------|-----|----------|
-| Panel / Admin | `/panel/` | Ticket, cihaz, kullanıcı yönetimi |
-| Destek Analitik | `/destek-analitik/` | SLA, kategori, performans |
-| ITSM Olgunluk | `/itsm-olgunluk/` | Problem, release/CAB, lifecycle, denetim izi |
+| Yönetim Paneli | `/panel/` | Ticket, cihaz, kullanıcı (staff) |
+| Kullanıcı Paneli | `/kullanici-paneli/` | Hizmet kataloğu, talep geçmişi |
+| Destek Analitik | `/destek-analitik/` | SLA, kategori performansı |
+| ITSM Olgunluk | `/itsm-olgunluk/` | Problem, release, CAB, denetim |
 | Bilgi Bankası | `/bilgi-bankasi/` | KB makaleleri |
 
-### Kimlik ve güvenlik
+### Kimlik, güvenlik, entegrasyon
 
-| Modül | URL | Açıklama |
-|-------|-----|----------|
-| Kimlik Operasyonları | `/kimlik-operasyonlari/` | AD/LDAP sync, lifecycle, tesis erişimi |
-| DLP Olayları | `/dlp-olaylari/` | Veri kaybı önleme olayları |
+| Modül | URL |
+|-------|-----|
+| Kimlik Operasyonları | `/kimlik-operasyonlari/` |
+| DLP Olayları | `/dlp-olaylari/` |
+| ERP Entegrasyonları | `/erp-entegrasyonlari/` |
+| OT/MES Köprüsü | `/ot-entegrasyonlari/` |
+| Entegrasyon Merkezi | `/entegrasyon-merkezi/` |
+| Offline Saha | `/offline-saha/` |
+| Satış Kanban | `/satis-kanban/` *(FEATURE_SALES_KANBAN)* |
 
-### Entegrasyonlar
+### Sistem uçları
 
-| Modül | URL | Açıklama |
-|-------|-----|----------|
-| ERP Entegrasyonları | `/erp-entegrasyonlari/` | Odoo, ERPNext, SAP OData |
-| OT/MES Köprüsü | `/ot-entegrasyonlari/` | Üretim varlık senkronizasyonu |
-| Entegrasyon Merkezi | `/entegrasyon-merkezi/` | Monitoring, VMS, bildirim, e-posta ticket, WMS |
-
-### Diğer
-
-| Modül | URL | Açıklama |
-|-------|-----|----------|
-| Offline Saha | `/offline-saha/` | PWA, offline kuyruk |
-| Satış Kanban | `/satis-kanban/` | `FEATURE_SALES_KANBAN=True` ile aktif |
-| Prometheus | `/metrics/` | Scrape metrikleri (opsiyonel token) |
-| Health | `/health/` | Yük dengeleyici sağlık kontrolü |
+| Uç | URL | Açıklama |
+|----|-----|----------|
+| Health | `/health/` | Load balancer probe |
+| Metrics | `/metrics/` | Prometheus scrape (token opsiyonel) |
+| Global arama | `/api/global-search/` | Komut paleti (Ctrl+K) |
 
 ---
 
-## Hızlı başlangıç (Docker)
+## Veri ve güvenlik modeli
+
+```mermaid
+flowchart LR
+    User[Kullanıcı] --> Auth{Kimlik doğrulama}
+    Auth -->|Session/JWT| RBAC[Rol grupları]
+    RBAC --> Site[Tesis erişimi]
+    Site --> Module[Modül izni]
+    Module --> OLP[Guardian OLP]
+    OLP --> View[Sayfa / API]
+    View --> Audit[AuditMiddleware]
+    Audit --> Log[ImmutableAuditEntry]
+```
+
+| Katman | Mekanizma | Dosya / konum |
+|--------|-----------|---------------|
+| Kimlik | Django auth, JWT, Azure/OIDC/SAML | `social_django`, `settings.py` |
+| Rol | Admin, Yönetim, Ağ, Sistem, Help Desk | `setup_helpdesk`, `role_required` |
+| Tesis | `UserFactorySiteAccess` | `site_access.py` |
+| Modül | `ModulePermissionGrant` | `integrations`, `governance` |
+| Nesne | Guardian `assign_perm` | `view_device`, vb. |
+| Vault | Fernet (`VAULT_KEY`) | `utils.encrypt_vault_password` |
+| Denetim | Append-only audit | `middleware/audit_middleware.py` |
+| Webhook | IP allowlist + API key | `WAZUH_API_KEY`, `device_alert_webhook` |
+| Production | HSTS, secure cookies, SECRET_KEY guard | `settings.py` (DEBUG=False) |
+
+**SSH güvenliği:** Production’da cihaz SSH bilgisi yoksa config push/yedek **reddedilir**; `admin/admin` fallback yalnızca `DEBUG=True` geliştirme ortamında.
+
+---
+
+## Çoklu dil desteği (i18n)
+
+OmniOps **Türkçe (varsayılan)** ve **İngilizce** destekler.
+
+| Bileşen | Konum | Açıklama |
+|---------|-------|----------|
+| Çeviri dosyaları | `locale/tr/`, `locale/en/` | GNU gettext `.po` / `.mo` |
+| Manuel düzeltmeler | `locale/en_manual_overrides.json` | Kritik UI metinleri (ör. "Log Out") |
+| Otomatik doldurma | `scripts/fill_i18n.py` | Eksik EN çevirileri + cache |
+| JS metinleri | `inventory/i18n_js.py` → `window.OmniOpsI18n` | Komut paleti, bildirimler, offline sync |
+| Şablonlar | `{% trans %}` | Tüm paneller |
+| Dil değiştirici | Sağ üst `/i18n/setlang/` | Oturum dil tercihi |
+
+**Çeviri güncelleme**
+
+```bash
+python manage.py makemessages -l en -l tr
+python scripts/fill_i18n.py
+python manage.py compilemessages
+```
+
+---
+
+## Kurulum
+
+### Hızlı başlangıç (Docker — önerilen)
 
 ```bash
 git clone https://github.com/slhkrt-tech/OmniOps-Factory-It-Suite.git
 cd OmniOps-Factory-It-Suite
-copy .env.example .env
+copy .env.example .env   # Windows
+# cp .env.example .env    # Linux/macOS
 ```
 
-`.env` içinde en az şu değerleri güncelleyin:
+`.env` minimum ayarlar:
 
 ```env
 APP_NAME=OmniOps
@@ -237,36 +471,28 @@ REMOTE_PROBE_SHARED_SECRET=change-this-probe-secret
 VAULT_KEY=replace-with-fernet-key
 ```
 
-Servisleri başlatın:
-
 ```bash
 docker compose up --build -d
 docker compose exec web python manage.py createsuperuser
 docker compose exec web python manage.py omniops_doctor --bootstrap
 ```
 
-Erişim:
-
 | Adres | Açıklama |
 |-------|----------|
+| http://127.0.0.1:8080 | Nginx (önerilen giriş) |
 | http://127.0.0.1:8000 | Doğrudan Gunicorn |
-| http://127.0.0.1:8080 | Nginx reverse proxy (önerilen) |
 | http://127.0.0.1:8000/health/ | Sağlık kontrolü |
-| http://127.0.0.1:8000/metrics/ | Prometheus metrikleri |
+| http://127.0.0.1:8000/api/docs/ | Swagger UI |
 
----
-
-## Geliştirici kurulumu
+### Geliştirici kurulumu (yerel)
 
 ```bash
-git clone https://github.com/slhkrt-tech/OmniOps-Factory-It-Suite.git
-cd OmniOps-Factory-It-Suite
 python -m venv venv
 venv\Scripts\activate          # Windows
-# source venv/bin/activate     # Linux/macOS
 pip install -r requirements.txt
 copy .env.example .env
 set DATABASE_URL=sqlite:///db.sqlite3
+set DJANGO_DEBUG=True
 python manage.py migrate
 python manage.py setup_helpdesk
 python manage.py omniops_doctor --bootstrap
@@ -281,13 +507,11 @@ celery -A core worker --loglevel=info --pool=solo
 celery -A core beat --loglevel=info
 ```
 
----
+### İlk kurulum kontrolü
 
-## İlk kurulum ve readiness
+Web: **`/kurulum-merkezi/`** — veritabanı, gruplar, secret key, SMTP, Celery, fabrika bootstrap skoru.
 
-**Web:** `/kurulum-merkezi/`
-
-**CLI:**
+CLI:
 
 ```bash
 python manage.py omniops_doctor
@@ -295,7 +519,7 @@ python manage.py omniops_doctor --json
 python manage.py omniops_doctor --bootstrap
 ```
 
-`--bootstrap` şunları oluşturur: RBAC grupları, ticket kategorileri, örnek fabrika tesisleri (tekstil/gıda/otomotiv), departman kartelası, QR etiketleri.
+`--bootstrap` oluşturur: RBAC grupları, ticket kategorileri, örnek fabrika tesisleri, departman kartelası, QR etiketleri.
 
 ---
 
@@ -303,24 +527,27 @@ python manage.py omniops_doctor --bootstrap
 
 ### ERP (Odoo / ERPNext / SAP)
 
-- URL: `/erp-entegrasyonlari/`
-- Odoo: XML-RPC · ERPNext: REST API Key · SAP: OData (`database_name` = servis yolu)
-- CMDB sync: `ERPExternalRecord`, envanter kalemleri
+- **URL:** `/erp-entegrasyonlari/`
+- **Odoo:** XML-RPC · **ERPNext:** REST API Key · **SAP:** OData
+- **CMDB sync:** `ERPExternalRecord` → envanter kalemleri
+- **Zamanlama:** Celery saat `:15`
 
 ### OT / MES
 
-- URL: `/ot-entegrasyonlari/`
+- **URL:** `/ot-entegrasyonlari/`
 - REST gateway veya OPC köprüsünden üretim varlıkları
+- **Zamanlama:** Celery saat `:30`
 
 ### Entegrasyon Merkezi
 
-- URL: `/entegrasyon-merkezi/`
+- **URL:** `/entegrasyon-merkezi/`
 - Zabbix, Prometheus, VMS (Hikvision/Milestone), Teams/Slack/webhook, IMAP ticket, backup vendor, WMS
 
 ### Kimlik (AD / LDAP / Azure)
 
-- URL: `/kimlik-operasyonlari/`
-- Directory sync, lifecycle otomasyonu (onboarding/offboarding), tesis erişim yetkileri
+- **URL:** `/kimlik-operasyonlari/`
+- Directory sync, onboarding/offboarding lifecycle
+- **Zamanlama:** Celery saat `:45`
 
 ### Belge editörleri
 
@@ -334,30 +561,13 @@ ONLYOFFICE_JWT_SECRET=your-jwt-secret
 DOCUMENT_EDITOR_BACKEND=onlyoffice
 ```
 
-### Production güvenlik varsayılanları
+### Uzak probe agent
 
-```env
-ALLOW_PUBLIC_REGISTRATION=False
-SITE_ACCESS_ENFORCEMENT=True
-DIRECTORY_SYNC_DRY_RUN=False
-FEATURE_SALES_KANBAN=True
-PROMETHEUS_METRICS_ENABLED=True
-PROMETHEUS_METRICS_TOKEN=replace-with-random-token
-```
-
-Prometheus scrape (token tanımlıysa): `Authorization: Bearer <token>`
-
-### Yardımcı komutlar
-
-```bash
-python manage.py import_inventory_csv veriler.csv --site-code SITE-TEXTILE
-python manage.py gdpr_export_user --username admin
-python manage.py test_postgres_restore
-```
+Şubelerdeki ağları merkeze raporlamak için `probe_agent.py` + `REMOTE_PROBE_SHARED_SECRET`.
 
 ---
 
-## API ve dokümantasyon
+## API
 
 | Kaynak | URL |
 |--------|-----|
@@ -365,73 +575,112 @@ python manage.py test_postgres_restore
 | OpenAPI schema | `/api/schema/` |
 | Swagger UI | `/api/docs/` |
 | ReDoc | `/api/redoc/` |
-| JWT token | `/api/token/` |
-| JWT refresh | `/api/token/refresh/` |
+| JWT token | `POST /api/token/` |
+| JWT refresh | `POST /api/token/refresh/` |
 
-**Öne çıkan API kaynakları:** `devices`, `tickets`, `factory-sites`, `department-inventory`, `erp-connections`, `problems`, `releases`, `monitoring-connections`, `notification-channels`, `module-permissions`
+**Kimlik doğrulama:** Session (tarayıcı) veya `Authorization: Bearer <token>` (entegrasyon).
 
-Kimlik doğrulama: Session (tarayıcı) veya JWT Bearer token (entegrasyon).
-
----
-
-## Güvenlik modeli
-
-| Katman | Mekanizma |
-|--------|-----------|
-| Kimlik doğrulama | Django auth, JWT, Azure AD / OIDC / SAML SSO |
-| Rol bazlı | Admin, Yönetim, Ağ Ekibi, Sistem Ekibi, Help Desk |
-| Nesne bazlı | django-guardian (`view_device`, vb.) |
-| Tesis bazlı | `UserFactorySiteAccess`, `filter_queryset_by_site` |
-| Modül bazlı | `ModulePermissionGrant` (integrations, governance, …) |
-| Denetim | `ImmutableAuditEntry` (append-only), `AuditMiddleware` |
-| Vault | Fernet ile API key / parola şifreleme (`VAULT_KEY`) |
-| Webhook | IP allowlist + `WAZUH_API_KEY` |
-| Production | HTTPS, secure cookies, HSTS, `SECRET_KEY` zorunluluğu |
+**Öne çıkan kaynaklar:** `devices`, `tickets`, `factory-sites`, `department-inventory`, `erp-connections`, `directory-users`, `managed-documents`, `module-permissions`, `workspace/layout`
 
 ---
 
-## Celery zamanlanmış görevler
+## Arka plan görevleri (Celery)
 
 | Görev | Periyot | Açıklama |
 |-------|---------|----------|
-| Ağ taraması | Gece 03:00 | Otomatik subnet taraması |
+| Ağ taraması | 03:00 | Otomatik subnet taraması |
 | SLA / lisans | 08:00 | Uyarı kontrolü |
 | SLA eskalasyon | 15 dk | İhlal edilen ticketları eskale et |
 | Zabbix eşik | 5 dk | CPU/RAM alarm |
 | Gece yedekleme | 04:00 | Cihaz config yedekleri |
-| PostgreSQL dump | 04:00 | DB yedekleme |
+| PostgreSQL dump | 04:00 | DB yedekleme (+ S3 opsiyonel) |
 | AIOps bakım | 05:00 | Tahminleyici bakım |
 | Kamera health | 10 dk | NVR erişilebilirlik |
 | ERP sync | Saat :15 | Tüm ERP bağlantıları |
 | Directory sync | Saat :45 | AD/LDAP |
 | OT sync | Saat :30 | MES/SCADA |
-| Entegrasyon hub | Saat :05 | Monitoring, VMS, WMS, e-posta |
+| Entegrasyon hub | Saat :05 | Monitoring, VMS, WMS |
 | Entegrasyon health | 15 dk | HTTP endpoint kontrolü |
 | Denetim raporu | Pazartesi 08:00 | Haftalık PDF e-posta |
 | Veri arşivleme | Ayın 1'i | Eski logları arşivle |
+
+Takvim: `core/settings.py` → `CELERY_BEAT_SCHEDULE`.
 
 ---
 
 ## Production kontrol listesi
 
-- [ ] `DJANGO_SECRET_KEY`, `POSTGRES_PASSWORD`, `REMOTE_PROBE_SHARED_SECRET`, `VAULT_KEY` benzersiz
-- [ ] `ALLOWED_HOSTS` ve `CSRF_TRUSTED_ORIGINS` canlı domain
+- [ ] `DJANGO_SECRET_KEY` — güçlü, benzersiz (dev-only marker yok)
+- [ ] `ALLOWED_HOSTS` + `CSRF_TRUSTED_ORIGINS` — canlı domain
 - [ ] `DJANGO_DEBUG=False`
-- [ ] SMTP: `EMAIL_HOST`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`
-- [ ] SSO (Azure AD / OIDC / SAML) yapılandırması
+- [ ] `VAULT_KEY`, `REMOTE_PROBE_SHARED_SECRET`, `POSTGRES_PASSWORD` — benzersiz
+- [ ] SMTP yapılandırması (`EMAIL_HOST`, …)
+- [ ] SSO (Azure AD / OIDC / SAML) — kurumsal giriş
 - [ ] Nginx TLS terminasyonu
 - [ ] Volume yedekleme: `postgres_data`, `media_data`, `db_backups`
-- [ ] `PROMETHEUS_METRICS_TOKEN` (metrikler public olmasın)
-- [ ] `/kurulum-merkezi/` readiness skoru ≥ %80
+- [ ] `PROMETHEUS_METRICS_TOKEN` — metrikler public olmasın
+- [ ] `/kurulum-merkezi/` readiness ≥ %80
+- [ ] `python manage.py compilemessages` — i18n derlenmiş
+- [ ] `ALLOW_PUBLIC_REGISTRATION=False`
 
 ---
 
-## Doğrulama komutları
+## Proje yapısı
+
+```
+OmniOps/
+├── core/                      # Django ayarları, Celery, URL routing
+│   ├── settings.py            # Ortam değişkenleri, beat schedule, güvenlik
+│   ├── urls.py                # Tüm route tanımları
+│   └── celery.py              # Celery app
+├── inventory/                 # Ana uygulama
+│   ├── models.py              # ~100+ veri modeli
+│   ├── views.py               # Ağ, envanter, raporlama, dashboard
+│   ├── enterprise_views.py    # Fabrika, ITSM, entegrasyon, WOPI
+│   ├── helpdesk_views.py      # Ticket, profil, bildirimler
+│   ├── api_views.py           # DRF ViewSet'ler
+│   ├── tasks.py               # Celery görevleri
+│   ├── utils.py               # Ağ otomasyonu, vault, SNMP
+│   ├── helpdesk.py            # SLA, rol, ticket kuralları
+│   ├── site_access.py         # Tesis bazlı filtreleme
+│   ├── workspace_registry.py  # Sektör profilleri (tekstil, gıda, …)
+│   ├── i18n_js.py             # JS çeviri sözlüğü
+│   ├── integrations/          # ERP, OT, AD, monitoring, OnlyOffice
+│   ├── middleware/            # Denetim middleware
+│   ├── management/commands/   # doctor, import, gdpr, setup_helpdesk
+│   └── templates/             # HTML paneller
+├── locale/                    # tr/en gettext + manual overrides
+├── static/                    # CSS, JS, PWA manifest, service worker
+├── scripts/                   # fill_i18n, i18n yardımcıları
+├── docs/images/               # Mimari SVG görselleri
+├── deploy/nginx/              # Nginx konfigürasyonu
+├── docker-compose.yml         # Tam stack
+├── probe_agent.py             # Uzak ağ probu
+├── requirements.txt
+└── .env.example
+```
+
+---
+
+## CI/CD ve doğrulama
+
+GitHub Actions (`.github/workflows/ci.yml`) her push/PR’da:
+
+1. `migrate`
+2. `check`
+3. `makemigrations --check`
+4. `spectacular --validate`
+5. `test inventory` (41 test)
+
+Yerel doğrulama:
 
 ```bash
 python manage.py check
+python manage.py check --deploy
 python manage.py test inventory
-python manage.py makemigrations --check --dry-run
+python manage.py makemessages -l en -l tr
+python scripts/fill_i18n.py
+python manage.py compilemessages
 python manage.py spectacular --file schema.yml --validate
 ```
 
@@ -444,43 +693,14 @@ docker compose exec web python manage.py test inventory
 
 ---
 
-## Proje yapısı
+## Yardımcı komutlar
 
+```bash
+python manage.py import_inventory_csv veriler.csv --site-code SITE-TEXTILE
+python manage.py gdpr_export_user --username admin
+python manage.py test_postgres_restore
+python manage.py setup_helpdesk
 ```
-OmniOps/
-├── core/                 # Django proje ayarları, Celery, URL routing
-├── inventory/            # Ana uygulama
-│   ├── models.py         # Veri modelleri (~100+ model)
-│   ├── views.py          # Ağ, envanter, raporlama view'ları
-│   ├── enterprise_views.py  # Fabrika, ITSM, entegrasyon view'ları
-│   ├── api_views.py      # DRF ViewSet'ler
-│   ├── tasks.py          # Celery görevleri
-│   ├── integrations/     # ERP, OT, AD, monitoring, VMS, WMS
-│   ├── middleware/       # Denetim middleware
-│   ├── management/       # CLI komutları (doctor, import, gdpr)
-│   ├── templates/        # HTML şablonları
-│   └── migrations/       # DB migration'ları
-├── static/               # CSS, JS, PWA
-├── deploy/nginx/         # Nginx konfigürasyonu
-├── docker-compose.yml    # Tam stack (web, worker, beat, db, redis, nginx)
-├── requirements.txt
-└── .env.example
-```
-
----
-
-## Docker servisleri
-
-| Container | Image | Görev |
-|-----------|-------|-------|
-| `omniops_app` | `omniops/app:latest` | Gunicorn web |
-| `omniops_worker` | `omniops/app:latest` | Celery worker |
-| `omniops_beat` | `omniops/app:latest` | Celery beat |
-| `omniops_db` | `postgres:15-alpine` | PostgreSQL |
-| `omniops_redis` | `redis:7-alpine` | Redis |
-| `omniops_nginx` | `nginx:1.27-alpine` | Reverse proxy |
-| `omniops_onlyoffice` | OnlyOffice (opsiyonel) | Belge editörü |
-| `omniops_collabora` | Collabora (opsiyonel) | WOPI editör |
 
 ---
 
@@ -489,3 +709,23 @@ OmniOps/
 OmniOps, fabrika IT ekipleri, sistem yöneticileri, ağ ekipleri ve destek masası operasyonları için tasarlanmıştır. Canlı kullanım öncesinde kurum politikalarına göre güvenlik, yetki, yedekleme ve log saklama ayarlarını gözden geçirin.
 
 **Depo:** [github.com/slhkrt-tech/OmniOps-Factory-It-Suite](https://github.com/slhkrt-tech/OmniOps-Factory-It-Suite)
+
+---
+
+## Screenshot yer tutucular
+
+Canlı ortam ekran görüntülerini `docs/images/screenshots/` altına ekleyebilirsiniz:
+
+| Dosya | İçerik |
+|-------|--------|
+| `dashboard.png` | Ana panel KPI kartları |
+| `factory-command.png` | Fabrika BT komuta merkezi |
+| `network-scanner.png` | Ağ tarayıcı sonuçları |
+| `ticket-panel.png` | Servis masası paneli |
+| `setup-center.png` | Kurulum readiness skoru |
+
+README’ye eklemek için:
+
+```markdown
+![Ana Panel](docs/images/screenshots/dashboard.png)
+```

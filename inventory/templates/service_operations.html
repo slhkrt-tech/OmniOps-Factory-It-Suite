@@ -1,30 +1,31 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Servis Süreç Merkezi - OmniOps{% endblock %}
+{% block title %}{% trans "Servis Süreç Merkezi - OmniOps" %}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
-        <h2 class="fw-bold mb-1">Servis Süreç Merkezi</h2>
-        <p class="text-muted mb-0">Major incident, erişim yetkileri, yazıcı filosu ve runbook/SOP süreçlerini yönetin.</p>
+        <h2 class="fw-bold mb-1">{% trans "Servis Süreç Merkezi" %}</h2>
+        <p class="text-muted mb-0">{% trans "Major incident, erişim yetkileri, yazıcı filosu ve runbook/SOP süreçlerini yönetin." %}</p>
     </div>
 </div>
 
 <div class="row g-3 mb-4">
     <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body">
-        <div class="text-muted small">Açık Major Incident</div>
+        <div class="text-muted small">{% trans "Açık Major Incident" %}</div>
         <div class="display-6 fw-bold text-danger">{{ metrics.open_incidents }}</div>
     </div></div></div>
     <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body">
-        <div class="text-muted small">Onay Bekleyen Erişim</div>
+        <div class="text-muted small">{% trans "Onay Bekleyen Erişim" %}</div>
         <div class="display-6 fw-bold text-warning">{{ metrics.pending_access }}</div>
     </div></div></div>
     <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body">
-        <div class="text-muted small">Yazıcı/Toner Uyarısı</div>
+        <div class="text-muted small">{% trans "Yazıcı/Toner Uyarısı" %}</div>
         <div class="display-6 fw-bold text-primary">{{ metrics.printer_alerts }}</div>
     </div></div></div>
     <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body">
-        <div class="text-muted small">Aktif Runbook</div>
+        <div class="text-muted small">{% trans "Aktif Runbook" %}</div>
         <div class="display-6 fw-bold text-success">{{ metrics.runbooks }}</div>
     </div></div></div>
 </div>
@@ -33,27 +34,27 @@
     <div class="col-xl-4">
         <div class="accordion" id="serviceForms">
             <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#incidentForm">Major Incident Aç</button></h2>
+                <h2 class="accordion-header"><button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#incidentForm">{% trans "Major Incident Aç" %}</button></h2>
                 <div id="incidentForm" class="accordion-collapse collapse show" data-bs-parent="#serviceForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="incident">{{ forms.incident.as_p }}<button class="btn btn-danger w-100">Olayı Kaydet</button></form>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="incident">{{ forms.incident.as_p }}<button class="btn btn-danger w-100">{% trans "Olayı Kaydet" %}</button></form>
                 </div></div>
             </div>
             <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#accessForm">Erişim Talebi</button></h2>
+                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#accessForm">{% trans "Erişim Talebi" %}</button></h2>
                 <div id="accessForm" class="accordion-collapse collapse" data-bs-parent="#serviceForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="access">{{ forms.access.as_p }}<button class="btn btn-warning w-100">Erişim Talebi Aç</button></form>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="access">{{ forms.access.as_p }}<button class="btn btn-warning w-100">{% trans "Erişim Talebi Aç" %}</button></form>
                 </div></div>
             </div>
             <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#printerForm">Yazıcı / Barkod Cihazı</button></h2>
+                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#printerForm">{% trans "Yazıcı / Barkod Cihazı" %}</button></h2>
                 <div id="printerForm" class="accordion-collapse collapse" data-bs-parent="#serviceForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="printer">{{ forms.printer.as_p }}<button class="btn btn-info w-100">Yazıcıyı Kaydet</button></form>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="printer">{{ forms.printer.as_p }}<button class="btn btn-info w-100">{% trans "Yazıcıyı Kaydet" %}</button></form>
                 </div></div>
             </div>
             <div class="accordion-item border-0 glass-card">
                 <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#runbookForm">Runbook / SOP</button></h2>
                 <div id="runbookForm" class="accordion-collapse collapse" data-bs-parent="#serviceForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="runbook">{{ forms.runbook.as_p }}<button class="btn btn-success w-100">Runbook Kaydet</button></form>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="runbook">{{ forms.runbook.as_p }}<button class="btn btn-success w-100">{% trans "Runbook Kaydet" %}</button></form>
                 </div></div>
             </div>
         </div>
@@ -62,20 +63,20 @@
     <div class="col-xl-8">
         <div class="row g-4">
             <div class="col-lg-6">
-                <div class="card glass-card h-100"><div class="card-header bg-transparent fw-bold">Açık Major Incident</div><div class="card-body">
+                <div class="card glass-card h-100"><div class="card-header bg-transparent fw-bold">{% trans "Açık Major Incident" %}</div><div class="card-body">
                     {% for incident in open_incidents %}
                     <div class="d-flex justify-content-between align-items-start border-bottom py-2 gap-2">
                         <div>
                             <div class="fw-bold">{{ incident.title }}</div>
                             <div class="text-muted small">{{ incident.get_severity_display }} · {{ incident.duration_minutes }} dk</div>
                         </div>
-                        <form method="post">{% csrf_token %}<input type="hidden" name="action" value="resolve_incident"><input type="hidden" name="incident_id" value="{{ incident.id }}"><button class="btn btn-sm btn-outline-success">Çöz</button></form>
+                        <form method="post">{% csrf_token %}<input type="hidden" name="action" value="resolve_incident"><input type="hidden" name="incident_id" value="{{ incident.id }}"><button class="btn btn-sm btn-outline-success">{% trans "Çöz" %}</button></form>
                     </div>
-                    {% empty %}<p class="text-muted mb-0">Açık major incident yok.</p>{% endfor %}
+                    {% empty %}<p class="text-muted mb-0">{% trans "Açık major incident yok." %}</p>{% endfor %}
                 </div></div>
             </div>
             <div class="col-lg-6">
-                <div class="card glass-card h-100"><div class="card-header bg-transparent fw-bold">Bekleyen Erişim Talepleri</div><div class="card-body">
+                <div class="card glass-card h-100"><div class="card-header bg-transparent fw-bold">{% trans "Bekleyen Erişim Talepleri" %}</div><div class="card-body">
                     {% for access in pending_access %}
                     <div class="d-flex justify-content-between align-items-start border-bottom py-2 gap-2">
                         <div>
@@ -84,30 +85,30 @@
                         </div>
                         <form method="post">{% csrf_token %}<input type="hidden" name="action" value="approve_access"><input type="hidden" name="access_id" value="{{ access.id }}"><button class="btn btn-sm btn-outline-success">Onayla</button></form>
                     </div>
-                    {% empty %}<p class="text-muted mb-0">Bekleyen erişim talebi yok.</p>{% endfor %}
+                    {% empty %}<p class="text-muted mb-0">{% trans "Bekleyen erişim talebi yok." %}</p>{% endfor %}
                 </div></div>
             </div>
             <div class="col-lg-6">
-                <div class="card glass-card h-100"><div class="card-header bg-transparent fw-bold">Yazıcı / Toner Uyarıları</div><div class="card-body">
+                <div class="card glass-card h-100"><div class="card-header bg-transparent fw-bold">{% trans "Yazıcı / Toner Uyarıları" %}</div><div class="card-body">
                     {% for printer in printer_alerts %}
                     <div class="d-flex justify-content-between align-items-start border-bottom py-2 gap-2">
                         <div>
                             <div class="fw-bold">{{ printer.name }}</div>
                             <div class="text-muted small">{{ printer.get_device_kind_display }} · Toner/Ribon %{{ printer.toner_level_percent }}</div>
                         </div>
-                        <form method="post">{% csrf_token %}<input type="hidden" name="action" value="printer_maintenance_done"><input type="hidden" name="printer_id" value="{{ printer.id }}"><button class="btn btn-sm btn-outline-primary">Bakım OK</button></form>
+                        <form method="post">{% csrf_token %}<input type="hidden" name="action" value="printer_maintenance_done"><input type="hidden" name="printer_id" value="{{ printer.id }}"><button class="btn btn-sm btn-outline-primary">{% trans "Bakım OK" %}</button></form>
                     </div>
-                    {% empty %}<p class="text-muted mb-0">Yazıcı uyarısı yok.</p>{% endfor %}
+                    {% empty %}<p class="text-muted mb-0">{% trans "Yazıcı uyarısı yok." %}</p>{% endfor %}
                 </div></div>
             </div>
             <div class="col-lg-6">
-                <div class="card glass-card h-100"><div class="card-header bg-transparent fw-bold">Aktif Runbook / SOP</div><div class="card-body">
+                <div class="card glass-card h-100"><div class="card-header bg-transparent fw-bold">{% trans "Aktif Runbook / SOP" %}</div><div class="card-body">
                     {% for runbook in runbooks %}
                     <div class="border-bottom py-2">
                         <div class="fw-bold">{{ runbook.title }}</div>
                         <div class="text-muted small">{{ runbook.get_category_display }} · v{{ runbook.version }}</div>
                     </div>
-                    {% empty %}<p class="text-muted mb-0">Aktif runbook yok.</p>{% endfor %}
+                    {% empty %}<p class="text-muted mb-0">{% trans "Aktif runbook yok." %}</p>{% endfor %}
                 </div></div>
             </div>
         </div>

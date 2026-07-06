@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}OmniOps - CLI Konfigürasyon Üretici{% endblock %}
+{% block title %}{% trans "OmniOps - CLI Konfigürasyon Üretici" %}{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-0 mb-5">
     
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h4 class="fw-bold mb-1">Dinamik CLI Üretici</h4>
-            <p class="text-muted small mb-0">Cisco ve Huawei cihazları için sıfırdan kurulum komutlarını anında oluşturun.</p>
+            <h4 class="fw-bold mb-1">{% trans "Dinamik CLI Üretici" %}</h4>
+            <p class="text-muted small mb-0">{% trans "Cisco ve Huawei cihazları için sıfırdan kurulum komutlarını anında oluşturun." %}</p>
         </div>
     </div>
 
@@ -22,74 +23,74 @@
                         <span class="bg-primary bg-opacity-10 text-primary rounded p-2 me-3 d-flex">
                             <span class="iconify fs-4" data-icon="mdi:cog-outline"></span>
                         </span>
-                        <h6 class="fw-bold mb-0">Cihaz Parametreleri</h6>
+                        <h6 class="fw-bold mb-0">{% trans "Cihaz Parametreleri" %}</h6>
                     </div>
                 </div>
                 <div class="card-body px-4 pb-4">
                     
-                    <form method="POST" id="configForm" onsubmit="showGlobalLoading('btnGenerate', 'Komutlar Derleniyor...')">
+                    <form method="POST" id="configForm" onsubmit="showGlobalLoading('btnGenerate', '{% trans "Komutlar Derleniyor..." %}')">
                         {% csrf_token %}
                         
                         <div class="row mb-3">
                             <div class="col-6">
-                                <label class="form-label text-muted small fw-bold mb-2">Üretici</label>
+                                <label class="form-label text-muted small fw-bold mb-2">{% trans "Üretici" %}</label>
                                 <select name="vendor" class="form-select bg-body-tertiary text-body border-secondary-subtle shadow-sm fs-6 fw-bold" required>
-                                    <option value="cisco" {% if request.POST.vendor == 'cisco' %}selected{% endif %}>Cisco IOS</option>
-                                    <option value="huawei" {% if request.POST.vendor == 'huawei' %}selected{% endif %}>Huawei VRP</option>
+                                    <option value="cisco" {% if request.POST.vendor == 'cisco' %}selected{% endif %}>{% trans "Cisco IOS" %}</option>
+                                    <option value="huawei" {% if request.POST.vendor == 'huawei' %}selected{% endif %}>{% trans "Huawei VRP" %}</option>
                                 </select>
                             </div>
                             <div class="col-6">
-                                <label class="form-label text-muted small fw-bold mb-2">Cihaz Türü</label>
+                                <label class="form-label text-muted small fw-bold mb-2">{% trans "Cihaz Türü" %}</label>
                                 <select name="device_type" class="form-select bg-body-tertiary text-body border-secondary-subtle shadow-sm fs-6 fw-bold" required>
-                                    <option value="switch" {% if request.POST.device_type == 'switch' %}selected{% endif %}>Switch</option>
+                                    <option value="switch" {% if request.POST.device_type == 'switch' %}selected{% endif %}>{% trans "Switch" %}</option>
                                     <option value="router" {% if request.POST.device_type == 'router' %}selected{% endif %}>Router</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label text-muted small fw-bold mb-1">Cihaz Adı</label>
+                            <label class="form-label text-muted small fw-bold mb-1">{% trans "Cihaz Adı" %}</label>
                             <input type="text" name="hostname" class="form-control bg-body-tertiary text-body border-secondary-subtle shadow-sm font-monospace" placeholder="Core-Switch-01" value="{{ request.POST.hostname }}" required>
                         </div>
 
                         <div class="row mb-3">
                             <div class="col-4">
-                                <label class="form-label text-muted small fw-bold mb-1">VLAN ID</label>
+                                <label class="form-label text-muted small fw-bold mb-1">{% trans "VLAN ID" %}</label>
                                 <input type="number" name="vlan_id" class="form-control bg-body-tertiary text-body border-secondary-subtle shadow-sm font-monospace" placeholder="10" value="{{ request.POST.vlan_id }}" required>
                             </div>
                             <div class="col-8">
-                                <label class="form-label text-muted small fw-bold mb-1">VLAN Adı</label>
+                                <label class="form-label text-muted small fw-bold mb-1">{% trans "VLAN Adı" %}</label>
                                 <input type="text" name="vlan_name" class="form-control bg-body-tertiary text-body border-secondary-subtle shadow-sm font-monospace" placeholder="MUHASEBE" value="{{ request.POST.vlan_name }}" required>
                             </div>
                         </div>
 
                         <div class="mb-4 border-bottom border-secondary-subtle pb-4">
-                            <label class="form-label text-muted small fw-bold mb-1">Arayüz</label>
+                            <label class="form-label text-muted small fw-bold mb-1">{% trans "Arayüz" %}</label>
                             <input type="text" name="interface_name" class="form-control bg-body-tertiary text-body border-secondary-subtle shadow-sm font-monospace" placeholder="GigabitEthernet0/1" value="{{ request.POST.interface_name }}" required>
                         </div>
 
                         <div class="d-flex align-items-center mb-3">
                             <span class="iconify me-2 fs-5 text-info" data-icon="mdi:rocket-launch"></span>
-                            <h6 class="text-body fw-bold small mb-0">Gelişmiş Protokoller</h6>
+                            <h6 class="text-body fw-bold small mb-0">{% trans "Gelişmiş Protokoller" %}</h6>
                         </div>
                         
                         <div class="form-check form-switch mb-2 p-2 bg-body-tertiary rounded-3 border border-secondary-subtle d-flex align-items-center shadow-sm">
                             <input class="form-check-input ms-0 mt-0" type="checkbox" id="enable_ospf" name="enable_ospf" value="yes" onchange="toggleOspf()" {% if request.POST.enable_ospf %}checked{% endif %}>
-                            <label class="form-check-label fw-bold text-success small ms-2" for="enable_ospf">OSPF Yönlendirme</label>
+                            <label class="form-check-label fw-bold text-success small ms-2" for="enable_ospf">{% trans "OSPF Yönlendirme" %}</label>
                         </div>
                         <div id="ospf_fields" style="display: {% if request.POST.enable_ospf %}block{% else %}none{% endif %};" class="p-3 border border-secondary-subtle rounded-3 bg-body-tertiary mb-3 shadow-sm">
-                            <label class="form-label small fw-bold text-muted mb-1">Network & Wildcard Mask</label>
+                            <label class="form-label small fw-bold text-muted mb-1">{% trans "Network & Wildcard Mask" %}</label>
                             <input type="text" name="ospf_network" class="form-control form-control-sm mb-2 font-monospace bg-body text-body border-secondary-subtle" placeholder="192.168.1.0 0.0.0.255" value="{{ request.POST.ospf_network }}">
-                            <label class="form-label small fw-bold text-muted mb-1">OSPF Area ID</label>
+                            <label class="form-label small fw-bold text-muted mb-1">{% trans "OSPF Area ID" %}</label>
                             <input type="number" name="ospf_area" class="form-control form-control-sm font-monospace bg-body text-body border-secondary-subtle" placeholder="0" value="{{ request.POST.ospf_area|default:'0' }}">
                         </div>
 
                         <div class="form-check form-switch mb-3 p-2 bg-body-tertiary rounded-3 border border-secondary-subtle d-flex align-items-center shadow-sm">
                             <input class="form-check-input ms-0 mt-0" type="checkbox" id="enable_port_security" name="enable_port_security" value="yes" onchange="togglePortSecurity()" {% if request.POST.enable_port_security %}checked{% endif %}>
-                            <label class="form-check-label fw-bold text-danger small ms-2" for="enable_port_security">Port Security</label>
+                            <label class="form-check-label fw-bold text-danger small ms-2" for="enable_port_security">{% trans "Port Security" %}</label>
                         </div>
                         <div id="port_security_fields" style="display: {% if request.POST.enable_port_security %}block{% else %}none{% endif %};" class="p-3 border border-secondary-subtle rounded-3 bg-body-tertiary mb-4 shadow-sm">
-                            <label class="form-label small fw-bold text-muted mb-1">Maksimum MAC Limiti</label>
+                            <label class="form-label small fw-bold text-muted mb-1">{% trans "Maksimum MAC Limiti" %}</label>
                             <input type="number" name="mac_limit" class="form-control form-control-sm font-monospace bg-body text-body border-secondary-subtle" placeholder="2" value="{{ request.POST.mac_limit|default:'1' }}">
                         </div>
 
@@ -151,7 +152,7 @@
                     {% if generated_config %}
                         <pre class="m-0 px-4 pt-4 pb-2 font-monospace text-light overflow-auto flex-grow-1" id="configOutput" style="font-size: 0.9rem;">
 <span class="text-success">! ========================================================</span>
-<span class="text-success">! OmniOps Otomatik Konfigürasyon Üretici</span>
+<span class="text-success">{% trans "! OmniOps Otomatik Konfigürasyon Üretici" %}</span>
 <span class="text-success">! Üretim Zamanı: {% now "d M Y H:i" %}</span>
 <span class="text-success">! ========================================================</span>
 
@@ -169,8 +170,8 @@
                     {% else %}
                         <div class="d-flex flex-column justify-content-center align-items-center h-100 flex-grow-1 text-center p-5">
                             <span class="iconify text-white-50 mb-3" data-icon="mdi:console" style="font-size: 4rem; opacity: 0.2;"></span>
-                            <p class="text-white-50 font-monospace mb-0 fs-5">root@omniops:~$_ <span class="cursor-blink text-success">|</span></p>
-                            <p class="text-white-50 small mt-3 opacity-50" style="max-width: 400px;">Sistemi yapılandırmak için sol taraftan parametreleri girip "Ekranda Üret" butonuna basın veya doğrudan .CFG/.JSON olarak indirin.</p>
+                            <p class="text-white-50 font-monospace mb-0 fs-5">{% trans "root@omniops:~$_ " %}<span class="cursor-blink text-success">|</span></p>
+                            <p class="text-white-50 small mt-3 opacity-50" style="max-width: 400px;">{% trans "Sistemi yapılandırmak için sol taraftan parametreleri girip \"Ekranda Üret\" butonuna basın veya doğrudan .CFG/.JSON olarak indirin." %}</p>
                         </div>
                     {% endif %}
                 </div>
@@ -187,13 +188,13 @@
       <div class="modal-header border-0 pb-0">
         <h5 class="modal-title fw-bold text-danger d-flex align-items-center" id="sshModalLabel">
             <span class="bg-danger bg-opacity-10 rounded p-2 me-2 d-flex"><span class="iconify fs-4" data-icon="mdi:lightning-bolt"></span></span>
-            Otomatik SSH Push
+            {% trans "Otomatik SSH Push" %}
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4 text-body">
         <p class="small text-muted mb-4 pb-3 border-bottom border-secondary-subtle">
-            Ürettiğiniz konfigürasyon kodları ağdaki fiziksel cihaza arka planda güvenli bir şekilde iletilecektir. Lütfen cihaz kimlik bilgilerini girin.
+            {% trans "Ürettiğiniz konfigürasyon kodları ağdaki fiziksel cihaza arka planda güvenli bir şekilde iletilecektir. Lütfen cihaz kimlik bilgilerini girin." %}
         </p>
         
         <form method="POST">
@@ -212,27 +213,27 @@
             <input type="hidden" name="mac_limit" id="hidden_mac_limit">
             
             <div class="mb-4">
-                <label class="form-label fw-bold small text-muted">Hedef Cihaz IP Adresi</label>
+                <label class="form-label fw-bold small text-muted">{% trans "Hedef Cihaz IP Adresi" %}</label>
                 <input type="text" name="target_ip" class="form-control form-control-lg bg-body-tertiary text-body border-secondary-subtle shadow-sm font-monospace fs-6" placeholder="192.168.1.10" required>
             </div>
             
             <div class="row">
                 <div class="col-md-4 mb-4">
-                    <label class="form-label fw-bold small text-muted">SSH Kullanıcı Adı</label>
+                    <label class="form-label fw-bold small text-muted">{% trans "SSH Kullanıcı Adı" %}</label>
                     <input type="text" name="ssh_user" class="form-control bg-body-tertiary text-body border-secondary-subtle shadow-sm" placeholder="admin" required>
                 </div>
                 <div class="col-md-4 mb-4">
-                    <label class="form-label fw-bold small text-muted">SSH Şifresi</label>
+                    <label class="form-label fw-bold small text-muted">{% trans "SSH Şifresi" %}</label>
                     <input type="password" name="ssh_pass" class="form-control bg-body-tertiary text-body border-secondary-subtle shadow-sm" placeholder="******" required>
                 </div>
                 
                 <div class="col-md-4 mb-4">
-                    <label class="form-label fw-bold small text-muted">Enable Şifresi (Secret)</label>
+                    <label class="form-label fw-bold small text-muted">{% trans "Enable Şifresi (Secret)" %}</label>
                     <input type="password" name="enable_secret" class="form-control bg-body-tertiary text-body border-secondary-subtle shadow-sm border-danger-subtle" placeholder="Opsiyonel">
                 </div>
             </div>
             
-            <button type="submit" id="btnPush" class="btn btn-danger w-100 fw-bold py-2 shadow-sm rounded-3 mt-2" onclick="syncForms(); showGlobalLoading('btnPush', 'SSH ile İletiliyor...');">
+            <button type="submit" id="btnPush" class="btn btn-danger w-100 fw-bold py-2 shadow-sm rounded-3 mt-2" onclick="syncForms(); showGlobalLoading('btnPush', '{% trans "SSH ile İletiliyor..." %}');">
                 <span class="iconify me-2 fs-5 align-text-bottom" data-icon="mdi:rocket-launch-outline"></span>Kodları Cihaza Ateşle
             </button>
         </form>

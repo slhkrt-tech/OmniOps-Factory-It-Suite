@@ -15,7 +15,7 @@ from .models import Device, IpAddress, License, VendorContract, SystemLog, User,
 from .utils import (
     scan_network, deep_discover_device, push_config_to_device, 
     backup_device_config, decrypt_vault_password, poll_device_hardware,
-    check_all_devices_predictive_maintenance
+    check_all_devices_predictive_maintenance, get_device_ssh_credentials,
 )
 
 # Routine scheduled tasks
@@ -162,9 +162,12 @@ def otomatik_gece_yedekleme():
         ip_obj = dev.ipaddress_set.first()
         if not ip_obj:
             continue
+        username, password, _ = get_device_ssh_credentials(dev)
+        if not username or not password:
+            continue
         success, msg = backup_device_config(
-            device_obj=dev, device_ip=ip_obj.address, username=dev.ssh_user or 'admin',
-            password=decrypt_vault_password(dev.ssh_password) or 'admin',
+            device_obj=dev, device_ip=ip_obj.address, username=username,
+            password=password,
             vendor=dev.vendor, user=None
         )
         if success:
@@ -502,11 +505,15 @@ def active_response_block_ip(attacker_ip, device_id):
 
     device_ip = device.ipaddress_set.first().address if device.ipaddress_set.exists() else '192.168.1.1'
 
+    username, password, enable_secret = get_device_ssh_credentials(device)
+    if not username or not password:
+        return f"❌ {device.name}: SSH kullanıcı adı veya şifresi tanımlı değil."
+
     success, msg = push_config_to_device(
         ip_address=device_ip,
-        username=device.ssh_user or 'admin',
-        password=decrypt_vault_password(device.ssh_password) or 'admin',
-        enable_secret=decrypt_vault_password(device.enable_password) or '',
+        username=username,
+        password=password,
+        enable_secret=enable_secret,
         vendor=device.vendor,
         config_payload=config_payload,
         device_obj=device
@@ -795,7 +802,7 @@ def sync_all_integration_hub_task():
 def _atomic_device_config_push(device_id, config_payload, vendor, change_request_id):
     """Her bir cihaz için paralel iş parçacığında tetiklenecek atomik SSH fonksiyonu."""
     from .models import Device, Ticket
-    from .utils import push_config_to_device, decrypt_vault_password
+    from .utils import push_config_to_device, get_device_ssh_credentials
     try:
         device = Device.objects.get(id=device_id)
         target_ip = device.ipaddress_set.first().address if device.ipaddress_set.exists() else None
@@ -803,11 +810,15 @@ def _atomic_device_config_push(device_id, config_payload, vendor, change_request
         if not target_ip:
             return f"❌ {device.name}: Başarısız - Cihaza tanımlı IP adresi bulunamadı."
         
+        username, password, enable_secret = get_device_ssh_credentials(device)
+        if not username or not password:
+            return f"❌ {device.name}: SSH kullanıcı adı veya şifresi tanımlı değil."
+
         success, msg = push_config_to_device(
             ip_address=target_ip,
-            username=device.ssh_user or 'admin',
-            password=decrypt_vault_password(device.ssh_password) or 'admin',
-            enable_secret=decrypt_vault_password(device.enable_password) or '',
+            username=username,
+            password=password,
+            enable_secret=enable_secret,
             vendor=vendor or device.vendor or 'cisco',
             config_payload=config_payload
         )

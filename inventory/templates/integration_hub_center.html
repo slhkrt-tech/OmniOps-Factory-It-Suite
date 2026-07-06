@@ -1,25 +1,26 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Entegrasyon Merkezi - OmniOps{% endblock %}
+{% block title %}{% trans "Entegrasyon Merkezi - OmniOps" %}{% endblock %}
 
 {% block content %}
 <section class="suite-hero mb-4">
     <div>
         <span class="suite-eyebrow">OmniOps Enterprise</span>
-        <h1 class="suite-title">Entegrasyon Merkezi</h1>
-        <p class="suite-subtitle">İzleme, VMS, bildirim kanalları, e-posta ticket, yedekleme vendor ve WMS köprüleri.</p>
+        <h1 class="suite-title">{% trans "Entegrasyon Merkezi" %}</h1>
+        <p class="suite-subtitle">{% trans "İzleme, VMS, bildirim kanalları, e-posta ticket, yedekleme vendor ve WMS köprüleri." %}</p>
     </div>
     <div class="d-flex gap-2">
         <a href="{% url 'erp_integrations' %}" class="btn btn-outline-secondary">ERP</a>
         <a href="{% url 'ot_integrations' %}" class="btn btn-outline-secondary">OT/MES</a>
-        <a href="{% url 'itsm_maturity' %}" class="btn btn-outline-secondary">ITSM Olgunluk</a>
+        <a href="{% url 'itsm_maturity' %}" class="btn btn-outline-secondary">{% trans "ITSM Olgunluk" %}</a>
     </div>
 </section>
 
 <div class="row g-3 mb-4">
-    <div class="col-md-2"><div class="card glass-card"><div class="card-body"><div class="text-muted small">İzleme</div><div class="h3 mb-0">{{ metrics.monitoring }}</div></div></div></div>
+    <div class="col-md-2"><div class="card glass-card"><div class="card-body"><div class="text-muted small">{% trans "İzleme" %}</div><div class="h3 mb-0">{{ metrics.monitoring }}</div></div></div></div>
     <div class="col-md-2"><div class="card glass-card"><div class="card-body"><div class="text-muted small">VMS</div><div class="h3 mb-0">{{ metrics.vms }}</div></div></div></div>
-    <div class="col-md-2"><div class="card glass-card"><div class="card-body"><div class="text-muted small">Bildirim</div><div class="h3 mb-0">{{ metrics.notifications }}</div></div></div></div>
+    <div class="col-md-2"><div class="card glass-card"><div class="card-body"><div class="text-muted small">{% trans "Bildirim" %}</div><div class="h3 mb-0">{{ metrics.notifications }}</div></div></div></div>
     <div class="col-md-2"><div class="card glass-card"><div class="card-body"><div class="text-muted small">E-posta</div><div class="h3 mb-0">{{ metrics.inboxes }}</div></div></div></div>
     <div class="col-md-2"><div class="card glass-card"><div class="card-body"><div class="text-muted small">Backup</div><div class="h3 mb-0">{{ metrics.backups }}</div></div></div></div>
     <div class="col-md-2"><div class="card glass-card"><div class="card-body"><div class="text-muted small">WMS</div><div class="h3 mb-0">{{ metrics.wms }}</div></div></div></div>
@@ -28,24 +29,24 @@
 <div class="row g-4">
     <div class="col-xl-4">
         <div class="card glass-card mb-4">
-            <div class="card-header bg-transparent fw-bold">Bildirim Kanalı</div>
-            <div class="card-body"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="notification">{{ forms.notification.as_p }}<button class="btn btn-primary w-100">Kaydet</button></form></div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Bildirim Kanalı" %}</div>
+            <div class="card-body"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="notification">{{ forms.notification.as_p }}<button class="btn btn-primary w-100">{% trans "Kaydet" %}</button></form></div>
         </div>
         <div class="card glass-card mb-4">
-            <div class="card-header bg-transparent fw-bold">İzleme Bağlantısı</div>
-            <div class="card-body"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="monitoring">{{ forms.monitoring.as_p }}<button class="btn btn-primary w-100">Kaydet</button></form></div>
+            <div class="card-header bg-transparent fw-bold">{% trans "İzleme Bağlantısı" %}</div>
+            <div class="card-body"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="monitoring">{{ forms.monitoring.as_p }}<button class="btn btn-primary w-100">{% trans "Kaydet" %}</button></form></div>
         </div>
         <div class="card glass-card">
-            <div class="card-header bg-transparent fw-bold">Modül Yetkisi</div>
-            <div class="card-body"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="module_grant">{{ forms.module_grant.as_p }}<button class="btn btn-outline-primary w-100">Yetki Ver</button></form></div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Modül Yetkisi" %}</div>
+            <div class="card-body"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="module_grant">{{ forms.module_grant.as_p }}<button class="btn btn-outline-primary w-100">{% trans "Yetki Ver" %}</button></form></div>
         </div>
     </div>
     <div class="col-xl-8">
         <div class="card glass-card mb-4">
-            <div class="card-header bg-transparent fw-bold">Aktif Bildirim Kanalları</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Aktif Bildirim Kanalları" %}</div>
             <div class="table-responsive">
                 <table class="table table-hover mb-0 align-middle">
-                    <thead><tr><th>Ad</th><th>Tip</th><th>Tesis</th><th>İşlem</th></tr></thead>
+                    <thead><tr><th>Ad</th><th>{% trans "Tip" %}</th><th>{% trans "Tesis" %}</th><th>{% trans "İşlem" %}</th></tr></thead>
                     <tbody>
                         {% for channel in notification_channels %}
                         <tr>
@@ -60,13 +61,13 @@
             </div>
         </div>
         <div class="card glass-card mb-4">
-            <div class="card-header bg-transparent fw-bold">İzleme / VMS / WMS / Backup</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "İzleme / VMS / WMS / Backup" %}</div>
             <div class="table-responsive">
                 <table class="table table-sm mb-0 align-middle">
-                    <thead><tr><th>Tip</th><th>Ad</th><th>Durum</th><th>Sync</th></tr></thead>
+                    <thead><tr><th>{% trans "Tip" %}</th><th>Ad</th><th>Durum</th><th>Sync</th></tr></thead>
                     <tbody>
                         {% for item in monitoring_connections %}
-                        <tr><td>Monitoring</td><td>{{ item.name }}</td><td>{{ item.get_last_sync_status_display }}</td><td><form method="post">{% csrf_token %}<input type="hidden" name="action" value="sync_monitoring"><input type="hidden" name="connection_id" value="{{ item.id }}"><button class="btn btn-sm btn-primary">Sync</button></form></td></tr>
+                        <tr><td>{% trans "Monitoring" %}</td><td>{{ item.name }}</td><td>{{ item.get_last_sync_status_display }}</td><td><form method="post">{% csrf_token %}<input type="hidden" name="action" value="sync_monitoring"><input type="hidden" name="connection_id" value="{{ item.id }}"><button class="btn btn-sm btn-primary">Sync</button></form></td></tr>
                         {% endfor %}
                         {% for item in vms_connections %}
                         <tr><td>VMS</td><td>{{ item.name }}</td><td>{{ item.get_last_sync_status_display }}</td><td><form method="post">{% csrf_token %}<input type="hidden" name="action" value="sync_vms"><input type="hidden" name="connection_id" value="{{ item.id }}"><button class="btn btn-sm btn-primary">Sync</button></form></td></tr>
@@ -85,12 +86,12 @@
             </div>
         </div>
         <div class="card glass-card">
-            <div class="card-header bg-transparent fw-bold">VMS / E-posta / WMS Formları</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "VMS / E-posta / WMS Formları" %}</div>
             <div class="card-body row g-3">
-                <div class="col-md-4"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="vms">{{ forms.vms.as_p }}<button class="btn btn-sm btn-primary w-100">VMS Kaydet</button></form></div>
-                <div class="col-md-4"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="email_inbox">{{ forms.email_inbox.as_p }}<button class="btn btn-sm btn-primary w-100">Inbox Kaydet</button></form></div>
-                <div class="col-md-4"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="wms">{{ forms.wms.as_p }}<button class="btn btn-sm btn-primary w-100">WMS Kaydet</button></form></div>
-                <div class="col-md-12"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="backup">{{ forms.backup.as_p }}<button class="btn btn-sm btn-primary">Backup Vendor Kaydet</button></form></div>
+                <div class="col-md-4"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="vms">{{ forms.vms.as_p }}<button class="btn btn-sm btn-primary w-100">{% trans "VMS Kaydet" %}</button></form></div>
+                <div class="col-md-4"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="email_inbox">{{ forms.email_inbox.as_p }}<button class="btn btn-sm btn-primary w-100">{% trans "Inbox Kaydet" %}</button></form></div>
+                <div class="col-md-4"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="wms">{{ forms.wms.as_p }}<button class="btn btn-sm btn-primary w-100">{% trans "WMS Kaydet" %}</button></form></div>
+                <div class="col-md-12"><form method="post">{% csrf_token %}<input type="hidden" name="action" value="backup">{{ forms.backup.as_p }}<button class="btn btn-sm btn-primary">{% trans "Backup Vendor Kaydet" %}</button></form></div>
             </div>
         </div>
     </div>

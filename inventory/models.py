@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
@@ -7,54 +8,54 @@ class Device(models.Model):
     DEVICE_TYPES = (
         ('Router', 'Router'),
         ('Switch', 'Switch'),
-        ('Server', 'Sunucu'),
-        ('PC', 'Bilgisayar'),
+        ('Server', _('Sunucu')),
+        ('PC', _('Bilgisayar')),
     )
 
     VENDOR_CHOICES = (
         ('cisco', 'Cisco IOS'),
         ('huawei', 'Huawei VRP'),
-        ('other', 'Diğer'),
+        ('other', _('Diğer')),
     )
 
-    name = models.CharField(max_length=100, verbose_name="Cihaz Adı")
+    name = models.CharField(max_length=100, verbose_name=_("Cihaz Adı"))
     # INDEX EKLENDİ: Türüne göre cihaz aramayı hızlandırır
-    device_type = models.CharField(max_length=50, choices=DEVICE_TYPES, verbose_name="Cihaz Türü", db_index=True)
+    device_type = models.CharField(max_length=50, choices=DEVICE_TYPES, verbose_name=_("Cihaz Türü"), db_index=True)
     
     # INDEX EKLENDİ: MAC adresine göre arama çok sık yapıldığı için indekslendi
-    mac_address = models.CharField(max_length=17, blank=True, null=True, verbose_name="MAC Adresi", db_index=True)
+    mac_address = models.CharField(max_length=17, blank=True, null=True, verbose_name=_("MAC Adresi"), db_index=True)
     
     # INDEX EKLENDİ: Aktif/Pasif cihaz filtrelemesi hızlandırıldı
-    is_active = models.BooleanField(default=True, verbose_name="Durum", db_index=True)
+    is_active = models.BooleanField(default=True, verbose_name=_("Durum"), db_index=True)
     monitoring_mode = models.CharField(
         max_length=20,
         choices=(
-            ('monitoring', 'İzleme'),
+            ('monitoring', _('İzleme')),
             ('error', 'Hata'),
-            ('offline', 'Çevrimdışı'),
+            ('offline', _('Çevrimdışı')),
         ),
         default='monitoring',
-        verbose_name="İzleme Modu",
+        verbose_name=_("İzleme Modu"),
         db_index=True,
     )
-    parent_device = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='child_devices', verbose_name="Üst Cihaz")
+    parent_device = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='child_devices', verbose_name=_("Üst Cihaz"))
 
-    rack_name = models.CharField(max_length=50, blank=True, null=True, verbose_name="Kabin Adı")
-    position_u = models.IntegerField(blank=True, null=True, verbose_name="Başlangıç U")
-    height_u = models.IntegerField(default=1, verbose_name="Yükseklik")
+    rack_name = models.CharField(max_length=50, blank=True, null=True, verbose_name=_("Kabin Adı"))
+    position_u = models.IntegerField(blank=True, null=True, verbose_name=_("Başlangıç U"))
+    height_u = models.IntegerField(default=1, verbose_name=_("Yükseklik"))
 
-    vendor = models.CharField(max_length=20, choices=VENDOR_CHOICES, default='cisco', verbose_name="Üretici")
-    ssh_user = models.CharField(max_length=50, blank=True, null=True, verbose_name="Kullanıcı Adı")
-    ssh_password = models.CharField(max_length=100, blank=True, null=True, verbose_name="Parola")
-    enable_password = models.CharField(max_length=100, blank=True, null=True, verbose_name="Enable Parolası") 
+    vendor = models.CharField(max_length=20, choices=VENDOR_CHOICES, default='cisco', verbose_name=_("Üretici"))
+    ssh_user = models.CharField(max_length=50, blank=True, null=True, verbose_name=_("Kullanıcı Adı"))
+    ssh_password = models.CharField(max_length=100, blank=True, null=True, verbose_name=_("Parola"))
+    enable_password = models.CharField(max_length=100, blank=True, null=True, verbose_name=_("Enable Parolası")) 
 
-    os_version = models.CharField(max_length=100, blank=True, null=True, verbose_name="İşletim Sistemi")
-    cpu_usage = models.IntegerField(default=0, verbose_name="CPU Kullanımı")
-    ram_usage = models.IntegerField(default=0, verbose_name="RAM Kullanımı")
-    last_polled = models.DateTimeField(null=True, blank=True, verbose_name="Son Denetim")
+    os_version = models.CharField(max_length=100, blank=True, null=True, verbose_name=_("İşletim Sistemi"))
+    cpu_usage = models.IntegerField(default=0, verbose_name=_("CPU Kullanımı"))
+    ram_usage = models.IntegerField(default=0, verbose_name=_("RAM Kullanımı"))
+    last_polled = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Denetim"))
 
-    cpu_alarm_threshold = models.IntegerField(default=90, verbose_name="Kritik CPU Eşiği (%)")
-    ram_alarm_threshold = models.IntegerField(default=90, verbose_name="Kritik RAM Eşiği (%)")
+    cpu_alarm_threshold = models.IntegerField(default=90, verbose_name=_("Kritik CPU Eşiği (%)"))
+    ram_alarm_threshold = models.IntegerField(default=90, verbose_name=_("Kritik RAM Eşiği (%)"))
 
     def get_children(self):
         return Device.objects.filter(parent_device=self)
@@ -72,9 +73,9 @@ class Device(models.Model):
 
 class IpAddress(models.Model):
     # UNIQUE zaten DB Index oluşturur.
-    address = models.GenericIPAddressField(protocol='IPv4', verbose_name="IP Adresi", unique=True)
-    is_allocated = models.BooleanField(default=False, verbose_name="Tahsis Durumu", db_index=True)
-    device = models.ForeignKey(Device, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Bağlı Cihaz", db_index=True)
+    address = models.GenericIPAddressField(protocol='IPv4', verbose_name=_("IP Adresi"), unique=True)
+    is_allocated = models.BooleanField(default=False, verbose_name=_("Tahsis Durumu"), db_index=True)
+    device = models.ForeignKey(Device, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("Bağlı Cihaz"), db_index=True)
 
     def __str__(self):
         return self.address
@@ -89,14 +90,14 @@ class NetworkScan(models.Model):
         ('hybrid', 'Hybrid'),
     )
 
-    requested_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Taramayı Başlatan")
-    network = models.CharField(max_length=50, verbose_name="Ağ Bloğu")
-    method = models.CharField(max_length=20, choices=METHOD_CHOICES, default='hybrid', verbose_name="Yöntem")
-    total_hosts = models.PositiveIntegerField(default=0, verbose_name="Toplam Host")
-    active_hosts = models.PositiveIntegerField(default=0, verbose_name="Aktif Host")
-    duration_ms = models.PositiveIntegerField(default=0, verbose_name="Süre (ms)")
-    error = models.TextField(blank=True, verbose_name="Hata")
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name="Tarih")
+    requested_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("Taramayı Başlatan"))
+    network = models.CharField(max_length=50, verbose_name=_("Ağ Bloğu"))
+    method = models.CharField(max_length=20, choices=METHOD_CHOICES, default='hybrid', verbose_name=_("Yöntem"))
+    total_hosts = models.PositiveIntegerField(default=0, verbose_name=_("Toplam Host"))
+    active_hosts = models.PositiveIntegerField(default=0, verbose_name=_("Aktif Host"))
+    duration_ms = models.PositiveIntegerField(default=0, verbose_name=_("Süre (ms)"))
+    error = models.TextField(blank=True, verbose_name=_("Hata"))
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=_("Tarih"))
 
     class Meta:
         verbose_name = "Ağ Taraması"
@@ -108,15 +109,15 @@ class NetworkScan(models.Model):
 
 
 class NetworkScanHost(models.Model):
-    scan = models.ForeignKey(NetworkScan, on_delete=models.CASCADE, related_name='hosts', verbose_name="Tarama")
-    ip_address = models.GenericIPAddressField(verbose_name="IP")
-    mac_address = models.CharField(max_length=17, blank=True, verbose_name="MAC")
-    hostname = models.CharField(max_length=255, blank=True, verbose_name="Host Adı")
-    vendor = models.CharField(max_length=120, blank=True, verbose_name="Üretici")
-    detected_by = models.CharField(max_length=80, blank=True, verbose_name="Tespit Yöntemi")
-    latency_ms = models.FloatField(null=True, blank=True, verbose_name="Gecikme (ms)")
-    raw_socket_open = models.BooleanField(default=False, verbose_name="Raw Socket Yanıtı")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Tarih")
+    scan = models.ForeignKey(NetworkScan, on_delete=models.CASCADE, related_name='hosts', verbose_name=_("Tarama"))
+    ip_address = models.GenericIPAddressField(verbose_name=_("IP"))
+    mac_address = models.CharField(max_length=17, blank=True, verbose_name=_("MAC"))
+    hostname = models.CharField(max_length=255, blank=True, verbose_name=_("Host Adı"))
+    vendor = models.CharField(max_length=120, blank=True, verbose_name=_("Üretici"))
+    detected_by = models.CharField(max_length=80, blank=True, verbose_name=_("Tespit Yöntemi"))
+    latency_ms = models.FloatField(null=True, blank=True, verbose_name=_("Gecikme (ms)"))
+    raw_socket_open = models.BooleanField(default=False, verbose_name=_("Raw Socket Yanıtı"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Tarih"))
 
     class Meta:
         verbose_name = "Tarama Hostu"
@@ -129,33 +130,33 @@ class NetworkScanHost(models.Model):
 
 class ServiceCatalogItem(models.Model):
     CATEGORY_CHOICES = [
-        ('Yazılım', 'Yazılım ve Lisans'),
-        ('Donanım', 'Donanım Tahsisi'),
-        ('Erişim', 'Ağ ve VPN Erişimi'),
-        ('Diger', 'Diğer Hizmetler'),
+        ('Yazılım', _('Yazılım ve Lisans')),
+        ('Donanım', _('Donanım Tahsisi')),
+        ('Erişim', _('Ağ ve VPN Erişimi')),
+        ('Diger', _('Diğer Hizmetler')),
     ]
     
-    title = models.CharField(max_length=100, verbose_name="Hizmet Adı")
-    description = models.TextField(verbose_name="Açıklama ve Şartlar")
-    icon = models.CharField(max_length=50, default="mdi:laptop", verbose_name="Iconify İkon Kodu")
-    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='Yazılım', verbose_name="Kategori")
-    requires_approval = models.BooleanField(default=False, verbose_name="Yönetici Onayı Gerekli Mi?")
+    title = models.CharField(max_length=100, verbose_name=_("Hizmet Adı"))
+    description = models.TextField(verbose_name=_("Açıklama ve Şartlar"))
+    icon = models.CharField(max_length=50, default="mdi:laptop", verbose_name=_("Iconify İkon Kodu"))
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='Yazılım', verbose_name=_("Kategori"))
+    requires_approval = models.BooleanField(default=False, verbose_name=_("Yönetici Onayı Gerekli Mi?"))
     
     def __str__(self):
         return self.title
 
 class TicketCategory(models.Model):
     """Yönetilebilir talep kategorileri ve otomatik atama kuralları."""
-    name = models.CharField(max_length=100, verbose_name="Kategori Adı")
-    slug = models.SlugField(max_length=50, unique=True, verbose_name="Slug")
-    description = models.TextField(blank=True, verbose_name="Açıklama")
-    icon = models.CharField(max_length=50, default="mdi:tag-outline", verbose_name="İkon")
-    sla_hours = models.PositiveIntegerField(default=24, verbose_name="SLA (Saat)")
+    name = models.CharField(max_length=100, verbose_name=_("Kategori Adı"))
+    slug = models.SlugField(max_length=50, unique=True, verbose_name=_("Slug"))
+    description = models.TextField(blank=True, verbose_name=_("Açıklama"))
+    icon = models.CharField(max_length=50, default="mdi:tag-outline", verbose_name=_("İkon"))
+    sla_hours = models.PositiveIntegerField(default=24, verbose_name=_("SLA (Saat)"))
     auto_assign_group = models.ForeignKey(
         'auth.Group', on_delete=models.SET_NULL, null=True, blank=True,
-        related_name='ticket_categories', verbose_name="Otomatik Atama Grubu"
+        related_name='ticket_categories', verbose_name=_("Otomatik Atama Grubu")
     )
-    is_active = models.BooleanField(default=True, verbose_name="Aktif", db_index=True)
+    is_active = models.BooleanField(default=True, verbose_name=_("Aktif"), db_index=True)
 
     class Meta:
         verbose_name = "Talep Kategorisi"
@@ -168,11 +169,11 @@ class TicketCategory(models.Model):
 
 class UserProfile(models.Model):
     """Kullanıcı profil bilgileri: avatar, biyografi, telefon."""
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', verbose_name="Kullanıcı")
-    phone = models.CharField(max_length=20, blank=True, verbose_name="Telefon")
-    bio = models.TextField(blank=True, verbose_name="Biyografi")
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, verbose_name="Avatar")
-    department = models.CharField(max_length=100, blank=True, verbose_name="Departman")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', verbose_name=_("Kullanıcı"))
+    phone = models.CharField(max_length=20, blank=True, verbose_name=_("Telefon"))
+    bio = models.TextField(blank=True, verbose_name=_("Biyografi"))
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True, verbose_name=_("Avatar"))
+    department = models.CharField(max_length=100, blank=True, verbose_name=_("Departman"))
 
     class Meta:
         verbose_name = "Kullanıcı Profili"
@@ -191,19 +192,19 @@ class UserProfile(models.Model):
 class UserFactorySiteAccess(models.Model):
     """Kullanıcının erişebildiği fabrika tesisleri (tesis bazlı RBAC)."""
     ACCESS_LEVEL_CHOICES = (
-        ('viewer', 'Görüntüleyici'),
-        ('operator', 'Operatör'),
-        ('admin', 'Tesis Yöneticisi'),
+        ('viewer', _('Görüntüleyici')),
+        ('operator', _('Operatör')),
+        ('admin', _('Tesis Yöneticisi')),
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='factory_site_access', verbose_name="Kullanıcı")
-    factory_site = models.ForeignKey('FactorySite', on_delete=models.CASCADE, related_name='user_access', verbose_name="Fabrika Tesisi")
-    access_level = models.CharField(max_length=20, choices=ACCESS_LEVEL_CHOICES, default='viewer', db_index=True, verbose_name="Erişim Seviyesi")
-    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Aktif")
-    granted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='granted_site_access', verbose_name="Yetki Veren")
-    notes = models.CharField(max_length=200, blank=True, verbose_name="Not")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='factory_site_access', verbose_name=_("Kullanıcı"))
+    factory_site = models.ForeignKey('FactorySite', on_delete=models.CASCADE, related_name='user_access', verbose_name=_("Fabrika Tesisi"))
+    access_level = models.CharField(max_length=20, choices=ACCESS_LEVEL_CHOICES, default='viewer', db_index=True, verbose_name=_("Erişim Seviyesi"))
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Aktif"))
+    granted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='granted_site_access', verbose_name=_("Yetki Veren"))
+    notes = models.CharField(max_length=200, blank=True, verbose_name=_("Not"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Tesis Erişim Yetkisi"
@@ -217,51 +218,51 @@ class UserFactorySiteAccess(models.Model):
 
 class Ticket(models.Model):
     STATUS_CHOICES = (
-        ('Acik', 'Açık'),
-        ('Inceleniyor', 'İnceleniyor'),
-        ('Cozuldu', 'Çözüldü'),
-        ('Kapatildi', 'Kapatıldı'),
+        ('Acik', _('Açık')),
+        ('Inceleniyor', _('İnceleniyor')),
+        ('Cozuldu', _('Çözüldü')),
+        ('Kapatildi', _('Kapatıldı')),
     )
     
     PRIORITY_CHOICES = (
-        ('Kritik', 'Kritik'),
-        ('Yuksek', 'Yüksek'),
-        ('Orta', 'Orta'),
-        ('Dusuk', 'Düşük'),
+        ('Kritik', _('Kritik')),
+        ('Yuksek', _('Yüksek')),
+        ('Orta', _('Orta')),
+        ('Dusuk', _('Düşük')),
     )
     
     CATEGORY_CHOICES = (
-        ('Donanim', 'Donanım'),
-        ('Yazilim', 'Yazılım'),
-        ('Ag', 'Ağ'),
-        ('Diger', 'Diğer'),
+        ('Donanim', _('Donanım')),
+        ('Yazilim', _('Yazılım')),
+        ('Ag', _('Ağ')),
+        ('Diger', _('Diğer')),
     )
     
-    title = models.CharField(max_length=100, verbose_name="Başlık")
-    description = models.TextField(verbose_name="Detay")
+    title = models.CharField(max_length=100, verbose_name=_("Başlık"))
+    description = models.TextField(verbose_name=_("Detay"))
     
     # INDEX EKLENDİ: Gösterge panelleri için Bilet Statüsü ve Önceliği çok aranır
-    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Orta', verbose_name="Öncelik", db_index=True)
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='Diger', verbose_name="Kategori", db_index=True)
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Orta', verbose_name=_("Öncelik"), db_index=True)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='Diger', verbose_name=_("Kategori"), db_index=True)
     ticket_category = models.ForeignKey(
         TicketCategory, on_delete=models.SET_NULL, null=True, blank=True,
-        related_name='tickets', verbose_name="Kategori (Yönetilebilir)"
+        related_name='tickets', verbose_name=_("Kategori (Yönetilebilir)")
     )
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Acik', verbose_name="Durum", db_index=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Acik', verbose_name=_("Durum"), db_index=True)
     
-    device = models.ForeignKey(Device, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="İlgili Cihaz", db_index=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_tickets', null=True, blank=True, verbose_name="Oluşturan")
+    device = models.ForeignKey(Device, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("İlgili Cihaz"), db_index=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_tickets', null=True, blank=True, verbose_name=_("Oluşturan"))
     
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='assigned_tickets', null=True, blank=True, verbose_name="Atanan Personel")
-    is_escalated = models.BooleanField(default=False, verbose_name="Eskale Edildi Mi?", db_index=True)
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='assigned_tickets', null=True, blank=True, verbose_name=_("Atanan Personel"))
+    is_escalated = models.BooleanField(default=False, verbose_name=_("Eskale Edildi Mi?"), db_index=True)
     
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", db_index=True)
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme Tarihi")
-    closed_at = models.DateTimeField(null=True, blank=True, verbose_name="Kapanış Tarihi", db_index=True)
-    sla_deadline = models.DateTimeField(null=True, blank=True, verbose_name="SLA Süresi", db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma Tarihi"), db_index=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme Tarihi"))
+    closed_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Kapanış Tarihi"), db_index=True)
+    sla_deadline = models.DateTimeField(null=True, blank=True, verbose_name=_("SLA Süresi"), db_index=True)
     factory_site = models.ForeignKey(
         'FactorySite', on_delete=models.SET_NULL, null=True, blank=True,
-        related_name='tickets', verbose_name="Fabrika Tesisi",
+        related_name='tickets', verbose_name=_("Fabrika Tesisi"),
     )
 
     class Meta:
@@ -293,11 +294,11 @@ class Ticket(models.Model):
         return self.title
 
 class TicketComment(models.Model):
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='comments', verbose_name="Talep")
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Kullanıcı")
-    content = models.TextField(verbose_name="Mesaj")
-    is_internal = models.BooleanField(default=False, verbose_name="Dahili Not (Sadece Personel)")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Tarih")
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='comments', verbose_name=_("Talep"))
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("Kullanıcı"))
+    content = models.TextField(verbose_name=_("Mesaj"))
+    is_internal = models.BooleanField(default=False, verbose_name=_("Dahili Not (Sadece Personel)"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Tarih"))
 
     class Meta:
         verbose_name = "Talep Yorumu"
@@ -309,11 +310,11 @@ class TicketComment(models.Model):
 
 
 class TicketAttachment(models.Model):
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='attachments', verbose_name="Talep")
-    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="Yükleyen")
-    file = models.FileField(upload_to='ticket_attachments/%Y/%m/', verbose_name="Dosya")
-    filename = models.CharField(max_length=255, verbose_name="Dosya Adı")
-    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="Yüklenme Tarihi")
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='attachments', verbose_name=_("Talep"))
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name=_("Yükleyen"))
+    file = models.FileField(upload_to='ticket_attachments/%Y/%m/', verbose_name=_("Dosya"))
+    filename = models.CharField(max_length=255, verbose_name=_("Dosya Adı"))
+    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Yüklenme Tarihi"))
 
     class Meta:
         verbose_name = "Talep Eki"
@@ -335,18 +336,18 @@ class Notification(models.Model):
         ('assignment', 'Atama'),
         ('comment', 'Yorum'),
         ('status', 'Durum'),
-        ('closed', 'Kapanış'),
-        ('sla_breach', 'SLA İhlali'),
+        ('closed', _('Kapanış')),
+        ('sla_breach', _('SLA İhlali')),
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications', verbose_name="Kullanıcı")
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, null=True, blank=True, related_name='notifications', verbose_name="Talep")
-    title = models.CharField(max_length=200, verbose_name="Başlık")
-    message = models.TextField(verbose_name="Mesaj")
-    link = models.CharField(max_length=500, blank=True, verbose_name="Bağlantı")
-    notification_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='info', verbose_name="Tür")
-    is_read = models.BooleanField(default=False, verbose_name="Okundu", db_index=True)
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Tarih", db_index=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications', verbose_name=_("Kullanıcı"))
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, null=True, blank=True, related_name='notifications', verbose_name=_("Talep"))
+    title = models.CharField(max_length=200, verbose_name=_("Başlık"))
+    message = models.TextField(verbose_name=_("Mesaj"))
+    link = models.CharField(max_length=500, blank=True, verbose_name=_("Bağlantı"))
+    notification_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='info', verbose_name=_("Tür"))
+    is_read = models.BooleanField(default=False, verbose_name=_("Okundu"), db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Tarih"), db_index=True)
 
     class Meta:
         verbose_name = "Bildirim"
@@ -360,29 +361,29 @@ class Notification(models.Model):
 class FieldVisit(models.Model):
     """Saha ekipleri için rota ve yakıt planlama kaydı."""
     STATUS_CHOICES = (
-        ('planned', 'Planlandı'),
+        ('planned', _('Planlandı')),
         ('in_progress', 'Yolda'),
-        ('completed', 'Tamamlandı'),
-        ('cancelled', 'İptal'),
+        ('completed', _('Tamamlandı')),
+        ('cancelled', _('İptal')),
     )
 
-    title = models.CharField(max_length=150, verbose_name="Başlık")
-    technician = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='field_visits', verbose_name="Teknisyen")
-    ticket = models.ForeignKey(Ticket, on_delete=models.SET_NULL, null=True, blank=True, related_name='field_visits', verbose_name="Talep")
-    customer_name = models.CharField(max_length=150, verbose_name="Müşteri/Lokasyon")
-    address = models.CharField(max_length=255, blank=True, verbose_name="Adres")
-    latitude = models.FloatField(null=True, blank=True, verbose_name="Enlem")
-    longitude = models.FloatField(null=True, blank=True, verbose_name="Boylam")
-    order_index = models.PositiveIntegerField(default=0, verbose_name="Rota Sırası")
-    distance_km = models.FloatField(default=0.0, verbose_name="Mesafe (km)")
-    vehicle_model = models.CharField(max_length=80, default="Standart Servis Aracı", verbose_name="Araç Modeli")
-    fuel_l_per_100km = models.FloatField(default=7.5, verbose_name="Yakıt (L/100km)")
-    ac_multiplier = models.FloatField(default=1.08, verbose_name="Klima Çarpanı")
-    estimated_fuel_l = models.FloatField(default=0.0, verbose_name="Tahmini Yakıt (L)")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='planned', db_index=True, verbose_name="Durum")
-    scheduled_at = models.DateTimeField(null=True, blank=True, verbose_name="Planlanan Zaman")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=150, verbose_name=_("Başlık"))
+    technician = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='field_visits', verbose_name=_("Teknisyen"))
+    ticket = models.ForeignKey(Ticket, on_delete=models.SET_NULL, null=True, blank=True, related_name='field_visits', verbose_name=_("Talep"))
+    customer_name = models.CharField(max_length=150, verbose_name=_("Müşteri/Lokasyon"))
+    address = models.CharField(max_length=255, blank=True, verbose_name=_("Adres"))
+    latitude = models.FloatField(null=True, blank=True, verbose_name=_("Enlem"))
+    longitude = models.FloatField(null=True, blank=True, verbose_name=_("Boylam"))
+    order_index = models.PositiveIntegerField(default=0, verbose_name=_("Rota Sırası"))
+    distance_km = models.FloatField(default=0.0, verbose_name=_("Mesafe (km)"))
+    vehicle_model = models.CharField(max_length=80, default="Standart Servis Aracı", verbose_name=_("Araç Modeli"))
+    fuel_l_per_100km = models.FloatField(default=7.5, verbose_name=_("Yakıt (L/100km)"))
+    ac_multiplier = models.FloatField(default=1.08, verbose_name=_("Klima Çarpanı"))
+    estimated_fuel_l = models.FloatField(default=0.0, verbose_name=_("Tahmini Yakıt (L)"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='planned', db_index=True, verbose_name=_("Durum"))
+    scheduled_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Planlanan Zaman"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Saha Ziyareti"
@@ -400,24 +401,24 @@ class FieldVisit(models.Model):
 class SalesOpportunity(models.Model):
     """Drag & drop Kanban satış hunisi için fırsat modeli."""
     STAGE_CHOICES = (
-        ('lead', 'Yeni Fırsat'),
+        ('lead', _('Yeni Fırsat')),
         ('qualified', 'Nitelikli'),
         ('proposal', 'Teklif'),
-        ('negotiation', 'Pazarlık'),
-        ('won', 'Kazanıldı'),
+        ('negotiation', _('Pazarlık')),
+        ('won', _('Kazanıldı')),
         ('lost', 'Kaybedildi'),
     )
 
-    title = models.CharField(max_length=150, verbose_name="Fırsat")
-    customer_name = models.CharField(max_length=150, verbose_name="Müşteri")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sales_opportunities', verbose_name="Sorumlu")
-    stage = models.CharField(max_length=20, choices=STAGE_CHOICES, default='lead', db_index=True, verbose_name="Aşama")
-    potential_revenue = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Potansiyel Gelir")
-    probability = models.PositiveIntegerField(default=20, verbose_name="Olasılık (%)")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    position = models.PositiveIntegerField(default=0, verbose_name="Sıra")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=150, verbose_name=_("Fırsat"))
+    customer_name = models.CharField(max_length=150, verbose_name=_("Müşteri"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sales_opportunities', verbose_name=_("Sorumlu"))
+    stage = models.CharField(max_length=20, choices=STAGE_CHOICES, default='lead', db_index=True, verbose_name=_("Aşama"))
+    potential_revenue = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name=_("Potansiyel Gelir"))
+    probability = models.PositiveIntegerField(default=20, verbose_name=_("Olasılık (%)"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    position = models.PositiveIntegerField(default=0, verbose_name=_("Sıra"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Satış Fırsatı"
@@ -435,19 +436,19 @@ class SalesOpportunity(models.Model):
 class DLPEvent(models.Model):
     """Basit DLP kayıtları: hassas veri sızıntısı risklerini denetim loguna taşır."""
     SEVERITY_CHOICES = (
-        ('low', 'Düşük'),
-        ('medium', 'Orta'),
-        ('high', 'Yüksek'),
-        ('critical', 'Kritik'),
+        ('low', _('Düşük')),
+        ('medium', _('Orta')),
+        ('high', _('Yüksek')),
+        ('critical', _('Kritik')),
     )
 
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Kullanıcı")
-    source = models.CharField(max_length=80, verbose_name="Kaynak")
-    rule = models.CharField(max_length=120, verbose_name="Kural")
-    severity = models.CharField(max_length=20, choices=SEVERITY_CHOICES, default='medium', db_index=True, verbose_name="Seviye")
-    excerpt = models.TextField(blank=True, verbose_name="Örnek")
-    blocked = models.BooleanField(default=False, verbose_name="Engellendi")
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name="Tarih")
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("Kullanıcı"))
+    source = models.CharField(max_length=80, verbose_name=_("Kaynak"))
+    rule = models.CharField(max_length=120, verbose_name=_("Kural"))
+    severity = models.CharField(max_length=20, choices=SEVERITY_CHOICES, default='medium', db_index=True, verbose_name=_("Seviye"))
+    excerpt = models.TextField(blank=True, verbose_name=_("Örnek"))
+    blocked = models.BooleanField(default=False, verbose_name=_("Engellendi"))
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=_("Tarih"))
 
     class Meta:
         verbose_name = "DLP Olayı"
@@ -459,17 +460,17 @@ class DLPEvent(models.Model):
 
 class SystemLog(models.Model):
     ACTION_CHOICES = [
-        ('CONFIG', 'Konfigürasyon'),
-        ('SCAN', 'Ağ Taraması'),
-        ('IPAM', 'IP İşlemi'),
-        ('TICKET', 'Talep İşlemi'),
-        ('SYSTEM', 'Sistem Olayı'),
+        ('CONFIG', _('Konfigürasyon')),
+        ('SCAN', _('Ağ Taraması')),
+        ('IPAM', _('IP İşlemi')),
+        ('TICKET', _('Talep İşlemi')),
+        ('SYSTEM', _('Sistem Olayı')),
     ]
     
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Kullanıcı")
-    action = models.CharField(max_length=20, choices=ACTION_CHOICES, verbose_name="İşlem Türü", db_index=True)
-    details = models.TextField(verbose_name="Detay")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Tarih", db_index=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("Kullanıcı"))
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES, verbose_name=_("İşlem Türü"), db_index=True)
+    details = models.TextField(verbose_name=_("Detay"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Tarih"), db_index=True)
 
     class Meta:
         verbose_name = "Sistem Logu"
@@ -480,10 +481,10 @@ class SystemLog(models.Model):
         return self.action
 
 class DeviceBackup(models.Model):
-    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='backups', verbose_name="Cihaz")
-    config_text = models.TextField(verbose_name="Konfigürasyon")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Tarih", db_index=True)
-    backed_up_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="İşlemi Yapan")
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='backups', verbose_name=_("Cihaz"))
+    config_text = models.TextField(verbose_name=_("Konfigürasyon"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Tarih"), db_index=True)
+    backed_up_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name=_("İşlemi Yapan"))
 
     class Meta:
         verbose_name = "Yedek"
@@ -500,18 +501,18 @@ class RemoteProbe(models.Model):
     ileten ajan (Agent) yazılımlarının veritabanı modeli.
     """
     STATUS_CHOICES = [
-        ('online', 'Çevrimiçi'),
-        ('offline', 'Bağlantı Koptu'),
+        ('online', _('Çevrimiçi')),
+        ('offline', _('Bağlantı Koptu')),
         ('unknown', 'Bilinmiyor')
     ]
 
-    name = models.CharField(max_length=150, unique=True, verbose_name="Probe/Agent Adı")
-    location = models.CharField(max_length=200, blank=True, null=True, verbose_name="Lokasyon/Şube")
-    ip_address = models.GenericIPAddressField(verbose_name="Probe IP Adresi")
-    target_subnet = models.CharField(max_length=50, blank=True, null=True, verbose_name="Tarama Hedef Subnet", help_text="Örn: 192.168.1.0/24")
-    agent_version = models.CharField(max_length=50, default="1.0.0", verbose_name="Ajan Sürümü")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unknown', verbose_name="Durum")
-    last_heartbeat = models.DateTimeField(auto_now_add=True, verbose_name="Son İletişim (Heartbeat)")
+    name = models.CharField(max_length=150, unique=True, verbose_name=_("Probe/Agent Adı"))
+    location = models.CharField(max_length=200, blank=True, null=True, verbose_name=_("Lokasyon/Şube"))
+    ip_address = models.GenericIPAddressField(verbose_name=_("Probe IP Adresi"))
+    target_subnet = models.CharField(max_length=50, blank=True, null=True, verbose_name=_("Tarama Hedef Subnet"), help_text=_("Örn: 192.168.1.0/24"))
+    agent_version = models.CharField(max_length=50, default="1.0.0", verbose_name=_("Ajan Sürümü"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unknown', verbose_name=_("Durum"))
+    last_heartbeat = models.DateTimeField(auto_now_add=True, verbose_name=_("Son İletişim (Heartbeat)"))
 
     class Meta:
         verbose_name = "Uzak Probe (Ajan)"
@@ -541,28 +542,28 @@ class RemoteProbe(models.Model):
 
 class ITAsset(models.Model):
     ASSET_TYPES = [
-        ('laptop', 'Dizüstü Bilgisayar'),
-        ('desktop', 'Masaüstü Bilgisayar'),
-        ('monitor', 'Monitör'),
-        ('printer', 'Yazıcı'),
+        ('laptop', _('Dizüstü Bilgisayar')),
+        ('desktop', _('Masaüstü Bilgisayar')),
+        ('monitor', _('Monitör')),
+        ('printer', _('Yazıcı')),
         ('mobile', 'Mobil Cihaz'),
-        ('peripherals', 'Çevre Birimi'),
+        ('peripherals', _('Çevre Birimi')),
     ]
     
-    name = models.CharField(max_length=100, verbose_name="Donanım Adı")
-    asset_type = models.CharField(max_length=20, choices=ASSET_TYPES, default='laptop', verbose_name="Tür", db_index=True)
-    serial_number = models.CharField(max_length=100, unique=True, verbose_name="Seri No", db_index=True)
-    model = models.CharField(max_length=100, blank=True, null=True, verbose_name="Model")
-    assigned_to = models.CharField(max_length=100, blank=True, null=True, verbose_name="Zimmet")
-    purchase_date = models.DateField(blank=True, null=True, verbose_name="Satın Alma")
-    warranty_expiry = models.DateField(blank=True, null=True, verbose_name="Garanti Bitiş")
+    name = models.CharField(max_length=100, verbose_name=_("Donanım Adı"))
+    asset_type = models.CharField(max_length=20, choices=ASSET_TYPES, default='laptop', verbose_name=_("Tür"), db_index=True)
+    serial_number = models.CharField(max_length=100, unique=True, verbose_name=_("Seri No"), db_index=True)
+    model = models.CharField(max_length=100, blank=True, null=True, verbose_name=_("Model"))
+    assigned_to = models.CharField(max_length=100, blank=True, null=True, verbose_name=_("Zimmet"))
+    purchase_date = models.DateField(blank=True, null=True, verbose_name=_("Satın Alma"))
+    warranty_expiry = models.DateField(blank=True, null=True, verbose_name=_("Garanti Bitiş"))
     
     STATUS_CHOICES = [
         ('active', 'Aktif'), 
         ('repair', 'Tamirde'), 
         ('retired', 'Hurda')
     ]
-    status = models.CharField(max_length=20, default='active', choices=STATUS_CHOICES, verbose_name="Durum", db_index=True)
+    status = models.CharField(max_length=20, default='active', choices=STATUS_CHOICES, verbose_name=_("Durum"), db_index=True)
 
     class Meta:
         verbose_name = "Donanım"
@@ -573,14 +574,14 @@ class ITAsset(models.Model):
         return self.name
 
 class License(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Yazılım Adı")
-    license_key = models.CharField(max_length=255, blank=True, null=True, verbose_name="Lisans Anahtarı")
-    total_slots = models.IntegerField(default=1, verbose_name="Toplam Kullanım")
-    used_slots = models.IntegerField(default=0, verbose_name="Kullanılan")
-    expiry_date = models.DateField(verbose_name="Bitiş Tarihi", db_index=True)
+    name = models.CharField(max_length=100, verbose_name=_("Yazılım Adı"))
+    license_key = models.CharField(max_length=255, blank=True, null=True, verbose_name=_("Lisans Anahtarı"))
+    total_slots = models.IntegerField(default=1, verbose_name=_("Toplam Kullanım"))
+    used_slots = models.IntegerField(default=0, verbose_name=_("Kullanılan"))
+    expiry_date = models.DateField(verbose_name=_("Bitiş Tarihi"), db_index=True)
     
-    vendor = models.CharField(max_length=100, verbose_name="Üretici")
-    is_subscription = models.BooleanField(default=True, verbose_name="Abonelik")
+    vendor = models.CharField(max_length=100, verbose_name=_("Üretici"))
+    is_subscription = models.BooleanField(default=True, verbose_name=_("Abonelik"))
 
     @property
     def is_expired(self):
@@ -610,13 +611,13 @@ class Port(models.Model):
         ('disabled', 'Disabled'),
     )
 
-    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='ports', verbose_name="Cihaz")
-    port_number = models.IntegerField(verbose_name="Port No")
-    name = models.CharField(max_length=50, verbose_name="Port Adı", default="FastEthernet0/X")
-    status = models.CharField(max_length=20, choices=PORT_STATUS_CHOICES, default='down', verbose_name="Durum")
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='ports', verbose_name=_("Cihaz"))
+    port_number = models.IntegerField(verbose_name=_("Port No"))
+    name = models.CharField(max_length=50, verbose_name=_("Port Adı"), default="FastEthernet0/X")
+    status = models.CharField(max_length=20, choices=PORT_STATUS_CHOICES, default='down', verbose_name=_("Durum"))
     
-    connected_asset = models.ForeignKey(ITAsset, on_delete=models.SET_NULL, null=True, blank=True, related_name='connected_port', verbose_name="Bağlı Cihaz")
-    description = models.CharField(max_length=150, blank=True, null=True, verbose_name="Açıklama")
+    connected_asset = models.ForeignKey(ITAsset, on_delete=models.SET_NULL, null=True, blank=True, related_name='connected_port', verbose_name=_("Bağlı Cihaz"))
+    description = models.CharField(max_length=150, blank=True, null=True, verbose_name=_("Açıklama"))
 
     class Meta:
         verbose_name = "Port"
@@ -629,23 +630,23 @@ class Port(models.Model):
 
 class KnowledgeBaseArticle(models.Model):
     CATEGORY_CHOICES = (
-        ('network', 'Ağ'),
-        ('hardware', 'Donanım'),
-        ('software', 'Yazılım'),
+        ('network', _('Ağ')),
+        ('hardware', _('Donanım')),
+        ('software', _('Yazılım')),
         ('account', 'Hesap'),
-        ('other', 'Diğer'),
+        ('other', _('Diğer')),
     )
 
-    title = models.CharField(max_length=200, verbose_name="Başlık", db_index=True)
-    content = models.TextField(verbose_name="İçerik")
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='other', verbose_name="Kategori", db_index=True)
+    title = models.CharField(max_length=200, verbose_name=_("Başlık"), db_index=True)
+    content = models.TextField(verbose_name=_("İçerik"))
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='other', verbose_name=_("Kategori"), db_index=True)
     
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="Yazar")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Tarih")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name=_("Yazar"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Tarih"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
     
-    views_count = models.IntegerField(default=0, verbose_name="Görüntülenme")
-    helpful_count = models.IntegerField(default=0, verbose_name="Faydalı")
+    views_count = models.IntegerField(default=0, verbose_name=_("Görüntülenme"))
+    helpful_count = models.IntegerField(default=0, verbose_name=_("Faydalı"))
 
     class Meta:
         verbose_name = "Makale"
@@ -657,11 +658,11 @@ class KnowledgeBaseArticle(models.Model):
 
 class VendorContract(models.Model):
     CONTRACT_TYPES = (
-        ('internet', 'İnternet'),
+        ('internet', _('İnternet')),
         ('cloud', 'Bulut'),
-        ('maintenance', 'Bakım'),
-        ('software', 'Yazılım'),
-        ('other', 'Diğer'),
+        ('maintenance', _('Bakım')),
+        ('software', _('Yazılım')),
+        ('other', _('Diğer')),
     )
     SLA_CHOICES = (
         ('24_7', '7/24'),
@@ -669,16 +670,16 @@ class VendorContract(models.Model):
         ('standard', 'Standart'),
     )
 
-    title = models.CharField(max_length=150, verbose_name="Başlık")
-    vendor_name = models.CharField(max_length=100, verbose_name="Tedarikçi", db_index=True)
-    contract_type = models.CharField(max_length=20, choices=CONTRACT_TYPES, default='internet', verbose_name="Tür")
-    sla_level = models.CharField(max_length=20, choices=SLA_CHOICES, default='standard', verbose_name="SLA")
+    title = models.CharField(max_length=150, verbose_name=_("Başlık"))
+    vendor_name = models.CharField(max_length=100, verbose_name=_("Tedarikçi"), db_index=True)
+    contract_type = models.CharField(max_length=20, choices=CONTRACT_TYPES, default='internet', verbose_name=_("Tür"))
+    sla_level = models.CharField(max_length=20, choices=SLA_CHOICES, default='standard', verbose_name=_("SLA"))
     
-    start_date = models.DateField(verbose_name="Başlangıç Tarihi")
-    end_date = models.DateField(verbose_name="Bitiş Tarihi", db_index=True)
+    start_date = models.DateField(verbose_name=_("Başlangıç Tarihi"))
+    end_date = models.DateField(verbose_name=_("Bitiş Tarihi"), db_index=True)
     
-    cost = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name="Maliyet")
-    description = models.TextField(blank=True, null=True, verbose_name="Açıklama")
+    cost = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name=_("Maliyet"))
+    description = models.TextField(blank=True, null=True, verbose_name=_("Açıklama"))
 
     @property
     def is_expired(self):
@@ -703,29 +704,29 @@ class VendorContract(models.Model):
 class ChangeRequest(models.Model):
     STATUS_CHOICES = (
         ('pending', 'Bekliyor'),
-        ('approved', 'Onaylandı'),
+        ('approved', _('Onaylandı')),
         ('rejected', 'Reddedildi'),
-        ('failed', 'Başarısız'),
+        ('failed', _('Başarısız')),
     )
-    title = models.CharField(max_length=150, verbose_name="Başlık")
+    title = models.CharField(max_length=150, verbose_name=_("Başlık"))
     
     # YENİ EKLENEN: Toplu İşlem (Bulk Operation) Desteği
-    target_devices = models.ManyToManyField(Device, related_name='change_requests', blank=True, verbose_name="Hedef Cihazlar")
+    target_devices = models.ManyToManyField(Device, related_name='change_requests', blank=True, verbose_name=_("Hedef Cihazlar"))
     
     # ESKİ (Geriye Uyumluluk İçin Opsiyonel Bırakıldı)
-    target_ip = models.CharField(max_length=50, blank=True, null=True, verbose_name="Hedef IP", db_index=True)
-    vendor = models.CharField(max_length=50, blank=True, null=True, verbose_name="Üretici")
+    target_ip = models.CharField(max_length=50, blank=True, null=True, verbose_name=_("Hedef IP"), db_index=True)
+    vendor = models.CharField(max_length=50, blank=True, null=True, verbose_name=_("Üretici"))
     
-    config_payload = models.TextField(verbose_name="Konfigürasyon")
+    config_payload = models.TextField(verbose_name=_("Konfigürasyon"))
     
-    requester = models.ForeignKey(User, on_delete=models.CASCADE, related_name='change_requests', verbose_name="Talep Eden")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', verbose_name="Durum", db_index=True)
+    requester = models.ForeignKey(User, on_delete=models.CASCADE, related_name='change_requests', verbose_name=_("Talep Eden"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', verbose_name=_("Durum"), db_index=True)
     
-    reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_changes', verbose_name="Yönetici")
+    reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_changes', verbose_name=_("Yönetici"))
     
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Tarih", db_index=True)
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
-    execution_log = models.TextField(blank=True, null=True, verbose_name="İşlem Logu")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Tarih"), db_index=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
+    execution_log = models.TextField(blank=True, null=True, verbose_name=_("İşlem Logu"))
 
     class Meta:
         verbose_name = "Değişiklik"
@@ -739,18 +740,18 @@ class ChangeRequest(models.Model):
 class FactoryArea(models.Model):
     """Fabrika içindeki üretim hattı, depo, ofis veya kritik IT bölgesi."""
     CRITICALITY_CHOICES = (
-        ('low', 'Düşük'),
-        ('medium', 'Orta'),
-        ('high', 'Yüksek'),
-        ('critical', 'Kritik'),
+        ('low', _('Düşük')),
+        ('medium', _('Orta')),
+        ('high', _('Yüksek')),
+        ('critical', _('Kritik')),
     )
 
-    name = models.CharField(max_length=120, verbose_name="Alan/Hat Adı")
-    code = models.CharField(max_length=40, unique=True, verbose_name="Kod")
-    description = models.TextField(blank=True, verbose_name="Açıklama")
-    criticality = models.CharField(max_length=20, choices=CRITICALITY_CHOICES, default='medium', db_index=True, verbose_name="Kritiklik")
-    manager_name = models.CharField(max_length=120, blank=True, verbose_name="Sorumlu")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
+    name = models.CharField(max_length=120, verbose_name=_("Alan/Hat Adı"))
+    code = models.CharField(max_length=40, unique=True, verbose_name=_("Kod"))
+    description = models.TextField(blank=True, verbose_name=_("Açıklama"))
+    criticality = models.CharField(max_length=20, choices=CRITICALITY_CHOICES, default='medium', db_index=True, verbose_name=_("Kritiklik"))
+    manager_name = models.CharField(max_length=120, blank=True, verbose_name=_("Sorumlu"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
 
     class Meta:
         verbose_name = "Fabrika Alanı"
@@ -764,24 +765,24 @@ class FactoryArea(models.Model):
 class ConsumableItem(models.Model):
     """Toner, etiket, barkod ribonu, disk, kablo ve kritik IT yedek parçaları."""
     CATEGORY_CHOICES = (
-        ('toner', 'Toner/Kartuş'),
+        ('toner', _('Toner/Kartuş')),
         ('label', 'Etiket/Ribon'),
-        ('spare', 'Yedek Parça'),
-        ('cable', 'Kablo/Adaptör'),
-        ('backup_media', 'Yedekleme Medyası'),
-        ('other', 'Diğer'),
+        ('spare', _('Yedek Parça')),
+        ('cable', _('Kablo/Adaptör')),
+        ('backup_media', _('Yedekleme Medyası')),
+        ('other', _('Diğer')),
     )
 
-    name = models.CharField(max_length=150, verbose_name="Kalem Adı")
-    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='other', db_index=True, verbose_name="Kategori")
-    sku = models.CharField(max_length=80, blank=True, verbose_name="Stok Kodu")
-    compatible_with = models.CharField(max_length=200, blank=True, verbose_name="Uyumlu Cihaz/Model")
-    location = models.CharField(max_length=120, blank=True, verbose_name="Depo/Lokasyon")
-    quantity = models.PositiveIntegerField(default=0, verbose_name="Mevcut Stok")
-    minimum_quantity = models.PositiveIntegerField(default=1, verbose_name="Minimum Stok")
-    unit = models.CharField(max_length=30, default='adet', verbose_name="Birim")
-    vendor = models.CharField(max_length=120, blank=True, verbose_name="Tedarikçi")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=150, verbose_name=_("Kalem Adı"))
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='other', db_index=True, verbose_name=_("Kategori"))
+    sku = models.CharField(max_length=80, blank=True, verbose_name=_("Stok Kodu"))
+    compatible_with = models.CharField(max_length=200, blank=True, verbose_name=_("Uyumlu Cihaz/Model"))
+    location = models.CharField(max_length=120, blank=True, verbose_name=_("Depo/Lokasyon"))
+    quantity = models.PositiveIntegerField(default=0, verbose_name=_("Mevcut Stok"))
+    minimum_quantity = models.PositiveIntegerField(default=1, verbose_name=_("Minimum Stok"))
+    unit = models.CharField(max_length=30, default='adet', verbose_name=_("Birim"))
+    vendor = models.CharField(max_length=120, blank=True, verbose_name=_("Tedarikçi"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Sarf/Yedek Stok"
@@ -799,36 +800,36 @@ class ConsumableItem(models.Model):
 class MaintenanceTask(models.Model):
     """Periyodik bakım, yedek kontrolü, patch, printer ve üretim hattı IT checklist işleri."""
     TASK_TYPE_CHOICES = (
-        ('backup', 'Yedek Kontrolü'),
-        ('patch', 'Patch/Güncelleme'),
-        ('printer', 'Yazıcı/Barkod'),
-        ('network', 'Ağ Kontrolü'),
+        ('backup', _('Yedek Kontrolü')),
+        ('patch', _('Patch/Güncelleme')),
+        ('printer', _('Yazıcı/Barkod')),
+        ('network', _('Ağ Kontrolü')),
         ('server', 'Sunucu/Storage'),
-        ('security', 'Güvenlik'),
-        ('production_line', 'Üretim Hattı IT'),
-        ('other', 'Diğer'),
+        ('security', _('Güvenlik')),
+        ('production_line', _('Üretim Hattı IT')),
+        ('other', _('Diğer')),
     )
     STATUS_CHOICES = (
-        ('planned', 'Planlandı'),
+        ('planned', _('Planlandı')),
         ('in_progress', 'Devam Ediyor'),
-        ('done', 'Tamamlandı'),
+        ('done', _('Tamamlandı')),
         ('blocked', 'Blokeli'),
     )
 
-    title = models.CharField(max_length=180, verbose_name="İş Başlığı")
-    task_type = models.CharField(max_length=30, choices=TASK_TYPE_CHOICES, default='other', db_index=True, verbose_name="İş Tipi")
-    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='maintenance_tasks', verbose_name="Fabrika Alanı")
-    device = models.ForeignKey(Device, on_delete=models.SET_NULL, null=True, blank=True, related_name='maintenance_tasks', verbose_name="Cihaz")
-    asset = models.ForeignKey(ITAsset, on_delete=models.SET_NULL, null=True, blank=True, related_name='maintenance_tasks', verbose_name="Varlık")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='maintenance_tasks', verbose_name="Sorumlu")
-    frequency_days = models.PositiveIntegerField(default=30, verbose_name="Periyot (Gün)")
-    last_completed_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Tamamlanma")
-    next_due_at = models.DateTimeField(verbose_name="Sonraki Tarih", db_index=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='planned', db_index=True, verbose_name="Durum")
-    checklist = models.TextField(blank=True, verbose_name="Checklist")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=180, verbose_name=_("İş Başlığı"))
+    task_type = models.CharField(max_length=30, choices=TASK_TYPE_CHOICES, default='other', db_index=True, verbose_name=_("İş Tipi"))
+    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='maintenance_tasks', verbose_name=_("Fabrika Alanı"))
+    device = models.ForeignKey(Device, on_delete=models.SET_NULL, null=True, blank=True, related_name='maintenance_tasks', verbose_name=_("Cihaz"))
+    asset = models.ForeignKey(ITAsset, on_delete=models.SET_NULL, null=True, blank=True, related_name='maintenance_tasks', verbose_name=_("Varlık"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='maintenance_tasks', verbose_name=_("Sorumlu"))
+    frequency_days = models.PositiveIntegerField(default=30, verbose_name=_("Periyot (Gün)"))
+    last_completed_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Tamamlanma"))
+    next_due_at = models.DateTimeField(verbose_name=_("Sonraki Tarih"), db_index=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='planned', db_index=True, verbose_name=_("Durum"))
+    checklist = models.TextField(blank=True, verbose_name=_("Checklist"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Bakım/Checklist İşi"
@@ -853,35 +854,35 @@ class MaintenanceTask(models.Model):
 class EmployeeITProcess(models.Model):
     """Personel giriş, çıkış ve departman değişikliği için IT kontrol listesi."""
     PROCESS_CHOICES = (
-        ('onboarding', 'İşe Giriş'),
-        ('offboarding', 'İşten Çıkış'),
-        ('transfer', 'Departman Değişikliği'),
+        ('onboarding', _('İşe Giriş')),
+        ('offboarding', _('İşten Çıkış')),
+        ('transfer', _('Departman Değişikliği')),
     )
     STATUS_CHOICES = (
-        ('open', 'Açık'),
+        ('open', _('Açık')),
         ('waiting', 'Beklemede'),
-        ('done', 'Tamamlandı'),
-        ('cancelled', 'İptal'),
+        ('done', _('Tamamlandı')),
+        ('cancelled', _('İptal')),
     )
 
-    employee_name = models.CharField(max_length=150, verbose_name="Personel")
-    department = models.CharField(max_length=120, verbose_name="Departman")
-    process_type = models.CharField(max_length=30, choices=PROCESS_CHOICES, db_index=True, verbose_name="Süreç")
-    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='employee_processes', verbose_name="Fabrika Alanı")
-    requester = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='requested_employee_processes', verbose_name="Talep Eden")
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_employee_processes', verbose_name="Sorumlu IT")
-    due_date = models.DateField(null=True, blank=True, verbose_name="Hedef Tarih")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open', db_index=True, verbose_name="Durum")
-    ad_account_done = models.BooleanField(default=False, verbose_name="AD/Hesap")
-    email_done = models.BooleanField(default=False, verbose_name="E-posta")
-    erp_done = models.BooleanField(default=False, verbose_name="ERP/MES")
-    vpn_done = models.BooleanField(default=False, verbose_name="VPN/Uzak Erişim")
-    device_done = models.BooleanField(default=False, verbose_name="Cihaz/Zimmet")
-    badge_done = models.BooleanField(default=False, verbose_name="Kart/Yetki")
-    data_backup_done = models.BooleanField(default=False, verbose_name="Veri Yedek/Devir")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    employee_name = models.CharField(max_length=150, verbose_name=_("Personel"))
+    department = models.CharField(max_length=120, verbose_name=_("Departman"))
+    process_type = models.CharField(max_length=30, choices=PROCESS_CHOICES, db_index=True, verbose_name=_("Süreç"))
+    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='employee_processes', verbose_name=_("Fabrika Alanı"))
+    requester = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='requested_employee_processes', verbose_name=_("Talep Eden"))
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_employee_processes', verbose_name=_("Sorumlu IT"))
+    due_date = models.DateField(null=True, blank=True, verbose_name=_("Hedef Tarih"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open', db_index=True, verbose_name=_("Durum"))
+    ad_account_done = models.BooleanField(default=False, verbose_name=_("AD/Hesap"))
+    email_done = models.BooleanField(default=False, verbose_name=_("E-posta"))
+    erp_done = models.BooleanField(default=False, verbose_name=_("ERP/MES"))
+    vpn_done = models.BooleanField(default=False, verbose_name=_("VPN/Uzak Erişim"))
+    device_done = models.BooleanField(default=False, verbose_name=_("Cihaz/Zimmet"))
+    badge_done = models.BooleanField(default=False, verbose_name=_("Kart/Yetki"))
+    data_backup_done = models.BooleanField(default=False, verbose_name=_("Veri Yedek/Devir"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Personel IT Süreci"
@@ -907,32 +908,32 @@ class EmployeeITProcess(models.Model):
 class ProcurementRequest(models.Model):
     """Donanım, yazılım ve hizmet satın alma talepleri."""
     CATEGORY_CHOICES = (
-        ('hardware', 'Donanım'),
-        ('software', 'Yazılım'),
+        ('hardware', _('Donanım')),
+        ('software', _('Yazılım')),
         ('service', 'Hizmet'),
         ('consumable', 'Sarf Malzeme'),
     )
     STATUS_CHOICES = (
         ('pending', 'Onay Bekliyor'),
-        ('approved', 'Onaylandı'),
-        ('ordered', 'Sipariş Verildi'),
-        ('received', 'Teslim Alındı'),
+        ('approved', _('Onaylandı')),
+        ('ordered', _('Sipariş Verildi')),
+        ('received', _('Teslim Alındı')),
         ('rejected', 'Reddedildi'),
     )
 
-    title = models.CharField(max_length=180, verbose_name="Talep Başlığı")
-    description = models.TextField(blank=True, verbose_name="Açıklama")
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='hardware', db_index=True, verbose_name="Kategori")
-    quantity = models.PositiveIntegerField(default=1, verbose_name="Adet")
-    estimated_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Tahmini Maliyet")
-    vendor_name = models.CharField(max_length=120, blank=True, verbose_name="Tedarikçi")
-    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='procurement_requests', verbose_name="Fabrika Alanı")
-    requester = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='procurement_requests', verbose_name="Talep Eden")
-    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_procurements', verbose_name="Onaylayan")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True, verbose_name="Durum")
-    needed_by = models.DateField(null=True, blank=True, verbose_name="İhtiyaç Tarihi")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=180, verbose_name=_("Talep Başlığı"))
+    description = models.TextField(blank=True, verbose_name=_("Açıklama"))
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='hardware', db_index=True, verbose_name=_("Kategori"))
+    quantity = models.PositiveIntegerField(default=1, verbose_name=_("Adet"))
+    estimated_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name=_("Tahmini Maliyet"))
+    vendor_name = models.CharField(max_length=120, blank=True, verbose_name=_("Tedarikçi"))
+    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='procurement_requests', verbose_name=_("Fabrika Alanı"))
+    requester = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='procurement_requests', verbose_name=_("Talep Eden"))
+    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_procurements', verbose_name=_("Onaylayan"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True, verbose_name=_("Durum"))
+    needed_by = models.DateField(null=True, blank=True, verbose_name=_("İhtiyaç Tarihi"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Satın Alma Talebi"
@@ -945,13 +946,13 @@ class ProcurementRequest(models.Model):
 
 class OnCallShift(models.Model):
     """IT nöbet / vardiya planı."""
-    engineer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='oncall_shifts', verbose_name="Nöbetçi")
-    start_at = models.DateTimeField(verbose_name="Başlangıç", db_index=True)
-    end_at = models.DateTimeField(verbose_name="Bitiş", db_index=True)
-    phone = models.CharField(max_length=30, blank=True, verbose_name="İletişim")
-    is_primary = models.BooleanField(default=True, verbose_name="Birincil Nöbetçi")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
+    engineer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='oncall_shifts', verbose_name=_("Nöbetçi"))
+    start_at = models.DateTimeField(verbose_name=_("Başlangıç"), db_index=True)
+    end_at = models.DateTimeField(verbose_name=_("Bitiş"), db_index=True)
+    phone = models.CharField(max_length=30, blank=True, verbose_name=_("İletişim"))
+    is_primary = models.BooleanField(default=True, verbose_name=_("Birincil Nöbetçi"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
 
     class Meta:
         verbose_name = "Nöbet Kaydı"
@@ -970,32 +971,32 @@ class OnCallShift(models.Model):
 class BackupJobMonitor(models.Model):
     """Sunucu, veritabanı ve uygulama yedekleme işlerinin durumu."""
     SYSTEM_TYPE_CHOICES = (
-        ('server', 'Sunucu'),
-        ('database', 'Veritabanı'),
+        ('server', _('Sunucu')),
+        ('database', _('Veritabanı')),
         ('application', 'Uygulama'),
         ('vm', 'Sanal Makine'),
-        ('file', 'Dosya Paylaşımı'),
+        ('file', _('Dosya Paylaşımı')),
     )
     STATUS_CHOICES = (
-        ('success', 'Başarılı'),
-        ('failed', 'Başarısız'),
-        ('warning', 'Uyarı'),
-        ('missed', 'Kaçırıldı'),
+        ('success', _('Başarılı')),
+        ('failed', _('Başarısız')),
+        ('warning', _('Uyarı')),
+        ('missed', _('Kaçırıldı')),
         ('unknown', 'Bilinmiyor'),
     )
 
-    name = models.CharField(max_length=150, verbose_name="Yedekleme Adı")
-    system_type = models.CharField(max_length=20, choices=SYSTEM_TYPE_CHOICES, default='server', db_index=True, verbose_name="Sistem Tipi")
-    target_host = models.CharField(max_length=120, blank=True, verbose_name="Hedef Sunucu")
-    schedule_description = models.CharField(max_length=120, default='Günlük 02:00', verbose_name="Plan")
-    last_run_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Çalışma")
-    last_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unknown', db_index=True, verbose_name="Son Durum")
-    next_run_at = models.DateTimeField(null=True, blank=True, verbose_name="Sonraki Çalışma")
-    retention_days = models.PositiveIntegerField(default=30, verbose_name="Saklama (Gün)")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='backup_jobs', verbose_name="Sorumlu")
-    is_active = models.BooleanField(default=True, verbose_name="Aktif", db_index=True)
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=150, verbose_name=_("Yedekleme Adı"))
+    system_type = models.CharField(max_length=20, choices=SYSTEM_TYPE_CHOICES, default='server', db_index=True, verbose_name=_("Sistem Tipi"))
+    target_host = models.CharField(max_length=120, blank=True, verbose_name=_("Hedef Sunucu"))
+    schedule_description = models.CharField(max_length=120, default='Günlük 02:00', verbose_name=_("Plan"))
+    last_run_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Çalışma"))
+    last_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unknown', db_index=True, verbose_name=_("Son Durum"))
+    next_run_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Sonraki Çalışma"))
+    retention_days = models.PositiveIntegerField(default=30, verbose_name=_("Saklama (Gün)"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='backup_jobs', verbose_name=_("Sorumlu"))
+    is_active = models.BooleanField(default=True, verbose_name=_("Aktif"), db_index=True)
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Yedekleme İşi"
@@ -1014,24 +1015,24 @@ class VendorSupportCase(models.Model):
     """Dış tedarikçi / üretici destek kayıtları."""
     PRIORITY_CHOICES = Ticket.PRIORITY_CHOICES
     STATUS_CHOICES = (
-        ('open', 'Açık'),
-        ('waiting_vendor', 'Tedarikçi Bekleniyor'),
-        ('resolved', 'Çözüldü'),
-        ('closed', 'Kapatıldı'),
+        ('open', _('Açık')),
+        ('waiting_vendor', _('Tedarikçi Bekleniyor')),
+        ('resolved', _('Çözüldü')),
+        ('closed', _('Kapatıldı')),
     )
 
-    title = models.CharField(max_length=180, verbose_name="Konu")
-    vendor_name = models.CharField(max_length=120, verbose_name="Tedarikçi")
-    vendor_contract = models.ForeignKey(VendorContract, on_delete=models.SET_NULL, null=True, blank=True, related_name='support_cases', verbose_name="Sözleşme")
-    case_number = models.CharField(max_length=80, blank=True, verbose_name="Tedarikçi Vaka No")
-    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Orta', db_index=True, verbose_name="Öncelik")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open', db_index=True, verbose_name="Durum")
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='vendor_support_cases', verbose_name="Sorumlu IT")
-    opened_at = models.DateTimeField(default=timezone.now, verbose_name="Açılış")
-    resolved_at = models.DateTimeField(null=True, blank=True, verbose_name="Çözüm Tarihi")
-    description = models.TextField(blank=True, verbose_name="Açıklama")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=180, verbose_name=_("Konu"))
+    vendor_name = models.CharField(max_length=120, verbose_name=_("Tedarikçi"))
+    vendor_contract = models.ForeignKey(VendorContract, on_delete=models.SET_NULL, null=True, blank=True, related_name='support_cases', verbose_name=_("Sözleşme"))
+    case_number = models.CharField(max_length=80, blank=True, verbose_name=_("Tedarikçi Vaka No"))
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Orta', db_index=True, verbose_name=_("Öncelik"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open', db_index=True, verbose_name=_("Durum"))
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='vendor_support_cases', verbose_name=_("Sorumlu IT"))
+    opened_at = models.DateTimeField(default=timezone.now, verbose_name=_("Açılış"))
+    resolved_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Çözüm Tarihi"))
+    description = models.TextField(blank=True, verbose_name=_("Açıklama"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Tedarikçi Destek Kaydı"
@@ -1046,19 +1047,19 @@ class AssetHandover(models.Model):
     """Donanım zimmet teslim, iade ve transfer geçmişi."""
     ACTION_CHOICES = (
         ('assign', 'Zimmet Verme'),
-        ('return', 'Zimmet İade'),
+        ('return', _('Zimmet İade')),
         ('transfer', 'Transfer'),
     )
 
-    asset = models.ForeignKey(ITAsset, on_delete=models.CASCADE, related_name='handovers', verbose_name="Varlık")
-    employee_name = models.CharField(max_length=150, verbose_name="Personel")
-    department = models.CharField(max_length=120, blank=True, verbose_name="Departman")
-    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='asset_handovers', verbose_name="Fabrika Alanı")
-    action = models.CharField(max_length=20, choices=ACTION_CHOICES, default='assign', db_index=True, verbose_name="İşlem")
-    handover_date = models.DateField(default=timezone.now, verbose_name="Tarih")
-    condition_notes = models.TextField(blank=True, verbose_name="Durum Notu")
-    performed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='asset_handovers', verbose_name="İşlemi Yapan")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Kayıt Tarihi")
+    asset = models.ForeignKey(ITAsset, on_delete=models.CASCADE, related_name='handovers', verbose_name=_("Varlık"))
+    employee_name = models.CharField(max_length=150, verbose_name=_("Personel"))
+    department = models.CharField(max_length=120, blank=True, verbose_name=_("Departman"))
+    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='asset_handovers', verbose_name=_("Fabrika Alanı"))
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES, default='assign', db_index=True, verbose_name=_("İşlem"))
+    handover_date = models.DateField(default=timezone.now, verbose_name=_("Tarih"))
+    condition_notes = models.TextField(blank=True, verbose_name=_("Durum Notu"))
+    performed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='asset_handovers', verbose_name=_("İşlemi Yapan"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Kayıt Tarihi"))
 
     class Meta:
         verbose_name = "Zimmet Kaydı"
@@ -1083,33 +1084,33 @@ class AssetHandover(models.Model):
 class MajorIncident(models.Model):
     """Üretimi veya kritik IT servislerini etkileyen büyük olay yönetimi."""
     SEVERITY_CHOICES = (
-        ('sev1', 'SEV1 - Üretim Durdu'),
+        ('sev1', _('SEV1 - Üretim Durdu')),
         ('sev2', 'SEV2 - Kritik Etki'),
-        ('sev3', 'SEV3 - Sınırlı Etki'),
-        ('sev4', 'SEV4 - Düşük Etki'),
+        ('sev3', _('SEV3 - Sınırlı Etki')),
+        ('sev4', _('SEV4 - Düşük Etki')),
     )
     STATUS_CHOICES = (
-        ('open', 'Açık'),
-        ('war_room', 'Savaş Odası'),
-        ('monitoring', 'İzlemede'),
-        ('resolved', 'Çözüldü'),
+        ('open', _('Açık')),
+        ('war_room', _('Savaş Odası')),
+        ('monitoring', _('İzlemede')),
+        ('resolved', _('Çözüldü')),
         ('postmortem', 'Post-mortem'),
-        ('closed', 'Kapatıldı'),
+        ('closed', _('Kapatıldı')),
     )
 
-    title = models.CharField(max_length=180, verbose_name="Olay Başlığı")
-    severity = models.CharField(max_length=20, choices=SEVERITY_CHOICES, default='sev3', db_index=True, verbose_name="Seviye")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open', db_index=True, verbose_name="Durum")
-    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='major_incidents', verbose_name="Etkilenen Alan")
-    ticket = models.ForeignKey(Ticket, on_delete=models.SET_NULL, null=True, blank=True, related_name='major_incidents', verbose_name="İlgili Talep")
-    incident_commander = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='commanded_incidents', verbose_name="Olay Lideri")
-    started_at = models.DateTimeField(default=timezone.now, verbose_name="Başlangıç")
-    resolved_at = models.DateTimeField(null=True, blank=True, verbose_name="Çözüm")
-    impact_summary = models.TextField(blank=True, verbose_name="Etki Özeti")
-    root_cause = models.TextField(blank=True, verbose_name="Kök Neden")
-    corrective_actions = models.TextField(blank=True, verbose_name="Kalıcı Aksiyonlar")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=180, verbose_name=_("Olay Başlığı"))
+    severity = models.CharField(max_length=20, choices=SEVERITY_CHOICES, default='sev3', db_index=True, verbose_name=_("Seviye"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open', db_index=True, verbose_name=_("Durum"))
+    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='major_incidents', verbose_name=_("Etkilenen Alan"))
+    ticket = models.ForeignKey(Ticket, on_delete=models.SET_NULL, null=True, blank=True, related_name='major_incidents', verbose_name=_("İlgili Talep"))
+    incident_commander = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='commanded_incidents', verbose_name=_("Olay Lideri"))
+    started_at = models.DateTimeField(default=timezone.now, verbose_name=_("Başlangıç"))
+    resolved_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Çözüm"))
+    impact_summary = models.TextField(blank=True, verbose_name=_("Etki Özeti"))
+    root_cause = models.TextField(blank=True, verbose_name=_("Kök Neden"))
+    corrective_actions = models.TextField(blank=True, verbose_name=_("Kalıcı Aksiyonlar"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Major Incident"
@@ -1129,33 +1130,33 @@ class AccessRequest(models.Model):
     """VPN, dosya paylaşımı, ERP/MES ve uygulama erişim talepleri."""
     ACCESS_TYPE_CHOICES = (
         ('vpn', 'VPN'),
-        ('file_share', 'Dosya Paylaşımı'),
+        ('file_share', _('Dosya Paylaşımı')),
         ('erp', 'ERP/MES'),
         ('email_group', 'E-posta Grubu'),
         ('application', 'Uygulama'),
-        ('admin', 'Geçici Admin Yetkisi'),
-        ('other', 'Diğer'),
+        ('admin', _('Geçici Admin Yetkisi')),
+        ('other', _('Diğer')),
     )
     STATUS_CHOICES = (
         ('pending', 'Onay Bekliyor'),
-        ('approved', 'Onaylandı'),
+        ('approved', _('Onaylandı')),
         ('provisioned', 'Yetki Verildi'),
         ('rejected', 'Reddedildi'),
-        ('revoked', 'Geri Alındı'),
+        ('revoked', _('Geri Alındı')),
     )
 
-    requester = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='access_requests', verbose_name="Talep Eden")
-    employee_name = models.CharField(max_length=150, verbose_name="Kullanıcı/Personel")
-    department = models.CharField(max_length=120, blank=True, verbose_name="Departman")
-    access_type = models.CharField(max_length=30, choices=ACCESS_TYPE_CHOICES, default='application', db_index=True, verbose_name="Erişim Tipi")
-    target_system = models.CharField(max_length=150, verbose_name="Hedef Sistem/Paylaşım")
-    justification = models.TextField(verbose_name="Gerekçe")
-    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_access_requests', verbose_name="Onaylayan")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True, verbose_name="Durum")
-    expires_at = models.DateTimeField(null=True, blank=True, verbose_name="Süre Sonu")
-    provisioned_at = models.DateTimeField(null=True, blank=True, verbose_name="Yetki Verilme")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    requester = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='access_requests', verbose_name=_("Talep Eden"))
+    employee_name = models.CharField(max_length=150, verbose_name=_("Kullanıcı/Personel"))
+    department = models.CharField(max_length=120, blank=True, verbose_name=_("Departman"))
+    access_type = models.CharField(max_length=30, choices=ACCESS_TYPE_CHOICES, default='application', db_index=True, verbose_name=_("Erişim Tipi"))
+    target_system = models.CharField(max_length=150, verbose_name=_("Hedef Sistem/Paylaşım"))
+    justification = models.TextField(verbose_name=_("Gerekçe"))
+    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_access_requests', verbose_name=_("Onaylayan"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True, verbose_name=_("Durum"))
+    expires_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Süre Sonu"))
+    provisioned_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Yetki Verilme"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Erişim Talebi"
@@ -1173,33 +1174,33 @@ class AccessRequest(models.Model):
 class PrinterFleetItem(models.Model):
     """Yazıcı, barkod yazıcı ve etiket cihazlarının sayaç/toner takibi."""
     DEVICE_KIND_CHOICES = (
-        ('printer', 'Yazıcı'),
-        ('barcode', 'Barkod Yazıcı'),
-        ('label', 'Etiket Yazıcı'),
-        ('scanner', 'Tarayıcı'),
-        ('mfp', 'Çok Fonksiyonlu'),
+        ('printer', _('Yazıcı')),
+        ('barcode', _('Barkod Yazıcı')),
+        ('label', _('Etiket Yazıcı')),
+        ('scanner', _('Tarayıcı')),
+        ('mfp', _('Çok Fonksiyonlu')),
     )
     STATUS_CHOICES = (
         ('online', 'Aktif'),
-        ('warning', 'Uyarı'),
-        ('maintenance', 'Bakımda'),
-        ('offline', 'Çevrimdışı'),
+        ('warning', _('Uyarı')),
+        ('maintenance', _('Bakımda')),
+        ('offline', _('Çevrimdışı')),
         ('retired', 'Emekli'),
     )
 
-    name = models.CharField(max_length=150, verbose_name="Cihaz Adı")
-    device_kind = models.CharField(max_length=20, choices=DEVICE_KIND_CHOICES, default='printer', db_index=True, verbose_name="Tip")
-    ip_address = models.GenericIPAddressField(null=True, blank=True, verbose_name="IP")
-    serial_number = models.CharField(max_length=100, blank=True, db_index=True, verbose_name="Seri No")
-    model = models.CharField(max_length=120, blank=True, verbose_name="Model")
-    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='printers', verbose_name="Alan")
-    consumable = models.ForeignKey(ConsumableItem, on_delete=models.SET_NULL, null=True, blank=True, related_name='printers', verbose_name="Toner/Ribon")
-    page_counter = models.PositiveIntegerField(default=0, verbose_name="Sayaç")
-    toner_level_percent = models.PositiveIntegerField(default=100, verbose_name="Toner/Ribon (%)")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='online', db_index=True, verbose_name="Durum")
-    last_maintenance_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Bakım")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=150, verbose_name=_("Cihaz Adı"))
+    device_kind = models.CharField(max_length=20, choices=DEVICE_KIND_CHOICES, default='printer', db_index=True, verbose_name=_("Tip"))
+    ip_address = models.GenericIPAddressField(null=True, blank=True, verbose_name=_("IP"))
+    serial_number = models.CharField(max_length=100, blank=True, db_index=True, verbose_name=_("Seri No"))
+    model = models.CharField(max_length=120, blank=True, verbose_name=_("Model"))
+    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='printers', verbose_name=_("Alan"))
+    consumable = models.ForeignKey(ConsumableItem, on_delete=models.SET_NULL, null=True, blank=True, related_name='printers', verbose_name=_("Toner/Ribon"))
+    page_counter = models.PositiveIntegerField(default=0, verbose_name=_("Sayaç"))
+    toner_level_percent = models.PositiveIntegerField(default=100, verbose_name=_("Toner/Ribon (%)"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='online', db_index=True, verbose_name=_("Durum"))
+    last_maintenance_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Bakım"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Yazıcı Filosu"
@@ -1217,26 +1218,26 @@ class PrinterFleetItem(models.Model):
 class Runbook(models.Model):
     """SOP/runbook şablonları: arıza, bakım, güvenlik ve üretim hattı prosedürleri."""
     CATEGORY_CHOICES = (
-        ('incident', 'Olay Müdahalesi'),
-        ('maintenance', 'Bakım'),
-        ('security', 'Güvenlik'),
+        ('incident', _('Olay Müdahalesi')),
+        ('maintenance', _('Bakım')),
+        ('security', _('Güvenlik')),
         ('backup', 'Yedekleme'),
-        ('onboarding', 'Personel Süreci'),
-        ('network', 'Ağ'),
-        ('other', 'Diğer'),
+        ('onboarding', _('Personel Süreci')),
+        ('network', _('Ağ')),
+        ('other', _('Diğer')),
     )
 
-    title = models.CharField(max_length=180, verbose_name="Başlık")
-    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='other', db_index=True, verbose_name="Kategori")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='runbooks', verbose_name="Sahip")
-    related_device_type = models.CharField(max_length=80, blank=True, verbose_name="İlgili Cihaz Tipi")
-    steps = models.TextField(verbose_name="Adımlar")
-    rollback_steps = models.TextField(blank=True, verbose_name="Geri Dönüş Adımları")
-    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Aktif")
-    version = models.CharField(max_length=20, default='1.0', verbose_name="Versiyon")
-    last_reviewed_at = models.DateField(null=True, blank=True, verbose_name="Son Gözden Geçirme")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=180, verbose_name=_("Başlık"))
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='other', db_index=True, verbose_name=_("Kategori"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='runbooks', verbose_name=_("Sahip"))
+    related_device_type = models.CharField(max_length=80, blank=True, verbose_name=_("İlgili Cihaz Tipi"))
+    steps = models.TextField(verbose_name=_("Adımlar"))
+    rollback_steps = models.TextField(blank=True, verbose_name=_("Geri Dönüş Adımları"))
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Aktif"))
+    version = models.CharField(max_length=20, default='1.0', verbose_name=_("Versiyon"))
+    last_reviewed_at = models.DateField(null=True, blank=True, verbose_name=_("Son Gözden Geçirme"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Runbook / SOP"
@@ -1258,26 +1259,26 @@ class RemoteAccessGrant(models.Model):
     )
     STATUS_CHOICES = (
         ('requested', 'Talep Edildi'),
-        ('approved', 'Onaylandı'),
+        ('approved', _('Onaylandı')),
         ('active', 'Aktif'),
-        ('suspended', 'Askıya Alındı'),
-        ('expired', 'Süresi Doldu'),
-        ('revoked', 'İptal Edildi'),
+        ('suspended', _('Askıya Alındı')),
+        ('expired', _('Süresi Doldu')),
+        ('revoked', _('İptal Edildi')),
     )
 
-    employee_name = models.CharField(max_length=150, verbose_name="Kullanıcı/Personel")
-    department = models.CharField(max_length=120, blank=True, verbose_name="Departman")
-    access_method = models.CharField(max_length=20, choices=ACCESS_METHOD_CHOICES, default='vpn', db_index=True, verbose_name="Erişim Yöntemi")
-    target_resource = models.CharField(max_length=180, verbose_name="Hedef Kaynak")
-    gateway = models.CharField(max_length=180, blank=True, verbose_name="VPN Gateway / Portal")
-    allowed_source = models.CharField(max_length=180, blank=True, verbose_name="İzinli Kaynak IP")
-    mfa_required = models.BooleanField(default=True, verbose_name="MFA Zorunlu")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='requested', db_index=True, verbose_name="Durum")
-    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_remote_access', verbose_name="Onaylayan")
-    expires_at = models.DateTimeField(null=True, blank=True, verbose_name="Süre Sonu")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    employee_name = models.CharField(max_length=150, verbose_name=_("Kullanıcı/Personel"))
+    department = models.CharField(max_length=120, blank=True, verbose_name=_("Departman"))
+    access_method = models.CharField(max_length=20, choices=ACCESS_METHOD_CHOICES, default='vpn', db_index=True, verbose_name=_("Erişim Yöntemi"))
+    target_resource = models.CharField(max_length=180, verbose_name=_("Hedef Kaynak"))
+    gateway = models.CharField(max_length=180, blank=True, verbose_name=_("VPN Gateway / Portal"))
+    allowed_source = models.CharField(max_length=180, blank=True, verbose_name=_("İzinli Kaynak IP"))
+    mfa_required = models.BooleanField(default=True, verbose_name=_("MFA Zorunlu"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='requested', db_index=True, verbose_name=_("Durum"))
+    approved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_remote_access', verbose_name=_("Onaylayan"))
+    expires_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Süre Sonu"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Uzaktan Erişim Yetkisi"
@@ -1294,11 +1295,11 @@ class RemoteAccessGrant(models.Model):
 
 class DepartmentChannel(models.Model):
     """Departmanlar arası hızlı iletişim kanalı."""
-    name = models.CharField(max_length=120, verbose_name="Kanal Adı")
-    department = models.CharField(max_length=120, blank=True, verbose_name="Departman")
-    description = models.TextField(blank=True, verbose_name="Açıklama")
-    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Aktif")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
+    name = models.CharField(max_length=120, verbose_name=_("Kanal Adı"))
+    department = models.CharField(max_length=120, blank=True, verbose_name=_("Departman"))
+    description = models.TextField(blank=True, verbose_name=_("Açıklama"))
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Aktif"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
 
     class Meta:
         verbose_name = "Departman Chat Kanalı"
@@ -1310,11 +1311,11 @@ class DepartmentChannel(models.Model):
 
 
 class DepartmentMessage(models.Model):
-    channel = models.ForeignKey(DepartmentChannel, on_delete=models.CASCADE, related_name='messages', verbose_name="Kanal")
-    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_messages', verbose_name="Yazan")
-    message = models.TextField(verbose_name="Mesaj")
-    is_announcement = models.BooleanField(default=False, verbose_name="Duyuru")
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name="Tarih")
+    channel = models.ForeignKey(DepartmentChannel, on_delete=models.CASCADE, related_name='messages', verbose_name=_("Kanal"))
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_messages', verbose_name=_("Yazan"))
+    message = models.TextField(verbose_name=_("Mesaj"))
+    is_announcement = models.BooleanField(default=False, verbose_name=_("Duyuru"))
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=_("Tarih"))
 
     class Meta:
         verbose_name = "Departman Mesajı"
@@ -1335,22 +1336,22 @@ class CameraDevice(models.Model):
     )
     STATUS_CHOICES = (
         ('online', 'Aktif'),
-        ('warning', 'Uyarı'),
-        ('offline', 'Çevrimdışı'),
-        ('maintenance', 'Bakımda'),
+        ('warning', _('Uyarı')),
+        ('offline', _('Çevrimdışı')),
+        ('maintenance', _('Bakımda')),
     )
 
-    name = models.CharField(max_length=150, verbose_name="Kamera/NVR Adı")
-    device_type = models.CharField(max_length=20, choices=DEVICE_TYPE_CHOICES, default='ip_camera', db_index=True, verbose_name="Tip")
-    ip_address = models.GenericIPAddressField(null=True, blank=True, verbose_name="IP")
-    stream_url = models.CharField(max_length=500, blank=True, verbose_name="Canlı İzleme URL")
-    location = models.CharField(max_length=150, blank=True, verbose_name="Lokasyon")
-    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='cameras', verbose_name="Fabrika Alanı")
-    recording_days = models.PositiveIntegerField(default=15, verbose_name="Kayıt Saklama (Gün)")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='online', db_index=True, verbose_name="Durum")
-    last_checked_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Kontrol")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=150, verbose_name=_("Kamera/NVR Adı"))
+    device_type = models.CharField(max_length=20, choices=DEVICE_TYPE_CHOICES, default='ip_camera', db_index=True, verbose_name=_("Tip"))
+    ip_address = models.GenericIPAddressField(null=True, blank=True, verbose_name=_("IP"))
+    stream_url = models.CharField(max_length=500, blank=True, verbose_name=_("Canlı İzleme URL"))
+    location = models.CharField(max_length=150, blank=True, verbose_name=_("Lokasyon"))
+    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='cameras', verbose_name=_("Fabrika Alanı"))
+    recording_days = models.PositiveIntegerField(default=15, verbose_name=_("Kayıt Saklama (Gün)"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='online', db_index=True, verbose_name=_("Durum"))
+    last_checked_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Kontrol"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Kamera Sistemi"
@@ -1367,28 +1368,28 @@ class BusinessApplication(models.Model):
         ('erp', 'ERP'),
         ('mes', 'MES'),
         ('crm', 'CRM'),
-        ('hr', 'İK'),
+        ('hr', _('İK')),
         ('accounting', 'Muhasebe'),
-        ('document', 'Doküman'),
+        ('document', _('Doküman')),
         ('reporting', 'Raporlama'),
-        ('other', 'Diğer'),
+        ('other', _('Diğer')),
     )
     STATUS_CHOICES = (
         ('online', 'Aktif'),
-        ('degraded', 'Kısmi Sorun'),
-        ('offline', 'Çevrimdışı'),
-        ('maintenance', 'Bakımda'),
+        ('degraded', _('Kısmi Sorun')),
+        ('offline', _('Çevrimdışı')),
+        ('maintenance', _('Bakımda')),
     )
 
-    name = models.CharField(max_length=150, verbose_name="Uygulama Adı")
-    app_type = models.CharField(max_length=20, choices=APP_TYPE_CHOICES, default='other', db_index=True, verbose_name="Tip")
-    url = models.URLField(max_length=500, blank=True, verbose_name="URL")
-    owner_department = models.CharField(max_length=120, blank=True, verbose_name="Sahip Departman")
-    technical_owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='business_apps', verbose_name="Teknik Sorumlu")
-    sso_enabled = models.BooleanField(default=False, verbose_name="SSO Aktif")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='online', db_index=True, verbose_name="Durum")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=150, verbose_name=_("Uygulama Adı"))
+    app_type = models.CharField(max_length=20, choices=APP_TYPE_CHOICES, default='other', db_index=True, verbose_name=_("Tip"))
+    url = models.URLField(max_length=500, blank=True, verbose_name=_("URL"))
+    owner_department = models.CharField(max_length=120, blank=True, verbose_name=_("Sahip Departman"))
+    technical_owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='business_apps', verbose_name=_("Teknik Sorumlu"))
+    sso_enabled = models.BooleanField(default=False, verbose_name=_("SSO Aktif"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='online', db_index=True, verbose_name=_("Durum"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "İş Uygulaması"
@@ -1404,21 +1405,21 @@ class ReportTemplate(models.Model):
     REPORT_TYPE_CHOICES = (
         ('inventory', 'Envanter'),
         ('ticket', 'Ticket/SLA'),
-        ('security', 'Güvenlik'),
+        ('security', _('Güvenlik')),
         ('factory', 'Fabrika Operasyon'),
         ('asset', 'Zimmet'),
         ('backup', 'Yedekleme'),
-        ('custom', 'Özel'),
+        ('custom', _('Özel')),
     )
 
-    title = models.CharField(max_length=180, verbose_name="Rapor Adı")
-    report_type = models.CharField(max_length=20, choices=REPORT_TYPE_CHOICES, default='custom', db_index=True, verbose_name="Rapor Tipi")
-    description = models.TextField(blank=True, verbose_name="Açıklama")
-    query_notes = models.TextField(blank=True, verbose_name="Veri Kaynağı / Filtre Notu")
-    output_format = models.CharField(max_length=20, default='pdf,csv', verbose_name="Çıktı Formatları")
-    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Aktif")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='report_templates', verbose_name="Sahip")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=180, verbose_name=_("Rapor Adı"))
+    report_type = models.CharField(max_length=20, choices=REPORT_TYPE_CHOICES, default='custom', db_index=True, verbose_name=_("Rapor Tipi"))
+    description = models.TextField(blank=True, verbose_name=_("Açıklama"))
+    query_notes = models.TextField(blank=True, verbose_name=_("Veri Kaynağı / Filtre Notu"))
+    output_format = models.CharField(max_length=20, default='pdf,csv', verbose_name=_("Çıktı Formatları"))
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Aktif"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='report_templates', verbose_name=_("Sahip"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Rapor Şablonu"
@@ -1432,39 +1433,39 @@ class ReportTemplate(models.Model):
 class ChangeCalendarEvent(models.Model):
     """Üretim etkisi olan bakım, değişiklik ve planlı kesinti takvimi."""
     EVENT_TYPE_CHOICES = (
-        ('maintenance', 'Bakım'),
-        ('change', 'Değişiklik'),
-        ('outage', 'Planlı Kesinti'),
-        ('release', 'Sürüm Geçişi'),
+        ('maintenance', _('Bakım')),
+        ('change', _('Değişiklik')),
+        ('outage', _('Planlı Kesinti')),
+        ('release', _('Sürüm Geçişi')),
         ('audit', 'Denetim'),
     )
     RISK_CHOICES = (
-        ('low', 'Düşük'),
-        ('medium', 'Orta'),
-        ('high', 'Yüksek'),
-        ('critical', 'Kritik'),
+        ('low', _('Düşük')),
+        ('medium', _('Orta')),
+        ('high', _('Yüksek')),
+        ('critical', _('Kritik')),
     )
     STATUS_CHOICES = (
-        ('planned', 'Planlandı'),
-        ('approved', 'Onaylandı'),
+        ('planned', _('Planlandı')),
+        ('approved', _('Onaylandı')),
         ('in_progress', 'Devam Ediyor'),
-        ('completed', 'Tamamlandı'),
-        ('cancelled', 'İptal'),
+        ('completed', _('Tamamlandı')),
+        ('cancelled', _('İptal')),
     )
 
-    title = models.CharField(max_length=180, verbose_name="Başlık")
-    event_type = models.CharField(max_length=20, choices=EVENT_TYPE_CHOICES, default='maintenance', db_index=True, verbose_name="Tip")
-    risk_level = models.CharField(max_length=20, choices=RISK_CHOICES, default='medium', db_index=True, verbose_name="Risk")
-    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='calendar_events', verbose_name="Etkilenen Alan")
-    change_request = models.ForeignKey(ChangeRequest, on_delete=models.SET_NULL, null=True, blank=True, related_name='calendar_events', verbose_name="CAB Kaydı")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='change_calendar_events', verbose_name="Sorumlu")
-    start_at = models.DateTimeField(verbose_name="Başlangıç", db_index=True)
-    end_at = models.DateTimeField(verbose_name="Bitiş", db_index=True)
-    expected_impact = models.TextField(blank=True, verbose_name="Beklenen Etki")
-    rollback_plan = models.TextField(blank=True, verbose_name="Geri Dönüş Planı")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='planned', db_index=True, verbose_name="Durum")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=180, verbose_name=_("Başlık"))
+    event_type = models.CharField(max_length=20, choices=EVENT_TYPE_CHOICES, default='maintenance', db_index=True, verbose_name=_("Tip"))
+    risk_level = models.CharField(max_length=20, choices=RISK_CHOICES, default='medium', db_index=True, verbose_name=_("Risk"))
+    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='calendar_events', verbose_name=_("Etkilenen Alan"))
+    change_request = models.ForeignKey(ChangeRequest, on_delete=models.SET_NULL, null=True, blank=True, related_name='calendar_events', verbose_name=_("CAB Kaydı"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='change_calendar_events', verbose_name=_("Sorumlu"))
+    start_at = models.DateTimeField(verbose_name=_("Başlangıç"), db_index=True)
+    end_at = models.DateTimeField(verbose_name=_("Bitiş"), db_index=True)
+    expected_impact = models.TextField(blank=True, verbose_name=_("Beklenen Etki"))
+    rollback_plan = models.TextField(blank=True, verbose_name=_("Geri Dönüş Planı"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='planned', db_index=True, verbose_name=_("Durum"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Değişiklik/Bakım Takvimi"
@@ -1483,21 +1484,21 @@ class ChangeCalendarEvent(models.Model):
 class ServiceDependency(models.Model):
     """CMDB bağımlılık ilişkisi: uygulama, cihaz, servis ve departman etkisi."""
     DEPENDENCY_TYPE_CHOICES = (
-        ('runs_on', 'Üzerinde Çalışır'),
-        ('connects_to', 'Bağlanır'),
-        ('depends_on', 'Bağımlı'),
+        ('runs_on', _('Üzerinde Çalışır')),
+        ('connects_to', _('Bağlanır')),
+        ('depends_on', _('Bağımlı')),
         ('backs_up_to', 'Yedeklenir'),
-        ('monitors', 'İzler'),
+        ('monitors', _('İzler')),
     )
     CRITICALITY_CHOICES = FactoryArea.CRITICALITY_CHOICES
 
-    name = models.CharField(max_length=180, verbose_name="İlişki Adı")
-    business_application = models.ForeignKey(BusinessApplication, on_delete=models.CASCADE, related_name='dependencies', verbose_name="Uygulama")
-    device = models.ForeignKey(Device, on_delete=models.SET_NULL, null=True, blank=True, related_name='service_dependencies', verbose_name="Cihaz")
-    dependency_type = models.CharField(max_length=20, choices=DEPENDENCY_TYPE_CHOICES, default='depends_on', db_index=True, verbose_name="Bağımlılık Tipi")
-    criticality = models.CharField(max_length=20, choices=CRITICALITY_CHOICES, default='medium', db_index=True, verbose_name="Kritiklik")
-    impact_description = models.TextField(blank=True, verbose_name="Etki Açıklaması")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
+    name = models.CharField(max_length=180, verbose_name=_("İlişki Adı"))
+    business_application = models.ForeignKey(BusinessApplication, on_delete=models.CASCADE, related_name='dependencies', verbose_name=_("Uygulama"))
+    device = models.ForeignKey(Device, on_delete=models.SET_NULL, null=True, blank=True, related_name='service_dependencies', verbose_name=_("Cihaz"))
+    dependency_type = models.CharField(max_length=20, choices=DEPENDENCY_TYPE_CHOICES, default='depends_on', db_index=True, verbose_name=_("Bağımlılık Tipi"))
+    criticality = models.CharField(max_length=20, choices=CRITICALITY_CHOICES, default='medium', db_index=True, verbose_name=_("Kritiklik"))
+    impact_description = models.TextField(blank=True, verbose_name=_("Etki Açıklaması"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
 
     class Meta:
         verbose_name = "CMDB Bağımlılığı"
@@ -1519,24 +1520,24 @@ class IntegrationHealthCheck(models.Model):
         ('camera_vms', 'Kamera VMS'),
         ('backup', 'Yedekleme'),
         ('api', 'API'),
-        ('other', 'Diğer'),
+        ('other', _('Diğer')),
     )
     STATUS_CHOICES = (
-        ('healthy', 'Sağlıklı'),
-        ('degraded', 'Yavaş/Sorunlu'),
-        ('down', 'Çalışmıyor'),
+        ('healthy', _('Sağlıklı')),
+        ('degraded', _('Yavaş/Sorunlu')),
+        ('down', _('Çalışmıyor')),
         ('unknown', 'Bilinmiyor'),
     )
 
-    name = models.CharField(max_length=150, verbose_name="Entegrasyon")
-    integration_type = models.CharField(max_length=20, choices=INTEGRATION_TYPE_CHOICES, default='api', db_index=True, verbose_name="Tip")
-    endpoint_url = models.CharField(max_length=500, blank=True, verbose_name="Endpoint/URL")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='integration_checks', verbose_name="Sorumlu")
-    last_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unknown', db_index=True, verbose_name="Son Durum")
-    last_checked_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Kontrol")
-    response_time_ms = models.PositiveIntegerField(default=0, verbose_name="Yanıt Süresi (ms)")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=150, verbose_name=_("Entegrasyon"))
+    integration_type = models.CharField(max_length=20, choices=INTEGRATION_TYPE_CHOICES, default='api', db_index=True, verbose_name=_("Tip"))
+    endpoint_url = models.CharField(max_length=500, blank=True, verbose_name=_("Endpoint/URL"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='integration_checks', verbose_name=_("Sorumlu"))
+    last_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unknown', db_index=True, verbose_name=_("Son Durum"))
+    last_checked_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Kontrol"))
+    response_time_ms = models.PositiveIntegerField(default=0, verbose_name=_("Yanıt Süresi (ms)"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Entegrasyon Sağlık Kontrolü"
@@ -1556,27 +1557,27 @@ class ComplianceControl(models.Model):
     FRAMEWORK_CHOICES = (
         ('iso27001', 'ISO 27001'),
         ('kvkk', 'KVKK'),
-        ('internal', 'İç Denetim'),
-        ('backup', 'Yedekleme Politikası'),
-        ('access', 'Erişim Denetimi'),
-        ('other', 'Diğer'),
+        ('internal', _('İç Denetim')),
+        ('backup', _('Yedekleme Politikası')),
+        ('access', _('Erişim Denetimi')),
+        ('other', _('Diğer')),
     )
     STATUS_CHOICES = (
         ('compliant', 'Uygun'),
-        ('gap', 'Açık Var'),
+        ('gap', _('Açık Var')),
         ('in_progress', 'Devam Ediyor'),
         ('not_checked', 'Kontrol Edilmedi'),
     )
 
-    title = models.CharField(max_length=180, verbose_name="Kontrol")
-    framework = models.CharField(max_length=20, choices=FRAMEWORK_CHOICES, default='internal', db_index=True, verbose_name="Çerçeve")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='compliance_controls', verbose_name="Sorumlu")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='not_checked', db_index=True, verbose_name="Durum")
-    evidence = models.TextField(blank=True, verbose_name="Kanıt / Bulgu")
-    remediation_plan = models.TextField(blank=True, verbose_name="İyileştirme Planı")
-    due_date = models.DateField(null=True, blank=True, verbose_name="Hedef Tarih")
-    last_checked_at = models.DateField(null=True, blank=True, verbose_name="Son Kontrol")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=180, verbose_name=_("Kontrol"))
+    framework = models.CharField(max_length=20, choices=FRAMEWORK_CHOICES, default='internal', db_index=True, verbose_name=_("Çerçeve"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='compliance_controls', verbose_name=_("Sorumlu"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='not_checked', db_index=True, verbose_name=_("Durum"))
+    evidence = models.TextField(blank=True, verbose_name=_("Kanıt / Bulgu"))
+    remediation_plan = models.TextField(blank=True, verbose_name=_("İyileştirme Planı"))
+    due_date = models.DateField(null=True, blank=True, verbose_name=_("Hedef Tarih"))
+    last_checked_at = models.DateField(null=True, blank=True, verbose_name=_("Son Kontrol"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Uyum Kontrolü"
@@ -1596,29 +1597,29 @@ class DocumentOutputJob(models.Model):
     JOB_TYPE_CHOICES = (
         ('report', 'Rapor'),
         ('handover', 'Zimmet Formu'),
-        ('maintenance', 'Bakım Formu'),
+        ('maintenance', _('Bakım Formu')),
         ('incident', 'Olay Raporu'),
-        ('audit', 'Denetim Kanıtı'),
-        ('custom', 'Özel'),
+        ('audit', _('Denetim Kanıtı')),
+        ('custom', _('Özel')),
     )
     STATUS_CHOICES = (
         ('queued', 'Kuyrukta'),
-        ('processing', 'Hazırlanıyor'),
-        ('ready', 'Hazır'),
+        ('processing', _('Hazırlanıyor')),
+        ('ready', _('Hazır')),
         ('delivered', 'Teslim Edildi'),
         ('failed', 'Hata'),
     )
 
-    title = models.CharField(max_length=180, verbose_name="İş Başlığı")
-    job_type = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES, default='report', db_index=True, verbose_name="Tip")
-    requested_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='document_jobs', verbose_name="Talep Eden")
-    template = models.ForeignKey(ReportTemplate, on_delete=models.SET_NULL, null=True, blank=True, related_name='document_jobs', verbose_name="Rapor Şablonu")
-    output_format = models.CharField(max_length=20, default='pdf', verbose_name="Format")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='queued', db_index=True, verbose_name="Durum")
-    file = models.FileField(upload_to='document_outputs/%Y/%m/', null=True, blank=True, verbose_name="Dosya")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=180, verbose_name=_("İş Başlığı"))
+    job_type = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES, default='report', db_index=True, verbose_name=_("Tip"))
+    requested_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='document_jobs', verbose_name=_("Talep Eden"))
+    template = models.ForeignKey(ReportTemplate, on_delete=models.SET_NULL, null=True, blank=True, related_name='document_jobs', verbose_name=_("Rapor Şablonu"))
+    output_format = models.CharField(max_length=20, default='pdf', verbose_name=_("Format"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='queued', db_index=True, verbose_name=_("Durum"))
+    file = models.FileField(upload_to='document_outputs/%Y/%m/', null=True, blank=True, verbose_name=_("Dosya"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Doküman/Çıktı İşi"
@@ -1638,28 +1639,28 @@ class DirectoryConnection(models.Model):
         ('manual', 'Manuel / CSV'),
     )
     STATUS_CHOICES = (
-        ('not_configured', 'Yapılandırılmadı'),
-        ('healthy', 'Sağlıklı'),
-        ('warning', 'Uyarı'),
+        ('not_configured', _('Yapılandırılmadı')),
+        ('healthy', _('Sağlıklı')),
+        ('warning', _('Uyarı')),
         ('failed', 'Hata'),
     )
 
-    name = models.CharField(max_length=150, verbose_name="Bağlantı Adı")
-    directory_type = models.CharField(max_length=30, choices=DIRECTORY_TYPE_CHOICES, default='active_directory', db_index=True, verbose_name="Tip")
-    server_uri = models.CharField(max_length=300, blank=True, verbose_name="Sunucu URI")
-    base_dn = models.CharField(max_length=300, blank=True, verbose_name="Base DN")
-    bind_username = models.CharField(max_length=180, blank=True, verbose_name="Bind Kullanıcısı")
-    bind_password = models.CharField(max_length=500, blank=True, verbose_name="Bind Parolası / Client Secret")
-    azure_tenant_id = models.CharField(max_length=80, blank=True, verbose_name="Azure Tenant ID")
-    user_filter = models.CharField(max_length=300, default='(objectClass=user)', verbose_name="Kullanıcı Filtresi")
-    group_filter = models.CharField(max_length=300, default='(objectClass=group)', verbose_name="Grup Filtresi")
-    auto_provision_users = models.BooleanField(default=False, verbose_name="OmniOps Kullanıcısı Oluştur")
-    sync_enabled = models.BooleanField(default=False, db_index=True, verbose_name="Sync Aktif")
-    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Sync")
-    last_sync_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='not_configured', db_index=True, verbose_name="Son Durum")
-    last_sync_message = models.TextField(blank=True, verbose_name="Son Sync Mesajı")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='directory_connections', verbose_name="Sorumlu")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=150, verbose_name=_("Bağlantı Adı"))
+    directory_type = models.CharField(max_length=30, choices=DIRECTORY_TYPE_CHOICES, default='active_directory', db_index=True, verbose_name=_("Tip"))
+    server_uri = models.CharField(max_length=300, blank=True, verbose_name=_("Sunucu URI"))
+    base_dn = models.CharField(max_length=300, blank=True, verbose_name=_("Base DN"))
+    bind_username = models.CharField(max_length=180, blank=True, verbose_name=_("Bind Kullanıcısı"))
+    bind_password = models.CharField(max_length=500, blank=True, verbose_name=_("Bind Parolası / Client Secret"))
+    azure_tenant_id = models.CharField(max_length=80, blank=True, verbose_name=_("Azure Tenant ID"))
+    user_filter = models.CharField(max_length=300, default='(objectClass=user)', verbose_name=_("Kullanıcı Filtresi"))
+    group_filter = models.CharField(max_length=300, default='(objectClass=group)', verbose_name=_("Grup Filtresi"))
+    auto_provision_users = models.BooleanField(default=False, verbose_name=_("OmniOps Kullanıcısı Oluştur"))
+    sync_enabled = models.BooleanField(default=False, db_index=True, verbose_name=_("Sync Aktif"))
+    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Sync"))
+    last_sync_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='not_configured', db_index=True, verbose_name=_("Son Durum"))
+    last_sync_message = models.TextField(blank=True, verbose_name=_("Son Sync Mesajı"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='directory_connections', verbose_name=_("Sorumlu"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Directory Bağlantısı"
@@ -1713,22 +1714,22 @@ class DirectoryConnection(models.Model):
 class DirectoryGroup(models.Model):
     """AD/LDAP grup snapshot ve uygulama/erişim eşlemesi."""
     RISK_CHOICES = (
-        ('low', 'Düşük'),
-        ('medium', 'Orta'),
-        ('high', 'Yüksek'),
-        ('critical', 'Kritik'),
+        ('low', _('Düşük')),
+        ('medium', _('Orta')),
+        ('high', _('Yüksek')),
+        ('critical', _('Kritik')),
     )
 
-    connection = models.ForeignKey(DirectoryConnection, on_delete=models.CASCADE, related_name='groups', verbose_name="Directory")
-    name = models.CharField(max_length=180, db_index=True, verbose_name="Grup Adı")
-    distinguished_name = models.CharField(max_length=500, blank=True, verbose_name="DN")
-    description = models.TextField(blank=True, verbose_name="Açıklama")
-    mapped_role = models.CharField(max_length=120, blank=True, verbose_name="OmniOps Rolü")
-    mapped_system = models.CharField(max_length=150, blank=True, verbose_name="İş Uygulaması / Sistem")
-    risk_level = models.CharField(max_length=20, choices=RISK_CHOICES, default='medium', db_index=True, verbose_name="Risk")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='owned_directory_groups', verbose_name="Sahip")
-    last_seen_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Görülme")
-    is_privileged = models.BooleanField(default=False, db_index=True, verbose_name="Ayrıcalıklı Grup")
+    connection = models.ForeignKey(DirectoryConnection, on_delete=models.CASCADE, related_name='groups', verbose_name=_("Directory"))
+    name = models.CharField(max_length=180, db_index=True, verbose_name=_("Grup Adı"))
+    distinguished_name = models.CharField(max_length=500, blank=True, verbose_name=_("DN"))
+    description = models.TextField(blank=True, verbose_name=_("Açıklama"))
+    mapped_role = models.CharField(max_length=120, blank=True, verbose_name=_("OmniOps Rolü"))
+    mapped_system = models.CharField(max_length=150, blank=True, verbose_name=_("İş Uygulaması / Sistem"))
+    risk_level = models.CharField(max_length=20, choices=RISK_CHOICES, default='medium', db_index=True, verbose_name=_("Risk"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='owned_directory_groups', verbose_name=_("Sahip"))
+    last_seen_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Görülme"))
+    is_privileged = models.BooleanField(default=False, db_index=True, verbose_name=_("Ayrıcalıklı Grup"))
 
     class Meta:
         verbose_name = "Directory Grubu"
@@ -1746,28 +1747,28 @@ class DirectoryUser(models.Model):
         ('active', 'Aktif'),
         ('disabled', 'Pasif'),
         ('locked', 'Kilitli'),
-        ('expired', 'Süresi Doldu'),
+        ('expired', _('Süresi Doldu')),
         ('unknown', 'Bilinmiyor'),
     )
 
-    connection = models.ForeignKey(DirectoryConnection, on_delete=models.CASCADE, related_name='users', verbose_name="Directory")
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='directory_snapshots', verbose_name="OmniOps Kullanıcısı")
-    username = models.CharField(max_length=150, db_index=True, verbose_name="Kullanıcı Adı")
-    display_name = models.CharField(max_length=180, blank=True, verbose_name="Ad Soyad")
-    email = models.EmailField(blank=True, verbose_name="E-posta")
-    department = models.CharField(max_length=120, blank=True, db_index=True, verbose_name="Departman")
-    title = models.CharField(max_length=120, blank=True, verbose_name="Unvan")
-    manager = models.CharField(max_length=180, blank=True, verbose_name="Yönetici")
-    distinguished_name = models.CharField(max_length=500, blank=True, verbose_name="DN")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unknown', db_index=True, verbose_name="Durum")
-    groups = models.ManyToManyField(DirectoryGroup, blank=True, related_name='members', verbose_name="Gruplar")
-    mfa_enabled = models.BooleanField(default=False, verbose_name="MFA")
-    password_last_set_at = models.DateTimeField(null=True, blank=True, verbose_name="Parola Son Değişim")
-    last_login_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Oturum")
-    last_seen_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Sync Görülme")
-    risk_note = models.TextField(blank=True, verbose_name="Risk Notu")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    connection = models.ForeignKey(DirectoryConnection, on_delete=models.CASCADE, related_name='users', verbose_name=_("Directory"))
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='directory_snapshots', verbose_name=_("OmniOps Kullanıcısı"))
+    username = models.CharField(max_length=150, db_index=True, verbose_name=_("Kullanıcı Adı"))
+    display_name = models.CharField(max_length=180, blank=True, verbose_name=_("Ad Soyad"))
+    email = models.EmailField(blank=True, verbose_name=_("E-posta"))
+    department = models.CharField(max_length=120, blank=True, db_index=True, verbose_name=_("Departman"))
+    title = models.CharField(max_length=120, blank=True, verbose_name=_("Unvan"))
+    manager = models.CharField(max_length=180, blank=True, verbose_name=_("Yönetici"))
+    distinguished_name = models.CharField(max_length=500, blank=True, verbose_name=_("DN"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unknown', db_index=True, verbose_name=_("Durum"))
+    groups = models.ManyToManyField(DirectoryGroup, blank=True, related_name='members', verbose_name=_("Gruplar"))
+    mfa_enabled = models.BooleanField(default=False, verbose_name=_("MFA"))
+    password_last_set_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Parola Son Değişim"))
+    last_login_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Oturum"))
+    last_seen_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Sync Görülme"))
+    risk_note = models.TextField(blank=True, verbose_name=_("Risk Notu"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Directory Kullanıcısı"
@@ -1792,38 +1793,38 @@ class DirectoryUser(models.Model):
 class EndpointDevice(models.Model):
     """PC/laptop/terminal gibi kullanıcı uç noktalarının uyum ve zimmet takibi."""
     DEVICE_TYPE_CHOICES = (
-        ('desktop', 'Masaüstü'),
+        ('desktop', _('Masaüstü')),
         ('laptop', 'Laptop'),
         ('mobile', 'Mobil'),
         ('tablet', 'Tablet'),
         ('thin_client', 'Thin Client'),
-        ('industrial_pc', 'Endüstriyel PC'),
-        ('other', 'Diğer'),
+        ('industrial_pc', _('Endüstriyel PC')),
+        ('other', _('Diğer')),
     )
     STATUS_CHOICES = (
         ('compliant', 'Uyumlu'),
         ('attention', 'Dikkat'),
         ('non_compliant', 'Uyumsuz'),
-        ('lost', 'Kayıp'),
+        ('lost', _('Kayıp')),
         ('retired', 'Emekli'),
     )
 
-    hostname = models.CharField(max_length=150, db_index=True, verbose_name="Hostname")
-    asset = models.ForeignKey(ITAsset, on_delete=models.SET_NULL, null=True, blank=True, related_name='endpoint_records', verbose_name="Varlık")
-    assigned_user = models.ForeignKey(DirectoryUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='endpoints', verbose_name="Directory Kullanıcısı")
-    assigned_to_text = models.CharField(max_length=180, blank=True, verbose_name="Zimmetli")
-    device_type = models.CharField(max_length=30, choices=DEVICE_TYPE_CHOICES, default='laptop', db_index=True, verbose_name="Tip")
-    serial_number = models.CharField(max_length=120, blank=True, db_index=True, verbose_name="Seri No")
-    os_name = models.CharField(max_length=150, blank=True, verbose_name="İşletim Sistemi")
-    ip_address = models.GenericIPAddressField(null=True, blank=True, verbose_name="IP")
-    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='endpoints', verbose_name="Alan")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='attention', db_index=True, verbose_name="Uyum Durumu")
-    antivirus_ok = models.BooleanField(default=False, verbose_name="Antivirüs OK")
-    disk_encrypted = models.BooleanField(default=False, verbose_name="Disk Şifreli")
-    patch_level = models.CharField(max_length=120, blank=True, verbose_name="Patch Seviyesi")
-    last_seen_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Görülme")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    hostname = models.CharField(max_length=150, db_index=True, verbose_name=_("Hostname"))
+    asset = models.ForeignKey(ITAsset, on_delete=models.SET_NULL, null=True, blank=True, related_name='endpoint_records', verbose_name=_("Varlık"))
+    assigned_user = models.ForeignKey(DirectoryUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='endpoints', verbose_name=_("Directory Kullanıcısı"))
+    assigned_to_text = models.CharField(max_length=180, blank=True, verbose_name=_("Zimmetli"))
+    device_type = models.CharField(max_length=30, choices=DEVICE_TYPE_CHOICES, default='laptop', db_index=True, verbose_name=_("Tip"))
+    serial_number = models.CharField(max_length=120, blank=True, db_index=True, verbose_name=_("Seri No"))
+    os_name = models.CharField(max_length=150, blank=True, verbose_name=_("İşletim Sistemi"))
+    ip_address = models.GenericIPAddressField(null=True, blank=True, verbose_name=_("IP"))
+    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='endpoints', verbose_name=_("Alan"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='attention', db_index=True, verbose_name=_("Uyum Durumu"))
+    antivirus_ok = models.BooleanField(default=False, verbose_name=_("Antivirüs OK"))
+    disk_encrypted = models.BooleanField(default=False, verbose_name=_("Disk Şifreli"))
+    patch_level = models.CharField(max_length=120, blank=True, verbose_name=_("Patch Seviyesi"))
+    last_seen_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Görülme"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Uç Nokta Cihazı"
@@ -1847,37 +1848,37 @@ class EndpointDevice(models.Model):
 class IdentityLifecycleTask(models.Model):
     """Onboarding/offboarding/transfer kimlik ve uç nokta checklist işi."""
     PROCESS_CHOICES = (
-        ('onboarding', 'İşe Başlama'),
-        ('offboarding', 'İşten Çıkış'),
+        ('onboarding', _('İşe Başlama')),
+        ('offboarding', _('İşten Çıkış')),
         ('transfer', 'Departman Transferi'),
-        ('access_review', 'Erişim Gözden Geçirme'),
+        ('access_review', _('Erişim Gözden Geçirme')),
     )
     STATUS_CHOICES = (
-        ('open', 'Açık'),
+        ('open', _('Açık')),
         ('waiting_approval', 'Onay Bekliyor'),
         ('in_progress', 'Devam Ediyor'),
         ('blocked', 'Blokaj'),
-        ('done', 'Tamamlandı'),
-        ('cancelled', 'İptal'),
+        ('done', _('Tamamlandı')),
+        ('cancelled', _('İptal')),
     )
 
-    title = models.CharField(max_length=180, verbose_name="Başlık")
-    process_type = models.CharField(max_length=30, choices=PROCESS_CHOICES, default='onboarding', db_index=True, verbose_name="Süreç")
-    directory_user = models.ForeignKey(DirectoryUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='lifecycle_tasks', verbose_name="Directory Kullanıcısı")
-    employee_name = models.CharField(max_length=150, verbose_name="Personel")
-    department = models.CharField(max_length=120, blank=True, verbose_name="Departman")
-    requested_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='identity_lifecycle_requests', verbose_name="Talep Eden")
-    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='identity_lifecycle_tasks', verbose_name="Sorumlu IT")
-    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='open', db_index=True, verbose_name="Durum")
-    due_date = models.DateField(null=True, blank=True, verbose_name="Hedef Tarih")
-    ad_account_done = models.BooleanField(default=False, verbose_name="AD Hesabı")
-    mailbox_done = models.BooleanField(default=False, verbose_name="E-posta")
-    groups_done = models.BooleanField(default=False, verbose_name="Grup/Erişim")
-    endpoint_done = models.BooleanField(default=False, verbose_name="Cihaz/Zimmet")
-    vpn_done = models.BooleanField(default=False, verbose_name="VPN/MFA")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=180, verbose_name=_("Başlık"))
+    process_type = models.CharField(max_length=30, choices=PROCESS_CHOICES, default='onboarding', db_index=True, verbose_name=_("Süreç"))
+    directory_user = models.ForeignKey(DirectoryUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='lifecycle_tasks', verbose_name=_("Directory Kullanıcısı"))
+    employee_name = models.CharField(max_length=150, verbose_name=_("Personel"))
+    department = models.CharField(max_length=120, blank=True, verbose_name=_("Departman"))
+    requested_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='identity_lifecycle_requests', verbose_name=_("Talep Eden"))
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='identity_lifecycle_tasks', verbose_name=_("Sorumlu IT"))
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='open', db_index=True, verbose_name=_("Durum"))
+    due_date = models.DateField(null=True, blank=True, verbose_name=_("Hedef Tarih"))
+    ad_account_done = models.BooleanField(default=False, verbose_name=_("AD Hesabı"))
+    mailbox_done = models.BooleanField(default=False, verbose_name=_("E-posta"))
+    groups_done = models.BooleanField(default=False, verbose_name=_("Grup/Erişim"))
+    endpoint_done = models.BooleanField(default=False, verbose_name=_("Cihaz/Zimmet"))
+    vpn_done = models.BooleanField(default=False, verbose_name=_("VPN/MFA"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Kimlik Yaşam Döngüsü İşi"
@@ -1904,37 +1905,37 @@ class FactorySite(models.Model):
     """Müşteri portföyündeki fabrika/tesis; sektör ve panel başlıkları özelleştirilebilir."""
     INDUSTRY_TYPE_CHOICES = (
         ('textile', 'Tekstil'),
-        ('food', 'Gıda & İçecek'),
+        ('food', _('Gıda & İçecek')),
         ('automotive', 'Otomotiv'),
         ('chemical', 'Kimya & Plastik'),
         ('electronics', 'Elektronik'),
-        ('pharma', 'İlaç & Sağlık'),
+        ('pharma', _('İlaç & Sağlık')),
         ('metal', 'Metal & Makine'),
         ('logistics', 'Lojistik & Depo'),
         ('energy', 'Enerji'),
-        ('solar', 'Güneş Enerjisi'),
-        ('paper', 'Kağıt & Ambalaj'),
-        ('generic', 'Genel Endüstri'),
-        ('custom', 'Özel Sektör Tanımı'),
+        ('solar', _('Güneş Enerjisi')),
+        ('paper', _('Kağıt & Ambalaj')),
+        ('generic', _('Genel Endüstri')),
+        ('custom', _('Özel Sektör Tanımı')),
     )
 
-    title = models.CharField(max_length=150, verbose_name="Tesis Başlığı")
-    short_name = models.CharField(max_length=60, blank=True, verbose_name="Kısa Ad")
-    code = models.CharField(max_length=40, unique=True, db_index=True, verbose_name="Tesis Kodu")
-    industry_type = models.CharField(max_length=30, choices=INDUSTRY_TYPE_CHOICES, default='generic', db_index=True, verbose_name="Sektör")
-    custom_industry_label = models.CharField(max_length=80, blank=True, verbose_name="Özel Sektör Adı")
-    customer_name = models.CharField(max_length=120, blank=True, verbose_name="Müşteri")
-    portfolio_code = models.CharField(max_length=40, blank=True, verbose_name="Portföy Kodu")
-    inventory_panel_title = models.CharField(max_length=120, default='Bölüm Envanteri', verbose_name="Envanter Panel Başlığı")
-    department_label = models.CharField(max_length=60, default='Bölüm', verbose_name="Bölüm Etiketi")
-    zone_label = models.CharField(max_length=60, default='Alt Alan', verbose_name="Alt Alan Etiketi")
-    city = models.CharField(max_length=80, blank=True, verbose_name="Şehir")
-    country = models.CharField(max_length=80, default='Türkiye', verbose_name="Ülke")
-    address = models.TextField(blank=True, verbose_name="Adres")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Aktif")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=150, verbose_name=_("Tesis Başlığı"))
+    short_name = models.CharField(max_length=60, blank=True, verbose_name=_("Kısa Ad"))
+    code = models.CharField(max_length=40, unique=True, db_index=True, verbose_name=_("Tesis Kodu"))
+    industry_type = models.CharField(max_length=30, choices=INDUSTRY_TYPE_CHOICES, default='generic', db_index=True, verbose_name=_("Sektör"))
+    custom_industry_label = models.CharField(max_length=80, blank=True, verbose_name=_("Özel Sektör Adı"))
+    customer_name = models.CharField(max_length=120, blank=True, verbose_name=_("Müşteri"))
+    portfolio_code = models.CharField(max_length=40, blank=True, verbose_name=_("Portföy Kodu"))
+    inventory_panel_title = models.CharField(max_length=120, default='Bölüm Envanteri', verbose_name=_("Envanter Panel Başlığı"))
+    department_label = models.CharField(max_length=60, default='Bölüm', verbose_name=_("Bölüm Etiketi"))
+    zone_label = models.CharField(max_length=60, default='Alt Alan', verbose_name=_("Alt Alan Etiketi"))
+    city = models.CharField(max_length=80, blank=True, verbose_name=_("Şehir"))
+    country = models.CharField(max_length=80, default='Türkiye', verbose_name=_("Ülke"))
+    address = models.TextField(blank=True, verbose_name=_("Adres"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Aktif"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Fabrika Tesisi"
@@ -1958,39 +1959,39 @@ class FactorySite(models.Model):
 class FactoryDepartment(models.Model):
     """Fabrika departmanları: üretim, kalite, depo, bakım, idari, güvenlik, IT, IK."""
     DEPARTMENT_TYPE_CHOICES = (
-        ('production', 'Üretim'),
+        ('production', _('Üretim')),
         ('quality', 'Kalite'),
         ('warehouse', 'Depo'),
-        ('maintenance', 'Bakım'),
-        ('administration', 'İdari İşler'),
-        ('security', 'Güvenlik'),
-        ('it', 'Bilgi İşlem'),
-        ('hr', 'İnsan Kaynakları'),
+        ('maintenance', _('Bakım')),
+        ('administration', _('İdari İşler')),
+        ('security', _('Güvenlik')),
+        ('it', _('Bilgi İşlem')),
+        ('hr', _('İnsan Kaynakları')),
         ('logistics', 'Lojistik'),
-        ('other', 'Diğer'),
+        ('other', _('Diğer')),
     )
     CRITICALITY_CHOICES = (
-        ('low', 'Düşük'),
-        ('medium', 'Orta'),
-        ('high', 'Yüksek'),
-        ('critical', 'Kritik'),
+        ('low', _('Düşük')),
+        ('medium', _('Orta')),
+        ('high', _('Yüksek')),
+        ('critical', _('Kritik')),
     )
 
-    name = models.CharField(max_length=120, verbose_name="Departman Adı")
-    code = models.CharField(max_length=40, verbose_name="Kod")
+    name = models.CharField(max_length=120, verbose_name=_("Departman Adı"))
+    code = models.CharField(max_length=40, verbose_name=_("Kod"))
     factory_site = models.ForeignKey(
         FactorySite, on_delete=models.CASCADE, null=True, blank=True,
-        related_name='departments', verbose_name="Fabrika Tesisi",
+        related_name='departments', verbose_name=_("Fabrika Tesisi"),
     )
-    department_type = models.CharField(max_length=30, choices=DEPARTMENT_TYPE_CHOICES, default='other', db_index=True, verbose_name="Tip")
-    description = models.TextField(blank=True, verbose_name="Açıklama")
-    criticality = models.CharField(max_length=20, choices=CRITICALITY_CHOICES, default='medium', db_index=True, verbose_name="Kritiklik")
-    manager_name = models.CharField(max_length=120, blank=True, verbose_name="Sorumlu")
-    contact_phone = models.CharField(max_length=30, blank=True, verbose_name="Telefon")
-    floor_label = models.CharField(max_length=60, blank=True, verbose_name="Kat/Bölge")
-    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Aktif")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    department_type = models.CharField(max_length=30, choices=DEPARTMENT_TYPE_CHOICES, default='other', db_index=True, verbose_name=_("Tip"))
+    description = models.TextField(blank=True, verbose_name=_("Açıklama"))
+    criticality = models.CharField(max_length=20, choices=CRITICALITY_CHOICES, default='medium', db_index=True, verbose_name=_("Kritiklik"))
+    manager_name = models.CharField(max_length=120, blank=True, verbose_name=_("Sorumlu"))
+    contact_phone = models.CharField(max_length=30, blank=True, verbose_name=_("Telefon"))
+    floor_label = models.CharField(max_length=60, blank=True, verbose_name=_("Kat/Bölge"))
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Aktif"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Fabrika Departmanı"
@@ -2009,54 +2010,54 @@ class FactoryDepartment(models.Model):
 class DepartmentInventoryItem(models.Model):
     """Fabrika tesisinde bölüm/alt alan bazında tutulan esnek envanter kaydı."""
     ITEM_TYPE_CHOICES = (
-        ('it_asset', 'IT Varlık'),
-        ('network', 'Ağ Cihazı'),
+        ('it_asset', _('IT Varlık')),
+        ('network', _('Ağ Cihazı')),
         ('endpoint', 'Endpoint/PC'),
-        ('production', 'Üretim Ekipmanı'),
+        ('production', _('Üretim Ekipmanı')),
         ('tool', 'El Aleti/Kalite'),
         ('consumable', 'Sarf Malzeme'),
-        ('software', 'Yazılım/Lisans'),
-        ('vehicle', 'Araç/Forklift'),
-        ('furniture', 'Mobilya/Donanım'),
-        ('other', 'Diğer'),
+        ('software', _('Yazılım/Lisans')),
+        ('vehicle', _('Araç/Forklift')),
+        ('furniture', _('Mobilya/Donanım')),
+        ('other', _('Diğer')),
     )
     STATUS_CHOICES = (
         ('active', 'Aktif'),
         ('spare', 'Yedek'),
-        ('maintenance', 'Bakımda'),
+        ('maintenance', _('Bakımda')),
         ('planned', 'Planlanan'),
         ('retired', 'Emekli'),
     )
 
-    factory_site = models.ForeignKey(FactorySite, on_delete=models.CASCADE, related_name='inventory_items', verbose_name="Fabrika Tesisi")
-    department = models.ForeignKey(FactoryDepartment, on_delete=models.CASCADE, null=True, blank=True, related_name='inventory_items', verbose_name="Bölüm")
-    zone = models.ForeignKey('FactoryZone', on_delete=models.SET_NULL, null=True, blank=True, related_name='inventory_items', verbose_name="Alt Alan")
-    title = models.CharField(max_length=180, verbose_name="Envanter Başlığı")
-    category_label = models.CharField(max_length=100, blank=True, verbose_name="Özel Kategori")
-    item_type = models.CharField(max_length=30, choices=ITEM_TYPE_CHOICES, default='other', db_index=True, verbose_name="Kalem Tipi")
-    reference_code = models.CharField(max_length=60, blank=True, db_index=True, verbose_name="Referans Kodu")
-    serial_number = models.CharField(max_length=120, blank=True, verbose_name="Seri No")
-    asset_tag = models.CharField(max_length=80, blank=True, verbose_name="Varlık Etiketi")
-    barcode = models.CharField(max_length=80, blank=True, verbose_name="Barkod")
-    manufacturer = models.CharField(max_length=120, blank=True, verbose_name="Üretici")
-    model_name = models.CharField(max_length=120, blank=True, verbose_name="Model")
-    vendor = models.CharField(max_length=120, blank=True, verbose_name="Tedarikçi")
-    quantity = models.PositiveIntegerField(default=1, verbose_name="Miktar")
-    unit = models.CharField(max_length=30, default='adet', verbose_name="Birim")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active', db_index=True, verbose_name="Durum")
-    location_note = models.CharField(max_length=150, blank=True, verbose_name="Fiziksel Konum")
-    owner_name = models.CharField(max_length=120, blank=True, verbose_name="Sorumlu")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    device = models.ForeignKey(Device, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_inventory_items', verbose_name="Ağ Cihazı")
-    it_asset = models.ForeignKey(ITAsset, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_inventory_items', verbose_name="IT Varlık")
-    endpoint = models.ForeignKey(EndpointDevice, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_inventory_items', verbose_name="Endpoint")
-    camera = models.ForeignKey(CameraDevice, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_inventory_items', verbose_name="Kamera")
-    printer = models.ForeignKey(PrinterFleetItem, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_inventory_items', verbose_name="Yazıcı")
-    consumable = models.ForeignKey(ConsumableItem, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_inventory_items', verbose_name="Sarf Stok")
-    sort_order = models.PositiveIntegerField(default=0, verbose_name="Sıra")
-    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Aktif")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    factory_site = models.ForeignKey(FactorySite, on_delete=models.CASCADE, related_name='inventory_items', verbose_name=_("Fabrika Tesisi"))
+    department = models.ForeignKey(FactoryDepartment, on_delete=models.CASCADE, null=True, blank=True, related_name='inventory_items', verbose_name=_("Bölüm"))
+    zone = models.ForeignKey('FactoryZone', on_delete=models.SET_NULL, null=True, blank=True, related_name='inventory_items', verbose_name=_("Alt Alan"))
+    title = models.CharField(max_length=180, verbose_name=_("Envanter Başlığı"))
+    category_label = models.CharField(max_length=100, blank=True, verbose_name=_("Özel Kategori"))
+    item_type = models.CharField(max_length=30, choices=ITEM_TYPE_CHOICES, default='other', db_index=True, verbose_name=_("Kalem Tipi"))
+    reference_code = models.CharField(max_length=60, blank=True, db_index=True, verbose_name=_("Referans Kodu"))
+    serial_number = models.CharField(max_length=120, blank=True, verbose_name=_("Seri No"))
+    asset_tag = models.CharField(max_length=80, blank=True, verbose_name=_("Varlık Etiketi"))
+    barcode = models.CharField(max_length=80, blank=True, verbose_name=_("Barkod"))
+    manufacturer = models.CharField(max_length=120, blank=True, verbose_name=_("Üretici"))
+    model_name = models.CharField(max_length=120, blank=True, verbose_name=_("Model"))
+    vendor = models.CharField(max_length=120, blank=True, verbose_name=_("Tedarikçi"))
+    quantity = models.PositiveIntegerField(default=1, verbose_name=_("Miktar"))
+    unit = models.CharField(max_length=30, default='adet', verbose_name=_("Birim"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active', db_index=True, verbose_name=_("Durum"))
+    location_note = models.CharField(max_length=150, blank=True, verbose_name=_("Fiziksel Konum"))
+    owner_name = models.CharField(max_length=120, blank=True, verbose_name=_("Sorumlu"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    device = models.ForeignKey(Device, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_inventory_items', verbose_name=_("Ağ Cihazı"))
+    it_asset = models.ForeignKey(ITAsset, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_inventory_items', verbose_name=_("IT Varlık"))
+    endpoint = models.ForeignKey(EndpointDevice, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_inventory_items', verbose_name=_("Endpoint"))
+    camera = models.ForeignKey(CameraDevice, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_inventory_items', verbose_name=_("Kamera"))
+    printer = models.ForeignKey(PrinterFleetItem, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_inventory_items', verbose_name=_("Yazıcı"))
+    consumable = models.ForeignKey(ConsumableItem, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_inventory_items', verbose_name=_("Sarf Stok"))
+    sort_order = models.PositiveIntegerField(default=0, verbose_name=_("Sıra"))
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Aktif"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Bölüm Envanter Kalemi"
@@ -2077,31 +2078,31 @@ class DepartmentInventoryItem(models.Model):
 class FactoryZone(models.Model):
     """Hat, oda, sistem odası, kamera bölgesi, depo, ofis, güvenlik noktası."""
     ZONE_TYPE_CHOICES = (
-        ('production_line', 'Üretim Hattı'),
+        ('production_line', _('Üretim Hattı')),
         ('room', 'Oda'),
-        ('server_room', 'Sistem Odası'),
-        ('camera_zone', 'Kamera Bölgesi'),
+        ('server_room', _('Sistem Odası')),
+        ('camera_zone', _('Kamera Bölgesi')),
         ('warehouse', 'Depo'),
         ('office', 'Ofis'),
-        ('security_post', 'Güvenlik Noktası'),
-        ('meeting', 'Toplantı'),
-        ('other', 'Diğer'),
+        ('security_post', _('Güvenlik Noktası')),
+        ('meeting', _('Toplantı')),
+        ('other', _('Diğer')),
     )
     CRITICALITY_CHOICES = FactoryDepartment.CRITICALITY_CHOICES
 
-    department = models.ForeignKey(FactoryDepartment, on_delete=models.CASCADE, related_name='zones', verbose_name="Departman")
-    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='factory_zones', verbose_name="Fabrika Alanı")
-    name = models.CharField(max_length=120, verbose_name="Alan Adı")
-    code = models.CharField(max_length=40, verbose_name="Kod")
-    zone_type = models.CharField(max_length=30, choices=ZONE_TYPE_CHOICES, default='other', db_index=True, verbose_name="Alan Tipi")
-    floor = models.CharField(max_length=40, blank=True, verbose_name="Kat")
-    building = models.CharField(max_length=80, blank=True, verbose_name="Bina")
-    capacity = models.PositiveIntegerField(null=True, blank=True, verbose_name="Kapasite")
-    criticality = models.CharField(max_length=20, choices=CRITICALITY_CHOICES, default='medium', db_index=True, verbose_name="Kritiklik")
-    description = models.TextField(blank=True, verbose_name="Açıklama")
-    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Aktif")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    department = models.ForeignKey(FactoryDepartment, on_delete=models.CASCADE, related_name='zones', verbose_name=_("Departman"))
+    factory_area = models.ForeignKey(FactoryArea, on_delete=models.SET_NULL, null=True, blank=True, related_name='factory_zones', verbose_name=_("Fabrika Alanı"))
+    name = models.CharField(max_length=120, verbose_name=_("Alan Adı"))
+    code = models.CharField(max_length=40, verbose_name=_("Kod"))
+    zone_type = models.CharField(max_length=30, choices=ZONE_TYPE_CHOICES, default='other', db_index=True, verbose_name=_("Alan Tipi"))
+    floor = models.CharField(max_length=40, blank=True, verbose_name=_("Kat"))
+    building = models.CharField(max_length=80, blank=True, verbose_name=_("Bina"))
+    capacity = models.PositiveIntegerField(null=True, blank=True, verbose_name=_("Kapasite"))
+    criticality = models.CharField(max_length=20, choices=CRITICALITY_CHOICES, default='medium', db_index=True, verbose_name=_("Kritiklik"))
+    description = models.TextField(blank=True, verbose_name=_("Açıklama"))
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Aktif"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Fabrika Alt Alanı"
@@ -2116,46 +2117,46 @@ class FactoryZone(models.Model):
 class ManagedDocument(models.Model):
     """DOCX/PDF/XLSX gibi kurumsal dokümanların metadata ve dosya kaydı."""
     CATEGORY_CHOICES = (
-        ('procedure', 'Prosedür/SOP'),
+        ('procedure', _('Prosedür/SOP')),
         ('policy', 'Politika'),
-        ('contract', 'Sözleşme'),
-        ('manual', 'Kullanım Kılavuzu'),
+        ('contract', _('Sözleşme')),
+        ('manual', _('Kullanım Kılavuzu')),
         ('report', 'Rapor'),
         ('checklist', 'Checklist'),
-        ('other', 'Diğer'),
+        ('other', _('Diğer')),
     )
     FILE_TYPE_CHOICES = (
         ('pdf', 'PDF'),
         ('docx', 'Word (DOCX)'),
         ('xlsx', 'Excel (XLSX)'),
         ('pptx', 'PowerPoint'),
-        ('other', 'Diğer'),
+        ('other', _('Diğer')),
     )
     STATUS_CHOICES = (
         ('draft', 'Taslak'),
-        ('review', 'İncelemede'),
-        ('approved', 'Onaylı'),
-        ('archived', 'Arşiv'),
+        ('review', _('İncelemede')),
+        ('approved', _('Onaylı')),
+        ('archived', _('Arşiv')),
     )
 
-    title = models.CharField(max_length=200, verbose_name="Başlık")
-    reference_code = models.CharField(max_length=60, blank=True, db_index=True, verbose_name="Referans Kodu")
-    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='other', db_index=True, verbose_name="Kategori")
-    file_type = models.CharField(max_length=20, choices=FILE_TYPE_CHOICES, default='other', db_index=True, verbose_name="Dosya Tipi")
-    file = models.FileField(upload_to='managed_documents/%Y/%m/', blank=True, null=True, verbose_name="Dosya")
-    file_size = models.PositiveIntegerField(default=0, verbose_name="Boyut (byte)")
-    department = models.ForeignKey(FactoryDepartment, on_delete=models.SET_NULL, null=True, blank=True, related_name='documents', verbose_name="Departman")
-    zone = models.ForeignKey(FactoryZone, on_delete=models.SET_NULL, null=True, blank=True, related_name='documents', verbose_name="Alan")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='managed_documents', verbose_name="Sahip")
-    version = models.CharField(max_length=20, default='1.0', verbose_name="Versiyon")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft', db_index=True, verbose_name="Durum")
-    description = models.TextField(blank=True, verbose_name="Açıklama")
-    tags = models.CharField(max_length=250, blank=True, verbose_name="Etiketler")
-    preview_enabled = models.BooleanField(default=True, verbose_name="Önizleme Açık")
-    external_editor_url = models.URLField(max_length=500, blank=True, verbose_name="Harici Editör URL")
-    valid_until = models.DateField(null=True, blank=True, verbose_name="Geçerlilik Tarihi")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=200, verbose_name=_("Başlık"))
+    reference_code = models.CharField(max_length=60, blank=True, db_index=True, verbose_name=_("Referans Kodu"))
+    category = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='other', db_index=True, verbose_name=_("Kategori"))
+    file_type = models.CharField(max_length=20, choices=FILE_TYPE_CHOICES, default='other', db_index=True, verbose_name=_("Dosya Tipi"))
+    file = models.FileField(upload_to='managed_documents/%Y/%m/', blank=True, null=True, verbose_name=_("Dosya"))
+    file_size = models.PositiveIntegerField(default=0, verbose_name=_("Boyut (byte)"))
+    department = models.ForeignKey(FactoryDepartment, on_delete=models.SET_NULL, null=True, blank=True, related_name='documents', verbose_name=_("Departman"))
+    zone = models.ForeignKey(FactoryZone, on_delete=models.SET_NULL, null=True, blank=True, related_name='documents', verbose_name=_("Alan"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='managed_documents', verbose_name=_("Sahip"))
+    version = models.CharField(max_length=20, default='1.0', verbose_name=_("Versiyon"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft', db_index=True, verbose_name=_("Durum"))
+    description = models.TextField(blank=True, verbose_name=_("Açıklama"))
+    tags = models.CharField(max_length=250, blank=True, verbose_name=_("Etiketler"))
+    preview_enabled = models.BooleanField(default=True, verbose_name=_("Önizleme Açık"))
+    external_editor_url = models.URLField(max_length=500, blank=True, verbose_name=_("Harici Editör URL"))
+    valid_until = models.DateField(null=True, blank=True, verbose_name=_("Geçerlilik Tarihi"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Yönetilen Doküman"
@@ -2202,42 +2203,42 @@ class ManagedDocument(models.Model):
 class FactoryITAssetRelation(models.Model):
     """Departman/alan ile kamera, switch, endpoint, yazıcı, ticket, doküman vb. ilişkisi."""
     ASSET_TYPE_CHOICES = (
-        ('device', 'Ağ Cihazı'),
+        ('device', _('Ağ Cihazı')),
         ('camera', 'Kamera/NVR'),
         ('endpoint', 'Endpoint'),
-        ('printer', 'Yazıcı'),
+        ('printer', _('Yazıcı')),
         ('application', 'Uygulama'),
         ('ticket', 'Ticket'),
-        ('document', 'Doküman'),
-        ('maintenance', 'Bakım İşi'),
+        ('document', _('Doküman')),
+        ('maintenance', _('Bakım İşi')),
         ('consumable', 'Sarf Stok'),
-        ('asset', 'IT Varlık'),
+        ('asset', _('IT Varlık')),
     )
     ROLE_CHOICES = (
         ('primary', 'Birincil'),
-        ('secondary', 'İkincil'),
-        ('monitored', 'İzlenen'),
+        ('secondary', _('İkincil')),
+        ('monitored', _('İzlenen')),
         ('backup', 'Yedek'),
     )
 
-    department = models.ForeignKey(FactoryDepartment, on_delete=models.CASCADE, null=True, blank=True, related_name='asset_relations', verbose_name="Departman")
-    zone = models.ForeignKey(FactoryZone, on_delete=models.CASCADE, null=True, blank=True, related_name='asset_relations', verbose_name="Alan")
-    asset_type = models.CharField(max_length=20, choices=ASSET_TYPE_CHOICES, default='device', db_index=True, verbose_name="Varlık Tipi")
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='primary', db_index=True, verbose_name="Rol")
-    label = models.CharField(max_length=180, blank=True, verbose_name="Etiket")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    device = models.ForeignKey(Device, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name="Ağ Cihazı")
-    camera = models.ForeignKey(CameraDevice, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name="Kamera")
-    endpoint = models.ForeignKey(EndpointDevice, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name="Endpoint")
-    printer = models.ForeignKey(PrinterFleetItem, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name="Yazıcı")
-    application = models.ForeignKey(BusinessApplication, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name="Uygulama")
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name="Ticket")
-    document = models.ForeignKey(ManagedDocument, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name="Doküman")
-    maintenance_task = models.ForeignKey(MaintenanceTask, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name="Bakım İşi")
-    consumable = models.ForeignKey(ConsumableItem, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name="Sarf Stok")
-    it_asset = models.ForeignKey(ITAsset, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name="IT Varlık")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    department = models.ForeignKey(FactoryDepartment, on_delete=models.CASCADE, null=True, blank=True, related_name='asset_relations', verbose_name=_("Departman"))
+    zone = models.ForeignKey(FactoryZone, on_delete=models.CASCADE, null=True, blank=True, related_name='asset_relations', verbose_name=_("Alan"))
+    asset_type = models.CharField(max_length=20, choices=ASSET_TYPE_CHOICES, default='device', db_index=True, verbose_name=_("Varlık Tipi"))
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='primary', db_index=True, verbose_name=_("Rol"))
+    label = models.CharField(max_length=180, blank=True, verbose_name=_("Etiket"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name=_("Ağ Cihazı"))
+    camera = models.ForeignKey(CameraDevice, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name=_("Kamera"))
+    endpoint = models.ForeignKey(EndpointDevice, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name=_("Endpoint"))
+    printer = models.ForeignKey(PrinterFleetItem, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name=_("Yazıcı"))
+    application = models.ForeignKey(BusinessApplication, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name=_("Uygulama"))
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name=_("Ticket"))
+    document = models.ForeignKey(ManagedDocument, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name=_("Doküman"))
+    maintenance_task = models.ForeignKey(MaintenanceTask, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name=_("Bakım İşi"))
+    consumable = models.ForeignKey(ConsumableItem, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name=_("Sarf Stok"))
+    it_asset = models.ForeignKey(ITAsset, on_delete=models.CASCADE, null=True, blank=True, related_name='factory_relations', verbose_name=_("IT Varlık"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Fabrika IT Varlık İlişkisi"
@@ -2268,29 +2269,29 @@ class FactoryITAssetRelation(models.Model):
 class AssetQRTag(models.Model):
     """Fabrika varlıkları için QR/barkod etiket kaydı ve hızlı çözümleme."""
     TAG_TYPE_CHOICES = (
-        ('device', 'Ağ Cihazı'),
+        ('device', _('Ağ Cihazı')),
         ('endpoint', 'Endpoint'),
-        ('it_asset', 'IT Varlık'),
+        ('it_asset', _('IT Varlık')),
         ('camera', 'Kamera'),
-        ('printer', 'Yazıcı'),
-        ('factory_zone', 'Fabrika Alanı'),
+        ('printer', _('Yazıcı')),
+        ('factory_zone', _('Fabrika Alanı')),
         ('consumable', 'Sarf Stok'),
     )
 
-    code = models.CharField(max_length=80, unique=True, db_index=True, verbose_name="QR/Barkod Kodu")
-    tag_type = models.CharField(max_length=20, choices=TAG_TYPE_CHOICES, default='it_asset', db_index=True, verbose_name="Etiket Tipi")
-    label = models.CharField(max_length=180, blank=True, verbose_name="Etiket Adı")
-    location = models.CharField(max_length=150, blank=True, verbose_name="Fiziksel Konum")
-    device = models.ForeignKey(Device, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name="Ağ Cihazı")
-    endpoint = models.ForeignKey(EndpointDevice, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name="Endpoint")
-    it_asset = models.ForeignKey(ITAsset, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name="IT Varlık")
-    camera = models.ForeignKey(CameraDevice, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name="Kamera")
-    printer = models.ForeignKey(PrinterFleetItem, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name="Yazıcı")
-    factory_zone = models.ForeignKey(FactoryZone, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name="Fabrika Alanı")
-    consumable = models.ForeignKey(ConsumableItem, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name="Sarf Stok")
-    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Aktif")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    code = models.CharField(max_length=80, unique=True, db_index=True, verbose_name=_("QR/Barkod Kodu"))
+    tag_type = models.CharField(max_length=20, choices=TAG_TYPE_CHOICES, default='it_asset', db_index=True, verbose_name=_("Etiket Tipi"))
+    label = models.CharField(max_length=180, blank=True, verbose_name=_("Etiket Adı"))
+    location = models.CharField(max_length=150, blank=True, verbose_name=_("Fiziksel Konum"))
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name=_("Ağ Cihazı"))
+    endpoint = models.ForeignKey(EndpointDevice, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name=_("Endpoint"))
+    it_asset = models.ForeignKey(ITAsset, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name=_("IT Varlık"))
+    camera = models.ForeignKey(CameraDevice, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name=_("Kamera"))
+    printer = models.ForeignKey(PrinterFleetItem, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name=_("Yazıcı"))
+    factory_zone = models.ForeignKey(FactoryZone, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name=_("Fabrika Alanı"))
+    consumable = models.ForeignKey(ConsumableItem, on_delete=models.CASCADE, null=True, blank=True, related_name='qr_tags', verbose_name=_("Sarf Stok"))
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Aktif"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Varlık QR Etiketi"
@@ -2337,37 +2338,37 @@ class ERPConnection(models.Model):
         ('odoo', 'Odoo'),
         ('erpnext', 'ERPNext'),
         ('sap', 'SAP'),
-        ('other', 'Diğer ERP'),
+        ('other', _('Diğer ERP')),
     )
     SYNC_STATUS_CHOICES = (
-        ('never', 'Hiç Senkronize Edilmedi'),
-        ('healthy', 'Sağlıklı'),
-        ('warning', 'Uyarı'),
+        ('never', _('Hiç Senkronize Edilmedi')),
+        ('healthy', _('Sağlıklı')),
+        ('warning', _('Uyarı')),
         ('error', 'Hata'),
     )
 
-    name = models.CharField(max_length=150, verbose_name="Bağlantı Adı")
-    erp_type = models.CharField(max_length=20, choices=ERP_TYPE_CHOICES, default='odoo', db_index=True, verbose_name="ERP Tipi")
-    base_url = models.URLField(max_length=500, verbose_name="Sunucu URL")
-    database_name = models.CharField(max_length=120, verbose_name="Veritabanı")
-    username = models.CharField(max_length=120, verbose_name="Kullanıcı")
-    api_key = models.CharField(max_length=255, blank=True, verbose_name="API Key / Parola")
-    sync_enabled = models.BooleanField(default=True, verbose_name="Senkronizasyon Aktif")
-    sync_partners = models.BooleanField(default=True, verbose_name="Cari/Partner Sync")
-    sync_products = models.BooleanField(default=False, verbose_name="Ürün/Stok Sync")
-    sync_helpdesk = models.BooleanField(default=False, verbose_name="Helpdesk/Ticket Sync")
-    sync_to_cmdb = models.BooleanField(default=True, verbose_name="CMDB/Envantere Yaz")
+    name = models.CharField(max_length=150, verbose_name=_("Bağlantı Adı"))
+    erp_type = models.CharField(max_length=20, choices=ERP_TYPE_CHOICES, default='odoo', db_index=True, verbose_name=_("ERP Tipi"))
+    base_url = models.URLField(max_length=500, verbose_name=_("Sunucu URL"))
+    database_name = models.CharField(max_length=120, verbose_name=_("Veritabanı"))
+    username = models.CharField(max_length=120, verbose_name=_("Kullanıcı"))
+    api_key = models.CharField(max_length=255, blank=True, verbose_name=_("API Key / Parola"))
+    sync_enabled = models.BooleanField(default=True, verbose_name=_("Senkronizasyon Aktif"))
+    sync_partners = models.BooleanField(default=True, verbose_name=_("Cari/Partner Sync"))
+    sync_products = models.BooleanField(default=False, verbose_name=_("Ürün/Stok Sync"))
+    sync_helpdesk = models.BooleanField(default=False, verbose_name=_("Helpdesk/Ticket Sync"))
+    sync_to_cmdb = models.BooleanField(default=True, verbose_name=_("CMDB/Envantere Yaz"))
     factory_site = models.ForeignKey(
         'FactorySite', on_delete=models.SET_NULL, null=True, blank=True,
-        related_name='erp_connections', verbose_name="Hedef Fabrika Tesisi",
+        related_name='erp_connections', verbose_name=_("Hedef Fabrika Tesisi"),
     )
-    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Sync")
-    last_sync_status = models.CharField(max_length=20, choices=SYNC_STATUS_CHOICES, default='never', db_index=True, verbose_name="Sync Durumu")
-    last_sync_message = models.TextField(blank=True, verbose_name="Son Sync Mesajı")
-    records_synced = models.PositiveIntegerField(default=0, verbose_name="Son Sync Kayıt Sayısı")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='erp_connections', verbose_name="Sorumlu")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Sync"))
+    last_sync_status = models.CharField(max_length=20, choices=SYNC_STATUS_CHOICES, default='never', db_index=True, verbose_name=_("Sync Durumu"))
+    last_sync_message = models.TextField(blank=True, verbose_name=_("Son Sync Mesajı"))
+    records_synced = models.PositiveIntegerField(default=0, verbose_name=_("Son Sync Kayıt Sayısı"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='erp_connections', verbose_name=_("Sorumlu"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "ERP Bağlantısı"
@@ -2388,16 +2389,16 @@ class ERPConnection(models.Model):
 
 class ERPExternalRecord(models.Model):
     """ERP kaynak sisteminden CMDB/envantere eşlenen harici kayıt."""
-    connection = models.ForeignKey(ERPConnection, on_delete=models.CASCADE, related_name='external_records', verbose_name="ERP Bağlantısı")
-    external_model = models.CharField(max_length=80, db_index=True, verbose_name="Harici Model")
-    external_id = models.CharField(max_length=80, db_index=True, verbose_name="Harici ID")
-    title = models.CharField(max_length=200, verbose_name="Başlık")
-    payload = models.JSONField(default=dict, blank=True, verbose_name="Ham Veri")
-    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='erp_records', verbose_name="Fabrika Tesisi")
-    consumable = models.ForeignKey('ConsumableItem', on_delete=models.SET_NULL, null=True, blank=True, related_name='erp_records', verbose_name="Sarf Stok")
-    inventory_item = models.ForeignKey('DepartmentInventoryItem', on_delete=models.SET_NULL, null=True, blank=True, related_name='erp_records', verbose_name="Bölüm Envanteri")
-    it_asset = models.ForeignKey('ITAsset', on_delete=models.SET_NULL, null=True, blank=True, related_name='erp_records', verbose_name="IT Varlık")
-    synced_at = models.DateTimeField(auto_now=True, verbose_name="Son Eşleme")
+    connection = models.ForeignKey(ERPConnection, on_delete=models.CASCADE, related_name='external_records', verbose_name=_("ERP Bağlantısı"))
+    external_model = models.CharField(max_length=80, db_index=True, verbose_name=_("Harici Model"))
+    external_id = models.CharField(max_length=80, db_index=True, verbose_name=_("Harici ID"))
+    title = models.CharField(max_length=200, verbose_name=_("Başlık"))
+    payload = models.JSONField(default=dict, blank=True, verbose_name=_("Ham Veri"))
+    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='erp_records', verbose_name=_("Fabrika Tesisi"))
+    consumable = models.ForeignKey('ConsumableItem', on_delete=models.SET_NULL, null=True, blank=True, related_name='erp_records', verbose_name=_("Sarf Stok"))
+    inventory_item = models.ForeignKey('DepartmentInventoryItem', on_delete=models.SET_NULL, null=True, blank=True, related_name='erp_records', verbose_name=_("Bölüm Envanteri"))
+    it_asset = models.ForeignKey('ITAsset', on_delete=models.SET_NULL, null=True, blank=True, related_name='erp_records', verbose_name=_("IT Varlık"))
+    synced_at = models.DateTimeField(auto_now=True, verbose_name=_("Son Eşleme"))
 
     class Meta:
         verbose_name = "ERP Harici Kayıt"
@@ -2420,21 +2421,21 @@ class OTConnection(models.Model):
     )
     SYNC_STATUS_CHOICES = ERPConnection.SYNC_STATUS_CHOICES
 
-    name = models.CharField(max_length=150, verbose_name="Bağlantı Adı")
-    ot_type = models.CharField(max_length=30, choices=OT_TYPE_CHOICES, default='mes_rest', db_index=True, verbose_name="OT Tipi")
-    base_url = models.URLField(max_length=500, verbose_name="Sunucu URL")
-    assets_path = models.CharField(max_length=200, default='/api/assets', verbose_name="Varlık API Yolu")
-    api_key = models.CharField(max_length=500, blank=True, verbose_name="API Key / Token")
-    factory_site = models.ForeignKey('FactorySite', on_delete=models.CASCADE, related_name='ot_connections', verbose_name="Fabrika Tesisi")
-    sync_enabled = models.BooleanField(default=True, verbose_name="Senkronizasyon Aktif")
-    sync_to_inventory = models.BooleanField(default=True, verbose_name="Bölüm Envanterine Yaz")
-    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Sync")
-    last_sync_status = models.CharField(max_length=20, choices=SYNC_STATUS_CHOICES, default='never', db_index=True, verbose_name="Sync Durumu")
-    last_sync_message = models.TextField(blank=True, verbose_name="Son Sync Mesajı")
-    records_synced = models.PositiveIntegerField(default=0, verbose_name="Son Sync Kayıt Sayısı")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='ot_connections', verbose_name="Sorumlu")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=150, verbose_name=_("Bağlantı Adı"))
+    ot_type = models.CharField(max_length=30, choices=OT_TYPE_CHOICES, default='mes_rest', db_index=True, verbose_name=_("OT Tipi"))
+    base_url = models.URLField(max_length=500, verbose_name=_("Sunucu URL"))
+    assets_path = models.CharField(max_length=200, default='/api/assets', verbose_name=_("Varlık API Yolu"))
+    api_key = models.CharField(max_length=500, blank=True, verbose_name=_("API Key / Token"))
+    factory_site = models.ForeignKey('FactorySite', on_delete=models.CASCADE, related_name='ot_connections', verbose_name=_("Fabrika Tesisi"))
+    sync_enabled = models.BooleanField(default=True, verbose_name=_("Senkronizasyon Aktif"))
+    sync_to_inventory = models.BooleanField(default=True, verbose_name=_("Bölüm Envanterine Yaz"))
+    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Sync"))
+    last_sync_status = models.CharField(max_length=20, choices=SYNC_STATUS_CHOICES, default='never', db_index=True, verbose_name=_("Sync Durumu"))
+    last_sync_message = models.TextField(blank=True, verbose_name=_("Son Sync Mesajı"))
+    records_synced = models.PositiveIntegerField(default=0, verbose_name=_("Son Sync Kayıt Sayısı"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='ot_connections', verbose_name=_("Sorumlu"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "OT/MES Bağlantısı"
@@ -2466,23 +2467,23 @@ class OTConnection(models.Model):
 class OTAssetRecord(models.Model):
     """OT/MES sisteminden gelen üretim varlık kaydı."""
     STATUS_CHOICES = (
-        ('online', 'Çevrimiçi'),
-        ('offline', 'Çevrimdışı'),
-        ('maintenance', 'Bakımda'),
+        ('online', _('Çevrimiçi')),
+        ('offline', _('Çevrimdışı')),
+        ('maintenance', _('Bakımda')),
         ('unknown', 'Bilinmiyor'),
     )
 
-    connection = models.ForeignKey(OTConnection, on_delete=models.CASCADE, related_name='asset_records', verbose_name="OT Bağlantısı")
-    external_id = models.CharField(max_length=120, db_index=True, verbose_name="Harici ID")
-    tag_name = models.CharField(max_length=120, blank=True, db_index=True, verbose_name="Tag/PLC Adresi")
-    title = models.CharField(max_length=200, verbose_name="Varlık Adı")
-    asset_type = models.CharField(max_length=80, blank=True, verbose_name="OT Varlık Tipi")
-    department = models.ForeignKey('FactoryDepartment', on_delete=models.SET_NULL, null=True, blank=True, related_name='ot_assets', verbose_name="Bölüm")
-    inventory_item = models.ForeignKey('DepartmentInventoryItem', on_delete=models.SET_NULL, null=True, blank=True, related_name='ot_records', verbose_name="Envanter Kalemi")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unknown', db_index=True, verbose_name="Durum")
-    payload = models.JSONField(default=dict, blank=True, verbose_name="Ham Veri")
-    last_seen_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Görülme")
-    synced_at = models.DateTimeField(auto_now=True, verbose_name="Son Eşleme")
+    connection = models.ForeignKey(OTConnection, on_delete=models.CASCADE, related_name='asset_records', verbose_name=_("OT Bağlantısı"))
+    external_id = models.CharField(max_length=120, db_index=True, verbose_name=_("Harici ID"))
+    tag_name = models.CharField(max_length=120, blank=True, db_index=True, verbose_name=_("Tag/PLC Adresi"))
+    title = models.CharField(max_length=200, verbose_name=_("Varlık Adı"))
+    asset_type = models.CharField(max_length=80, blank=True, verbose_name=_("OT Varlık Tipi"))
+    department = models.ForeignKey('FactoryDepartment', on_delete=models.SET_NULL, null=True, blank=True, related_name='ot_assets', verbose_name=_("Bölüm"))
+    inventory_item = models.ForeignKey('DepartmentInventoryItem', on_delete=models.SET_NULL, null=True, blank=True, related_name='ot_records', verbose_name=_("Envanter Kalemi"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='unknown', db_index=True, verbose_name=_("Durum"))
+    payload = models.JSONField(default=dict, blank=True, verbose_name=_("Ham Veri"))
+    last_seen_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Görülme"))
+    synced_at = models.DateTimeField(auto_now=True, verbose_name=_("Son Eşleme"))
 
     class Meta:
         verbose_name = "OT Varlık Kaydı"
@@ -2500,28 +2501,28 @@ class OTAssetRecord(models.Model):
 class ProblemRecord(models.Model):
     """ITSM Problem Management — kök neden ve kalıcı çözüm takibi."""
     STATUS_CHOICES = (
-        ('open', 'Açık'),
-        ('investigating', 'İnceleniyor'),
+        ('open', _('Açık')),
+        ('investigating', _('İnceleniyor')),
         ('known_error', 'Bilinen Hata'),
-        ('resolved', 'Çözüldü'),
-        ('closed', 'Kapatıldı'),
+        ('resolved', _('Çözüldü')),
+        ('closed', _('Kapatıldı')),
     )
     PRIORITY_CHOICES = Ticket.PRIORITY_CHOICES
 
-    title = models.CharField(max_length=200, verbose_name="Problem Başlığı")
-    description = models.TextField(verbose_name="Açıklama")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open', db_index=True, verbose_name="Durum")
-    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Orta', db_index=True, verbose_name="Öncelik")
-    root_cause = models.TextField(blank=True, verbose_name="Kök Neden")
-    workaround = models.TextField(blank=True, verbose_name="Geçici Çözüm")
-    permanent_fix = models.TextField(blank=True, verbose_name="Kalıcı Çözüm")
-    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='problems', verbose_name="Fabrika Tesisi")
-    major_incident = models.ForeignKey('MajorIncident', on_delete=models.SET_NULL, null=True, blank=True, related_name='problems', verbose_name="Major Incident")
-    related_tickets = models.ManyToManyField(Ticket, blank=True, related_name='problem_records', verbose_name="İlişkili Ticketlar")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='owned_problems', verbose_name="Sorumlu")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
-    resolved_at = models.DateTimeField(null=True, blank=True, verbose_name="Çözüm Tarihi")
+    title = models.CharField(max_length=200, verbose_name=_("Problem Başlığı"))
+    description = models.TextField(verbose_name=_("Açıklama"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open', db_index=True, verbose_name=_("Durum"))
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Orta', db_index=True, verbose_name=_("Öncelik"))
+    root_cause = models.TextField(blank=True, verbose_name=_("Kök Neden"))
+    workaround = models.TextField(blank=True, verbose_name=_("Geçici Çözüm"))
+    permanent_fix = models.TextField(blank=True, verbose_name=_("Kalıcı Çözüm"))
+    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='problems', verbose_name=_("Fabrika Tesisi"))
+    major_incident = models.ForeignKey('MajorIncident', on_delete=models.SET_NULL, null=True, blank=True, related_name='problems', verbose_name=_("Major Incident"))
+    related_tickets = models.ManyToManyField(Ticket, blank=True, related_name='problem_records', verbose_name=_("İlişkili Ticketlar"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='owned_problems', verbose_name=_("Sorumlu"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
+    resolved_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Çözüm Tarihi"))
 
     class Meta:
         verbose_name = "Problem Kaydı"
@@ -2535,30 +2536,30 @@ class ProblemRecord(models.Model):
 class ReleaseRecord(models.Model):
     """Release Management — değişiklik paketi ve go-live takibi."""
     STATUS_CHOICES = (
-        ('planned', 'Planlandı'),
+        ('planned', _('Planlandı')),
         ('build', 'Derleme'),
         ('test', 'Test'),
-        ('cab_review', 'CAB İncelemesi'),
-        ('approved', 'Onaylandı'),
-        ('deployed', 'Yayında'),
-        ('rolled_back', 'Geri Alındı'),
-        ('cancelled', 'İptal'),
+        ('cab_review', _('CAB İncelemesi')),
+        ('approved', _('Onaylandı')),
+        ('deployed', _('Yayında')),
+        ('rolled_back', _('Geri Alındı')),
+        ('cancelled', _('İptal')),
     )
 
-    title = models.CharField(max_length=200, verbose_name="Release Adı")
-    version = models.CharField(max_length=60, verbose_name="Sürüm")
-    description = models.TextField(blank=True, verbose_name="Açıklama")
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='planned', db_index=True, verbose_name="Durum")
-    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='releases', verbose_name="Fabrika Tesisi")
-    change_request = models.ForeignKey(ChangeRequest, on_delete=models.SET_NULL, null=True, blank=True, related_name='releases', verbose_name="Change Request")
-    calendar_event = models.ForeignKey('ChangeCalendarEvent', on_delete=models.SET_NULL, null=True, blank=True, related_name='releases', verbose_name="Takvim Etkinliği")
-    planned_start = models.DateTimeField(null=True, blank=True, verbose_name="Planlanan Başlangıç")
-    planned_end = models.DateTimeField(null=True, blank=True, verbose_name="Planlanan Bitiş")
-    cab_approved = models.BooleanField(default=False, verbose_name="CAB Onayı")
-    cab_notes = models.TextField(blank=True, verbose_name="CAB Notları")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='owned_releases', verbose_name="Release Yöneticisi")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    title = models.CharField(max_length=200, verbose_name=_("Release Adı"))
+    version = models.CharField(max_length=60, verbose_name=_("Sürüm"))
+    description = models.TextField(blank=True, verbose_name=_("Açıklama"))
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='planned', db_index=True, verbose_name=_("Durum"))
+    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='releases', verbose_name=_("Fabrika Tesisi"))
+    change_request = models.ForeignKey(ChangeRequest, on_delete=models.SET_NULL, null=True, blank=True, related_name='releases', verbose_name=_("Change Request"))
+    calendar_event = models.ForeignKey('ChangeCalendarEvent', on_delete=models.SET_NULL, null=True, blank=True, related_name='releases', verbose_name=_("Takvim Etkinliği"))
+    planned_start = models.DateTimeField(null=True, blank=True, verbose_name=_("Planlanan Başlangıç"))
+    planned_end = models.DateTimeField(null=True, blank=True, verbose_name=_("Planlanan Bitiş"))
+    cab_approved = models.BooleanField(default=False, verbose_name=_("CAB Onayı"))
+    cab_notes = models.TextField(blank=True, verbose_name=_("CAB Notları"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='owned_releases', verbose_name=_("Release Yöneticisi"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Release Kaydı"
@@ -2579,19 +2580,19 @@ class NotificationChannel(models.Model):
         ('pagerduty', 'PagerDuty'),
     )
 
-    name = models.CharField(max_length=120, verbose_name="Kanal Adı")
-    channel_type = models.CharField(max_length=20, choices=CHANNEL_TYPE_CHOICES, default='webhook', db_index=True, verbose_name="Tip")
-    endpoint_url = models.URLField(max_length=500, blank=True, verbose_name="Webhook URL")
-    email_recipients = models.TextField(blank=True, verbose_name="E-posta Alıcıları (virgülle)")
-    secret_token = models.CharField(max_length=500, blank=True, verbose_name="Secret / Token")
-    notify_tickets = models.BooleanField(default=True, verbose_name="Ticket Bildirimi")
-    notify_incidents = models.BooleanField(default=True, verbose_name="Incident Bildirimi")
-    notify_sla_breach = models.BooleanField(default=True, verbose_name="SLA İhlali")
-    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='notification_channels', verbose_name="Fabrika Tesisi")
-    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Aktif")
-    last_sent_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Gönderim")
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='notification_channels', verbose_name="Sorumlu")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=120, verbose_name=_("Kanal Adı"))
+    channel_type = models.CharField(max_length=20, choices=CHANNEL_TYPE_CHOICES, default='webhook', db_index=True, verbose_name=_("Tip"))
+    endpoint_url = models.URLField(max_length=500, blank=True, verbose_name=_("Webhook URL"))
+    email_recipients = models.TextField(blank=True, verbose_name=_("E-posta Alıcıları (virgülle)"))
+    secret_token = models.CharField(max_length=500, blank=True, verbose_name=_("Secret / Token"))
+    notify_tickets = models.BooleanField(default=True, verbose_name=_("Ticket Bildirimi"))
+    notify_incidents = models.BooleanField(default=True, verbose_name=_("Incident Bildirimi"))
+    notify_sla_breach = models.BooleanField(default=True, verbose_name=_("SLA İhlali"))
+    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='notification_channels', verbose_name=_("Fabrika Tesisi"))
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Aktif"))
+    last_sent_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Gönderim"))
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='notification_channels', verbose_name=_("Sorumlu"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Bildirim Kanalı"
@@ -2626,18 +2627,18 @@ class MonitoringConnection(models.Model):
     )
     SYNC_STATUS_CHOICES = ERPConnection.SYNC_STATUS_CHOICES
 
-    name = models.CharField(max_length=150, verbose_name="Bağlantı Adı")
-    monitor_type = models.CharField(max_length=20, choices=MONITOR_TYPE_CHOICES, default='zabbix', db_index=True, verbose_name="Tip")
-    base_url = models.URLField(max_length=500, verbose_name="Sunucu URL")
-    api_token = models.CharField(max_length=500, blank=True, verbose_name="API Token")
-    username = models.CharField(max_length=120, blank=True, verbose_name="Kullanıcı")
-    sync_enabled = models.BooleanField(default=True, verbose_name="Sync Aktif")
-    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Sync")
-    last_sync_status = models.CharField(max_length=20, choices=SYNC_STATUS_CHOICES, default='never', db_index=True, verbose_name="Durum")
-    last_sync_message = models.TextField(blank=True, verbose_name="Son Mesaj")
-    records_synced = models.PositiveIntegerField(default=0, verbose_name="Son Kayıt")
-    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='monitoring_connections', verbose_name="Fabrika Tesisi")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=150, verbose_name=_("Bağlantı Adı"))
+    monitor_type = models.CharField(max_length=20, choices=MONITOR_TYPE_CHOICES, default='zabbix', db_index=True, verbose_name=_("Tip"))
+    base_url = models.URLField(max_length=500, verbose_name=_("Sunucu URL"))
+    api_token = models.CharField(max_length=500, blank=True, verbose_name=_("API Token"))
+    username = models.CharField(max_length=120, blank=True, verbose_name=_("Kullanıcı"))
+    sync_enabled = models.BooleanField(default=True, verbose_name=_("Sync Aktif"))
+    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Sync"))
+    last_sync_status = models.CharField(max_length=20, choices=SYNC_STATUS_CHOICES, default='never', db_index=True, verbose_name=_("Durum"))
+    last_sync_message = models.TextField(blank=True, verbose_name=_("Son Mesaj"))
+    records_synced = models.PositiveIntegerField(default=0, verbose_name=_("Son Kayıt"))
+    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='monitoring_connections', verbose_name=_("Fabrika Tesisi"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "İzleme Bağlantısı"
@@ -2672,18 +2673,18 @@ class VMSConnection(models.Model):
     )
     SYNC_STATUS_CHOICES = ERPConnection.SYNC_STATUS_CHOICES
 
-    name = models.CharField(max_length=150, verbose_name="Bağlantı Adı")
-    vms_type = models.CharField(max_length=20, choices=VMS_TYPE_CHOICES, default='generic', db_index=True, verbose_name="VMS Tipi")
-    base_url = models.URLField(max_length=500, verbose_name="Sunucu URL")
-    username = models.CharField(max_length=120, blank=True, verbose_name="Kullanıcı")
-    api_token = models.CharField(max_length=500, blank=True, verbose_name="Parola/Token")
-    sync_enabled = models.BooleanField(default=True, verbose_name="Sync Aktif")
-    sync_to_cameras = models.BooleanField(default=True, verbose_name="CameraDevice Güncelle")
-    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Sync")
-    last_sync_status = models.CharField(max_length=20, choices=SYNC_STATUS_CHOICES, default='never', db_index=True, verbose_name="Durum")
-    last_sync_message = models.TextField(blank=True, verbose_name="Son Mesaj")
-    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='vms_connections', verbose_name="Fabrika Tesisi")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=150, verbose_name=_("Bağlantı Adı"))
+    vms_type = models.CharField(max_length=20, choices=VMS_TYPE_CHOICES, default='generic', db_index=True, verbose_name=_("VMS Tipi"))
+    base_url = models.URLField(max_length=500, verbose_name=_("Sunucu URL"))
+    username = models.CharField(max_length=120, blank=True, verbose_name=_("Kullanıcı"))
+    api_token = models.CharField(max_length=500, blank=True, verbose_name=_("Parola/Token"))
+    sync_enabled = models.BooleanField(default=True, verbose_name=_("Sync Aktif"))
+    sync_to_cameras = models.BooleanField(default=True, verbose_name=_("CameraDevice Güncelle"))
+    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Sync"))
+    last_sync_status = models.CharField(max_length=20, choices=SYNC_STATUS_CHOICES, default='never', db_index=True, verbose_name=_("Durum"))
+    last_sync_message = models.TextField(blank=True, verbose_name=_("Son Mesaj"))
+    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='vms_connections', verbose_name=_("Fabrika Tesisi"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "VMS Bağlantısı"
@@ -2710,19 +2711,19 @@ class VMSConnection(models.Model):
 
 class EmailTicketInbox(models.Model):
     """E-postadan otomatik ticket açma."""
-    name = models.CharField(max_length=120, verbose_name="Inbox Adı")
-    imap_host = models.CharField(max_length=200, verbose_name="IMAP Sunucu")
-    imap_port = models.PositiveIntegerField(default=993, verbose_name="Port")
-    username = models.CharField(max_length=180, verbose_name="Kullanıcı")
-    password = models.CharField(max_length=500, verbose_name="Parola")
-    folder = models.CharField(max_length=120, default='INBOX', verbose_name="Klasör")
-    default_priority = models.CharField(max_length=20, choices=Ticket.PRIORITY_CHOICES, default='Orta', verbose_name="Varsayılan Öncelik")
-    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='email_inboxes', verbose_name="Fabrika Tesisi")
-    sync_enabled = models.BooleanField(default=True, verbose_name="Aktif")
-    last_poll_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Kontrol")
-    last_message = models.TextField(blank=True, verbose_name="Son Mesaj")
-    tickets_created = models.PositiveIntegerField(default=0, verbose_name="Oluşturulan Ticket")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=120, verbose_name=_("Inbox Adı"))
+    imap_host = models.CharField(max_length=200, verbose_name=_("IMAP Sunucu"))
+    imap_port = models.PositiveIntegerField(default=993, verbose_name=_("Port"))
+    username = models.CharField(max_length=180, verbose_name=_("Kullanıcı"))
+    password = models.CharField(max_length=500, verbose_name=_("Parola"))
+    folder = models.CharField(max_length=120, default='INBOX', verbose_name=_("Klasör"))
+    default_priority = models.CharField(max_length=20, choices=Ticket.PRIORITY_CHOICES, default='Orta', verbose_name=_("Varsayılan Öncelik"))
+    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='email_inboxes', verbose_name=_("Fabrika Tesisi"))
+    sync_enabled = models.BooleanField(default=True, verbose_name=_("Aktif"))
+    last_poll_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Kontrol"))
+    last_message = models.TextField(blank=True, verbose_name=_("Son Mesaj"))
+    tickets_created = models.PositiveIntegerField(default=0, verbose_name=_("Oluşturulan Ticket"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "E-posta Ticket Inbox"
@@ -2748,24 +2749,24 @@ class EmailTicketInbox(models.Model):
 class ImmutableAuditEntry(models.Model):
     """Değiştirilemez denetim izi (append-only)."""
     ACTION_CHOICES = (
-        ('login', 'Giriş'),
-        ('logout', 'Çıkış'),
-        ('create', 'Oluşturma'),
-        ('update', 'Güncelleme'),
+        ('login', _('Giriş')),
+        ('logout', _('Çıkış')),
+        ('create', _('Oluşturma')),
+        ('update', _('Güncelleme')),
         ('delete', 'Silme'),
-        ('export', 'Dışa Aktarma'),
+        ('export', _('Dışa Aktarma')),
         ('sync', 'Senkronizasyon'),
-        ('security', 'Güvenlik'),
+        ('security', _('Güvenlik')),
     )
 
-    actor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='audit_entries', verbose_name="Kullanıcı")
-    action = models.CharField(max_length=20, choices=ACTION_CHOICES, db_index=True, verbose_name="Aksiyon")
-    resource_type = models.CharField(max_length=80, db_index=True, verbose_name="Kaynak Tipi")
-    resource_id = models.CharField(max_length=80, blank=True, verbose_name="Kaynak ID")
-    ip_address = models.GenericIPAddressField(null=True, blank=True, verbose_name="IP")
-    user_agent = models.CharField(max_length=300, blank=True, verbose_name="User Agent")
-    payload = models.JSONField(default=dict, blank=True, verbose_name="Detay")
-    created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name="Zaman")
+    actor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='audit_entries', verbose_name=_("Kullanıcı"))
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES, db_index=True, verbose_name=_("Aksiyon"))
+    resource_type = models.CharField(max_length=80, db_index=True, verbose_name=_("Kaynak Tipi"))
+    resource_id = models.CharField(max_length=80, blank=True, verbose_name=_("Kaynak ID"))
+    ip_address = models.GenericIPAddressField(null=True, blank=True, verbose_name=_("IP"))
+    user_agent = models.CharField(max_length=300, blank=True, verbose_name=_("User Agent"))
+    payload = models.JSONField(default=dict, blank=True, verbose_name=_("Detay"))
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name=_("Zaman"))
 
     class Meta:
         verbose_name = "Denetim İzi"
@@ -2787,23 +2788,23 @@ class ImmutableAuditEntry(models.Model):
 class AssetLifecycleEvent(models.Model):
     """Varlık yaşam döngüsü: zimmet, bakım, hurda, transfer."""
     EVENT_TYPE_CHOICES = (
-        ('procure', 'Satın Alma'),
+        ('procure', _('Satın Alma')),
         ('deploy', 'Devreye Alma'),
         ('transfer', 'Transfer'),
-        ('maintain', 'Bakım'),
+        ('maintain', _('Bakım')),
         ('retire', 'Hurda/Emekli'),
-        ('dispose', 'İmha'),
+        ('dispose', _('İmha')),
     )
 
-    event_type = models.CharField(max_length=20, choices=EVENT_TYPE_CHOICES, db_index=True, verbose_name="Olay Tipi")
-    title = models.CharField(max_length=200, verbose_name="Başlık")
-    notes = models.TextField(blank=True, verbose_name="Notlar")
-    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='lifecycle_events', verbose_name="Fabrika Tesisi")
-    it_asset = models.ForeignKey('ITAsset', on_delete=models.SET_NULL, null=True, blank=True, related_name='lifecycle_events', verbose_name="IT Varlık")
-    inventory_item = models.ForeignKey('DepartmentInventoryItem', on_delete=models.SET_NULL, null=True, blank=True, related_name='lifecycle_events', verbose_name="Envanter Kalemi")
-    performed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='lifecycle_events', verbose_name="İşlemi Yapan")
-    event_date = models.DateField(default=timezone.now, verbose_name="Olay Tarihi")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Kayıt Zamanı")
+    event_type = models.CharField(max_length=20, choices=EVENT_TYPE_CHOICES, db_index=True, verbose_name=_("Olay Tipi"))
+    title = models.CharField(max_length=200, verbose_name=_("Başlık"))
+    notes = models.TextField(blank=True, verbose_name=_("Notlar"))
+    factory_site = models.ForeignKey('FactorySite', on_delete=models.SET_NULL, null=True, blank=True, related_name='lifecycle_events', verbose_name=_("Fabrika Tesisi"))
+    it_asset = models.ForeignKey('ITAsset', on_delete=models.SET_NULL, null=True, blank=True, related_name='lifecycle_events', verbose_name=_("IT Varlık"))
+    inventory_item = models.ForeignKey('DepartmentInventoryItem', on_delete=models.SET_NULL, null=True, blank=True, related_name='lifecycle_events', verbose_name=_("Envanter Kalemi"))
+    performed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='lifecycle_events', verbose_name=_("İşlemi Yapan"))
+    event_date = models.DateField(default=timezone.now, verbose_name=_("Olay Tarihi"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Kayıt Zamanı"))
 
     class Meta:
         verbose_name = "Varlık Yaşam Döngüsü Olayı"
@@ -2823,15 +2824,15 @@ class BackupVendorConnection(models.Model):
     )
     SYNC_STATUS_CHOICES = ERPConnection.SYNC_STATUS_CHOICES
 
-    name = models.CharField(max_length=150, verbose_name="Bağlantı Adı")
-    vendor_type = models.CharField(max_length=20, choices=VENDOR_CHOICES, default='generic', db_index=True, verbose_name="Vendor")
-    base_url = models.URLField(max_length=500, verbose_name="API URL")
-    api_token = models.CharField(max_length=500, blank=True, verbose_name="API Token")
-    sync_enabled = models.BooleanField(default=True, verbose_name="Sync Aktif")
-    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Sync")
-    last_sync_status = models.CharField(max_length=20, choices=SYNC_STATUS_CHOICES, default='never', db_index=True, verbose_name="Durum")
-    last_sync_message = models.TextField(blank=True, verbose_name="Son Mesaj")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=150, verbose_name=_("Bağlantı Adı"))
+    vendor_type = models.CharField(max_length=20, choices=VENDOR_CHOICES, default='generic', db_index=True, verbose_name=_("Vendor"))
+    base_url = models.URLField(max_length=500, verbose_name=_("API URL"))
+    api_token = models.CharField(max_length=500, blank=True, verbose_name=_("API Token"))
+    sync_enabled = models.BooleanField(default=True, verbose_name=_("Sync Aktif"))
+    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Sync"))
+    last_sync_status = models.CharField(max_length=20, choices=SYNC_STATUS_CHOICES, default='never', db_index=True, verbose_name=_("Durum"))
+    last_sync_message = models.TextField(blank=True, verbose_name=_("Son Mesaj"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Yedekleme Vendor Bağlantısı"
@@ -2860,16 +2861,16 @@ class WMSConnection(models.Model):
     """Depo/WMS entegrasyonu."""
     SYNC_STATUS_CHOICES = ERPConnection.SYNC_STATUS_CHOICES
 
-    name = models.CharField(max_length=150, verbose_name="Bağlantı Adı")
-    base_url = models.URLField(max_length=500, verbose_name="WMS API URL")
-    assets_path = models.CharField(max_length=200, default='/api/inventory', verbose_name="Stok API Yolu")
-    api_token = models.CharField(max_length=500, blank=True, verbose_name="API Token")
-    factory_site = models.ForeignKey('FactorySite', on_delete=models.CASCADE, related_name='wms_connections', verbose_name="Fabrika Tesisi")
-    sync_enabled = models.BooleanField(default=True, verbose_name="Sync Aktif")
-    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name="Son Sync")
-    last_sync_status = models.CharField(max_length=20, choices=SYNC_STATUS_CHOICES, default='never', db_index=True, verbose_name="Durum")
-    last_sync_message = models.TextField(blank=True, verbose_name="Son Mesaj")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    name = models.CharField(max_length=150, verbose_name=_("Bağlantı Adı"))
+    base_url = models.URLField(max_length=500, verbose_name=_("WMS API URL"))
+    assets_path = models.CharField(max_length=200, default='/api/inventory', verbose_name=_("Stok API Yolu"))
+    api_token = models.CharField(max_length=500, blank=True, verbose_name=_("API Token"))
+    factory_site = models.ForeignKey('FactorySite', on_delete=models.CASCADE, related_name='wms_connections', verbose_name=_("Fabrika Tesisi"))
+    sync_enabled = models.BooleanField(default=True, verbose_name=_("Sync Aktif"))
+    last_sync_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Son Sync"))
+    last_sync_status = models.CharField(max_length=20, choices=SYNC_STATUS_CHOICES, default='never', db_index=True, verbose_name=_("Durum"))
+    last_sync_message = models.TextField(blank=True, verbose_name=_("Son Mesaj"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "WMS Bağlantısı"
@@ -2899,25 +2900,25 @@ class ModulePermissionGrant(models.Model):
     MODULE_CHOICES = (
         ('tickets', 'Ticket'),
         ('inventory', 'Envanter'),
-        ('network', 'Ağ'),
+        ('network', _('Ağ')),
         ('identity', 'Kimlik'),
-        ('documents', 'Doküman'),
+        ('documents', _('Doküman')),
         ('integrations', 'Entegrasyon'),
-        ('governance', 'Yönetişim'),
+        ('governance', _('Yönetişim')),
     )
     PERMISSION_CHOICES = (
-        ('view', 'Görüntüle'),
-        ('edit', 'Düzenle'),
-        ('admin', 'Yönet'),
+        ('view', _('Görüntüle')),
+        ('edit', _('Düzenle')),
+        ('admin', _('Yönet')),
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='module_grants', verbose_name="Kullanıcı")
-    factory_site = models.ForeignKey('FactorySite', on_delete=models.CASCADE, null=True, blank=True, related_name='module_grants', verbose_name="Fabrika Tesisi")
-    module_code = models.CharField(max_length=30, choices=MODULE_CHOICES, db_index=True, verbose_name="Modül")
-    permission_level = models.CharField(max_length=20, choices=PERMISSION_CHOICES, default='view', verbose_name="Yetki")
-    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Aktif")
-    granted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='granted_module_permissions', verbose_name="Veren")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='module_grants', verbose_name=_("Kullanıcı"))
+    factory_site = models.ForeignKey('FactorySite', on_delete=models.CASCADE, null=True, blank=True, related_name='module_grants', verbose_name=_("Fabrika Tesisi"))
+    module_code = models.CharField(max_length=30, choices=MODULE_CHOICES, db_index=True, verbose_name=_("Modül"))
+    permission_level = models.CharField(max_length=20, choices=PERMISSION_CHOICES, default='view', verbose_name=_("Yetki"))
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Aktif"))
+    granted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='granted_module_permissions', verbose_name=_("Veren"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Oluşturulma"))
 
     class Meta:
         verbose_name = "Modül Yetkisi"
@@ -2934,19 +2935,19 @@ class OrganizationWorkspace(models.Model):
     """Kurulum genelinde çalışma alanı profili (sektör, modüller, terminoloji)."""
     INDUSTRY_TYPE_CHOICES = FactorySite.INDUSTRY_TYPE_CHOICES
 
-    name = models.CharField(max_length=120, default='OmniOps', verbose_name="Çalışma Alanı Adı")
+    name = models.CharField(max_length=120, default='OmniOps', verbose_name=_("Çalışma Alanı Adı"))
     primary_industry = models.CharField(
         max_length=30, choices=INDUSTRY_TYPE_CHOICES, default='generic', db_index=True,
-        verbose_name="Birincil Sektör",
+        verbose_name=_("Birincil Sektör"),
     )
-    custom_industry_label = models.CharField(max_length=80, blank=True, verbose_name="Özel Sektör Adı")
-    tagline = models.CharField(max_length=160, blank=True, verbose_name="Alt Başlık")
-    enabled_modules = models.JSONField(default=list, blank=True, verbose_name="Aktif Modüller")
-    module_labels = models.JSONField(default=dict, blank=True, verbose_name="Modül Etiketleri")
-    terminology = models.JSONField(default=dict, blank=True, verbose_name="Terminoloji")
-    feature_overrides = models.JSONField(default=dict, blank=True, verbose_name="Özellik Bayrakları")
-    is_active = models.BooleanField(default=True, db_index=True, verbose_name="Aktif Profil")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    custom_industry_label = models.CharField(max_length=80, blank=True, verbose_name=_("Özel Sektör Adı"))
+    tagline = models.CharField(max_length=160, blank=True, verbose_name=_("Alt Başlık"))
+    enabled_modules = models.JSONField(default=list, blank=True, verbose_name=_("Aktif Modüller"))
+    module_labels = models.JSONField(default=dict, blank=True, verbose_name=_("Modül Etiketleri"))
+    terminology = models.JSONField(default=dict, blank=True, verbose_name=_("Terminoloji"))
+    feature_overrides = models.JSONField(default=dict, blank=True, verbose_name=_("Özellik Bayrakları"))
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Aktif Profil"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Kurum Çalışma Alanı"
@@ -2958,16 +2959,16 @@ class OrganizationWorkspace(models.Model):
 
 class UserWorkspacePreference(models.Model):
     """Kullanıcı bazlı düzen, sürükle-bırak layout ve aktif tesis."""
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='workspace_preference', verbose_name="Kullanıcı")
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='workspace_preference', verbose_name=_("Kullanıcı"))
     active_factory_site = models.ForeignKey(
         FactorySite, on_delete=models.SET_NULL, null=True, blank=True,
-        related_name='active_for_users', verbose_name="Aktif Tesis",
+        related_name='active_for_users', verbose_name=_("Aktif Tesis"),
     )
-    dashboard_layout = models.JSONField(default=list, blank=True, verbose_name="Panel Widget Sırası")
-    sidebar_layout = models.JSONField(default=list, blank=True, verbose_name="Menü Grup Sırası")
-    hidden_widgets = models.JSONField(default=list, blank=True, verbose_name="Gizli Widget'lar")
-    drag_drop_enabled = models.BooleanField(default=True, verbose_name="Sürükle-Bırak Aktif")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncelleme")
+    dashboard_layout = models.JSONField(default=list, blank=True, verbose_name=_("Panel Widget Sırası"))
+    sidebar_layout = models.JSONField(default=list, blank=True, verbose_name=_("Menü Grup Sırası"))
+    hidden_widgets = models.JSONField(default=list, blank=True, verbose_name=_("Gizli Widget'lar"))
+    drag_drop_enabled = models.BooleanField(default=True, verbose_name=_("Sürükle-Bırak Aktif"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Güncelleme"))
 
     class Meta:
         verbose_name = "Kullanıcı Çalışma Alanı Tercihi"
@@ -2981,9 +2982,9 @@ class UserWorkspacePreference(models.Model):
 class DevicePerformanceLog(models.Model):
     """ Cihazların anlık performans verilerini tutan ve AI Tahminlemesi için kullanılan model """
     device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='performance_logs')
-    cpu_usage = models.FloatField(default=0.0, help_text="Yüzdelik CPU Kullanımı")
-    ram_usage = models.FloatField(default=0.0, help_text="Yüzdelik RAM Kullanımı")
-    disk_usage = models.FloatField(default=0.0, help_text="Yüzdelik Disk Kullanımı")
+    cpu_usage = models.FloatField(default=0.0, help_text=_("Yüzdelik CPU Kullanımı"))
+    ram_usage = models.FloatField(default=0.0, help_text=_("Yüzdelik RAM Kullanımı"))
+    disk_usage = models.FloatField(default=0.0, help_text=_("Yüzdelik Disk Kullanımı"))
     recorded_at = models.DateTimeField(auto_now_add=True, db_index=True)
 
     class Meta:

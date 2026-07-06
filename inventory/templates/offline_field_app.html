@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load static %}
 
-{% block title %}Offline Saha Uygulaması - OmniOps{% endblock %}
+{% block title %}{% trans "Offline Saha Uygulaması - OmniOps" %}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -10,43 +11,43 @@
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-start mb-4">
                     <div>
-                        <h2 class="fw-bold mb-1">Offline-First Saha Talebi</h2>
-                        <p class="text-muted mb-0">İnternet yokken kayıtlar IndexedDB kuyruğuna alınır, bağlantı gelince senkronize edilir.</p>
+                        <h2 class="fw-bold mb-1">{% trans "Offline-First Saha Talebi" %}</h2>
+                        <p class="text-muted mb-0">{% trans "İnternet yokken kayıtlar IndexedDB kuyruğuna alınır, bağlantı gelince senkronize edilir." %}</p>
                     </div>
-                    <span class="badge bg-secondary" id="syncStatus">Hazırlanıyor</span>
+                    <span class="badge bg-secondary" id="syncStatus">{% trans "Hazırlanıyor" %}</span>
                 </div>
 
                 <form id="offlineTicketForm" class="row g-3">
                     {% csrf_token %}
                     <div class="col-12">
-                        <label class="form-label">Başlık</label>
+                        <label class="form-label">{% trans "Başlık" %}</label>
                         <input name="title" class="form-control" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Öncelik</label>
+                        <label class="form-label">{% trans "Öncelik" %}</label>
                         <select name="priority" class="form-select">
-                            <option value="Dusuk">Düşük</option>
+                            <option value="Dusuk">{% trans "Düşük" %}</option>
                             <option value="Orta" selected>Orta</option>
-                            <option value="Yuksek">Yüksek</option>
-                            <option value="Kritik">Kritik</option>
+                            <option value="Yuksek">{% trans "Yüksek" %}</option>
+                            <option value="Kritik">{% trans "Kritik" %}</option>
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Kategori</label>
+                        <label class="form-label">{% trans "Kategori" %}</label>
                         <select name="category" class="form-select">
-                            <option value="Donanim">Donanım</option>
-                            <option value="Yazilim">Yazılım</option>
-                            <option value="Ag">Ağ</option>
-                            <option value="Diger" selected>Diğer</option>
+                            <option value="Donanim">{% trans "Donanım" %}</option>
+                            <option value="Yazilim">{% trans "Yazılım" %}</option>
+                            <option value="Ag">{% trans "Ağ" %}</option>
+                            <option value="Diger" selected>{% trans "Diğer" %}</option>
                         </select>
                     </div>
                     <div class="col-12">
-                        <label class="form-label">Açıklama</label>
+                        <label class="form-label">{% trans "Açıklama" %}</label>
                         <textarea name="description" class="form-control" rows="5" required></textarea>
                     </div>
                     <div class="col-12 d-flex gap-2">
-                        <button class="btn btn-primary" type="submit">Kaydet / Kuyruğa Al</button>
-                        <button class="btn btn-outline-success" type="button" id="syncNow">Şimdi Senkronize Et</button>
+                        <button class="btn btn-primary" type="submit">{% trans "Kaydet / Kuyruğa Al" %}</button>
+                        <button class="btn btn-outline-success" type="button" id="syncNow">{% trans "Şimdi Senkronize Et" %}</button>
                     </div>
                 </form>
             </div>
@@ -55,7 +56,7 @@
         <div class="card glass-card mt-4">
             <div class="card-body">
                 <h5 class="fw-bold mb-3">Bekleyen Kuyruk</h5>
-                <div id="queueList" class="text-muted">Yükleniyor...</div>
+                <div id="queueList" class="text-muted">{% trans "Yükleniyor..." %}</div>
             </div>
         </div>
     </div>

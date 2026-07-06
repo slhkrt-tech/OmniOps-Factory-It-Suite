@@ -13,7 +13,7 @@
     </div>
     <div class="d-flex gap-2">
         {% if ticket.is_sla_breached %}
-        <span class="badge bg-danger">SLA İhlali</span>
+        <span class="badge bg-danger">{% trans "SLA İhlali" %}</span>
         {% endif %}
         {% if ticket.is_escalated %}
         <span class="badge bg-warning text-dark">Eskale</span>
@@ -26,15 +26,15 @@
     <div class="col-lg-8">
         <div class="card glass-card mb-4">
             <div class="card-body">
-                <h5 class="fw-bold mb-3">Talep Detayı</h5>
+                <h5 class="fw-bold mb-3">{% trans "Talep Detayı" %}</h5>
                 <p class="text-muted mb-0" style="white-space: pre-wrap;">{{ ticket.description }}</p>
                 <hr>
                 <div class="row small text-muted">
-                    <div class="col-md-4"><strong>Öncelik:</strong> {{ ticket.priority }}</div>
-                    <div class="col-md-4"><strong>Kategori:</strong> {{ ticket.category }}</div>
-                    <div class="col-md-4"><strong>Oluşturan:</strong> {{ ticket.created_by.username|default:"—" }}</div>
+                    <div class="col-md-4"><strong>{% trans "Öncelik:" %}</strong> {{ ticket.priority }}</div>
+                    <div class="col-md-4"><strong>{% trans "Kategori:" %}</strong> {{ ticket.category }}</div>
+                    <div class="col-md-4"><strong>{% trans "Oluşturan:" %}</strong> {{ ticket.created_by.username|default:"—" }}</div>
                     <div class="col-md-4 mt-2"><strong>Atanan:</strong> {{ ticket.assigned_to.username|default:"Atanmadı" }}</div>
-                    <div class="col-md-4 mt-2"><strong>Oluşturulma:</strong> {{ ticket.created_at|date:"d.m.Y H:i" }}</div>
+                    <div class="col-md-4 mt-2"><strong>{% trans "Oluşturulma:" %}</strong> {{ ticket.created_at|date:"d.m.Y H:i" }}</div>
                     <div class="col-md-4 mt-2"><strong>SLA:</strong> {{ ticket.sla_deadline|date:"d.m.Y H:i"|default:"—" }}</div>
                 </div>
             </div>
@@ -49,11 +49,11 @@
                         <strong>{{ comment.author.username }}</strong>
                         <span class="text-muted">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
                     </div>
-                    {% if comment.is_internal %}<span class="badge bg-warning text-dark mb-2">Dahili</span>{% endif %}
+                    {% if comment.is_internal %}<span class="badge bg-warning text-dark mb-2">{% trans "Dahili" %}</span>{% endif %}
                     <p class="mb-0" style="white-space: pre-wrap;">{{ comment.content }}</p>
                 </div>
                 {% empty %}
-                <p class="text-muted">Henüz yorum yok.</p>
+                <p class="text-muted">{% trans "Henüz yorum yok." %}</p>
                 {% endfor %}
 
                 <form method="post" class="mt-3">
@@ -66,7 +66,7 @@
                         <label class="form-check-label">{{ comment_form.is_internal.label }}</label>
                     </div>
                     {% endif %}
-                    <button type="submit" class="btn btn-primary mt-3">Yorum Ekle</button>
+                    <button type="submit" class="btn btn-primary mt-3">{% trans "Yorum Ekle" %}</button>
                 </form>
             </div>
         </div>
@@ -76,7 +76,7 @@
         {% if user.is_staff %}
         <div class="card glass-card mb-4">
             <div class="card-body">
-                <h6 class="fw-bold mb-3">Durum Güncelle</h6>
+                <h6 class="fw-bold mb-3">{% trans "Durum Güncelle" %}</h6>
                 <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="update_status">
@@ -85,7 +85,7 @@
                         <option value="{{ val }}" {% if ticket.status == val %}selected{% endif %}>{{ label }}</option>
                         {% endfor %}
                     </select>
-                    <button type="submit" class="btn btn-outline-primary w-100">Güncelle</button>
+                    <button type="submit" class="btn btn-outline-primary w-100">{% trans "Güncelle" %}</button>
                 </form>
             </div>
         </div>
@@ -97,7 +97,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="action" value="assign">
                     <select name="assigned_to" class="form-select mb-2">
-                        <option value="">— Seçin —</option>
+                        <option value="">{% trans "— Seçin —" %}</option>
                         {% for agent in support_agents %}
                         <option value="{{ agent.id }}" {% if ticket.assigned_to_id == agent.id %}selected{% endif %}>{{ agent.username }}</option>
                         {% endfor %}
@@ -110,7 +110,7 @@
 
         <div class="card glass-card mb-4">
             <div class="card-body">
-                <h6 class="fw-bold mb-3">Dosya Ekleri</h6>
+                <h6 class="fw-bold mb-3">{% trans "Dosya Ekleri" %}</h6>
                 {% for att in attachments %}
                 <div class="d-flex justify-content-between align-items-center border rounded p-2 mb-2">
                     <a href="{{ att.file.url }}" target="_blank" class="text-decoration-none">{{ att.filename }}</a>
@@ -123,7 +123,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="action" value="attachment">
                     {{ attachment_form.file }}
-                    <button type="submit" class="btn btn-outline-secondary w-100 mt-2">Dosya Yükle</button>
+                    <button type="submit" class="btn btn-outline-secondary w-100 mt-2">{% trans "Dosya Yükle" %}</button>
                 </form>
             </div>
         </div>

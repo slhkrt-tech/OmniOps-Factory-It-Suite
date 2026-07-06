@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-label="OmniOps katman mimarisi">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <rect width="960" height="520" fill="url(#bg)"/>
+  <text x="480" y="42" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle">OmniOps Factory IT Suite  Katman Mimarisi</text>
+  <g filter="url(#shadow)">
+    <rect x="60" y="70" width="840" height="70" rx="14" fill="#7c3aed" opacity="0.95"/>
+    <text x="90" y="112" fill="#fff" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700">Sunum Katman1</text>
+    <text x="320" y="112" fill="#ede9fe" font-family="Segoe UI, Arial, sans-serif" font-size="15">Django Templates · Bootstrap 5 · Chart.js · PWA · TR/EN i18n</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="60" y="160" width="840" height="70" rx="14" fill="#0891b2" opacity="0.95"/>
+    <text x="90" y="202" fill="#fff" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700">Uygulama Katman1</text>
+    <text x="320" y="202" fill="#cffafe" font-family="Segoe UI, Arial, sans-serif" font-size="15">Django 5 · DRF · Celery · RBAC · ITSM/ITOM i_ kurallar1</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="60" y="250" width="840" height="70" rx="14" fill="#059669" opacity="0.95"/>
+    <text x="90" y="292" fill="#fff" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700">Entegrasyon Katman1</text>
+    <text x="320" y="292" fill="#d1fae5" font-family="Segoe UI, Arial, sans-serif" font-size="15">AD/LDAP · ERP · OT/MES · Zabbix · OnlyOffice · Webhook/SIEM</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="60" y="340" width="840" height="70" rx="14" fill="#d97706" opacity="0.95"/>
+    <text x="90" y="382" fill="#fff" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700">Veri Katman1</text>
+    <text x="320" y="382" fill="#fef3c7" font-family="Segoe UI, Arial, sans-serif" font-size="15">PostgreSQL · Redis · Media · Vault (Fernet) · Denetim loglar1</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="60" y="430" width="840" height="60" rx="14" fill="#475569" opacity="0.95"/>
+    <text x="90" y="467" fill="#fff" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700">Da1t1m</text>
+    <text x="220" y="467" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="15">Docker · Gunicorn · Nginx · WhiteNoise · GitHub Actions CI</text>
+  </g>
+</svg>

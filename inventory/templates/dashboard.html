@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load i18n static %}
 
 {% block title %}{% trans "OmniOps - Ana Panel" %}{% endblock %}
@@ -105,7 +106,7 @@
         <div class="ops-panel ops-span-12" data-widget-id="heatmap" data-collapsible-panel="heatmap">
             <div class="ops-panel__head">
                 <h6 class="ops-panel__title">
-                    {% if workspace.drag_drop_enabled %}<span class="ops-drag-handle iconify me-1" data-icon="mdi:drag-vertical" title="Sürükle"></span>{% endif %}
+                    {% if workspace.drag_drop_enabled %}<span class="ops-drag-handle iconify me-1" data-icon="mdi:drag-vertical" title="{% trans 'Sürükle' %}"></span>{% endif %}
                     <span class="iconify" data-icon="mdi:chart-timeline-variant"></span>{% trans "Aktivite Isı Haritası" %} <span class="text-muted fw-normal">· {% trans "Son 30 gün" %}</span>
                 </h6>
                 <button type="button" class="btn btn-sm btn-light" data-collapse-toggle>{% trans "Gizle" %}</button>
@@ -250,15 +251,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 const tCard = document.getElementById('card-ticket');
                 tCard.className = `ops-metric ${data.ticket_alert_class === 'danger' ? 'ops-metric--danger pulse-danger' : 'ops-metric--warning'}`;
                 document.getElementById('ticket-trend').innerHTML = data.new_tickets_24h > 0
-                    ? `<span class="iconify" data-icon="mdi:trending-up"></span> +${data.new_tickets_24h} son 24s`
-                    : `<span class="iconify" data-icon="mdi:minus"></span> Yeni talep yok`;
+                    ? `<span class="iconify" data-icon="mdi:trending-up"></span> +${data.new_tickets_24h} {% trans "son 24s" %}`
+                    : `<span class="iconify" data-icon="mdi:minus"></span> {% trans "Yeni talep yok" %}`;
                 document.getElementById('ticket-trend').className = `ops-metric__hint ${data.new_tickets_24h > 0 ? 'text-danger' : ''}`;
 
                 const dCard = document.getElementById('card-device');
                 dCard.className = `ops-metric ${data.device_alert_class === 'danger' ? 'ops-metric--danger pulse-danger' : 'ops-metric--info'}`;
                 document.getElementById('device-trend').innerHTML = data.offline_device_count > 0
-                    ? `<span class="iconify" data-icon="mdi:alert-circle"></span> ${data.offline_device_count} çevrimdışı`
-                    : `<span class="iconify" data-icon="mdi:check-circle"></span> Tümü çevrimiçi`;
+                    ? `<span class="iconify" data-icon="mdi:alert-circle"></span> ${data.offline_device_count} {% trans "çevrimdışı" %}`
+                    : `<span class="iconify" data-icon="mdi:check-circle"></span> {% trans "Tümü çevrimiçi" %}`;
                 document.getElementById('device-trend').className = `ops-metric__hint ${data.offline_device_count > 0 ? 'text-danger' : ''}`;
 
                 renderDashboardCharts(data.device_labels, data.device_data, data.ticket_labels, data.ticket_data);

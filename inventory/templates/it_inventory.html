@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}OmniOps - BT Envanter ve Lisans Yönetimi{% endblock %}
+{% block title %}{% trans "OmniOps - BT Envanter ve Lisans Yönetimi" %}{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-0 mb-5">
@@ -18,8 +19,8 @@
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h4 class="fw-bold mb-1">BT Varlık Yönetimi</h4>
-            <p class="text-muted small mb-0">Donanım envanterini, yazılım lisanslarını ve kurum sözleşmelerini yönetin.</p>
+            <h4 class="fw-bold mb-1">{% trans "BT Varlık Yönetimi" %}</h4>
+            <p class="text-muted small mb-0">{% trans "Donanım envanterini, yazılım lisanslarını ve kurum sözleşmelerini yönetin." %}</p>
         </div>
         <div class="d-flex gap-2">
             <button class="btn btn-primary shadow-sm fw-bold rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addAssetModal">
@@ -54,17 +55,17 @@
         <div class="tab-pane fade show active" id="hardware" role="tabpanel" tabindex="0">
             <div class="pro-table-wrapper p-0 overflow-hidden mb-4">
                 <div class="p-4 pb-2 border-bottom border-secondary-subtle">
-                    <h6 class="fw-bold mb-0 text-secondary small text-uppercase" style="letter-spacing: 0.5px;">Sistemdeki Fiziksel Varlıklar</h6>
+                    <h6 class="fw-bold mb-0 text-secondary small text-uppercase" style="letter-spacing: 0.5px;">{% trans "Sistemdeki Fiziksel Varlıklar" %}</h6>
                 </div>
                 <div class="table-responsive px-2 pb-2" style="max-height: 600px;">
                     <table class="pro-table mb-0 text-center">
                         <thead class="sticky-top">
                             <tr>
-                                <th class="text-start">Varlık Adı / Model</th>
-                                <th>Seri Numarası</th>
-                                <th>Zimmet Durumu</th>
-                                <th>Garanti Bitiş</th>
-                                <th class="text-end">Durum & İşlemler</th>
+                                <th class="text-start">{% trans "Varlık Adı / Model" %}</th>
+                                <th>{% trans "Seri Numarası" %}</th>
+                                <th>{% trans "Zimmet Durumu" %}</th>
+                                <th>{% trans "Garanti Bitiş" %}</th>
+                                <th class="text-end">{% trans "Durum & İşlemler" %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -87,15 +88,15 @@
                                 <td><span class="text-muted fw-medium">{{ asset.warranty_expiry|date:"d M Y"|default:"Belirtilmedi" }}</span></td>
                                 <td class="text-end">
                                     {% if asset.status == 'active' %}
-                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1 me-2">Aktif</span>
+                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1 me-2">{% trans "Aktif" %}</span>
                                     {% elif asset.status == 'repair' %}
-                                        <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-1 me-2">Tamirde</span>
+                                        <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-1 me-2">{% trans "Tamirde" %}</span>
                                     {% else %}
                                         <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-1 me-2">Hurda</span>
                                     {% endif %}
                                     
                                     <div class="d-inline-flex gap-1">
-                                        <a href="{% url 'asset_edit' asset.id %}" class="btn btn-sm btn-outline-warning rounded-pill" title="Düzenle"><span class="iconify" data-icon="mdi:pencil"></span></a>
+                                        <a href="{% url 'asset_edit' asset.id %}" class="btn btn-sm btn-outline-warning rounded-pill" title="{% trans 'Düzenle' %}"><span class="iconify" data-icon="mdi:pencil"></span></a>
                                         <a href="{% url 'asset_delete' asset.id %}" class="btn btn-sm btn-outline-danger rounded-pill" title="Sil"><span class="iconify" data-icon="mdi:trash-can-outline"></span></a>
                                     </div>
                                 </td>
@@ -104,7 +105,7 @@
                             <tr>
                                 <td colspan="5" class="text-muted py-5 text-center border-0">
                                     <span class="iconify display-1 opacity-25 mb-3" data-icon="mdi:laptop-off"></span><br>
-                                    Henüz donanım envanteri eklenmemiş.
+                                    {% trans "Henüz donanım envanteri eklenmemiş." %}
                                 </td>
                             </tr>
                             {% endfor %}
@@ -149,7 +150,7 @@
                                 </div>
                                 <div>
                                     {% if lic.is_expired %}
-                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle rounded-pill px-2 py-1 me-1">Süresi Doldu</span>
+                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle rounded-pill px-2 py-1 me-1">{% trans "Süresi Doldu" %}</span>
                                     {% else %}
                                         {% if lic.days_left <= 30 %}
                                             <span class="badge bg-warning bg-opacity-10 text-warning border border-warning-subtle rounded-pill px-2 py-1 me-1">{{ lic.days_left }} Gün</span>
@@ -159,14 +160,14 @@
                                     {% endif %}
                                     
                                     <div class="btn-group shadow-sm">
-                                        <a href="{% url 'license_edit' lic.id %}" class="btn btn-sm btn-outline-secondary" title="Düzenle"><span class="iconify" data-icon="mdi:pencil"></span></a>
+                                        <a href="{% url 'license_edit' lic.id %}" class="btn btn-sm btn-outline-secondary" title="{% trans 'Düzenle' %}"><span class="iconify" data-icon="mdi:pencil"></span></a>
                                         <a href="{% url 'license_delete' lic.id %}" class="btn btn-sm btn-outline-danger" title="Sil"><span class="iconify" data-icon="mdi:trash-can-outline"></span></a>
                                     </div>
                                 </div>
                             </div>
                             
                             <h6 class="fw-bold mb-1">{{ lic.name }}</h6>
-                            <p class="text-muted small mb-3">{{ lic.vendor }} {% if lic.is_subscription %}<span class="badge bg-info bg-opacity-10 text-info ms-1">Abonelik</span>{% endif %}</p>
+                            <p class="text-muted small mb-3">{{ lic.vendor }} {% if lic.is_subscription %}<span class="badge bg-info bg-opacity-10 text-info ms-1">{% trans "Abonelik" %}</span>{% endif %}</p>
                             
                             <div class="mb-2 d-flex justify-content-between small fw-bold">
                                 <span class="text-muted">Kullanım: {{ lic.used_slots }} / {{ lic.total_slots }}</span>
@@ -185,8 +186,8 @@
                 {% empty %}
                 <div class="col-12 text-center py-5">
                     <span class="iconify display-1 text-warning opacity-25 mb-3" data-icon="mdi:certificate-outline"></span>
-                    <h5 class="text-muted fw-bold">Kayıtlı Lisans Bulunmuyor</h5>
-                    <p class="text-muted small">Şirketinizin yazılım maliyetlerini takip etmek için sağ üstten lisans ekleyin.</p>
+                    <h5 class="text-muted fw-bold">{% trans "Kayıtlı Lisans Bulunmuyor" %}</h5>
+                    <p class="text-muted small">{% trans "Şirketinizin yazılım maliyetlerini takip etmek için sağ üstten lisans ekleyin." %}</p>
                 </div>
                 {% endfor %}
             </div>
@@ -221,55 +222,55 @@
                         <div class="card-header bg-transparent border-bottom-0 pt-4 px-4 pb-2">
                             <h6 class="fw-bold text-info mb-0 d-flex align-items-center">
                                 <span class="bg-info bg-opacity-10 rounded p-2 me-3"><span class="iconify fs-5" data-icon="mdi:handshake-outline"></span></span> 
-                                Yeni Sözleşme Ekle
+                                {% trans "Yeni Sözleşme Ekle" %}
                             </h6>
                         </div>
                         <div class="card-body px-4 pb-4">
                             <form method="POST" class="admin-forms">
                                 {% csrf_token %}
                                 <div class="mb-3">
-                                    <label class="form-label small fw-bold text-muted mb-1">Tedarikçi Firma</label>
-                                    <input type="text" name="vendor_name" class="form-control" required placeholder="Türk Telekom">
+                                    <label class="form-label small fw-bold text-muted mb-1">{% trans "Tedarikçi Firma" %}</label>
+                                    <input type="text" name="vendor_name" class="form-control" required placeholder="{% trans 'Türk Telekom' %}">
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label small fw-bold text-muted mb-1">Sözleşme Başlığı</label>
+                                    <label class="form-label small fw-bold text-muted mb-1">{% trans "Sözleşme Başlığı" %}</label>
                                     <input type="text" name="title" class="form-control" required placeholder="Metro Ethernet">
                                 </div>
                                 <div class="row g-2 mb-3">
                                     <div class="col-6">
-                                        <label class="form-label small fw-bold text-muted mb-1">Tür</label>
+                                        <label class="form-label small fw-bold text-muted mb-1">{% trans "Tür" %}</label>
                                         <select name="contract_type" class="form-select">
-                                            <option value="internet">İnternet / ISP</option>
-                                            <option value="cloud">Bulut / Hosting</option>
-                                            <option value="maintenance">Donanım Bakım</option>
-                                            <option value="software">Yazılım Desteği</option>
-                                            <option value="other">Diğer</option>
+                                            <option value="internet">{% trans "İnternet / ISP" %}</option>
+                                            <option value="cloud">{% trans "Bulut / Hosting" %}</option>
+                                            <option value="maintenance">{% trans "Donanım Bakım" %}</option>
+                                            <option value="software">{% trans "Yazılım Desteği" %}</option>
+                                            <option value="other">{% trans "Diğer" %}</option>
                                         </select>
                                     </div>
                                     <div class="col-6">
-                                        <label class="form-label small fw-bold text-muted mb-1">SLA Seviyesi</label>
+                                        <label class="form-label small fw-bold text-muted mb-1">{% trans "SLA Seviyesi" %}</label>
                                         <select name="sla_level" class="form-select">
-                                            <option value="24_7">7/24 Kritik Çözüm</option>
-                                            <option value="8_5_nbd">8x5 Mesai (NBD)</option>
+                                            <option value="24_7">{% trans "7/24 Kritik Çözüm" %}</option>
+                                            <option value="8_5_nbd">{% trans "8x5 Mesai (NBD)" %}</option>
                                             <option value="standard">Standart</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="row g-2 mb-3">
                                     <div class="col-6">
-                                        <label class="form-label small fw-bold text-muted mb-1">Başlangıç Tarihi</label>
+                                        <label class="form-label small fw-bold text-muted mb-1">{% trans "Başlangıç Tarihi" %}</label>
                                         <input type="date" name="start_date" class="form-control" required>
                                     </div>
                                     <div class="col-6">
-                                        <label class="form-label small fw-bold text-muted mb-1">Bitiş Tarihi</label>
+                                        <label class="form-label small fw-bold text-muted mb-1">{% trans "Bitiş Tarihi" %}</label>
                                         <input type="date" name="end_date" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="mb-4">
-                                    <label class="form-label small fw-bold text-muted mb-1">Yıllık Maliyet - Opsiyonel</label>
+                                    <label class="form-label small fw-bold text-muted mb-1">{% trans "Yıllık Maliyet - Opsiyonel" %}</label>
                                     <input type="number" step="0.01" name="cost" class="form-control" placeholder="15000">
                                 </div>
-                                <button type="submit" name="submit_contract" class="btn btn-outline-info w-100 fw-bold shadow-sm rounded-3 py-2">Sözleşmeyi Ekle</button>
+                                <button type="submit" name="submit_contract" class="btn btn-outline-info w-100 fw-bold shadow-sm rounded-3 py-2">{% trans "Sözleşmeyi Ekle" %}</button>
                             </form>
                         </div>
                     </div>
@@ -281,10 +282,10 @@
                             <table class="pro-table mb-0 text-center">
                                 <thead class="sticky-top">
                                     <tr>
-                                        <th class="text-start">Firma ve Sözleşme</th>
-                                        <th>SLA Seviyesi</th>
-                                        <th>Bitiş Tarihi</th>
-                                        <th class="text-end">Kalan Süre & İşlemler</th>
+                                        <th class="text-start">{% trans "Firma ve Sözleşme" %}</th>
+                                        <th>{% trans "SLA Seviyesi" %}</th>
+                                        <th>{% trans "Bitiş Tarihi" %}</th>
+                                        <th class="text-end">{% trans "Kalan Süre & İşlemler" %}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -295,14 +296,14 @@
                                             <small class="text-muted">{{ contract.title }}</small>
                                         </td>
                                         <td>
-                                            {% if contract.sla_level == '24_7' %}<span class="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle px-2 py-1"><span class="iconify me-1" data-icon="mdi:shield-alert-outline"></span>7/24 Kritik</span>
-                                            {% elif contract.sla_level == '8_5_nbd' %}<span class="badge bg-warning bg-opacity-10 text-warning border border-warning-subtle px-2 py-1"><span class="iconify me-1" data-icon="mdi:shield-sun-outline"></span>8x5 Ertesi Gün</span>
+                                            {% if contract.sla_level == '24_7' %}<span class="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle px-2 py-1"><span class="iconify me-1" data-icon="mdi:shield-alert-outline"></span>{% trans "7/24 Kritik" %}</span>
+                                            {% elif contract.sla_level == '8_5_nbd' %}<span class="badge bg-warning bg-opacity-10 text-warning border border-warning-subtle px-2 py-1"><span class="iconify me-1" data-icon="mdi:shield-sun-outline"></span>{% trans "8x5 Ertesi Gün" %}</span>
                                             {% else %}<span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle px-2 py-1"><span class="iconify me-1" data-icon="mdi:shield-check-outline"></span>Standart</span>{% endif %}
                                         </td>
                                         <td class="small fw-medium">{{ contract.end_date|date:"d M Y" }}</td>
                                         <td class="text-end">
                                             {% if contract.is_expired %}
-                                                <span class="badge bg-danger px-2 py-1 rounded-pill shadow-sm me-2">Süresi Doldu</span>
+                                                <span class="badge bg-danger px-2 py-1 rounded-pill shadow-sm me-2">{% trans "Süresi Doldu" %}</span>
                                             {% elif contract.days_left <= 30 %}
                                                 <span class="badge bg-warning text-dark px-2 py-1 rounded-pill shadow-sm me-2"><span class="iconify me-1" data-icon="mdi:alert-outline"></span>{{ contract.days_left }} Gün</span>
                                             {% else %}
@@ -310,13 +311,13 @@
                                             {% endif %}
                                             
                                             <div class="d-inline-flex gap-1">
-                                                <a href="{% url 'vendor_edit' contract.id %}" class="btn btn-sm btn-outline-warning rounded-pill" title="Düzenle"><span class="iconify" data-icon="mdi:pencil"></span></a>
+                                                <a href="{% url 'vendor_edit' contract.id %}" class="btn btn-sm btn-outline-warning rounded-pill" title="{% trans 'Düzenle' %}"><span class="iconify" data-icon="mdi:pencil"></span></a>
                                                 <a href="{% url 'vendor_delete' contract.id %}" class="btn btn-sm btn-outline-danger rounded-pill" title="Sil"><span class="iconify" data-icon="mdi:trash-can-outline"></span></a>
                                             </div>
                                         </td>
                                     </tr>
                                     {% empty %}
-                                    <tr><td colspan="4" class="text-muted py-5 border-0">Kayıtlı sözleşme bulunmuyor.</td></tr>
+                                    <tr><td colspan="4" class="text-muted py-5 border-0">{% trans "Kayıtlı sözleşme bulunmuyor." %}</td></tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
@@ -357,7 +358,7 @@
             <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title fw-bold text-primary d-flex align-items-center">
                     <span class="bg-primary bg-opacity-10 rounded p-2 me-2 d-flex"><span class="iconify fs-4" data-icon="mdi:laptop-mac"></span></span>
-                    Yeni Donanım Varlığı Ekle
+                    {% trans "Yeni Donanım Varlığı Ekle" %}
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -403,7 +404,7 @@
                         {{ asset_form.status }}
                     </div>
                     
-                    <button type="submit" name="submit_asset" id="btnAsset" class="btn btn-primary w-100 fw-bold shadow-sm rounded-3 py-2" onclick="showGlobalLoading('btnAsset', 'Kaydediliyor...')">
+                    <button type="submit" name="submit_asset" id="btnAsset" class="btn btn-primary w-100 fw-bold shadow-sm rounded-3 py-2" onclick="showGlobalLoading('btnAsset', '{% trans "Kaydediliyor..." %}')">
                         <span class="iconify me-1 align-text-bottom" data-icon="mdi:content-save-outline"></span> Donanımı Envantere Kaydet
                     </button>
                 </form>
@@ -418,7 +419,7 @@
             <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title fw-bold text-warning d-flex align-items-center">
                     <span class="bg-warning bg-opacity-10 rounded p-2 me-2 d-flex"><span class="iconify fs-4 text-warning" data-icon="mdi:certificate-outline"></span></span>
-                    Yazılım Lisansı Ekle
+                    {% trans "Yazılım Lisansı Ekle" %}
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -457,10 +458,10 @@
 
                     <div class="form-check form-switch mb-4 p-2 bg-body-tertiary rounded-3 border border-secondary-subtle d-flex align-items-center shadow-sm">
                         {{ license_form.is_subscription }}
-                        <label class="form-check-label fw-bold text-body ms-2 small" for="{{ license_form.is_subscription.id_for_label }}">Aylık/Yıllık Abonelik Mi?</label>
+                        <label class="form-check-label fw-bold text-body ms-2 small" for="{{ license_form.is_subscription.id_for_label }}">{% trans "Aylık/Yıllık Abonelik Mi?" %}</label>
                     </div>
                     
-                    <button type="submit" name="submit_license" id="btnLicense" class="btn btn-warning text-dark w-100 fw-bold shadow-sm rounded-3 py-2" onclick="showGlobalLoading('btnLicense', 'Lisans Kaydediliyor...')">
+                    <button type="submit" name="submit_license" id="btnLicense" class="btn btn-warning text-dark w-100 fw-bold shadow-sm rounded-3 py-2" onclick="showGlobalLoading('btnLicense', '{% trans "Lisans Kaydediliyor..." %}')">
                         <span class="iconify me-1 align-text-bottom" data-icon="mdi:key-plus"></span> Lisansı Sisteme Kaydet
                     </button>
                 </form>

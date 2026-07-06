@@ -1,8 +1,9 @@
 {% load static %}
 {% load i18n %}
 {% load role_tags %}
+{% get_current_language as CURRENT_LANGUAGE %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}" data-bs-theme="light">
+<html lang="{{ CURRENT_LANGUAGE }}" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -42,7 +43,7 @@
                 </span>
                 <span class="brand-copy">
                     <span class="brand-title">OmniOps</span>
-                    <span class="brand-subtitle">Factory IT Suite</span>
+                    <span class="brand-subtitle">{% trans "Factory IT Suite" %}</span>
                 </span>
             </a>
             <button class="btn btn-link d-lg-none p-0" id="closeSidebar">
@@ -57,7 +58,7 @@
             {% if workspace.modules.command %}
             <div class="sidebar-group mb-2" data-sidebar-group="command">
                 <button class="sidebar-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarGroupCommand" aria-expanded="true">
-                    <span>{{ workspace.module_labels.command|default:"Genel Bakış" }}</span>
+                    <span>{{ workspace.module_labels.command|default:i18n_defaults.overview }}</span>
                     <span class="iconify sidebar-group-chevron" data-icon="mdi:chevron-down"></span>
                 </button>
                 <div class="collapse show" id="sidebarGroupCommand">
@@ -82,7 +83,7 @@
             {% if workspace.modules.factory %}
             <div class="sidebar-group mb-2" data-sidebar-group="factory">
                 <button class="sidebar-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarGroupFactory" aria-expanded="false">
-                    <span>{{ workspace.module_labels.factory|default:"Fabrika & Envanter" }}</span>
+                    <span>{{ workspace.module_labels.factory|default:i18n_defaults.factory_inventory }}</span>
                     <span class="iconify sidebar-group-chevron" data-icon="mdi:chevron-down"></span>
                 </button>
                 <div class="collapse" id="sidebarGroupFactory">
@@ -100,12 +101,12 @@
             {% if workspace.modules.network %}
             <div class="sidebar-group mb-2" data-sidebar-group="network">
                 <button class="sidebar-group-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarGroupNetwork" aria-expanded="false">
-                    <span>{{ workspace.module_labels.network|default:"Altyapı" }}</span>
+                    <span>{{ workspace.module_labels.network|default:i18n_defaults.infrastructure }}</span>
                     <span class="iconify sidebar-group-chevron" data-icon="mdi:chevron-down"></span>
                 </button>
                 <div class="collapse" id="sidebarGroupNetwork">
                     <ul class="nav flex-column sidebar-group-items">
-                        <li class="nav-item"><a href="/monitor/" class="nav-link {% if request.path == '/monitor/' %}active{% endif %}"><span class="iconify" data-icon="mdi:chart-areaspline"></span> {{ workspace.nav_labels.monitor|default:"Performans İzleme" }}</a></li>
+                        <li class="nav-item"><a href="/monitor/" class="nav-link {% if request.path == '/monitor/' %}active{% endif %}"><span class="iconify" data-icon="mdi:chart-areaspline"></span> {{ workspace.nav_labels.monitor|default:i18n_defaults.monitoring }}</a></li>
                         <li class="nav-item"><a href="/topoloji/" class="nav-link {% if request.path == '/topoloji/' %}active{% endif %}"><span class="iconify" data-icon="mdi:graph-outline"></span> {% trans "Topoloji Haritası" %}</a></li>
                         <li class="nav-item"><a href="{% url 'rack_elevation' %}" class="nav-link {% if request.path == '/veri-merkezi/' %}active{% endif %}"><span class="iconify" data-icon="mdi:server"></span> {% trans "Kabin & Rack" %}</a></li>
                         {% if request.user|has_role:"Sistem Ekibi,Yönetim" %}
@@ -251,7 +252,7 @@
                 {% if user.is_authenticated %}
                 <button type="button" class="command-trigger" data-bs-toggle="modal" data-bs-target="#commandPaletteModal">
                     <span class="iconify" data-icon="mdi:magnify"></span>
-                    <span>OmniOps içinde ara veya komut çalıştır</span>
+                    <span>{% trans "OmniOps içinde ara veya komut çalıştır" %}</span>
                     <kbd>Ctrl</kbd><kbd>K</kbd>
                 </button>
                 {% endif %}
@@ -261,7 +262,7 @@
 
                 {% if user.is_authenticated %}
                 <div class="dropdown me-3">
-                    <a href="#" class="position-relative text-decoration-none text-muted" data-bs-toggle="dropdown" id="notification-bell" title="Bildirimler">
+                    <a href="#" class="position-relative text-decoration-none text-muted" data-bs-toggle="dropdown" id="notification-bell" title="{% trans 'Bildirimler' %}">
                         <span class="iconify fs-4" data-icon="mdi:bell-outline"></span>
                         {% if unread_notification_count %}
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notification-badge">{{ unread_notification_count }}</span>
@@ -269,16 +270,16 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3 rounded-3 p-2" style="width: 320px; max-height: 400px; overflow-y: auto;" id="notification-list">
                         <li class="dropdown-header d-flex justify-content-between align-items-center">
-                            <span class="fw-bold">Bildirimler</span>
-                            <button type="button" class="btn btn-link btn-sm p-0" id="mark-all-read">Tümünü okundu işaretle</button>
+                            <span class="fw-bold">{% trans "Bildirimler" %}</span>
+                            <button type="button" class="btn btn-link btn-sm p-0" id="mark-all-read">{% trans "Tümünü okundu işaretle" %}</button>
                         </li>
                         <li><hr class="dropdown-divider"></li>
-                        <li class="px-3 py-2 text-muted small" id="notification-empty">Yükleniyor...</li>
+                        <li class="px-3 py-2 text-muted small" id="notification-empty">{% trans "Yükleniyor..." %}</li>
                     </ul>
                 </div>
                 {% endif %}
                 
-                <button class="btn btn-link text-muted me-3" data-bs-toggle="modal" data-bs-target="#helpModal" title="Bu sayfa nasıl çalışır?">
+                <button class="btn btn-link text-muted me-3" data-bs-toggle="modal" data-bs-target="#helpModal" title="{% trans 'Bu sayfa nasıl çalışır?' %}">
                     <span class="iconify fs-4" data-icon="mdi:help-circle-outline"></span>
                 </button>
 
@@ -288,13 +289,13 @@
                         <input name="next" type="hidden" value="{{ request.get_full_path }}">
                         <a href="#" class="d-flex align-items-center text-decoration-none text-muted" data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="iconify fs-4" data-icon="mdi:earth"></span>
-                            <span class="ms-1 d-none d-sm-inline fw-bold">{% get_current_language as LANGUAGE_CODE %}{{ LANGUAGE_CODE|upper }}</span>
+                            <span class="ms-1 d-none d-sm-inline fw-bold">{{ CURRENT_LANGUAGE|upper }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-3 rounded-3 p-2">
                             {% get_available_languages as LANGUAGES %}
                             {% for language in LANGUAGES %}
                             <li>
-                                <button type="submit" name="language" value="{{ language.0 }}" class="dropdown-item fw-medium py-2 rounded {% if language.0 == LANGUAGE_CODE %}bg-primary bg-opacity-10 text-primary{% endif %}">
+                                <button type="submit" name="language" value="{{ language.0 }}" class="dropdown-item fw-medium py-2 rounded {% if language.0 == CURRENT_LANGUAGE %}bg-primary bg-opacity-10 text-primary{% endif %}">
                                     {{ language.1 }}
                                 </button>
                             </li>
@@ -405,11 +406,11 @@
           <div class="modal-body p-0">
             <div class="command-search-wrap">
                 <span class="iconify" data-icon="mdi:magnify"></span>
-                <input type="search" id="global-search-input" class="command-search-input" placeholder="Cihaz, ticket, kamera, Odoo, runbook, rapor ara...">
+                <input type="search" id="global-search-input" class="command-search-input" placeholder="{% trans 'Cihaz, ticket, kamera, Odoo, runbook, rapor ara...' %}">
                 <span class="command-shortcut">ESC</span>
             </div>
             <div id="global-search-results" class="command-results">
-                <div class="command-empty">Komutlar ve hızlı aksiyonlar yükleniyor...</div>
+                <div class="command-empty">{% trans "Komutlar ve hızlı aksiyonlar yükleniyor..." %}</div>
             </div>
           </div>
         </div>
@@ -418,6 +419,10 @@
     {% endif %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {{ omniops_i18n|json_script:"omniops-i18n-data" }}
+    <script>
+        window.OmniOpsI18n = JSON.parse(document.getElementById('omniops-i18n-data').textContent);
+    </script>
     <script src="{% static 'js/main.js' %}"></script>
     
     <script>
@@ -479,7 +484,7 @@
                             badge.style.display = data.unread_count ? 'inline' : 'none';
                         }
                         if (!data.notifications.length) {
-                            if (notificationEmpty) notificationEmpty.textContent = 'Bildirim yok.';
+                            if (notificationEmpty) notificationEmpty.textContent = window.OmniOpsI18n.noNotifications;
                             return;
                         }
                         if (notificationEmpty) notificationEmpty.remove();
@@ -621,10 +626,10 @@
                         useFillColorAsStroke: false,
                         colorScale: {
                             ranges: [
-                                { from: 0, to: 0, color: theme.mode === 'dark' ? 'rgba(124, 58, 237, 0.08)' : 'rgba(124, 58, 237, 0.06)', name: 'Yok' },
-                                { from: 1, to: 5, color: '#8b5cf6', name: 'Düşük' },
-                                { from: 6, to: 15, color: '#7c3aed', name: 'Orta' },
-                                { from: 16, to: 1000, color: '#4c1d95', name: 'Yüksek' }
+                                { from: 0, to: 0, color: theme.mode === 'dark' ? 'rgba(124, 58, 237, 0.08)' : 'rgba(124, 58, 237, 0.06)', name: window.OmniOpsI18n.heatmapNone },
+                                { from: 1, to: 5, color: '#8b5cf6', name: window.OmniOpsI18n.heatmapLow },
+                                { from: 6, to: 15, color: '#7c3aed', name: window.OmniOpsI18n.heatmapMedium },
+                                { from: 16, to: 1000, color: '#4c1d95', name: window.OmniOpsI18n.heatmapHigh }
                             ]
                         }
                     }

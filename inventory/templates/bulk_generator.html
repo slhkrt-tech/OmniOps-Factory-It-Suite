@@ -17,13 +17,13 @@
         <div class="row g-4">
             <div class="col-lg-6">
                 <div class="pro-table-wrapper h-100">
-                    <h6 class="fw-bold mb-3 text-secondary"><i class="fas fa-server me-2"></i>Hedef Cihazları Seçin</h6>
+                    <h6 class="fw-bold mb-3 text-secondary"><i class="fas fa-server me-2"></i>{% trans "Hedef Cihazları Seçin" %}</h6>
                     <select name="device_ids" class="form-select bg-body-tertiary border-secondary-subtle" multiple size="15" required>
                         {% for dev in devices %}
                             <option value="{{ dev.id }}">{{ dev.name }} ({{ dev.vendor }})</option>
                         {% endfor %}
                     </select>
-                    <small class="text-muted d-block mt-2"><i class="fas fa-info-circle"></i> Ctrl tuşuna basılı tutarak çoklu seçim yapabilirsiniz.</small>
+                    <small class="text-muted d-block mt-2"><i class="fas fa-info-circle"></i>{% trans " Ctrl tuşuna basılı tutarak çoklu seçim yapabilirsiniz." %}</small>
                 </div>
             </div>
 

@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}Kullanıcı Yönetimi - OmniOps{% endblock %}
+{% block title %}{% trans "Kullanıcı Yönetimi - OmniOps" %}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0">Kullanıcı Yönetimi</h2>
-    <a href="{% url 'helpdesk_analytics' %}" class="btn btn-outline-primary">Analitik Paneli</a>
+    <h2 class="fw-bold mb-0">{% trans "Kullanıcı Yönetimi" %}</h2>
+    <a href="{% url 'helpdesk_analytics' %}" class="btn btn-outline-primary">{% trans "Analitik Paneli" %}</a>
 </div>
 
 <div class="row g-4">
     <div class="col-lg-4">
         <div class="card glass-card">
             <div class="card-body">
-                <h5 class="fw-bold mb-3">Yeni Kullanıcı</h5>
+                <h5 class="fw-bold mb-3">{% trans "Yeni Kullanıcı" %}</h5>
                 <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="create_user">
@@ -31,7 +31,7 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Oluştur</button>
+                    <button type="submit" class="btn btn-primary w-100">{% trans "Oluştur" %}</button>
                 </form>
             </div>
         </div>
@@ -41,11 +41,11 @@
             <table class="pro-table">
                 <thead>
                     <tr>
-                        <th>Kullanıcı</th>
+                        <th>{% trans "Kullanıcı" %}</th>
                         <th>E-posta</th>
                         <th>Rol</th>
                         <th>Durum</th>
-                        <th>Kayıt</th>
+                        <th>{% trans "Kayıt" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,7 +61,7 @@
                         {% endfor %}
                     </td>
                     <td>
-                        {% if u.is_active %}<span class="badge bg-success">Aktif</span>{% else %}<span class="badge bg-danger">Pasif</span>{% endif %}
+                        {% if u.is_active %}<span class="badge bg-success">{% trans "Aktif" %}</span>{% else %}<span class="badge bg-danger">{% trans "Pasif" %}</span>{% endif %}
                     </td>
                     <td class="small text-muted">{{ u.date_joined|date:"d.m.Y" }}</td>
                 </tr>

@@ -1,5 +1,7 @@
 """OmniOps modül kaydı ve sektör bazlı çalışma alanı profilleri."""
 
+from django.utils.translation import gettext_lazy as _
+
 WORKSPACE_MODULE_KEYS = (
     'command',
     'factory',
@@ -12,14 +14,14 @@ WORKSPACE_MODULE_KEYS = (
 )
 
 DEFAULT_MODULE_LABELS = {
-    'command': 'Genel Bakış',
-    'factory': 'Fabrika & Envanter',
-    'network': 'Altyapı',
-    'identity': 'Kimlik & Erişim',
-    'service': 'Servis Masası',
-    'security': 'Güvenlik & Uyum',
-    'reports': 'Rapor & Doküman',
-    'admin': 'Yönetim',
+    'command': _('Genel Bakış'),
+    'factory': _('Fabrika & Envanter'),
+    'network': _('Altyapı'),
+    'identity': _('Kimlik & Erişim'),
+    'service': _('Servis Masası'),
+    'security': _('Güvenlik & Uyum'),
+    'reports': _('Rapor & Doküman'),
+    'admin': _('Yönetim'),
 }
 
 DEFAULT_DASHBOARD_WIDGETS = [

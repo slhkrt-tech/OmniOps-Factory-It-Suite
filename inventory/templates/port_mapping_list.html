@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Port Haritaları - OmniOps{% endblock %}
+{% block title %}{% trans "Port Haritaları - OmniOps" %}{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-0 mb-5">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
         <div>
-            <h4 class="fw-bold mb-1">Port Haritaları</h4>
-            <p class="text-muted small mb-0">Cihaz bazlı port haritasına gitmek için aşağıdaki cihazlardan birini seçin.</p>
+            <h4 class="fw-bold mb-1">{% trans "Port Haritaları" %}</h4>
+            <p class="text-muted small mb-0">{% trans "Cihaz bazlı port haritasına gitmek için aşağıdaki cihazlardan birini seçin." %}</p>
         </div>
         <div class="text-muted small">Toplam cihaz: {{ devices.count }}</div>
     </div>
@@ -17,11 +18,11 @@
             <table class="table table-hover align-middle mb-0 text-center border-top border-secondary-subtle">
                 <thead class="bg-body-tertiary sticky-top border-bottom border-secondary-subtle text-muted small text-uppercase">
                     <tr>
-                        <th class="py-3 ps-4 border-0 text-start">Cihaz</th>
-                        <th class="py-3 border-0">Tür</th>
-                        <th class="py-3 border-0">Üretici</th>
-                        <th class="py-3 border-0">Port Sayısı</th>
-                        <th class="py-3 pe-4 border-0">İşlem</th>
+                        <th class="py-3 ps-4 border-0 text-start">{% trans "Cihaz" %}</th>
+                        <th class="py-3 border-0">{% trans "Tür" %}</th>
+                        <th class="py-3 border-0">{% trans "Üretici" %}</th>
+                        <th class="py-3 border-0">{% trans "Port Sayısı" %}</th>
+                        <th class="py-3 pe-4 border-0">{% trans "İşlem" %}</th>
                     </tr>
                 </thead>
                 <tbody class="text-body">
@@ -32,13 +33,13 @@
                         <td>{{ device.get_vendor_display }}</td>
                         <td>{{ device.port_count }}</td>
                         <td class="pe-4">
-                            <a href="{% url 'port_mapping' device.id %}" class="btn btn-sm btn-outline-primary">Port Haritasını Gör</a>
+                            <a href="{% url 'port_mapping' device.id %}" class="btn btn-sm btn-outline-primary">{% trans "Port Haritasını Gör" %}</a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
                         <td colspan="5" class="text-center text-muted py-5">
-                            Henüz port yapılandırılmış cihaz bulunamadı. Lütfen cihaz port kayıtlarını ekleyin.
+                            {% trans "Henüz port yapılandırılmış cihaz bulunamadı. Lütfen cihaz port kayıtlarını ekleyin." %}
                         </td>
                     </tr>
                     {% endfor %}

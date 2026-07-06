@@ -4,6 +4,8 @@ import os
 
 from django.conf import settings
 
+from django.utils.translation import gettext as _
+
 from .models import FactorySite, OrganizationWorkspace, UserWorkspacePreference
 from .workspace_registry import (
     DEFAULT_DASHBOARD_WIDGETS,
@@ -61,8 +63,11 @@ def get_workspace_context(user, request=None):
     preset = get_industry_preset(industry)
     enabled = get_enabled_modules(org, preset)
     labels = merge_module_labels(org.module_labels or {}, preset)
+    labels = {key: _(value) for key, value in labels.items()}
     terminology = dict(preset.get('terminology') or {})
     terminology.update(org.terminology or {})
+    nav_labels = preset.get('nav_labels') or {}
+    nav_labels = {key: _(value) for key, value in nav_labels.items()}
     features = dict(preset.get('features') or {})
     features.update(org.feature_overrides or {})
     if not getattr(settings, 'FEATURE_SALES_KANBAN', True):
@@ -81,8 +86,8 @@ def get_workspace_context(user, request=None):
     return {
         'organization': org,
         'industry': industry,
-        'industry_label': org.custom_industry_label or preset.get('label') or industry.title(),
-        'tagline': org.tagline or 'Bilgi işlem için tek çalışma alanı',
+        'industry_label': org.custom_industry_label or _(preset.get('label') or industry.title()),
+        'tagline': org.tagline or _('Bilgi işlem için tek çalışma alanı'),
         'modules': {key: key in enabled for key in DEFAULT_MODULE_LABELS},
         'module_labels': labels,
         'terminology': terminology,
@@ -91,7 +96,7 @@ def get_workspace_context(user, request=None):
         'drag_drop_enabled': prefs.drag_drop_enabled if prefs else True,
         'dashboard_layout': dashboard_layout,
         'sidebar_layout': sidebar_layout,
-        'nav_labels': preset.get('nav_labels') or {},
+        'nav_labels': nav_labels,
     }
 
 

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}OmniOps - Sistem Yönetim Paneli{% endblock %}
+{% block title %}OmniOps - {% trans "Sistem Yönetim Paneli" %}{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-0 mb-5">
@@ -18,8 +19,8 @@
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h4 class="fw-bold mb-1">Sistem Yönetim Paneli</h4>
-            <p class="text-muted small mb-0">Cihaz, kullanıcı, destek talepleri ve konfigürasyon değişiklikleri yönetim ekranı.</p>
+            <h4 class="fw-bold mb-1">{% trans "Sistem Yönetim Paneli" %}</h4>
+            <p class="text-muted small mb-0">{% trans "Cihaz, kullanıcı, destek talepleri ve konfigürasyon değişiklikleri yönetim ekranı." %}</p>
         </div>
     </div>
 
@@ -30,7 +31,7 @@
                 <div class="card-header bg-transparent border-bottom-0 pt-4 px-4 pb-2">
                     <h6 class="fw-bold mb-0 d-flex align-items-center">
                         <span class="bg-primary bg-opacity-10 text-primary rounded p-2 me-3"><span class="iconify fs-5" data-icon="mdi:server-network"></span></span>
-                        Yeni Cihaz Ekle
+                        {% trans "Yeni Cihaz Ekle" %}
                     </h6>
                 </div>
                 <div class="card-body px-4 pb-4">
@@ -62,7 +63,7 @@
                         </div>
 
                         <div class="p-3 bg-body-tertiary rounded-3 border border-secondary-subtle mb-3 shadow-sm">
-                            <label class="fw-bold small text-muted mb-2 d-block"><span class="iconify align-text-bottom me-1 text-danger" data-icon="mdi:chart-bell-curve"></span> Zabbix İzleme (Eşik Değerleri)</label>
+                            <label class="fw-bold small text-muted mb-2 d-block"><span class="iconify align-text-bottom me-1 text-danger" data-icon="mdi:chart-bell-curve"></span>{% trans " Zabbix İzleme (Eşik Değerleri)" %}</label>
                             <div class="row g-2">
                                 <div class="col-6">
                                     <label class="form-label text-muted small fw-bold mb-1">{{ device_form.cpu_alarm_threshold.label }}</label>
@@ -76,7 +77,7 @@
                         </div>
 
                         <div class="p-3 bg-body-tertiary rounded-3 border border-secondary-subtle mb-3 shadow-sm">
-                            <label class="fw-bold small text-muted mb-2 d-block"><span class="iconify align-text-bottom me-1 text-primary" data-icon="mdi:server"></span> Veri Merkezi Konumu</label>
+                            <label class="fw-bold small text-muted mb-2 d-block"><span class="iconify align-text-bottom me-1 text-primary" data-icon="mdi:server"></span>{% trans " Veri Merkezi Konumu" %}</label>
                             <div class="mb-2">
                                 <label class="form-label text-muted small fw-bold mb-1">{{ device_form.rack_name.label }}</label>
                                 {{ device_form.rack_name }}
@@ -94,7 +95,7 @@
                         </div>
                         
                         <div class="p-3 bg-body-tertiary rounded-3 border border-secondary-subtle mb-3 shadow-sm">
-                            <label class="fw-bold small text-muted mb-2 d-block"><span class="iconify align-text-bottom me-1" data-icon="mdi:ssh"></span> SSH ve Otomasyon Bilgileri</label>
+                            <label class="fw-bold small text-muted mb-2 d-block"><span class="iconify align-text-bottom me-1" data-icon="mdi:ssh"></span>{% trans " SSH ve Otomasyon Bilgileri" %}</label>
                             <div class="row g-2 mb-2">
                                 <div class="col-6">
                                     <label class="form-label text-muted small fw-bold mb-1">{{ device_form.ssh_user.label }}</label>
@@ -106,16 +107,16 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="form-label text-muted small fw-bold mb-1">Enable Şifresi</label>
-                                <input type="password" name="enable_password" class="form-control form-control-sm border-secondary-subtle" placeholder="İsteğe bağlı">
+                                <label class="form-label text-muted small fw-bold mb-1">{% trans "Enable Şifresi" %}</label>
+                                <input type="password" name="enable_password" class="form-control form-control-sm border-secondary-subtle" placeholder="{% trans 'İsteğe bağlı' %}">
                             </div>
                         </div>
 
                         <div class="form-check form-switch mb-4 p-2 bg-body-tertiary rounded-3 border border-secondary-subtle d-flex align-items-center shadow-sm">
                             {{ device_form.is_active }}
-                            <label class="form-check-label fw-bold text-body ms-2 small" for="{{ device_form.is_active.id_for_label }}">Cihaz Aktif Mi?</label>
+                            <label class="form-check-label fw-bold text-body ms-2 small" for="{{ device_form.is_active.id_for_label }}">{% trans "Cihaz Aktif Mi?" %}</label>
                         </div>
-                        <button type="submit" name="submit_device" id="btnDevice" class="btn btn-primary w-100 fw-bold shadow-sm rounded-3 py-2" onclick="showGlobalLoading('btnDevice', 'Kaydediliyor...')">
+                        <button type="submit" name="submit_device" id="btnDevice" class="btn btn-primary w-100 fw-bold shadow-sm rounded-3 py-2" onclick="showGlobalLoading('btnDevice', '{% trans "Kaydediliyor..." %}')">
                             <span class="iconify me-1 align-text-bottom" data-icon="mdi:content-save-outline"></span> Cihazı Kaydet
                         </button>
                     </form>
@@ -128,7 +129,7 @@
                 <div class="card-header bg-transparent border-bottom-0 pt-4 px-4 pb-2">
                     <h6 class="fw-bold mb-0 d-flex align-items-center">
                         <span class="bg-danger bg-opacity-10 text-danger rounded p-2 me-3"><span class="iconify fs-5" data-icon="mdi:ticket-outline"></span></span>
-                        Manuel Destek Kaydı
+                        {% trans "Manuel Destek Kaydı" %}
                     </h6>
                 </div>
                 <div class="card-body px-4 pb-4">
@@ -162,7 +163,7 @@
                                 {{ ticket_form.status }}
                             </div>
                         </div>
-                        <button type="submit" name="submit_ticket" id="btnTicket" class="btn btn-danger w-100 fw-bold shadow-sm rounded-3 py-2" onclick="showGlobalLoading('btnTicket', 'Kayıt Oluşturuluyor...')">
+                        <button type="submit" name="submit_ticket" id="btnTicket" class="btn btn-danger w-100 fw-bold shadow-sm rounded-3 py-2" onclick="showGlobalLoading('btnTicket', '{% trans "Kayıt Oluşturuluyor..." %}')">
                             <span class="iconify me-1 align-text-bottom" data-icon="mdi:ticket-confirmation-outline"></span> Kaydı Oluştur
                         </button>
                     </form>
@@ -175,7 +176,7 @@
                 <div class="card-header bg-transparent border-bottom-0 pt-4 px-4 pb-2">
                     <h6 class="fw-bold mb-0 d-flex align-items-center">
                         <span class="bg-success bg-opacity-10 text-success rounded p-2 me-3"><span class="iconify fs-5" data-icon="mdi:account-plus-outline"></span></span>
-                        Yeni Kullanıcı Ekle
+                        {% trans "Yeni Kullanıcı Ekle" %}
                     </h6>
                 </div>
                 <div class="card-body px-4 pb-4">
@@ -188,14 +189,14 @@
                                 {% endif %}
                                 {{ field }}
                                 {% if field.name == 'is_staff' %}
-                                    <label class="form-check-label fw-bold text-body ms-2 small" for="{{ field.id_for_label }}">Yönetici Yetkisi</label>
+                                    <label class="form-check-label fw-bold text-body ms-2 small" for="{{ field.id_for_label }}">{% trans "Yönetici Yetkisi" %}</label>
                                 {% endif %}
                                 {% if field.errors %}
                                     <div class="text-danger small mt-1 fw-bold"><span class="iconify me-1" data-icon="mdi:alert-circle"></span>{{ field.errors|striptags }}</div>
                                 {% endif %}
                             </div>
                         {% endfor %}
-                        <button type="submit" name="submit_user" id="btnUser" class="btn btn-success w-100 fw-bold mt-2 shadow-sm rounded-3 py-2 text-white" onclick="showGlobalLoading('btnUser', 'Kaydediliyor...')">
+                        <button type="submit" name="submit_user" id="btnUser" class="btn btn-success w-100 fw-bold mt-2 shadow-sm rounded-3 py-2 text-white" onclick="showGlobalLoading('btnUser', '{% trans "Kaydediliyor..." %}')">
                             <span class="iconify me-1 align-text-bottom" data-icon="mdi:account-check-outline"></span> Kullanıcıyı Kaydet
                         </button>
                     </form>
@@ -207,13 +208,13 @@
                     <div class="d-flex align-items-center">
                         <span class="iconify fs-1 text-info me-3 opacity-75" data-icon="mdi:microsoft-windows"></span>
                         <div>
-                            <h6 class="fw-bold mb-0">Active Directory Senkronizasyonu</h6>
-                            <small class="text-muted">LDAP sunucusundan kullanıcıları çekin.</small>
+                            <h6 class="fw-bold mb-0">{% trans "Active Directory Senkronizasyonu" %}</h6>
+                            <small class="text-muted">{% trans "LDAP sunucusundan kullanıcıları çekin." %}</small>
                         </div>
                     </div>
                     <form method="POST" action="{% url 'sync_ad_users' %}" class="m-0">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-info fw-bold shadow-sm rounded-pill px-3 py-1" onclick="showGlobalLoading('btnAdSync', 'Bağlanılıyor...')">Senkronize Et</button>
+                        <button type="submit" class="btn btn-outline-info fw-bold shadow-sm rounded-pill px-3 py-1" onclick="showGlobalLoading('btnAdSync', '{% trans "Bağlanılıyor..." %}')">{% trans "Senkronize Et" %}</button>
                     </form>
                 </div>
             </div>
@@ -226,18 +227,18 @@
                 <div class="card-header bg-info bg-opacity-10 border-bottom-0 pt-4 px-4 pb-3">
                     <h6 class="fw-bold mb-0 d-flex align-items-center text-info">
                         <span class="iconify fs-4 me-2" data-icon="mdi:shield-check-outline"></span> 
-                        Değişiklik Yönetimi
+                        {% trans "Değişiklik Yönetimi" %}
                     </h6>
-                    <p class="text-muted small mb-0 mt-1">Sistem üzerinden cihaza gönderilmek istenen komutlar güvenlik gereği onayınıza sunulmuştur.</p>
+                    <p class="text-muted small mb-0 mt-1">{% trans "Sistem üzerinden cihaza gönderilmek istenen komutlar güvenlik gereği onayınıza sunulmuştur." %}</p>
                 </div>
                 <div class="card-body p-0 overflow-auto" style="max-height: 400px;">
                     <table class="table table-hover align-middle mb-0 text-center border-top border-info-subtle">
                         <thead class="bg-body-tertiary sticky-top text-muted small text-uppercase">
                             <tr>
-                                <th class="py-3 ps-4 border-0 text-start">Talep Başlığı / IP</th>
-                                <th class="py-3 border-0">Talep Eden</th>
+                                <th class="py-3 ps-4 border-0 text-start">{% trans "Talep Başlığı / IP" %}</th>
+                                <th class="py-3 border-0">{% trans "Talep Eden" %}</th>
                                 <th class="py-3 border-0">Durum</th>
-                                <th class="py-3 pe-4 text-end border-0">Gözden Geçir</th>
+                                <th class="py-3 pe-4 text-end border-0">{% trans "Gözden Geçir" %}</th>
                             </tr>
                         </thead>
                         <tbody class="text-body">
@@ -249,9 +250,9 @@
                                 </td>
                                 <td><span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle px-2 py-1"><span class="iconify me-1" data-icon="mdi:account"></span>{{ req.requester.username }}</span></td>
                                 <td>
-                                    {% if req.status == 'pending' %}<span class="badge bg-warning text-dark rounded-pill px-3 pulse-animation">Onay Bekliyor</span>
-                                    {% elif req.status == 'approved' %}<span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Onaylandı</span>
-                                    {% else %}<span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">Reddedildi</span>{% endif %}
+                                    {% if req.status == 'pending' %}<span class="badge bg-warning text-dark rounded-pill px-3 pulse-animation">{% trans "Onay Bekliyor" %}</span>
+                                    {% elif req.status == 'approved' %}<span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">{% trans "Onaylandı" %}</span>
+                                    {% else %}<span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">{% trans "Reddedildi" %}</span>{% endif %}
                                 </td>
                                 <td class="text-end pe-4">
                                     <button class="btn btn-sm btn-info text-white fw-bold shadow-sm rounded-pill px-3" onclick="openCABModal('{{ req.id }}', '{{ req.target_ip }}', `{{ req.config_payload|escapejs }}`, '{{ req.status }}', `{{ req.execution_log|default:''|escapejs }}`)">
@@ -260,7 +261,7 @@
                                 </td>
                             </tr>
                             {% empty %}
-                            <tr><td colspan="4" class="text-muted py-5 text-center">Onay bekleyen değişiklik talebi bulunmuyor.</td></tr>
+                            <tr><td colspan="4" class="text-muted py-5 text-center">{% trans "Onay bekleyen değişiklik talebi bulunmuyor." %}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -274,18 +275,18 @@
             
             <div class="card border-0 shadow-sm rounded-4 mb-5" style="background-color: var(--card-bg);">
                 <div class="card-header bg-transparent border-bottom-0 pt-4 px-4 pb-3">
-                    <h6 class="fw-bold mb-0 d-flex align-items-center"><span class="bg-primary bg-opacity-10 text-primary rounded p-1 me-2"><span class="iconify fs-5" data-icon="mdi:router-network"></span></span> Sistemdeki Tüm Cihazlar</h6>
+                    <h6 class="fw-bold mb-0 d-flex align-items-center"><span class="bg-primary bg-opacity-10 text-primary rounded p-1 me-2"><span class="iconify fs-5" data-icon="mdi:router-network"></span></span>{% trans " Sistemdeki Tüm Cihazlar" %}</h6>
                 </div>
                 <div class="card-body p-0 overflow-auto" style="max-height: 400px;">
                     <table class="table table-hover align-middle mb-0 text-center border-top border-secondary-subtle">
                         <thead class="bg-body-tertiary sticky-top border-bottom border-secondary-subtle text-muted small text-uppercase" style="letter-spacing: 0.5px;">
                             <tr>
-                                <th class="py-3 ps-4 border-0">ID</th>
-                                <th class="py-3 text-start border-0">Cihaz Adı / Donanım</th>
-                                <th class="py-3 border-0">Tür / Üretici</th>
-                                <th class="py-3 border-0">IP / MAC Adresi</th>
+                                <th class="py-3 ps-4 border-0">{% trans "ID" %}</th>
+                                <th class="py-3 text-start border-0">{% trans "Cihaz Adı / Donanım" %}</th>
+                                <th class="py-3 border-0">{% trans "Tür / Üretici" %}</th>
+                                <th class="py-3 border-0">{% trans "IP / MAC Adresi" %}</th>
                                 <th class="py-3 border-0">Durum</th>
-                                <th class="py-3 pe-4 text-end border-0">İşlemler</th>
+                                <th class="py-3 pe-4 text-end border-0">{% trans "İşlemler" %}</th>
                             </tr>
                         </thead>
                         <tbody class="text-body">
@@ -310,30 +311,30 @@
                                     {% for ip in d.ipaddress_set.all %}
                                         <span class="d-block fw-bold text-info font-monospace">{{ ip.address }}</span>
                                     {% empty %}
-                                        <span class="text-muted small">IP Yok</span>
+                                        <span class="text-muted small">{% trans "IP Yok" %}</span>
                                     {% endfor %}
                                     <small class="text-muted font-monospace">{{ d.mac_address|default:"MAC Yok" }}</small>
                                 </td>
                                 <td>
-                                    {% if d.is_active %}<span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1">Aktif</span>
-                                    {% else %}<span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-1">Pasif</span>{% endif %}
+                                    {% if d.is_active %}<span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1">{% trans "Aktif" %}</span>
+                                    {% else %}<span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-1">{% trans "Pasif" %}</span>{% endif %}
                                 </td>
                                 <td class="text-end pe-4 text-nowrap">
                                     <form method="POST" class="d-inline-block me-1">
                                         {% csrf_token %}
                                         <input type="hidden" name="action" value="poll_hardware">
                                         <input type="hidden" name="device_id" value="{{ d.id }}">
-                                        <button type="submit" class="btn btn-sm btn-light border-secondary-subtle text-info shadow-sm rounded-circle d-inline-flex align-items-center justify-content-center" style="width:32px; height:32px; padding:0;" title="Donanım Verisini Güncelle">
+                                        <button type="submit" class="btn btn-sm btn-light border-secondary-subtle text-info shadow-sm rounded-circle d-inline-flex align-items-center justify-content-center" style="width:32px; height:32px; padding:0;" title="{% trans 'Donanım Verisini Güncelle' %}">
                                             <span class="iconify" data-icon="mdi:cpu-64-bit"></span>
                                         </button>
                                     </form>
                                     {% if d.device_type == 'Switch' or d.device_type == 'Router' %}
-                                    <a href="{% url 'port_mapping' d.id %}" class="btn btn-sm btn-light border-secondary-subtle text-success shadow-sm rounded-circle me-1 d-inline-flex align-items-center justify-content-center" style="width:32px; height:32px; padding:0;" title="Fiziksel Port Haritası">
+                                    <a href="{% url 'port_mapping' d.id %}" class="btn btn-sm btn-light border-secondary-subtle text-success shadow-sm rounded-circle me-1 d-inline-flex align-items-center justify-content-center" style="width:32px; height:32px; padding:0;" title="{% trans 'Fiziksel Port Haritası' %}">
                                         <span class="iconify" data-icon="mdi:ethernet-cable"></span>
                                     </a>
                                     {% endif %}
                                     
-                                    <a href="{% url 'device_edit' d.id %}" class="btn btn-sm btn-light border-secondary-subtle text-warning shadow-sm me-1 rounded-circle d-inline-flex align-items-center justify-content-center" style="width:32px; height:32px; padding:0;" title="Düzenle">
+                                    <a href="{% url 'device_edit' d.id %}" class="btn btn-sm btn-light border-secondary-subtle text-warning shadow-sm me-1 rounded-circle d-inline-flex align-items-center justify-content-center" style="width:32px; height:32px; padding:0;" title="{% trans 'Düzenle' %}">
                                         <span class="iconify" data-icon="mdi:pencil-outline"></span>
                                     </a>
                                     <a href="{% url 'device_delete' d.id %}" class="btn btn-sm btn-light border-secondary-subtle text-danger shadow-sm rounded-circle d-inline-flex align-items-center justify-content-center" style="width:32px; height:32px; padding:0;" title="Sil">
@@ -342,7 +343,7 @@
                                 </td>
                             </tr>
                             {% empty %}
-                            <tr><td colspan="6" class="text-muted py-4">Cihaz bulunmuyor.</td></tr>
+                            <tr><td colspan="6" class="text-muted py-4">{% trans "Cihaz bulunmuyor." %}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -351,19 +352,19 @@
 
             <div class="card border-0 shadow-sm rounded-4 mb-5" style="background-color: var(--card-bg);">
                 <div class="card-header bg-transparent border-bottom-0 pt-4 px-4 pb-3">
-                    <h6 class="fw-bold mb-0 d-flex align-items-center"><span class="bg-warning bg-opacity-10 text-warning rounded p-1 me-2"><span class="iconify fs-5" data-icon="mdi:ticket-confirmation-outline"></span></span> Aktif Destek Talepleri</h6>
+                    <h6 class="fw-bold mb-0 d-flex align-items-center"><span class="bg-warning bg-opacity-10 text-warning rounded p-1 me-2"><span class="iconify fs-5" data-icon="mdi:ticket-confirmation-outline"></span></span>{% trans " Aktif Destek Talepleri" %}</h6>
                 </div>
                 <div class="card-body p-0 overflow-auto" style="max-height: 400px;">
                     <table class="table table-hover align-middle mb-0 text-center border-top border-secondary-subtle">
                         <thead class="bg-body-tertiary sticky-top border-bottom border-secondary-subtle text-muted small text-uppercase" style="letter-spacing: 0.5px;">
                             <tr>
-                                <th class="py-3 ps-4 border-0">ID</th>
-                                <th class="py-3 text-start border-0">Başlık / Kullanıcı</th>
-                                <th class="py-3 border-0">Kategori</th>
-                                <th class="py-3 border-0">Öncelik</th>
+                                <th class="py-3 ps-4 border-0">{% trans "ID" %}</th>
+                                <th class="py-3 text-start border-0">{% trans "Başlık / Kullanıcı" %}</th>
+                                <th class="py-3 border-0">{% trans "Kategori" %}</th>
+                                <th class="py-3 border-0">{% trans "Öncelik" %}</th>
                                 <th class="py-3 border-0">Durum</th>
-                                <th class="py-3 border-0 bg-danger bg-opacity-10 text-danger rounded-start-3">Kalan Süre</th>
-                                <th class="py-3 pe-4 text-end border-0">İşlem</th>
+                                <th class="py-3 border-0 bg-danger bg-opacity-10 text-danger rounded-start-3">{% trans "Kalan Süre" %}</th>
+                                <th class="py-3 pe-4 text-end border-0">{% trans "İşlem" %}</th>
                             </tr>
                         </thead>
                         <tbody class="text-body">
@@ -376,29 +377,29 @@
                                 </td>
                                 <td><span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle px-2 py-1">{{ t.get_category_display }}</span></td>
                                 <td>
-                                    {% if t.priority == 'Kritik' %}<span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">Kritik</span>
-                                    {% elif t.priority == 'Yuksek' %}<span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3">Yüksek</span>
+                                    {% if t.priority == 'Kritik' %}<span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">{% trans "Kritik" %}</span>
+                                    {% elif t.priority == 'Yuksek' %}<span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3">{% trans "Yüksek" %}</span>
                                     {% elif t.priority == 'Orta' %}<span class="badge bg-info bg-opacity-10 text-info rounded-pill px-3">Orta</span>
-                                    {% else %}<span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Düşük</span>{% endif %}
+                                    {% else %}<span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">{% trans "Düşük" %}</span>{% endif %}
                                 </td>
                                 <td>
-                                    {% if t.status == 'Acik' %}<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2 py-1">Açık</span>
-                                    {% elif t.status == 'Inceleniyor' %}<span class="badge bg-warning bg-opacity-10 text-warning border border-warning-subtle px-2 py-1">İnceleniyor</span>
-                                    {% elif t.status == 'Cozuldu' %}<span class="badge bg-success bg-opacity-10 text-success border border-success-subtle px-2 py-1">Çözüldü</span>
-                                    {% else %}<span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle px-2 py-1">Kapatıldı</span>{% endif %}
+                                    {% if t.status == 'Acik' %}<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2 py-1">{% trans "Açık" %}</span>
+                                    {% elif t.status == 'Inceleniyor' %}<span class="badge bg-warning bg-opacity-10 text-warning border border-warning-subtle px-2 py-1">{% trans "İnceleniyor" %}</span>
+                                    {% elif t.status == 'Cozuldu' %}<span class="badge bg-success bg-opacity-10 text-success border border-success-subtle px-2 py-1">{% trans "Çözüldü" %}</span>
+                                    {% else %}<span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle px-2 py-1">{% trans "Kapatıldı" %}</span>{% endif %}
                                 </td>
                                 <td>
                                     {% if t.status == 'Cozuldu' or t.status == 'Kapatildi' %}
-                                        <span class="text-success small fw-bold"><span class="iconify align-text-bottom me-1" data-icon="mdi:check-all"></span>Tamamlandı</span>
+                                        <span class="text-success small fw-bold"><span class="iconify align-text-bottom me-1" data-icon="mdi:check-all"></span>{% trans "Tamamlandı" %}</span>
                                     {% else %}
                                         {% if t.sla_deadline %}
                                             {% if t.is_sla_breached %}
-                                                <span class="badge bg-danger px-3 py-1 shadow-sm pulse-animation"><span class="iconify align-text-bottom me-1" data-icon="mdi:alarm-light"></span>SLA İHLALİ</span>
+                                                <span class="badge bg-danger px-3 py-1 shadow-sm pulse-animation"><span class="iconify align-text-bottom me-1" data-icon="mdi:alarm-light"></span>{% trans "SLA İHLALİ" %}</span>
                                             {% else %}
-                                                <span class="text-body fw-bold font-monospace small" data-deadline="{{ t.sla_deadline|date:'c' }}">Hesaplanıyor...</span>
+                                                <span class="text-body fw-bold font-monospace small" data-deadline="{{ t.sla_deadline|date:'c' }}">{% trans "Hesaplanıyor..." %}</span>
                                             {% endif %}
                                         {% else %}
-                                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle px-2 py-1 small">SLA Atanmamış</span>
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle px-2 py-1 small">{% trans "SLA Atanmamış" %}</span>
                                         {% endif %}
                                     {% endif %}
                                 </td>
@@ -409,7 +410,7 @@
                                 </td>
                             </tr>
                             {% empty %}
-                            <tr><td colspan="7" class="text-muted py-4">Sistemde aktif destek talebi bulunmuyor.</td></tr>
+                            <tr><td colspan="7" class="text-muted py-4">{% trans "Sistemde aktif destek talebi bulunmuyor." %}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -418,17 +419,17 @@
 
             <div class="card border-0 shadow-sm rounded-4 mb-4" style="background-color: var(--card-bg);">
                 <div class="card-header bg-transparent border-bottom-0 pt-4 px-4 pb-3">
-                    <h6 class="fw-bold mb-0 d-flex align-items-center"><span class="bg-info bg-opacity-10 text-info rounded p-1 me-2"><span class="iconify fs-5" data-icon="mdi:account-group-outline"></span></span> Sistemdeki Kullanıcılar</h6>
+                    <h6 class="fw-bold mb-0 d-flex align-items-center"><span class="bg-info bg-opacity-10 text-info rounded p-1 me-2"><span class="iconify fs-5" data-icon="mdi:account-group-outline"></span></span>{% trans " Sistemdeki Kullanıcılar" %}</h6>
                 </div>
                 <div class="card-body p-0 overflow-auto" style="max-height: 400px;">
                     <table class="table table-hover align-middle mb-0 text-center border-top border-secondary-subtle">
                         <thead class="bg-body-tertiary sticky-top border-bottom border-secondary-subtle text-muted small text-uppercase" style="letter-spacing: 0.5px;">
                             <tr>
-                                <th class="py-3 ps-4 border-0">ID</th>
-                                <th class="py-3 border-0 text-start">Kullanıcı Adı</th>
-                                <th class="py-3 border-0">Kayıt Tarihi</th>
+                                <th class="py-3 ps-4 border-0">{% trans "ID" %}</th>
+                                <th class="py-3 border-0 text-start">{% trans "Kullanıcı Adı" %}</th>
+                                <th class="py-3 border-0">{% trans "Kayıt Tarihi" %}</th>
                                 <th class="py-3 border-0">Rol</th>
-                                <th class="py-3 pe-4 text-end border-0">İşlemler</th>
+                                <th class="py-3 pe-4 text-end border-0">{% trans "İşlemler" %}</th>
                             </tr>
                         </thead>
                         <tbody class="text-body">
@@ -439,11 +440,11 @@
                                 <td class="text-muted small">{{ u.date_joined|date:"d M Y, H:i" }}</td>
                                 <td>
                                     {% if u.is_superuser %}
-                                        <span class="badge bg-danger bg-opacity-10 border border-danger-subtle text-danger px-3 py-1 rounded-pill">Süper Admin</span>
+                                        <span class="badge bg-danger bg-opacity-10 border border-danger-subtle text-danger px-3 py-1 rounded-pill">{% trans "Süper Admin" %}</span>
                                     {% elif u.is_staff %}
-                                        <span class="badge bg-primary bg-opacity-10 border border-primary-subtle text-primary px-3 py-1 rounded-pill">BT Personeli</span>
+                                        <span class="badge bg-primary bg-opacity-10 border border-primary-subtle text-primary px-3 py-1 rounded-pill">{% trans "BT Personeli" %}</span>
                                     {% else %}
-                                        <span class="badge bg-secondary bg-opacity-10 border border-secondary-subtle text-secondary px-3 py-1 rounded-pill">Standart Kullanıcı</span>
+                                        <span class="badge bg-secondary bg-opacity-10 border border-secondary-subtle text-secondary px-3 py-1 rounded-pill">{% trans "Standart Kullanıcı" %}</span>
                                     {% endif %}
                                 </td>
                                 <td class="text-end pe-4">
@@ -451,7 +452,7 @@
                                         <span class="iconify" data-icon="mdi:pencil-outline"></span>
                                     </button>
                                     {% if u != request.user %}
-                                    <form method="POST" class="d-inline" onsubmit="return confirm('Kullanıcıyı silmek istediğinize emin misiniz?');">
+                                    <form method="POST" class="d-inline" onsubmit="return confirm(window.OmniOpsI18n.deleteUserConfirm);">
                                         {% csrf_token %}
                                         <input type="hidden" name="action" value="delete_user">
                                         <input type="hidden" name="user_id" value="{{ u.id }}">
@@ -467,7 +468,7 @@
                                 </td>
                             </tr>
                             {% empty %}
-                            <tr><td colspan="5" class="text-muted py-4">Kayıtlı kullanıcı bulunmuyor.</td></tr>
+                            <tr><td colspan="5" class="text-muted py-4">{% trans "Kayıtlı kullanıcı bulunmuyor." %}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -484,7 +485,7 @@
         <div class="modal-header border-0 pb-0">
           <h5 class="modal-title fw-bold text-info d-flex align-items-center" id="editUserModalLabel">
               <span class="bg-info bg-opacity-10 rounded p-2 me-2 d-flex"><span class="iconify fs-4 text-info" data-icon="mdi:account-edit-outline"></span></span>
-              Yetkileri Düzenle
+              {% trans "Yetkileri Düzenle" %}
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -494,27 +495,27 @@
                 <input type="hidden" name="action" value="edit_user">
                 <input type="hidden" name="user_id" id="edit_user_id">
                 <div class="mb-4">
-                    <label class="form-label fw-bold small text-muted">Kullanıcı Adı</label>
+                    <label class="form-label fw-bold small text-muted">{% trans "Kullanıcı Adı" %}</label>
                     <input type="text" name="username" id="edit_username" class="form-control bg-body-tertiary text-body border-secondary-subtle" required maxlength="32">
                 </div>
                 <div class="p-3 bg-body-tertiary border border-secondary-subtle rounded-3 mb-4 shadow-sm">
                     <div class="form-check form-switch mb-3 d-flex align-items-center">
                         <input class="form-check-input ms-0 mt-0" type="checkbox" name="is_staff" id="edit_is_staff">
                         <div class="ms-2">
-                            <label class="form-check-label fw-bold text-primary small d-block" for="edit_is_staff">BT Personeli</label>
-                            <span class="text-muted" style="font-size: 0.7rem;">Yönetim paneline erişebilir.</span>
+                            <label class="form-check-label fw-bold text-primary small d-block" for="edit_is_staff">{% trans "BT Personeli" %}</label>
+                            <span class="text-muted" style="font-size: 0.7rem;">{% trans "Yönetim paneline erişebilir." %}</span>
                         </div>
                     </div>
                     <hr class="border-secondary-subtle">
                     <div class="form-check form-switch d-flex align-items-center">
                         <input class="form-check-input ms-0 mt-0" type="checkbox" name="is_superuser" id="edit_is_superuser">
                         <div class="ms-2">
-                            <label class="form-check-label fw-bold text-danger small d-block" for="edit_is_superuser">Süper Admin</label>
-                            <span class="text-muted" style="font-size: 0.7rem;">Sistemde tam yetkiye sahiptir.</span>
+                            <label class="form-check-label fw-bold text-danger small d-block" for="edit_is_superuser">{% trans "Süper Admin" %}</label>
+                            <span class="text-muted" style="font-size: 0.7rem;">{% trans "Sistemde tam yetkiye sahiptir." %}</span>
                         </div>
                     </div>
                 </div>
-                <button type="submit" id="btnUpdateUser" class="btn btn-info w-100 fw-bold shadow-sm rounded-3 py-2 text-white" onclick="showGlobalLoading('btnUpdateUser', 'Güncelleniyor...')">
+                <button type="submit" id="btnUpdateUser" class="btn btn-info w-100 fw-bold shadow-sm rounded-3 py-2 text-white" onclick="showGlobalLoading('btnUpdateUser', '{% trans "Güncelleniyor..." %}')">
                     <span class="iconify me-1 align-text-bottom" data-icon="mdi:content-save-edit-outline"></span>Kaydet
                 </button>
             </form>
@@ -529,13 +530,13 @@
         <div class="modal-header border-0 pb-0">
           <h5 class="modal-title fw-bold text-warning d-flex align-items-center" id="editTicketModalLabel">
               <span class="bg-warning bg-opacity-10 rounded p-2 me-2 d-flex"><span class="iconify fs-4 text-warning" data-icon="mdi:ticket-edit-outline"></span></span>
-              Talebi Güncelle
+              {% trans "Talebi Güncelle" %}
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body p-4 text-body admin-forms">
             <div class="mb-4 p-3 bg-body-tertiary rounded-3 border border-secondary-subtle shadow-sm">
-                <small class="text-muted fw-bold d-block mb-1">İşlem Yapılan Talep:</small>
+                <small class="text-muted fw-bold d-block mb-1">{% trans "İşlem Yapılan Talep:" %}</small>
                 <strong id="edit_ticket_title" class="text-body"></strong>
             </div>
             <form method="POST">
@@ -543,24 +544,24 @@
                 <input type="hidden" name="action" value="edit_ticket">
                 <input type="hidden" name="ticket_id" id="edit_ticket_id">
                 <div class="mb-3">
-                    <label class="form-label fw-bold small text-muted">Öncelik Derecesi</label>
+                    <label class="form-label fw-bold small text-muted">{% trans "Öncelik Derecesi" %}</label>
                     <select name="priority" id="edit_ticket_priority" class="form-select bg-body-tertiary text-body border-secondary-subtle">
-                        <option value="Kritik">🔴 Kritik (4 Saat SLA)</option>
-                        <option value="Yuksek">🟠 Yüksek (8 Saat SLA)</option>
-                        <option value="Orta">🟡 Orta (24 Saat SLA)</option>
-                        <option value="Dusuk">🟢 Düşük (48 Saat SLA)</option>
+                        <option value="Kritik">{% trans "🔴 Kritik (4 Saat SLA)" %}</option>
+                        <option value="Yuksek">{% trans "🟠 Yüksek (8 Saat SLA)" %}</option>
+                        <option value="Orta">{% trans "🟡 Orta (24 Saat SLA)" %}</option>
+                        <option value="Dusuk">{% trans "🟢 Düşük (48 Saat SLA)" %}</option>
                     </select>
                 </div>
                 <div class="mb-4">
-                    <label class="form-label fw-bold small text-muted">Talep Durumu</label>
+                    <label class="form-label fw-bold small text-muted">{% trans "Talep Durumu" %}</label>
                     <select name="status" id="edit_ticket_status" class="form-select bg-body-tertiary text-body border-secondary-subtle">
-                        <option value="Acik">Açık</option>
-                        <option value="Inceleniyor">İnceleniyor</option>
-                        <option value="Cozuldu">Çözüldü</option>
-                        <option value="Kapatildi">Kapatıldı</option>
+                        <option value="Acik">{% trans "Açık" %}</option>
+                        <option value="Inceleniyor">{% trans "İnceleniyor" %}</option>
+                        <option value="Cozuldu">{% trans "Çözüldü" %}</option>
+                        <option value="Kapatildi">{% trans "Kapatıldı" %}</option>
                     </select>
                 </div>
-                <button type="submit" id="btnUpdateTicket" class="btn btn-warning w-100 fw-bold shadow-sm rounded-3 py-2 text-dark" onclick="showGlobalLoading('btnUpdateTicket', 'Kaydediliyor...')">
+                <button type="submit" id="btnUpdateTicket" class="btn btn-warning w-100 fw-bold shadow-sm rounded-3 py-2 text-dark" onclick="showGlobalLoading('btnUpdateTicket', '{% trans "Kaydediliyor..." %}')">
                     <span class="iconify me-1 align-text-bottom" data-icon="mdi:content-save-edit-outline"></span>Durumu Güncelle
                 </button>
             </form>
@@ -575,7 +576,7 @@
         <div class="modal-header border-0 pb-0">
           <h5 class="modal-title fw-bold text-info d-flex align-items-center">
               <span class="bg-info bg-opacity-10 rounded p-2 me-2 d-flex"><span class="iconify fs-4 text-info" data-icon="mdi:shield-search"></span></span>
-              Güvenlik Denetimi: Konfigürasyon İncelemesi
+              {% trans "Güvenlik Denetimi: Konfigürasyon İncelemesi" %}
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -583,19 +584,19 @@
             
             <div class="mb-3 d-flex justify-content-between align-items-center bg-body-tertiary p-3 rounded-3 border border-secondary-subtle">
                 <div>
-                    <small class="text-muted fw-bold d-block text-uppercase">Hedef Cihaz (IP)</small>
+                    <small class="text-muted fw-bold d-block text-uppercase">{% trans "Hedef Cihaz (IP)" %}</small>
                     <span class="font-monospace fw-bold fs-5 text-primary" id="cab_target_ip"></span>
                 </div>
                 <div class="text-end" id="cab_status_badge"></div>
             </div>
 
             <div class="mb-4">
-                <label class="form-label fw-bold small text-muted">Yazılacak Kod (Payload):</label>
+                <label class="form-label fw-bold small text-muted">{% trans "Yazılacak Kod (Payload):" %}</label>
                 <textarea id="cab_payload" class="form-control font-monospace bg-dark text-success" rows="8" readonly style="font-size: 0.85rem;"></textarea>
             </div>
 
             <div id="cab_log_section" class="mb-4 d-none">
-                <label class="form-label fw-bold small text-muted">Sistem Logu:</label>
+                <label class="form-label fw-bold small text-muted">{% trans "Sistem Logu:" %}</label>
                 <div class="p-3 bg-body-tertiary border border-secondary-subtle rounded-3 small text-muted font-monospace" id="cab_log_text"></div>
             </div>
   
@@ -665,11 +666,13 @@
         const logSection = document.getElementById('cab_log_section');
         
         if(status === 'pending') {
-            badgeHtml = '<span class="badge bg-warning text-dark px-3 py-1">Onay Bekliyor</span>';
+            badgeHtml = '<span class="badge bg-warning text-dark px-3 py-1">' + window.OmniOpsI18n.changePending + '</span>';
             actionButtons.classList.remove('d-none');
             logSection.classList.add('d-none');
         } else {
-            badgeHtml = status === 'approved' ? '<span class="badge bg-success px-3 py-1">Uygulandı</span>' : '<span class="badge bg-danger px-3 py-1">Reddedildi</span>';
+            badgeHtml = status === 'approved'
+                ? '<span class="badge bg-success px-3 py-1">' + window.OmniOpsI18n.changeApproved + '</span>'
+                : '<span class="badge bg-danger px-3 py-1">' + window.OmniOpsI18n.changeRejected + '</span>';
             actionButtons.classList.add('d-none'); 
             logSection.classList.remove('d-none');
             document.getElementById('cab_log_text').innerText = log;
@@ -687,13 +690,15 @@
                 if(!deadlineStr) return;
                 const distance = new Date(deadlineStr).getTime() - now;
                 if (distance < 0) {
-                    el.innerHTML = '<span class="badge bg-danger px-2 py-1 pulse-animation">SLA İHLALİ</span>';
+                    el.innerHTML = '<span class="badge bg-danger px-2 py-1 pulse-animation">' + window.OmniOpsI18n.slaViolation + '</span>';
                     el.classList.replace('text-body', 'text-danger');
                 } else {
                     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     el.style.color = distance < (2 * 60 * 60 * 1000) ? '#f59e0b' : '#0ea5e9';
-                    el.innerHTML = `${hours} Saat, ${minutes} Dk Kaldı`;
+                    el.innerHTML = window.OmniOpsI18n.slaRemaining
+                        .replace('%(hours)s', hours)
+                        .replace('%(minutes)s', minutes);
                 }
             });
         }

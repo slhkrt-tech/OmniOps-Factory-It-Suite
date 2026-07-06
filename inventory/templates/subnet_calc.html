@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}OmniOps - IP Bloğu Bölücü{% endblock %}
+{% block title %}{% trans "OmniOps - IP Bloğu Bölücü" %}{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-0 mb-5">
     
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h4 class="fw-bold mb-1">Gelişmiş Subnet Bölücü</h4>
-            <p class="text-muted small mb-0">Ana ağ bloğunuzu daha küçük alt ağlara ayırın, netmask ve kullanılabilir IP aralıklarını anında hesaplayın.</p>
+            <h4 class="fw-bold mb-1">{% trans "Gelişmiş Subnet Bölücü" %}</h4>
+            <p class="text-muted small mb-0">{% trans "Ana ağ bloğunuzu daha küçük alt ağlara ayırın, netmask ve kullanılabilir IP aralıklarını anında hesaplayın." %}</p>
         </div>
     </div>
 
@@ -21,25 +22,25 @@
                         <span class="bg-success bg-opacity-10 text-success rounded p-2 me-3 d-flex">
                             <span class="iconify fs-4" data-icon="mdi:network-outline"></span>
                         </span>
-                        <h6 class="fw-bold mb-0">Bölme Parametreleri</h6>
+                        <h6 class="fw-bold mb-0">{% trans "Bölme Parametreleri" %}</h6>
                     </div>
                 </div>
                 <div class="card-body px-4 pb-4">
                     
-                    <form method="POST" id="subnetForm" onsubmit="showGlobalLoading('btnCalc', 'Ağlar Oluşturuluyor...')">
+                    <form method="POST" id="subnetForm" onsubmit="showGlobalLoading('btnCalc', '{% trans "Ağlar Oluşturuluyor..." %}')">
                         {% csrf_token %}
                         <div class="mb-4">
-                            <label class="form-label text-muted small fw-bold mb-2">Ana Ağ Adresi</label>
+                            <label class="form-label text-muted small fw-bold mb-2">{% trans "Ana Ağ Adresi" %}</label>
                             <input type="text" name="network" class="form-control form-control-lg bg-body-tertiary text-body border-secondary-subtle shadow-sm font-monospace fs-6" 
-                                   placeholder="192.168.1.0/24" required 
+                                   {% trans "placeholder=\"192.168.1.0/24\" required" %}
                                    value="{{ request.POST.network|default:'' }}">
                         </div>
                         <div class="mb-4">
-                            <label class="form-label text-muted small fw-bold mb-2">Hedef Alt Ağ Prefix Değeri</label>
+                            <label class="form-label text-muted small fw-bold mb-2">{% trans "Hedef Alt Ağ Prefix Değeri" %}</label>
                             <div class="input-group input-group-lg shadow-sm">
                                 <span class="input-group-text bg-body-tertiary border-secondary-subtle fw-bold text-muted">/</span>
                                 <input type="number" name="prefix" class="form-control bg-body-tertiary text-body border-secondary-subtle fw-bold" 
-                                       placeholder="26" required min="1" max="32"
+                                       {% trans "placeholder=\"26\" required min=\"1\" max=\"32\"" %}
                                        value="{{ request.POST.prefix|default:'' }}">
                             </div>
                         </div>
@@ -52,7 +53,7 @@
                         <div class="d-flex align-items-start">
                             <span class="iconify text-info me-2 fs-4 mt-1" data-icon="mdi:lightbulb-on-outline"></span>
                             <small class="text-muted fw-medium">
-                                <strong>Mantık:</strong> Girdiğiniz yeni hedef prefix değeri, ana ağın prefix değerinden <span class="text-info fw-bold">büyük</span> olmalıdır. 192.168.1.0/24 ağını /26'lık parçalara bölmek gibi.
+                                <strong>{% trans "Mantık:" %}</strong>{% trans " Girdiğiniz yeni hedef prefix değeri, ana ağın prefix değerinden " %}<span class="text-info fw-bold">{% trans "büyük" %}</span> olmalıdır. 192.168.1.0/24 ağını /26'lık parçalara bölmek gibi.
                             </small>
                         </div>
                     </div>
@@ -67,7 +68,7 @@
                     <div class="card border-0 shadow-sm rounded-4 border-start border-danger border-4 h-100" style="background-color: var(--card-bg);">
                         <div class="card-body p-5 d-flex flex-column justify-content-center text-center">
                             <span class="iconify text-danger mb-3 display-1" data-icon="mdi:alert-circle-outline"></span>
-                            <h4 class="text-danger fw-bold mb-2">Hesaplama Hatası</h4>
+                            <h4 class="text-danger fw-bold mb-2">{% trans "Hesaplama Hatası" %}</h4>
                             <p class="text-muted fw-medium">{{ results.error }}</p>
                         </div>
                     </div>
@@ -76,7 +77,7 @@
                         <div class="card-header bg-transparent border-bottom-0 pt-4 px-4 pb-3 d-flex justify-content-between align-items-center">
                             <h6 class="fw-bold mb-0 d-flex align-items-center">
                                 <span class="bg-success bg-opacity-10 text-success rounded p-1 me-2"><span class="iconify fs-5" data-icon="mdi:table-network"></span></span>
-                                Alt Ağ Analiz Sonuçları
+                                {% trans "Alt Ağ Analiz Sonuçları" %}
                             </h6>
                             <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle px-3 py-1 rounded-pill fw-bold">
                                 {{ results|length }} Ağ Bulundu
@@ -87,9 +88,9 @@
                             <table class="table table-hover align-middle mb-0 text-center border-top border-secondary-subtle">
                                 <thead class="bg-body-tertiary text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;">
                                     <tr>
-                                        <th class="py-3 ps-4 text-start border-0">Ağ Adresi</th>
+                                        <th class="py-3 ps-4 text-start border-0">{% trans "Ağ Adresi" %}</th>
                                         <th class="py-3 border-0">Netmask</th>
-                                        <th class="py-3 border-0">Kullanılabilir IP Aralığı</th>
+                                        <th class="py-3 border-0">{% trans "Kullanılabilir IP Aralığı" %}</th>
                                         <th class="py-3 pe-4 border-0">Broadcast</th>
                                     </tr>
                                 </thead>
@@ -119,22 +120,22 @@
                 <div class="card border-0 shadow-sm rounded-4 h-100" style="background-color: var(--card-bg);">
                     <div class="card-body p-5 d-flex flex-column justify-content-center text-center">
                         <span class="iconify text-success opacity-25 mb-4" data-icon="mdi:lan-connect" style="font-size: 6rem; margin: 0 auto;"></span>
-                        <h5 class="fw-bold mb-3 text-body">Subnetting Nasıl Yapılır?</h5>
+                        <h5 class="fw-bold mb-3 text-body">{% trans "Subnetting Nasıl Yapılır?" %}</h5>
                         <p class="text-muted small mx-auto mb-4" style="max-width: 450px;">
-                            Bölmek istediğiniz ana ağ adresini ve her bir alt ağın sahip olmasını istediğiniz yeni prefix değerini sol panele girin. Sistem alt ağları otomatik olarak hesaplar.
+                            {% trans "Bölmek istediğiniz ana ağ adresini ve her bir alt ağın sahip olmasını istediğiniz yeni prefix değerini sol panele girin. Sistem alt ağları otomatik olarak hesaplar." %}
                         </p>
                         
                         <div class="row g-3 justify-content-center">
                             <div class="col-sm-5">
                                 <div class="p-3 bg-body-tertiary rounded-3 border border-secondary-subtle d-flex align-items-center justify-content-center">
                                     <span class="iconify text-success me-2 fs-5" data-icon="mdi:check-circle"></span>
-                                    <span class="small fw-bold text-muted">Otomatik Netmask</span>
+                                    <span class="small fw-bold text-muted">{% trans "Otomatik Netmask" %}</span>
                                 </div>
                             </div>
                             <div class="col-sm-5">
                                 <div class="p-3 bg-body-tertiary rounded-3 border border-secondary-subtle d-flex align-items-center justify-content-center">
                                     <span class="iconify text-success me-2 fs-5" data-icon="mdi:check-circle"></span>
-                                    <span class="small fw-bold text-muted">IP Aralığı Tespiti</span>
+                                    <span class="small fw-bold text-muted">{% trans "IP Aralığı Tespiti" %}</span>
                                 </div>
                             </div>
                         </div>

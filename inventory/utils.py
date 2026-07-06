@@ -48,6 +48,23 @@ def decrypt_vault_password(cipher_text):
         return ""
 
 
+def get_device_ssh_credentials(device_obj, *, allow_defaults=False):
+    """Return SSH credentials for a device; never fall back to hardcoded admin in production."""
+    from django.conf import settings
+
+    username = (getattr(device_obj, 'ssh_user', None) or '').strip()
+    password = decrypt_vault_password(getattr(device_obj, 'ssh_password', None)) or ''
+    enable_secret = decrypt_vault_password(getattr(device_obj, 'enable_password', None)) or ''
+
+    if username and password:
+        return username, password, enable_secret
+
+    if allow_defaults and settings.DEBUG:
+        return 'admin', 'admin', enable_secret
+
+    return None, None, None
+
+
 def get_netmiko_device_type(vendor):
     vendor_name = (vendor or '').strip().lower()
     if 'cisco' in vendor_name:
@@ -440,11 +457,15 @@ def poll_device_hardware(device_obj, ip):
     # Netmiko SSH Bilgileri
     device = {
         'device_type': 'cisco_ios' if device_obj.vendor == 'cisco' else 'huawei',
-        'host': ip, 'username': device_obj.ssh_user or 'admin',
-        'password': decrypt_vault_password(device_obj.ssh_password) or 'admin',
-        'secret': decrypt_vault_password(device_obj.enable_password) or '',
-        'timeout': 5,
+        'host': ip,
     }
+    username, password, enable_secret = get_device_ssh_credentials(device_obj, allow_defaults=settings.DEBUG)
+    if not username or not password:
+        return device_obj
+    device['username'] = username
+    device['password'] = password
+    device['secret'] = enable_secret
+    device['timeout'] = 5
     
     security_alert = False
     security_details = ""

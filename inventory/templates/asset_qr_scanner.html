@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Varlık QR/Barkod Tarayıcı - OmniOps{% endblock %}
+{% block title %}{% trans "Varlık QR/Barkod Tarayıcı - OmniOps" %}{% endblock %}
 
 {% block content %}
 <section class="suite-hero mb-4">
     <div>
         <span class="suite-eyebrow">OmniOps Factory IT Suite</span>
-        <h1 class="suite-title">Varlık QR / Barkod Tarayıcı</h1>
-        <p class="suite-subtitle">Fabrika zemininde etiket okutarak switch, endpoint, kamera veya IT varlığına anında gidin.</p>
+        <h1 class="suite-title">{% trans "Varlık QR / Barkod Tarayıcı" %}</h1>
+        <p class="suite-subtitle">{% trans "Fabrika zemininde etiket okutarak switch, endpoint, kamera veya IT varlığına anında gidin." %}</p>
     </div>
     <div class="d-flex flex-wrap gap-2">
         <a href="{% url 'asset_qr_labels_batch_pdf' %}" class="btn btn-outline-primary" target="_blank">
@@ -20,14 +21,14 @@
 <div class="row g-4">
     <div class="col-lg-5">
         <div class="card glass-card mb-4">
-            <div class="card-header bg-transparent fw-bold">Kamera ile Tara</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Kamera ile Tara" %}</div>
             <div class="card-body">
                 <div id="qr-reader" class="rounded-3 overflow-hidden mb-3"></div>
-                <p class="text-muted small mb-0">Kamera izni verin ve QR/barkod okutun. Mobil cihazlarda arka kamera otomatik seçilir.</p>
+                <p class="text-muted small mb-0">{% trans "Kamera izni verin ve QR/barkod okutun. Mobil cihazlarda arka kamera otomatik seçilir." %}</p>
             </div>
         </div>
         <div class="card glass-card">
-            <div class="card-header bg-transparent fw-bold">Manuel Kod Girişi</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Manuel Kod Girişi" %}</div>
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
@@ -43,7 +44,7 @@
                     <div class="small text-muted">{{ lookup_result.tag_type }} · {{ lookup_result.code }}</div>
                     {% if lookup_result.location %}<div class="small mt-1">{{ lookup_result.location }}</div>{% endif %}
                     {% if lookup_result.found %}
-                    <a href="{{ lookup_result.url }}" class="btn btn-sm btn-success mt-2">Varlığa Git</a>
+                    <a href="{{ lookup_result.url }}" class="btn btn-sm btn-success mt-2">{% trans "Varlığa Git" %}</a>
                     {% endif %}
                 </div>
                 {% endif %}
@@ -52,18 +53,18 @@
     </div>
     <div class="col-lg-7">
         <div class="card glass-card mb-4">
-            <div class="card-header bg-transparent fw-bold">Yeni QR Etiket Kaydı</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Yeni QR Etiket Kaydı" %}</div>
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="tag">
                     {{ forms.tag.as_p }}
-                    <button class="btn btn-primary">Etiket Kaydet</button>
+                    <button class="btn btn-primary">{% trans "Etiket Kaydet" %}</button>
                 </form>
             </div>
         </div>
         <div class="card glass-card">
-            <div class="card-header bg-transparent fw-bold">Son Etiketler</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Son Etiketler" %}</div>
             <div class="card-body">
                 {% for tag in recent_tags %}
                 <div class="document-card mb-2 d-flex justify-content-between align-items-center">
@@ -73,11 +74,11 @@
                     </div>
                     <div class="d-flex gap-1">
                         <a href="{% url 'asset_qr_label_pdf' tag.id %}" class="btn btn-sm btn-outline-secondary" target="_blank" title="PDF Etiket">PDF</a>
-                        <a href="{{ tag.resolved_url }}" class="btn btn-sm btn-outline-primary">Aç</a>
+                        <a href="{{ tag.resolved_url }}" class="btn btn-sm btn-outline-primary">{% trans "Aç" %}</a>
                     </div>
                 </div>
                 {% empty %}
-                <div class="text-muted">Henüz QR etiket yok.</div>
+                <div class="text-muted">{% trans "Henüz QR etiket yok." %}</div>
                 {% endfor %}
             </div>
         </div>
@@ -102,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.found && data.url) {
                     window.location.href = data.url;
                 } else {
-                    alert(`Kayıt bulunamadı: ${code}`);
+                    alert(window.OmniOpsI18n.recordNotFound.replace('%(code)s', code));
                 }
             });
     }
@@ -110,9 +111,9 @@ document.addEventListener('DOMContentLoaded', () => {
     Html5Qrcode.getCameras().then(cameras => {
         const cameraId = cameras.length ? cameras[cameras.length - 1].id : { facingMode: 'environment' };
         scanner.start(cameraId, config, decoded => lookupCode(decoded), () => {})
-            .catch(() => readerEl.innerHTML = '<div class="text-muted small p-3">Kamera başlatılamadı. Manuel kod girişini kullanın.</div>');
+            .catch(() => readerEl.innerHTML = `<div class="text-muted small p-3">${window.OmniOpsI18n.cameraStartFailed}</div>`);
     }).catch(() => {
-        readerEl.innerHTML = '<div class="text-muted small p-3">Kamera erişimi yok. Manuel kod girişini kullanın.</div>';
+        readerEl.innerHTML = `<div class="text-muted small p-3">${window.OmniOpsI18n.cameraAccessDenied}</div>`;
     });
 });
 </script>

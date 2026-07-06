@@ -631,3 +631,54 @@ class WorkspaceEngineTests(TestCase):
 
         ensure_default_factory_structure()
         self.assertTrue(FactorySite.objects.filter(code='SITE-SOLAR-01', industry_type='solar').exists())
+
+
+class I18nTests(TestCase):
+    def setUp(self):
+        self.staff = User.objects.create_user(
+            username='i18nstaff', password='pass123', is_staff=True
+        )
+        self.customer = User.objects.create_user(
+            username='i18ncust', password='pass123', is_staff=False
+        )
+
+    def test_set_language_switches_sidebar_to_english(self):
+        self.client.login(username='i18nstaff', password='pass123')
+        response = self.client.post(
+            '/i18n/setlang/',
+            {'language': 'en', 'next': '/'},
+            follow=True,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Main Dashboard')
+        self.assertNotContains(response, 'Ana Panel')
+
+    def test_login_page_has_language_switcher(self):
+        response = self.client.get('/login/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '/i18n/setlang/')
+        self.assertContains(response, 'Giriş Yap')
+
+    def test_custom_admin_redirects_non_staff(self):
+        self.client.login(username='i18ncust', password='pass123')
+        response = self.client.get(reverse('custom_admin'))
+        self.assertRedirects(response, reverse('user_panel'))
+
+    def test_user_panel_redirects_staff(self):
+        self.client.login(username='i18nstaff', password='pass123')
+        response = self.client.get(reverse('user_panel'))
+        self.assertRedirects(response, reverse('dashboard'))
+
+    def test_logout_returns_to_login_and_clears_session(self):
+        self.client.login(username='i18nstaff', password='pass123')
+        response = self.client.post(reverse('logout'), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('/login/', response.request['PATH_INFO'])
+        self.assertFalse(response.context['user'].is_authenticated)
+
+    def test_logout_button_renders_in_english(self):
+        self.client.login(username='i18nstaff', password='pass123')
+        self.client.post('/i18n/setlang/', {'language': 'en', 'next': '/'})
+        response = self.client.get('/')
+        self.assertContains(response, 'Log Out')
+        self.assertNotContains(response, '<g id=')

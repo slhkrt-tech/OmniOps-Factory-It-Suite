@@ -2,15 +2,15 @@
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
-            <h4 class="mb-0"><i class="fas fa-edit"></i> Kaydı Düzenle</h4>
+            <h4 class="mb-0"><i class="fas fa-edit"></i>{% trans " Kaydı Düzenle" %}</h4>
         </div>
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }} 
                 <div class="mt-3">
-                    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Kaydet</button>
-                    <a href="javascript:history.back()" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> İptal</a>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-save"></i>{% trans " Kaydet" %}</button>
+                    <a href="javascript:history.back()" class="btn btn-secondary"><i class="fas fa-arrow-left"></i>{% trans " İptal" %}</a>
                 </div>
             </form>
         </div>

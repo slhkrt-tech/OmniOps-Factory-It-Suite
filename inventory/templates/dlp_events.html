@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}DLP Olayları - OmniOps{% endblock %}
+{% block title %}{% trans "DLP Olayları - OmniOps" %}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="fw-bold mb-1">DLP Olayları</h2>
-        <p class="text-muted mb-0">Hassas veri sızıntısı riskleri ve engellenen kayıtlar.</p>
+        <h2 class="fw-bold mb-1">{% trans "DLP Olayları" %}</h2>
+        <p class="text-muted mb-0">{% trans "Hassas veri sızıntısı riskleri ve engellenen kayıtlar." %}</p>
     </div>
 </div>
 
@@ -14,11 +15,11 @@
     <table class="pro-table">
         <thead>
             <tr>
-                <th>Tarih</th>
-                <th>Kullanıcı</th>
+                <th>{% trans "Tarih" %}</th>
+                <th>{% trans "Kullanıcı" %}</th>
                 <th>Kaynak</th>
                 <th>Kural</th>
-                <th>Seviye</th>
+                <th>{% trans "Seviye" %}</th>
                 <th>Durum</th>
             </tr>
         </thead>
@@ -30,10 +31,10 @@
                 <td>{{ event.source }}</td>
                 <td>{{ event.rule }}</td>
                 <td><span class="badge bg-warning text-dark">{{ event.get_severity_display }}</span></td>
-                <td>{% if event.blocked %}<span class="badge bg-danger">Engellendi</span>{% else %}<span class="badge bg-info">Kaydedildi</span>{% endif %}</td>
+                <td>{% if event.blocked %}<span class="badge bg-danger">{% trans "Engellendi" %}</span>{% else %}<span class="badge bg-info">{% trans "Kaydedildi" %}</span>{% endif %}</td>
             </tr>
         {% empty %}
-            <tr><td colspan="6" class="text-muted">DLP olayı yok.</td></tr>
+            <tr><td colspan="6" class="text-muted">{% trans "DLP olayı yok." %}</td></tr>
         {% endfor %}
         </tbody>
     </table>

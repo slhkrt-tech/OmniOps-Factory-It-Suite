@@ -1,19 +1,20 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Sistem Olayları ve Loglar - OmniOps{% endblock %}
+{% block title %}{% trans "Sistem Olayları ve Loglar - OmniOps" %}{% endblock %}
 
 {% block content %}
 <div class="container-fluid px-0 mb-5">
     
     <div class="d-flex justify-content-between align-items-end mb-4">
         <div>
-            <h4 class="fw-bold mb-1">Sistem Olayları</h4>
-            <p class="text-muted small mb-0">Platform üzerinde gerçekleştirilen kritik işlemlerin geçmişini buradan inceleyebilirsiniz.</p>
+            <h4 class="fw-bold mb-1">{% trans "Sistem Olayları" %}</h4>
+            <p class="text-muted small mb-0">{% trans "Platform üzerinde gerçekleştirilen kritik işlemlerin geçmişini buradan inceleyebilirsiniz." %}</p>
         </div>
         
         <form method="GET" class="d-flex gap-2">
             <select name="action" class="form-select border-secondary-subtle bg-body text-body shadow-sm" onchange="this.form.submit()">
-                <option value="">Tüm İşlemler</option>
+                <option value="">{% trans "Tüm İşlemler" %}</option>
                 {% for code, name in action_choices %}
                     <option value="{{ code }}" {% if current_filter == code %}selected{% endif %}>{{ name }}</option>
                 {% endfor %}
@@ -29,9 +30,9 @@
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-body-tertiary">
                     <tr>
-                        <th class="ps-4 py-3 border-0 text-muted small text-uppercase" style="width: 15%;">Tarih / Saat</th>
-                        <th class="py-3 border-0 text-muted small text-uppercase" style="width: 15%;">Kullanıcı</th>
-                        <th class="py-3 border-0 text-muted small text-uppercase" style="width: 15%;">İşlem Türü</th>
+                        <th class="ps-4 py-3 border-0 text-muted small text-uppercase" style="width: 15%;">{% trans "Tarih / Saat" %}</th>
+                        <th class="py-3 border-0 text-muted small text-uppercase" style="width: 15%;">{% trans "Kullanıcı" %}</th>
+                        <th class="py-3 border-0 text-muted small text-uppercase" style="width: 15%;">{% trans "İşlem Türü" %}</th>
                         <th class="pe-4 py-3 border-0 text-muted small text-uppercase">Detaylar</th>
                     </tr>
                 </thead>
@@ -46,20 +47,20 @@
                             {% if log.user %}
                                 <span class="fw-bold"><span class="iconify me-1 text-primary" data-icon="mdi:account-circle"></span>{{ log.user.username }}</span>
                             {% else %}
-                                <span class="text-muted"><span class="iconify me-1" data-icon="mdi:robot-outline"></span>Sistem / API</span>
+                                <span class="text-muted"><span class="iconify me-1" data-icon="mdi:robot-outline"></span>{% trans "Sistem / API" %}</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if log.action == 'CONFIG' %}
-                                <span class="badge bg-info bg-opacity-10 text-info border border-info-subtle px-2"><span class="iconify me-1" data-icon="mdi:console"></span>Konfigürasyon</span>
+                                <span class="badge bg-info bg-opacity-10 text-info border border-info-subtle px-2"><span class="iconify me-1" data-icon="mdi:console"></span>{% trans "Konfigürasyon" %}</span>
                             {% elif log.action == 'SCAN' %}
-                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2"><span class="iconify me-1" data-icon="mdi:radar"></span>Ağ Taraması</span>
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2"><span class="iconify me-1" data-icon="mdi:radar"></span>{% trans "Ağ Taraması" %}</span>
                             {% elif log.action == 'IPAM' %}
-                                <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle px-2"><span class="iconify me-1" data-icon="mdi:ip-network-outline"></span>IP İşlemi</span>
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success-subtle px-2"><span class="iconify me-1" data-icon="mdi:ip-network-outline"></span>{% trans "IP İşlemi" %}</span>
                             {% elif log.action == 'TICKET' %}
-                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning-subtle px-2"><span class="iconify me-1" data-icon="mdi:ticket-confirmation"></span>Destek Talebi</span>
+                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning-subtle px-2"><span class="iconify me-1" data-icon="mdi:ticket-confirmation"></span>{% trans "Destek Talebi" %}</span>
                             {% else %}
-                                <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle px-2"><span class="iconify me-1" data-icon="mdi:cog"></span>Sistem İşlemi</span>
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle px-2"><span class="iconify me-1" data-icon="mdi:cog"></span>{% trans "Sistem İşlemi" %}</span>
                             {% endif %}
                         </td>
                         <td class="pe-4 py-3 small">{{ log.details }}</td>
@@ -68,7 +69,7 @@
                     <tr>
                         <td colspan="4" class="text-center text-muted py-5">
                             <span class="iconify display-1 opacity-25 mb-3" data-icon="mdi:text-box-search-outline"></span><br>
-                            Kayıtlı sistem olayı bulunamadı.
+                            {% trans "Kayıtlı sistem olayı bulunamadı." %}
                         </td>
                     </tr>
                     {% endfor %}
@@ -81,13 +82,13 @@
     <nav class="mt-4">
         <ul class="pagination justify-content-center">
             {% if logs.has_previous %}
-                <li class="page-item"><a class="page-link shadow-sm border-secondary-subtle text-primary" href="?page={{ logs.previous_page_number }}{% if current_filter %}&action={{ current_filter }}{% endif %}">Önceki</a></li>
+                <li class="page-item"><a class="page-link shadow-sm border-secondary-subtle text-primary" href="?page={{ logs.previous_page_number }}{% if current_filter %}&action={{ current_filter }}{% endif %}">{% trans "Önceki" %}</a></li>
             {% endif %}
             
             <li class="page-item active"><span class="page-link shadow-sm bg-primary border-primary">{{ logs.number }} / {{ logs.paginator.num_pages }}</span></li>
             
             {% if logs.has_next %}
-                <li class="page-item"><a class="page-link shadow-sm border-secondary-subtle text-primary" href="?page={{ logs.next_page_number }}{% if current_filter %}&action={{ current_filter }}{% endif %}">Sonraki</a></li>
+                <li class="page-item"><a class="page-link shadow-sm border-secondary-subtle text-primary" href="?page={{ logs.next_page_number }}{% if current_filter %}&action={{ current_filter }}{% endif %}">{% trans "Sonraki" %}</a></li>
             {% endif %}
         </ul>
     </nav>

@@ -1,31 +1,32 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Kurulum & Sağlık Merkezi - OmniOps{% endblock %}
+{% block title %}{% trans "Kurulum & Sağlık Merkezi - OmniOps" %}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
-        <h2 class="fw-bold mb-1">Kurulum & Sağlık Merkezi</h2>
-        <p class="text-muted mb-0">İlk kurulumdan canlı kullanıma kadar OmniOps hazır olma durumunu tek ekrandan takip edin.</p>
+        <h2 class="fw-bold mb-1">{% trans "Kurulum & Sağlık Merkezi" %}</h2>
+        <p class="text-muted mb-0">{% trans "İlk kurulumdan canlı kullanıma kadar OmniOps hazır olma durumunu tek ekrandan takip edin." %}</p>
     </div>
     <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">Hazırlık Skoru: %{{ score }}</span>
 </div>
 
 <div class="row g-3 mb-4">
     <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body">
-        <div class="text-muted small">Başarılı Kontrol</div>
+        <div class="text-muted small">{% trans "Başarılı Kontrol" %}</div>
         <div class="display-6 fw-bold text-success">{{ ok_total }}</div>
     </div></div></div>
     <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body">
-        <div class="text-muted small">Kritik Eksik</div>
+        <div class="text-muted small">{% trans "Kritik Eksik" %}</div>
         <div class="display-6 fw-bold text-danger">{{ critical_total }}</div>
     </div></div></div>
     <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body">
-        <div class="text-muted small">Opsiyonel Uyarı</div>
+        <div class="text-muted small">{% trans "Opsiyonel Uyarı" %}</div>
         <div class="display-6 fw-bold text-warning">{{ warning_total }}</div>
     </div></div></div>
     <div class="col-md-3"><div class="card glass-card h-100"><div class="card-body">
-        <div class="text-muted small">Modül Kapsamı</div>
+        <div class="text-muted small">{% trans "Modül Kapsamı" %}</div>
         <div class="display-6 fw-bold">{{ module_status|length }}</div>
     </div></div></div>
 </div>
@@ -33,7 +34,7 @@
 <div class="row g-4">
     <div class="col-xl-7">
         <div class="card glass-card h-100">
-            <div class="card-header bg-transparent fw-bold">Canlıya Alma Kontrol Listesi</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Canlıya Alma Kontrol Listesi" %}</div>
             <div class="card-body">
                 {% for item in checks %}
                 <div class="d-flex align-items-start gap-3 border-bottom py-3">
@@ -55,7 +56,7 @@
 
     <div class="col-xl-5">
         <div class="card glass-card mb-4">
-            <div class="card-header bg-transparent fw-bold">Hızlı Başlangıç</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Hızlı Başlangıç" %}</div>
             <div class="card-body">
                 {% for step in quick_start %}
                 <div class="mb-3">
@@ -67,7 +68,7 @@
         </div>
 
         <div class="card glass-card">
-            <div class="card-header bg-transparent fw-bold">Modül Doluluk Durumu</div>
+            <div class="card-header bg-transparent fw-bold">{% trans "Modül Doluluk Durumu" %}</div>
             <div class="card-body">
                 {% for module in module_status %}
                 <a href="{{ module.url }}" class="d-flex justify-content-between align-items-center text-decoration-none border-bottom py-2" style="color: var(--text-main);">

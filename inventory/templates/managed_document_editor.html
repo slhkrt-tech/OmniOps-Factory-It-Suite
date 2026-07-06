@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block title %}{{ document.title }} - Doküman Editörü{% endblock %}
 
@@ -10,8 +11,8 @@
         <p class="suite-subtitle">v{{ document.version }} · {{ document.get_file_type_display }} · Tarayıcı üzerinden düzenleme</p>
     </div>
     <div class="d-flex gap-2">
-        <a href="{% url 'managed_document_download' document.id %}" class="btn btn-outline-primary btn-sm">İndir</a>
-        <a href="{% url 'factory_command_center' %}?document={{ document.id }}" class="btn btn-outline-secondary btn-sm">Komuta Merkezi</a>
+        <a href="{% url 'managed_document_download' document.id %}" class="btn btn-outline-primary btn-sm">{% trans "İndir" %}</a>
+        <a href="{% url 'factory_command_center' %}?document={{ document.id }}" class="btn btn-outline-secondary btn-sm">{% trans "Komuta Merkezi" %}</a>
     </div>
 </section>
 

@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Kimlik & Uç Nokta Merkezi - OmniOps{% endblock %}
+{% block title %}{% trans "Kimlik & Uç Nokta Merkezi - OmniOps" %}{% endblock %}
 
 {% block content %}
 <section class="suite-hero mb-4">
     <div>
         <span class="suite-eyebrow">OmniOps Factory IT Suite</span>
-        <h1 class="suite-title">Kimlik & Uç Nokta Operasyon Merkezi</h1>
-        <p class="suite-subtitle">Active Directory, kullanıcı yaşam döngüsü, endpoint uyumu, MFA ve erişim risklerini tek merkezden yönetin.</p>
+        <h1 class="suite-title">{% trans "Kimlik & Uç Nokta Operasyon Merkezi" %}</h1>
+        <p class="suite-subtitle">{% trans "Active Directory, kullanıcı yaşam döngüsü, endpoint uyumu, MFA ve erişim risklerini tek merkezden yönetin." %}</p>
     </div>
     <div class="d-flex flex-wrap gap-2">
         {% for connection in connections %}
@@ -20,59 +21,59 @@
             </button>
         </form>
         {% empty %}
-        <span class="badge bg-warning-subtle text-warning px-3 py-2">Directory bağlantısı yok</span>
+        <span class="badge bg-warning-subtle text-warning px-3 py-2">{% trans "Directory bağlantısı yok" %}</span>
         {% endfor %}
     </div>
 </section>
 
 <div class="row g-3 mb-4">
-    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Directory</div><div class="display-6 fw-bold">{{ metrics.connections }}</div></div></div></div>
-    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Kullanıcı</div><div class="display-6 fw-bold text-primary">{{ metrics.directory_users }}</div></div></div></div>
-    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Dikkat Kullanıcı</div><div class="display-6 fw-bold text-warning">{{ metrics.attention_users }}</div></div></div></div>
-    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Endpoint Alarm</div><div class="display-6 fw-bold text-danger">{{ metrics.endpoint_alerts }}</div></div></div></div>
-    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Lifecycle</div><div class="display-6 fw-bold">{{ metrics.lifecycle_tasks }}</div></div></div></div>
-    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">Tesis Yetkisi</div><div class="display-6 fw-bold">{{ metrics.site_access_grants }}</div></div></div></div>
+    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "Directory" %}</div><div class="display-6 fw-bold">{{ metrics.connections }}</div></div></div></div>
+    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "Kullanıcı" %}</div><div class="display-6 fw-bold text-primary">{{ metrics.directory_users }}</div></div></div></div>
+    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "Dikkat Kullanıcı" %}</div><div class="display-6 fw-bold text-warning">{{ metrics.attention_users }}</div></div></div></div>
+    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "Endpoint Alarm" %}</div><div class="display-6 fw-bold text-danger">{{ metrics.endpoint_alerts }}</div></div></div></div>
+    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "Lifecycle" %}</div><div class="display-6 fw-bold">{{ metrics.lifecycle_tasks }}</div></div></div></div>
+    <div class="col-md-2"><div class="card glass-card h-100"><div class="card-body"><div class="text-muted small">{% trans "Tesis Yetkisi" %}</div><div class="display-6 fw-bold">{{ metrics.site_access_grants }}</div></div></div></div>
 </div>
 
 <div class="row g-4">
     <div class="col-xl-4">
         <div class="accordion" id="identityForms">
             <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#connectionForm">Directory Bağlantısı</button></h2>
+                <h2 class="accordion-header"><button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#connectionForm">{% trans "Directory Bağlantısı" %}</button></h2>
                 <div id="connectionForm" class="accordion-collapse collapse show" data-bs-parent="#identityForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="connection">{{ forms.connection.as_p }}<button class="btn btn-primary w-100">Bağlantıyı Kaydet</button></form>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="connection">{{ forms.connection.as_p }}<button class="btn btn-primary w-100">{% trans "Bağlantıyı Kaydet" %}</button></form>
                 </div></div>
             </div>
             <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#userForm">Directory Kullanıcısı</button></h2>
+                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#userForm">{% trans "Directory Kullanıcısı" %}</button></h2>
                 <div id="userForm" class="accordion-collapse collapse" data-bs-parent="#identityForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="user">{{ forms.user.as_p }}<button class="btn btn-info w-100">Kullanıcı Snapshot Kaydet</button></form>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="user">{{ forms.user.as_p }}<button class="btn btn-info w-100">{% trans "Kullanıcı Snapshot Kaydet" %}</button></form>
                 </div></div>
             </div>
             <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#groupForm">Directory Grubu</button></h2>
+                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#groupForm">{% trans "Directory Grubu" %}</button></h2>
                 <div id="groupForm" class="accordion-collapse collapse" data-bs-parent="#identityForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="group">{{ forms.group.as_p }}<button class="btn btn-warning w-100">Grubu Kaydet</button></form>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="group">{{ forms.group.as_p }}<button class="btn btn-warning w-100">{% trans "Grubu Kaydet" %}</button></form>
                 </div></div>
             </div>
             <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#endpointForm">Endpoint Cihazı</button></h2>
+                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#endpointForm">{% trans "Endpoint Cihazı" %}</button></h2>
                 <div id="endpointForm" class="accordion-collapse collapse" data-bs-parent="#identityForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="endpoint">{{ forms.endpoint.as_p }}<button class="btn btn-success w-100">Endpoint Kaydet</button></form>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="endpoint">{{ forms.endpoint.as_p }}<button class="btn btn-success w-100">{% trans "Endpoint Kaydet" %}</button></form>
                 </div></div>
             </div>
             {% if can_manage_site_access %}
             <div class="accordion-item border-0 glass-card mb-3">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#siteAccessForm">Fabrika Tesis Erişimi</button></h2>
+                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#siteAccessForm">{% trans "Fabrika Tesis Erişimi" %}</button></h2>
                 <div id="siteAccessForm" class="accordion-collapse collapse" data-bs-parent="#identityForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="site_access">{{ forms.site_access.as_p }}<button class="btn btn-outline-primary w-100">Tesis Yetkisi Ver</button></form>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="site_access">{{ forms.site_access.as_p }}<button class="btn btn-outline-primary w-100">{% trans "Tesis Yetkisi Ver" %}</button></form>
                 </div></div>
             </div>
             {% endif %}
             <div class="accordion-item border-0 glass-card">
-                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#lifecycleForm">Lifecycle İşi</button></h2>
+                <h2 class="accordion-header"><button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#lifecycleForm">{% trans "Lifecycle İşi" %}</button></h2>
                 <div id="lifecycleForm" class="accordion-collapse collapse" data-bs-parent="#identityForms"><div class="accordion-body">
-                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="lifecycle">{{ forms.lifecycle.as_p }}<button class="btn btn-secondary w-100">İşi Oluştur</button></form>
+                    <form method="post">{% csrf_token %}<input type="hidden" name="action" value="lifecycle">{{ forms.lifecycle.as_p }}<button class="btn btn-secondary w-100">{% trans "İşi Oluştur" %}</button></form>
                 </div></div>
             </div>
         </div>
@@ -82,7 +83,7 @@
         <div class="row g-4">
             <div class="col-lg-6">
                 <div class="card glass-card h-100">
-                    <div class="card-header bg-transparent fw-bold">Directory Bağlantıları</div>
+                    <div class="card-header bg-transparent fw-bold">{% trans "Directory Bağlantıları" %}</div>
                     <div class="card-body">
                         {% for connection in connections %}
                         <div class="border rounded-3 p-3 mb-2">
@@ -96,7 +97,7 @@
                             </div>
                         </div>
                         {% empty %}
-                        <p class="text-muted mb-0">Henüz Directory bağlantısı yok.</p>
+                        <p class="text-muted mb-0">{% trans "Henüz Directory bağlantısı yok." %}</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -104,7 +105,7 @@
 
             <div class="col-lg-6">
                 <div class="card glass-card h-100">
-                    <div class="card-header bg-transparent fw-bold">Dikkat Gerektiren Kullanıcılar</div>
+                    <div class="card-header bg-transparent fw-bold">{% trans "Dikkat Gerektiren Kullanıcılar" %}</div>
                     <div class="card-body">
                         {% for user in attention_users %}
                         <div class="border-bottom py-2">
@@ -112,7 +113,7 @@
                             <div class="text-muted small">{{ user.department|default:"Departman yok" }} · {{ user.get_status_display }} · MFA: {{ user.mfa_enabled|yesno:"Var,Yok" }}</div>
                         </div>
                         {% empty %}
-                        <p class="text-muted mb-0">Riskli kullanıcı görünmüyor.</p>
+                        <p class="text-muted mb-0">{% trans "Riskli kullanıcı görünmüyor." %}</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -120,7 +121,7 @@
 
             <div class="col-lg-6">
                 <div class="card glass-card h-100">
-                    <div class="card-header bg-transparent fw-bold">Endpoint Uyum Uyarıları</div>
+                    <div class="card-header bg-transparent fw-bold">{% trans "Endpoint Uyum Uyarıları" %}</div>
                     <div class="card-body">
                         {% for endpoint in endpoint_alerts %}
                         <div class="d-flex justify-content-between align-items-start border-bottom py-2 gap-2">
@@ -136,7 +137,7 @@
                             </form>
                         </div>
                         {% empty %}
-                        <p class="text-muted mb-0">Endpoint alarmı yok.</p>
+                        <p class="text-muted mb-0">{% trans "Endpoint alarmı yok." %}</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -144,7 +145,7 @@
 
             <div class="col-lg-6">
                 <div class="card glass-card h-100">
-                    <div class="card-header bg-transparent fw-bold">Kimlik Lifecycle İşleri</div>
+                    <div class="card-header bg-transparent fw-bold">{% trans "Kimlik Lifecycle İşleri" %}</div>
                     <div class="card-body">
                         {% for task in lifecycle_tasks %}
                         <div class="border rounded-3 p-3 mb-2 {% if task.is_overdue %}border-danger-subtle{% endif %}">
@@ -170,7 +171,7 @@
                             </div>
                         </div>
                         {% empty %}
-                        <p class="text-muted mb-0">Açık lifecycle işi yok.</p>
+                        <p class="text-muted mb-0">{% trans "Açık lifecycle işi yok." %}</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -178,7 +179,7 @@
 
             <div class="col-12">
                 <div class="card glass-card">
-                    <div class="card-header bg-transparent fw-bold">Ayrıcalıklı Gruplar</div>
+                    <div class="card-header bg-transparent fw-bold">{% trans "Ayrıcalıklı Gruplar" %}</div>
                     <div class="card-body">
                         <div class="row g-3">
                             {% for group in privileged_groups %}
@@ -189,7 +190,7 @@
                                 </div>
                             </div>
                             {% empty %}
-                            <p class="text-muted mb-0">Ayrıcalıklı grup kaydı yok.</p>
+                            <p class="text-muted mb-0">{% trans "Ayrıcalıklı grup kaydı yok." %}</p>
                             {% endfor %}
                         </div>
                     </div>

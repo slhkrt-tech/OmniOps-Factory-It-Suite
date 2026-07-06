@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Satış Kanban - OmniOps{% endblock %}
+{% block title %}{% trans "Satış Kanban - OmniOps" %}{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
-        <h2 class="fw-bold mb-1">Dinamik Kanban Panosu</h2>
-        <p class="text-muted mb-0">Sürükle-bırak satış hunisi ve optimistic gelir güncellemesi.</p>
+        <h2 class="fw-bold mb-1">{% trans "Dinamik Kanban Panosu" %}</h2>
+        <p class="text-muted mb-0">{% trans "Sürükle-bırak satış hunisi ve optimistic gelir güncellemesi." %}</p>
     </div>
-    <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#newOpportunity">Yeni Fırsat</button>
+    <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#newOpportunity">{% trans "Yeni Fırsat" %}</button>
 </div>
 
 <div class="collapse mb-4" id="newOpportunity">
@@ -16,11 +17,11 @@
         <div class="card-body">
             <form method="post" class="row g-2">
                 {% csrf_token %}
-                <div class="col-md-3"><input name="title" class="form-control" placeholder="Fırsat"></div>
-                <div class="col-md-3"><input name="customer_name" class="form-control" placeholder="Müşteri"></div>
+                <div class="col-md-3"><input name="title" class="form-control" placeholder="{% trans 'Fırsat' %}"></div>
+                <div class="col-md-3"><input name="customer_name" class="form-control" placeholder="{% trans 'Müşteri' %}"></div>
                 <div class="col-md-2"><input name="potential_revenue" type="number" step="0.01" class="form-control" placeholder="Gelir"></div>
                 <div class="col-md-2"><input name="probability" type="number" class="form-control" value="20" placeholder="%"></div>
-                <div class="col-md-2"><button class="btn btn-success w-100">Ekle</button></div>
+                <div class="col-md-2"><button class="btn btn-success w-100">{% trans "Ekle" %}</button></div>
             </form>
         </div>
     </div>
@@ -45,7 +46,7 @@
                 <div class="small text-muted mt-2">Ağırlıklı: {{ item.weighted_revenue }} ₺</div>
             </div>
             {% empty %}
-            <div class="text-muted small empty-hint">Kart yok</div>
+            <div class="text-muted small empty-hint">{% trans "Kart yok" %}</div>
             {% endfor %}
         </div>
     </div>
@@ -84,12 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!response.ok) {
                     previousZone.appendChild(dragged);
                     updateTotals();
-                    alert('Kanban güncellemesi kaydedilemedi. Yetki veya oturum durumunu kontrol edin.');
+                    alert(window.OmniOpsI18n.kanbanSaveFailed);
                 }
             }).catch(() => {
                 previousZone.appendChild(dragged);
                 updateTotals();
-                alert('Kanban güncellemesi sırasında ağ hatası oluştu.');
+                alert(window.OmniOpsI18n.kanbanNetworkError);
             });
             updateTotals();
         });

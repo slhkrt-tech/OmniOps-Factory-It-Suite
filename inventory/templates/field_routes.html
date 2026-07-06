@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Saha Rota Planlama - OmniOps{% endblock %}
+{% block title %}{% trans "Saha Rota Planlama - OmniOps" %}{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
-        <h2 class="fw-bold mb-1">AI Destekli Rota & Yakıt Planlama</h2>
-        <p class="text-muted mb-0">OpenStreetMap üzerinde saha ziyaretlerini, mesafeyi ve klima çarpanlı yakıt tahminini izleyin.</p>
+        <h2 class="fw-bold mb-1">{% trans "AI Destekli Rota & Yakıt Planlama" %}</h2>
+        <p class="text-muted mb-0">{% trans "OpenStreetMap üzerinde saha ziyaretlerini, mesafeyi ve klima çarpanlı yakıt tahminini izleyin." %}</p>
     </div>
     <form method="post" action="{% url 'optimize_field_route' %}">
         {% csrf_token %}
@@ -22,11 +23,11 @@
     <div class="col-lg-4">
         <div class="card glass-card mb-4">
             <div class="card-body">
-                <h5 class="fw-bold mb-3">Yeni Durak</h5>
+                <h5 class="fw-bold mb-3">{% trans "Yeni Durak" %}</h5>
                 <form method="post">
                     {% csrf_token %}
-                    <div class="mb-2"><input name="title" class="form-control" placeholder="Ziyaret başlığı"></div>
-                    <div class="mb-2"><input name="customer_name" class="form-control" placeholder="Müşteri / Lokasyon"></div>
+                    <div class="mb-2"><input name="title" class="form-control" placeholder="{% trans 'Ziyaret başlığı' %}"></div>
+                    <div class="mb-2"><input name="customer_name" class="form-control" placeholder="{% trans 'Müşteri / Lokasyon' %}"></div>
                     <div class="mb-2"><input name="address" class="form-control" placeholder="Adres"></div>
                     <div class="row g-2 mb-2">
                         <div class="col"><input name="latitude" class="form-control" placeholder="Enlem"></div>
@@ -36,8 +37,8 @@
                         <div class="col"><input name="distance_km" type="number" step="0.1" class="form-control" placeholder="Mesafe km"></div>
                         <div class="col"><input name="fuel_l_per_100km" type="number" step="0.1" class="form-control" value="7.5" placeholder="L/100km"></div>
                     </div>
-                    <div class="mb-2"><input name="ac_multiplier" type="number" step="0.01" class="form-control" value="1.08" placeholder="Klima çarpanı"></div>
-                    <button class="btn btn-success w-100">Durağı Ekle</button>
+                    <div class="mb-2"><input name="ac_multiplier" type="number" step="0.01" class="form-control" value="1.08" placeholder="{% trans 'Klima çarpanı' %}"></div>
+                    <button class="btn btn-success w-100">{% trans "Durağı Ekle" %}</button>
                 </form>
             </div>
         </div>
@@ -55,7 +56,7 @@
                     <div class="text-muted small">{{ visit.distance_km }} km · {{ visit.vehicle_model }}</div>
                 </div>
                 {% empty %}
-                <p class="text-muted">Henüz rota durağı yok.</p>
+                <p class="text-muted">{% trans "Henüz rota durağı yok." %}</p>
                 {% endfor %}
             </div>
         </div>
