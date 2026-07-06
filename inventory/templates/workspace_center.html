@@ -50,7 +50,7 @@
                     <div class="col-md-6 col-xl-4">
                         <div class="ops-suggestion h-100 {% if workspace.industry == key %}border border-primary{% endif %}">
                             <strong>{{ preset.label }}</strong>
-                            <p class="text-muted small mb-2">{{ preset.modules|length }} modül · {{ preset.terminology.department_label|default:"Bölüm" }}</p>
+                            <p class="text-muted small mb-2">{{ preset.modules|length }} {% trans "modül" %} · {{ preset.terminology.department_label|default:i18n_defaults.department }}</p>
                             <div class="d-flex flex-wrap gap-1">
                                 {% for mod in preset.modules|slice:":4" %}
                                 <span class="badge bg-body-secondary text-body-secondary">{{ mod }}</span>

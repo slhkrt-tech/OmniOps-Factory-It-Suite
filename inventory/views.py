@@ -109,39 +109,39 @@ def global_search_api(request):
         )
 
         for device in Device.objects.filter(models.Q(name__icontains=query) | models.Q(mac_address__icontains=query)).order_by('name')[:limit]:
-            add_result('Cihaz', device.name, f"{device.device_type} · {device.mac_address or 'MAC yok'}", '/topoloji/', 'mdi:router-network')
+            add_result(_('Cihaz'), device.name, f"{device.device_type} · {device.mac_address or _('MAC yok')}", '/topoloji/', 'mdi:router-network')
 
         for asset in ITAsset.objects.filter(models.Q(name__icontains=query) | models.Q(serial_number__icontains=query) | models.Q(assigned_to__icontains=query)).order_by('name')[:limit]:
-            add_result('Varlık', asset.name, f"{asset.get_asset_type_display()} · {asset.assigned_to or 'Zimmet yok'}", '/it-envanter/', 'mdi:laptop')
+            add_result(_('Varlık'), asset.name, f"{asset.get_asset_type_display()} · {asset.assigned_to or _('Zimmet yok')}", '/it-envanter/', 'mdi:laptop')
 
         ticket_qs = Ticket.objects.filter(models.Q(title__icontains=query) | models.Q(description__icontains=query)).order_by('-created_at')[:limit]
     else:
         ticket_qs = Ticket.objects.filter(created_by=request.user).filter(models.Q(title__icontains=query) | models.Q(description__icontains=query)).order_by('-created_at')[:limit]
 
     for ticket in ticket_qs:
-        add_result('Ticket', ticket.title, f"{ticket.get_status_display()} · {ticket.get_priority_display()}", f'/talep/{ticket.id}/', 'mdi:ticket-confirmation-outline')
+        add_result(_('Ticket'), ticket.title, f"{ticket.get_status_display()} · {ticket.get_priority_display()}", f'/talep/{ticket.id}/', 'mdi:ticket-confirmation-outline')
 
     for article in KnowledgeBaseArticle.objects.filter(models.Q(title__icontains=query) | models.Q(content__icontains=query)).order_by('-helpful_count')[:limit]:
-        add_result('Bilgi Bankası', article.title, article.get_category_display(), '/bilgi-bankasi/', 'mdi:book-open-page-variant-outline')
+        add_result(_('Bilgi Bankası'), article.title, article.get_category_display(), '/bilgi-bankasi/', 'mdi:book-open-page-variant-outline')
 
     if request.user.is_staff:
         for app in BusinessApplication.objects.filter(models.Q(name__icontains=query) | models.Q(owner_department__icontains=query)).order_by('name')[:limit]:
-            add_result('Uygulama', app.name, f"{app.get_app_type_display()} · {app.get_status_display()}", app.url or '/komuta-merkezi/', 'mdi:apps')
+            add_result(_('Uygulama'), app.name, f"{app.get_app_type_display()} · {app.get_status_display()}", app.url or '/komuta-merkezi/', 'mdi:apps')
 
         for camera in CameraDevice.objects.filter(models.Q(name__icontains=query) | models.Q(location__icontains=query) | models.Q(ip_address__icontains=query)).order_by('name')[:limit]:
-            add_result('Kamera', camera.name, f"{camera.location or 'Lokasyon yok'} · {camera.get_status_display()}", camera.stream_url or '/komuta-merkezi/', 'mdi:cctv')
+            add_result(_('Kamera'), camera.name, f"{camera.location or _('Lokasyon yok')} · {camera.get_status_display()}", camera.stream_url or '/komuta-merkezi/', 'mdi:cctv')
 
         for incident in MajorIncident.objects.filter(title__icontains=query).order_by('-started_at')[:limit]:
-            add_result('Major Incident', incident.title, f"{incident.get_severity_display()} · {incident.get_status_display()}", '/servis-surecleri/', 'mdi:alert-decagram-outline')
+            add_result(_('Major Incident'), incident.title, f"{incident.get_severity_display()} · {incident.get_status_display()}", '/servis-surecleri/', 'mdi:alert-decagram-outline')
 
         for grant in RemoteAccessGrant.objects.filter(models.Q(employee_name__icontains=query) | models.Q(target_resource__icontains=query)).order_by('-created_at')[:limit]:
-            add_result('Uzaktan Erişim', grant.employee_name, f"{grant.get_access_method_display()} · {grant.target_resource}", '/komuta-merkezi/', 'mdi:vpn')
+            add_result(_('Uzaktan Erişim'), grant.employee_name, f"{grant.get_access_method_display()} · {grant.target_resource}", '/komuta-merkezi/', 'mdi:vpn')
 
         for runbook in Runbook.objects.filter(models.Q(title__icontains=query) | models.Q(steps__icontains=query)).order_by('title')[:limit]:
-            add_result('Runbook', runbook.title, runbook.get_category_display(), '/servis-surecleri/', 'mdi:book-cog-outline')
+            add_result(_('Runbook'), runbook.title, runbook.get_category_display(), '/servis-surecleri/', 'mdi:book-cog-outline')
 
         for report in ReportTemplate.objects.filter(title__icontains=query).order_by('title')[:limit]:
-            add_result('Rapor', report.title, f"{report.get_report_type_display()} · {report.output_format}", '/komuta-merkezi/', 'mdi:file-chart-outline')
+            add_result(_('Rapor'), report.title, f"{report.get_report_type_display()} · {report.output_format}", '/komuta-merkezi/', 'mdi:file-chart-outline')
 
         for directory_user in DirectoryUser.objects.filter(
             models.Q(username__icontains=query) |
@@ -149,14 +149,14 @@ def global_search_api(request):
             models.Q(email__icontains=query) |
             models.Q(department__icontains=query)
         ).order_by('username')[:limit]:
-            add_result('Directory Kullanıcısı', directory_user.display_name or directory_user.username, f"{directory_user.department or 'Departman yok'} · {directory_user.get_status_display()}", '/kimlik-operasyonlari/', 'mdi:account-key-outline')
+            add_result(_('Directory Kullanıcısı'), directory_user.display_name or directory_user.username, f"{directory_user.department or _('Departman yok')} · {directory_user.get_status_display()}", '/kimlik-operasyonlari/', 'mdi:account-key-outline')
 
         for endpoint in EndpointDevice.objects.filter(
             models.Q(hostname__icontains=query) |
             models.Q(serial_number__icontains=query) |
             models.Q(assigned_to_text__icontains=query)
         ).order_by('hostname')[:limit]:
-            add_result('Endpoint', endpoint.hostname, f"{endpoint.get_device_type_display()} · {endpoint.get_status_display()}", '/kimlik-operasyonlari/', 'mdi:laptop')
+            add_result(_('Endpoint'), endpoint.hostname, f"{endpoint.get_device_type_display()} · {endpoint.get_status_display()}", '/kimlik-operasyonlari/', 'mdi:laptop')
 
         from .models import FactoryDepartment, ManagedDocument, FactorySite, DepartmentInventoryItem
 
@@ -164,18 +164,18 @@ def global_search_api(request):
             models.Q(title__icontains=query) | models.Q(code__icontains=query) |
             models.Q(customer_name__icontains=query) | models.Q(custom_industry_label__icontains=query)
         ).order_by('title')[:limit]:
-            add_result('Fabrika Tesisi', site.display_title, f"{site.industry_display} · {site.code}", f'/fabrika-portfoy-envanter/?site={site.id}', 'mdi:domain')
+            add_result(_('Fabrika Tesisi'), site.display_title, f"{site.industry_display} · {site.code}", f'/fabrika-portfoy-envanter/?site={site.id}', 'mdi:domain')
 
         for item in DepartmentInventoryItem.objects.filter(
             models.Q(title__icontains=query) | models.Q(reference_code__icontains=query) |
             models.Q(serial_number__icontains=query) | models.Q(category_label__icontains=query)
         ).select_related('factory_site', 'department').order_by('title')[:limit]:
-            add_result('Bölüm Envanteri', item.title, f"{item.factory_site.display_title} · {item.category_display}", f'/fabrika-portfoy-envanter/?site={item.factory_site_id}&department={item.department_id or ""}', 'mdi:package-variant')
+            add_result(_('Bölüm Envanteri'), item.title, f"{item.factory_site.display_title} · {item.category_display}", f'/fabrika-portfoy-envanter/?site={item.factory_site_id}&department={item.department_id or ""}', 'mdi:package-variant')
 
         for department in FactoryDepartment.objects.filter(
             models.Q(name__icontains=query) | models.Q(code__icontains=query) | models.Q(manager_name__icontains=query)
         ).order_by('name')[:limit]:
-            add_result('Fabrika Departmanı', department.name, f"{department.get_department_type_display()} · {department.code}", f'/fabrika-komuta-merkezi/?department={department.id}', 'mdi:office-building-outline')
+            add_result(_('Fabrika Departmanı'), department.name, f"{department.get_department_type_display()} · {department.code}", f'/fabrika-komuta-merkezi/?department={department.id}', 'mdi:office-building-outline')
 
         for document in ManagedDocument.objects.filter(
             models.Q(title__icontains=query) |
@@ -183,13 +183,13 @@ def global_search_api(request):
             models.Q(description__icontains=query) |
             models.Q(tags__icontains=query)
         ).order_by('-updated_at')[:limit]:
-            add_result('Doküman', document.title, f"{document.get_category_display()} · {document.get_file_type_display()}", f'/fabrika-komuta-merkezi/?document={document.id}', 'mdi:file-document-outline')
+            add_result(_('Doküman'), document.title, f"{document.get_category_display()} · {document.get_file_type_display()}", f'/fabrika-komuta-merkezi/?document={document.id}', 'mdi:file-document-outline')
 
         from .models import AssetQRTag
         for tag in AssetQRTag.objects.filter(
             models.Q(code__icontains=query) | models.Q(label__icontains=query) | models.Q(location__icontains=query)
         ).order_by('code')[:limit]:
-            add_result('QR Etiket', tag.display_name, f"{tag.get_tag_type_display()} · {tag.code}", tag.resolved_url, 'mdi:qrcode-scan')
+            add_result(_('QR Etiket'), tag.display_name, f"{tag.get_tag_type_display()} · {tag.code}", tag.resolved_url, 'mdi:qrcode-scan')
 
     return JsonResponse({'results': results[:30]})
 
@@ -205,11 +205,11 @@ def generate_heatmap_data():
         loc_time = timezone.localtime(log.created_at)
         heatmap_dict[loc_time.weekday()][loc_time.hour] += 1
         
-    days_tr = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar']
+    days = [_('Pazartesi'), _('Salı'), _('Çarşamba'), _('Perşembe'), _('Cuma'), _('Cumartesi'), _('Pazar')]
     heatmap_series = []
     for i in range(7):
         data_points = [{'x': f"{h}:00", 'y': heatmap_dict[i][h]} for h in range(24)]
-        heatmap_series.append({'name': days_tr[i], 'data': data_points})
+        heatmap_series.append({'name': days[i], 'data': data_points})
     return heatmap_series
 
 
@@ -258,9 +258,9 @@ def dashboard(request):
         action_suggestions.append({
             'type': 'danger',
             'icon': 'mdi:alert-decagram',
-            'title': 'Kritik Güvenlik İhlali / Arıza',
-            'message': f'Sistemde acil müdahale bekleyen {critical_tickets.count()} kritik bilet var. Siber saldırı tespit edilmiş veya donanım çökmüş olabilir.',
-            'action_text': 'Hemen İncele',
+            'title': _('Kritik Güvenlik İhlali / Arıza'),
+            'message': _('Sistemde acil müdahale bekleyen %(count)s kritik bilet var. Siber saldırı tespit edilmiş veya donanım çökmüş olabilir.') % {'count': critical_tickets.count()},
+            'action_text': _('Hemen İncele'),
             'action_url': '/panel/'
         })
         
@@ -269,9 +269,9 @@ def dashboard(request):
         action_suggestions.append({
             'type': 'warning',
             'icon': 'mdi:router-wireless-off',
-            'title': 'Bağlantı Kopukluğu',
-            'message': f'Ağınızdaki {offline_devices.count()} cihaza erişilemiyor veya konfigürasyon hatası alındı. Disaster Recovery (DR) modülünü kullanın.',
-            'action_text': 'Yedekten Dön',
+            'title': _('Bağlantı Kopukluğu'),
+            'message': _('Ağınızdaki %(count)s cihaza erişilemiyor veya konfigürasyon hatası alındı. Disaster Recovery (DR) modülünü kullanın.') % {'count': offline_devices.count()},
+            'action_text': _('Yedekten Dön'),
             'action_url': '/yedekleme/'
         })
         
@@ -279,9 +279,9 @@ def dashboard(request):
         action_suggestions.append({
             'type': 'info',
             'icon': 'mdi:certificate-outline',
-            'title': 'Lisans Yenileme Uyarıları',
-            'message': f'Önümüzdeki 30 gün içinde süresi dolacak {expiring_licenses.count()} lisans tespit edildi. SLA ihlali yememek için sözleşmeleri yenileyin.',
-            'action_text': 'Envantere Git',
+            'title': _('Lisans Yenileme Uyarıları'),
+            'message': _('Önümüzdeki 30 gün içinde süresi dolacak %(count)s lisans tespit edildi. SLA ihlali yememek için sözleşmeleri yenileyin.') % {'count': expiring_licenses.count()},
+            'action_text': _('Envantere Git'),
             'action_url': '/it-envanter/'
         })
         
@@ -289,9 +289,9 @@ def dashboard(request):
         action_suggestions.append({
             'type': 'success',
             'icon': 'mdi:shield-check',
-            'title': 'Sistem Stabil',
-            'message': 'Şu an ağınızda ve donanımlarınızda hiçbir kritik kriz bulunmuyor. AIOps arka planda izlemeye devam ediyor.',
-            'action_text': 'Canlı İzleme',
+            'title': _('Sistem Stabil'),
+            'message': _('Şu an ağınızda ve donanımlarınızda hiçbir kritik kriz bulunmuyor. AIOps arka planda izlemeye devam ediyor.'),
+            'action_text': _('Canlı İzleme'),
             'action_url': '/monitor/'
         })
 
@@ -302,7 +302,7 @@ def dashboard(request):
             device_labels.append(type_name)
             device_data.append(count)
 
-    ticket_labels = ['Açık', 'İnceleniyor', 'Çözüldü']
+    ticket_labels = [_('Açık'), _('İnceleniyor'), _('Çözüldü')]
     ticket_data = [
         acik_bilet_sayisi,
         ticket_base.filter(status='Inceleniyor').count(),
@@ -361,7 +361,7 @@ def dashboard_refresh(request):
         'license_alert_class': 'danger' if suresi_biten_lisanslar > 0 else 'success',
         'device_labels': device_labels,
         'device_data': device_data,
-        'ticket_labels': ['Açık', 'İnceleniyor', 'Çözüldü'],
+        'ticket_labels': [_('Açık'), _('İnceleniyor'), _('Çözüldü')],
         'ticket_data': [
             acik_bilet_sayisi,
             ticket_scope.filter(status='Inceleniyor').count(),
@@ -1492,7 +1492,7 @@ def reporting_hub_view(request):
             # 1. BİLET (TICKET) PERFORMANS RAPORU
             if report_type == 'ticket_performance':
                 response['Content-Disposition'] = f'attachment; filename="Bilet_Raporu_{end_date.strftime("%Y%m%d")}.pdf"'
-                elements.append(Paragraph("Bilet (Ticket) Performans Raporu", styles['Heading1']))
+                elements.append(Paragraph(_("Bilet (Ticket) Performans Raporu"), styles['Heading1']))
                 elements.append(Paragraph(f"Dönem: {start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}", styles['Normal']))
                 elements.append(Spacer(1, 12))
                 
@@ -1516,12 +1516,12 @@ def reporting_hub_view(request):
                     ]))
                     elements.append(table)
                 else:
-                    elements.append(Paragraph("Bu dönemde açılmış bilet bulunmuyor.", styles['Normal']))
+                    elements.append(Paragraph(_("Bu dönemde açılmış bilet bulunmuyor."), styles['Normal']))
 
             # 2. SİSTEM DENETİM (AUDIT) RAPORU
             elif report_type == 'audit_log':
                 response['Content-Disposition'] = f'attachment; filename="Denetim_Raporu_{end_date.strftime("%Y%m%d")}.pdf"'
-                elements.append(Paragraph("Sistem Denetim (Audit) Raporu", styles['Heading1']))
+                elements.append(Paragraph(_("Sistem Denetim (Audit) Raporu"), styles['Heading1']))
                 elements.append(Paragraph(f"Dönem: {start_date.strftime('%d.%m.%Y')} - {end_date.strftime('%d.%m.%Y')}", styles['Normal']))
                 elements.append(Spacer(1, 12))
                 
@@ -1546,7 +1546,7 @@ def reporting_hub_view(request):
                     ]))
                     elements.append(table)
                 else:
-                    elements.append(Paragraph("Bu dönemde kaydedilmiş denetim izi bulunmuyor.", styles['Normal']))
+                    elements.append(Paragraph(_("Bu dönemde kaydedilmiş denetim izi bulunmuyor."), styles['Normal']))
             
             doc.build(elements)
             response.write(buffer.getvalue())

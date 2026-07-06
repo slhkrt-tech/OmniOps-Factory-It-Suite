@@ -58,7 +58,7 @@
                         <div>
                             <div class="fw-bold">{{ connection.name }}</div>
                             <div class="small text-muted">{{ connection.get_erp_type_display }} · {{ connection.base_url }}</div>
-                            <div class="small mt-1">{{ connection.last_sync_message|default:"Henüz sync yapılmadı" }}</div>
+                            <div class="small mt-1">{{ connection.last_sync_message|default:i18n_defaults.no_sync_yet }}</div>
                         </div>
                         <span class="badge {% if connection.last_sync_status == 'healthy' %}bg-success{% elif connection.last_sync_status == 'error' %}bg-danger{% else %}bg-warning{% endif %}">{{ connection.get_last_sync_status_display }}</span>
                     </div>

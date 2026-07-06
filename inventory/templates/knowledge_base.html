@@ -24,13 +24,13 @@
                     <span class="iconify" data-icon="mdi:book-open-page-variant-outline" style="font-size: 8rem;"></span>
                 </div>
                 <div class="position-relative z-index-1">
-                    <h2 class="fw-bold mb-2">OmniOps Bilgi Bankası</h2>
+                    <h2 class="fw-bold mb-2">{% trans "OmniOps Bilgi Bankası" %}</h2>
                     <p class="fs-5 opacity-75 mb-4">{% trans "Nasıl yardımcı olabiliriz? Arıza kaydı açmadan önce çözüm rehberlerimize göz atın." %}</p>
                     
                     <form method="GET" class="position-relative w-75" style="max-width: 600px;">
                         <span class="iconify position-absolute top-50 start-0 translate-middle-y ms-4 text-muted fs-4" data-icon="mdi:magnify"></span>
-                        <input type="text" name="q" value="{{ query }}" class="form-control form-control-lg rounded-pill ps-5 border-0 shadow-sm" placeholder="Ağ, yazıcı, şifre sıfırlama, VPN..." autocomplete="off">
-                        <button type="submit" class="btn btn-dark position-absolute top-50 end-0 translate-middle-y rounded-pill me-2 fw-bold px-4">Ara</button>
+                        <input type="text" name="q" value="{{ query }}" class="form-control form-control-lg rounded-pill ps-5 border-0 shadow-sm" placeholder="{% trans 'Ağ, yazıcı, şifre sıfırlama, VPN...' %}" autocomplete="off">
+                        <button type="submit" class="btn btn-dark position-absolute top-50 end-0 translate-middle-y rounded-pill me-2 fw-bold px-4">{% trans "Ara" %}</button>
                     </form>
                 </div>
             </div>
@@ -100,7 +100,7 @@
                                 <div id="flush-collapse{{ article.id }}" class="accordion-collapse collapse" data-bs-parent="#kbAccordion">
                                     <div class="accordion-body text-body" style="white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6;">{{ article.content }}</div>
                                     <div class="card-footer bg-transparent border-top border-secondary-subtle d-flex justify-content-between align-items-center py-2 px-4">
-                                        <small class="text-muted"><span class="iconify" data-icon="mdi:account-edit"></span> Yazan: {{ article.author.username|default:"Sistem" }} | {{ article.created_at|date:"d M Y" }}</small>
+                                        <small class="text-muted"><span class="iconify" data-icon="mdi:account-edit"></span> {{ i18n_defaults.written_by }} {{ article.author.username|default:i18n_defaults.system_author }} | {{ article.created_at|date:"d M Y" }}</small>
                                         <div class="d-flex gap-3 text-muted small">
                                             <span><span class="iconify text-info" data-icon="mdi:eye-outline"></span> {{ article.views_count }} Görüntülenme</span>
                                             <span><span class="iconify text-success" data-icon="mdi:thumb-up-outline"></span> {{ article.helpful_count }} Faydalı</span>

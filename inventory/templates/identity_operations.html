@@ -91,7 +91,7 @@
                                 <div>
                                     <div class="fw-bold">{{ connection.name }}</div>
                                     <div class="text-muted small">{{ connection.get_directory_type_display }} · {{ connection.server_uri|default:"URI yok" }}</div>
-                                    <div class="small">{{ connection.last_sync_message|default:"Henüz sync yok." }}</div>
+                                    <div class="small">{{ connection.last_sync_message|default:i18n_defaults.no_sync }}</div>
                                 </div>
                                 <span class="badge bg-{{ connection.last_sync_status|yesno:'success,secondary,secondary' }}-subtle text-secondary">{{ connection.get_last_sync_status_display }}</span>
                             </div>
@@ -186,7 +186,7 @@
                             <div class="col-md-6">
                                 <div class="border rounded-3 p-3 h-100">
                                     <div class="fw-bold">{{ group.name }}</div>
-                                    <div class="text-muted small">{{ group.mapped_system|default:"Sistem eşlemesi yok" }} · {{ group.get_risk_level_display }}</div>
+                                    <div class="text-muted small">{{ group.mapped_system|default:i18n_defaults.no_system_mapping }} · {{ group.get_risk_level_display }}</div>
                                 </div>
                             </div>
                             {% empty %}

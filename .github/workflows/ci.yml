@@ -36,3 +36,9 @@ jobs:
           python manage.py makemigrations --check --dry-run
           python manage.py spectacular --file schema.yml --validate
           python manage.py test inventory
+
+      - name: Security scan (Bandit + pip-audit)
+        run: |
+          pip install bandit pip-audit defusedxml
+          python -m bandit -r inventory core -ll -x '*/tests.py,*/test_*.py'
+          python -m pip_audit -r requirements.txt || true

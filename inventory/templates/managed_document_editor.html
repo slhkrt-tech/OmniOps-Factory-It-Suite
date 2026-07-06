@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{{ document.title }} - Doküman Editörü{% endblock %}
+{% block title %}{{ document.title }} - {% trans "Doküman Editörü" %}{% endblock %}
 
 {% block content %}
 <section class="suite-hero mb-3">
     <div>
         <span class="suite-eyebrow">{% if backend == 'collabora' %}Collabora Online{% else %}OnlyOffice{% endif %} Editör</span>
         <h1 class="suite-title">{{ document.title }}</h1>
-        <p class="suite-subtitle">v{{ document.version }} · {{ document.get_file_type_display }} · Tarayıcı üzerinden düzenleme</p>
+        <p class="suite-subtitle">v{{ document.version }} · {{ document.get_file_type_display }} · {% trans "Tarayıcı üzerinden düzenleme" %}</p>
     </div>
     <div class="d-flex gap-2">
         <a href="{% url 'managed_document_download' document.id %}" class="btn btn-outline-primary btn-sm">{% trans "İndir" %}</a>
@@ -34,7 +34,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const payload = JSON.parse('{{ editor_payload_json|escapejs }}');
     if (typeof DocsAPI === 'undefined') {
-        document.getElementById('onlyoffice-editor').innerHTML = '<div class="p-4 text-danger">OnlyOffice script yüklenemedi. ONLYOFFICE_DOCUMENT_SERVER_URL ayarını kontrol edin.</div>';
+        document.getElementById('onlyoffice-editor').innerHTML = '<div class="p-4 text-danger">{% trans "OnlyOffice script yüklenemedi. ONLYOFFICE_DOCUMENT_SERVER_URL ayarını kontrol edin." %}</div>';
         return;
     }
     if (payload.token) {

@@ -86,11 +86,17 @@
 </style>
 
 <script>
+const RACK_I18N = {
+    undefinedRack: "{% trans 'Tanımsız Kabin' %}",
+    apiError: "{% trans 'API Hatası:' %}",
+    loadFailed: "{% trans 'Kabin verileri yüklenirken hata oluştu:' %}",
+    emptyFloor: "{% trans 'Henüz kabinlere yerleştirilmiş bir cihaz bulunmuyor. Lütfen Envanter sayfasından cihaz ekleyip \"Kabin Adı\" ve \"Başlangıç U\" değerlerini girin.' %}",
+    capacityLabel: "{% trans '42 U KAPASİTE' %}",
+};
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Yazdığımız API'den Cihazları Çekiyoruz
     fetch('/api/rack-devices/')
         .then(response => {
-            if (!response.ok) throw new Error('API Hatası: ' + response.status);
+            if (!response.ok) throw new Error(RACK_I18N.apiError + ' ' + response.status);
             return response.json();
         })
         .then(devices => {
@@ -99,34 +105,31 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error("Kabin verisi çekilemedi:", error);
             document.getElementById('data-center-floor').innerHTML = 
-                `<div class="alert alert-danger shadow-sm">Kabin verileri yüklenirken hata oluştu: ${error.message}</div>`;
+                `<div class="alert alert-danger shadow-sm">${RACK_I18N.loadFailed} ${error.message}</div>`;
         });
 });
 
 function drawRacksAndDevices(devices) {
     const floor = document.getElementById('data-center-floor');
     
-    // Cihazları "Kabin İsmine" (rack_name) göre grupla
     const racks = {};
     devices.forEach(d => {
-        const rName = d.rack_name || "Tanımsız Kabin";
+        const rName = d.rack_name || RACK_I18N.undefinedRack;
         if (!racks[rName]) racks[rName] = [];
         racks[rName].push(d);
     });
 
-    // Eğer hiç cihaz yoksa uyarı ver
     if (Object.keys(racks).length === 0) {
-        floor.innerHTML = `<div class="col-12"><div class="alert alert-info shadow-sm"><i class="iconify me-2" data-icon="mdi:information"></i>Henüz kabinlere yerleştirilmiş bir cihaz bulunmuyor. Lütfen Envanter sayfasından cihaz ekleyip "Kabin Adı" ve "Başlangıç U" değerlerini girin.</div></div>`;
+        floor.innerHTML = `<div class="col-12"><div class="alert alert-info shadow-sm"><i class="iconify me-2" data-icon="mdi:information"></i>${RACK_I18N.emptyFloor}</div></div>`;
         return;
     }
 
-    // Her Kabin İçin HTML Üret
     for (const [rackName, rackDevices] of Object.entries(racks)) {
         
         let rackHtml = `
             <div class="col-md-6 col-lg-4 col-xl-3 mb-5">
                 <div class="rack-cabinet" id="rack-${rackName.replace(/\s+/g, '-')}">
-                    <div class="rack-header">${rackName.toUpperCase()} <br><small class="text-muted" style="font-size: 10px;">(42 U KAPASİTE)</small></div>
+                    <div class="rack-header">${rackName.toUpperCase()} <br><small class="text-muted" style="font-size: 10px;">(${RACK_I18N.capacityLabel})</small></div>
                     <div class="rack-body" style="position: relative;">
         `;
 

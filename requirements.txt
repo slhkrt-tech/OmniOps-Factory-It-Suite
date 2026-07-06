@@ -28,3 +28,6 @@ matplotlib
 requests
 PyJWT>=2.8
 ldap3>=2.9
+defusedxml>=0.7
+# paramiko 5.0+ fixes CVE-2026-44405; netmiko 4.7 still requires paramiko<5 — track netmiko releases
+paramiko>=3.5.0,<5.0

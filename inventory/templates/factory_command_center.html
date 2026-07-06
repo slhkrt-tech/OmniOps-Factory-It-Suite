@@ -83,7 +83,7 @@
     <div class="col-xl-8">
         <div class="card glass-card mb-4">
             <div class="card-header bg-transparent fw-bold d-flex justify-content-between align-items-center">
-                <span>{% if selected_site %}{{ selected_site.department_label }} Kartelası · {{ selected_site.display_title }}{% else %}Departman Kartelası{% endif %}</span>
+                <span>{% if selected_site %}{{ selected_site.department_label }} {% trans "Kartelası" %} · {{ selected_site.display_title }}{% else %}{% trans "Departman Kartelası" %}{% endif %}</span>
                 <span class="text-muted small">{% trans "Bölüm seçince modüller açılır" %}</span>
             </div>
             <div class="card-body">
@@ -193,14 +193,14 @@
                     <div class="card-body">
                         <h2 class="h5 fw-bold">{{ selected_document.title }}</h2>
                         <p class="text-muted small mb-3">{{ selected_document.reference_code|default:"Referans yok" }} · {{ selected_document.get_status_display }}</p>
-                        <p>{{ selected_document.description|default:"Açıklama girilmemiş." }}</p>
+                        <p>{{ selected_document.description|default:i18n_defaults.no_description }}</p>
                         <ul class="list-unstyled small">
                             <li><strong>{% trans "Kategori:" %}</strong> {{ selected_document.get_category_display }}</li>
                             <li><strong>{% trans "Tip:" %}</strong> {{ selected_document.get_file_type_display }}</li>
                             <li><strong>Departman:</strong> {{ selected_document.department|default:"-" }}</li>
                             <li><strong>Alan:</strong> {{ selected_document.zone|default:"-" }}</li>
                             <li><strong>{% trans "Etiketler:" %}</strong> {{ selected_document.tags|default:"-" }}</li>
-                            <li><strong>{% trans "Geçerlilik:" %}</strong> {{ selected_document.valid_until|default:"Süresiz" }}</li>
+                            <li><strong>{% trans "Geçerlilik:" %}</strong> {{ selected_document.valid_until|default:i18n_defaults.unlimited }}</li>
                         </ul>
                         <div class="d-flex flex-wrap gap-2 mt-3">
                             {% if selected_document.file %}

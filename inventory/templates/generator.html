@@ -275,7 +275,7 @@
                 
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     const originalHtml = this.innerHTML;
-                    this.innerHTML = '<span class="iconify me-1 align-text-bottom" data-icon="mdi:check-bold"></span> Kopyalandı';
+                    this.innerHTML = '<span class="iconify me-1 align-text-bottom" data-icon="mdi:check-bold"></span> {% trans "Kopyalandı" %}';
                     this.classList.replace('btn-outline-light', 'btn-success');
                     this.classList.replace('text-white', 'text-white');
                     this.classList.remove('border-secondary');

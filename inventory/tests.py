@@ -682,3 +682,313 @@ class I18nTests(TestCase):
         response = self.client.get('/')
         self.assertContains(response, 'Log Out')
         self.assertNotContains(response, '<g id=')
+
+
+@override_settings(
+    SECURE_SSL_REDIRECT=False,
+    WAZUH_API_KEY='test-wazuh-secret',
+    WEBHOOK_ALLOWED_IPS=['127.0.0.1'],
+)
+class SecurityTests(TestCase):
+    def test_webhook_rejects_get(self):
+        response = self.client.get(reverse('device_alert_webhook'))
+        self.assertEqual(response.status_code, 405)
+
+    def test_webhook_rejects_missing_api_key(self):
+        response = self.client.post(
+            reverse('device_alert_webhook'),
+            data='{"ip":"10.0.0.1","message":"test"}',
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_webhook_rejects_invalid_api_key(self):
+        response = self.client.post(
+            reverse('device_alert_webhook'),
+            data='{"ip":"10.0.0.1","message":"test"}',
+            content_type='application/json',
+            HTTP_X_API_KEY='wrong-key',
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_webhook_accepts_valid_request(self):
+        response = self.client.post(
+            reverse('device_alert_webhook'),
+            data='{"ip":"10.0.0.1","message":"routine check"}',
+            content_type='application/json',
+            HTTP_X_API_KEY='test-wazuh-secret',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'ok')
+
+    def test_webhook_rejects_missing_ip(self):
+        response = self.client.post(
+            reverse('device_alert_webhook'),
+            data='{"message":"no ip"}',
+            content_type='application/json',
+            HTTP_X_API_KEY='test-wazuh-secret',
+        )
+        self.assertEqual(response.status_code, 400)
+
+    @override_settings(DEBUG=False)
+    def test_ssh_credentials_no_debug_fallback(self):
+        from inventory.models import Device
+        from inventory.utils import get_device_ssh_credentials
+
+        device = Device(name='R1', device_type='router', vendor='cisco')
+        username, password, _ = get_device_ssh_credentials(device)
+        self.assertIsNone(username)
+        self.assertIsNone(password)
+
+    @override_settings(DEBUG=True)
+    def test_ssh_credentials_debug_fallback_when_allowed(self):
+        from inventory.models import Device
+        from inventory.utils import get_device_ssh_credentials
+
+        device = Device(name='R1', device_type='router', vendor='cisco')
+        username, password, _ = get_device_ssh_credentials(device, allow_defaults=True)
+        self.assertEqual(username, 'admin')
+        self.assertEqual(password, 'admin')
+
+    @override_settings(REMOTE_PROBE_SHARED_SECRET='probe-secret')
+    def test_probe_heartbeat_requires_secret(self):
+        response = self.client.post(
+            reverse('probe-heartbeat'),
+            data={'name': 'edge-1', 'ip_address': '10.1.1.1'},
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 401)
+
+    @override_settings(REMOTE_PROBE_SHARED_SECRET='probe-secret')
+    def test_probe_heartbeat_accepts_valid_secret(self):
+        response = self.client.post(
+            reverse('probe-heartbeat'),
+            data={'name': 'edge-1', 'ip_address': '10.1.1.1'},
+            content_type='application/json',
+            HTTP_X_REMOTE_PROBE_SECRET='probe-secret',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'success')
+
+    def test_device_api_requires_authentication(self):
+        response = self.client.get(reverse('device-list'))
+        self.assertIn(response.status_code, (401, 403))
+
+    def test_customer_cannot_access_admin_api(self):
+        User.objects.create_user(username='cust', password='StrongPass123!')
+        self.client.login(username='cust', password='StrongPass123!')
+        response = self.client.get(reverse('device-list'))
+        self.assertEqual(response.status_code, 403)
+
+    def test_role_required_blocks_unprivileged_staff(self):
+        staff = User.objects.create_user(username='plainstaff', password='StrongPass123!', is_staff=True)
+        self.client.force_login(staff)
+        response = self.client.get(reverse('generator'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_dlp_detects_sensitive_api_key_pattern(self):
+        from inventory.dlp import has_blocking_dlp_event, inspect_text_for_dlp
+
+        events = inspect_text_for_dlp('api_key=supersecretvalue123', block=True)
+        self.assertTrue(events)
+        self.assertTrue(has_blocking_dlp_event(events))
+
+    def test_dlp_ignores_clean_text(self):
+        from inventory.dlp import inspect_text_for_dlp
+
+        events = inspect_text_for_dlp('Printer on floor 2 is offline', block=True)
+        self.assertEqual(events, [])
+
+    @override_settings(DEBUG=True)
+    def test_vault_encrypt_decrypt_roundtrip(self):
+        from inventory.utils import decrypt_vault_password, encrypt_vault_password
+
+        encrypted = encrypt_vault_password('router-secret')
+        self.assertTrue(encrypted.startswith('aes_crypt:'))
+        self.assertEqual(decrypt_vault_password(encrypted), 'router-secret')
+
+    @override_settings(DEBUG=False, VAULT_KEY='')
+    def test_vault_encrypt_requires_key_in_production(self):
+        from inventory.utils import encrypt_vault_password
+
+        with self.assertRaises(RuntimeError):
+            encrypt_vault_password('secret')
+
+    def test_wopi_rejects_invalid_token(self):
+        from django.core.files.base import ContentFile
+
+        from inventory.models import ManagedDocument
+
+        document = ManagedDocument.objects.create(title='WOPI Bad Token', file_type='docx', status='draft')
+        document.file.save('bad.docx', ContentFile(b'docx'), save=True)
+        response = self.client.get(
+            reverse('wopi_check_file_info', args=[document.id]),
+            {'access_token': 'invalid-token', 'access_token_uid': '1'},
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_wopi_accepts_valid_token(self):
+        from django.core.files.base import ContentFile
+
+        from inventory.integrations.collabora import build_wopi_access_token
+        from inventory.models import ManagedDocument
+
+        admin = User.objects.create_superuser(
+            username='wopiadmin',
+            email='wopi@example.com',
+            password='StrongPass123!',
+        )
+        document = ManagedDocument.objects.create(title='WOPI Good Token', file_type='docx', status='draft')
+        document.file.save('good.docx', ContentFile(b'docx'), save=True)
+        token = build_wopi_access_token(document.pk, admin.pk)
+        response = self.client.get(
+            reverse('wopi_check_file_info', args=[document.id]),
+            {'access_token': token, 'access_token_uid': str(admin.pk)},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('BaseFileName', response.json())
+
+
+class VulnerabilityTests(TestCase):
+    """OWASP-style regression tests for known vulnerability classes."""
+
+    def test_validate_http_url_blocks_file_scheme(self):
+        from inventory.security_http import validate_http_url
+
+        with self.assertRaises(ValueError):
+            validate_http_url('file:///etc/passwd')
+
+    def test_validate_http_url_blocks_private_host_without_allow(self):
+        from inventory.security_http import validate_http_url
+
+        with self.assertRaises(ValueError):
+            validate_http_url('http://127.0.0.1/internal')
+
+    @override_settings(
+        ONLYOFFICE_DOCUMENT_SERVER_URL='http://onlyoffice.example.com',
+        ONLYOFFICE_JWT_SECRET='',
+    )
+    def test_onlyoffice_callback_rejects_invalid_key(self):
+        import json
+
+        from django.core.files.base import ContentFile
+
+        from inventory.models import ManagedDocument
+
+        document = ManagedDocument.objects.create(title='OO Key Test', file_type='docx', status='draft')
+        document.file.save('key-test.docx', ContentFile(b'original-content'), save=True)
+        original_name = document.file.name
+
+        response = self.client.post(
+            reverse('managed_document_editor_callback', args=[document.pk]),
+            data=json.dumps({
+                'status': 2,
+                'key': 'invalid-document-key',
+                'url': 'http://onlyoffice.example.com/cache/files/doc',
+            }),
+            content_type='application/json',
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['error'], 1)
+        document.refresh_from_db()
+        self.assertEqual(document.file.name, original_name)
+
+    @override_settings(
+        ONLYOFFICE_DOCUMENT_SERVER_URL='http://onlyoffice.example.com',
+        ONLYOFFICE_JWT_SECRET='',
+    )
+    def test_onlyoffice_callback_blocks_ssrf_url(self):
+        import json
+        from unittest.mock import patch
+
+        from django.core.files.base import ContentFile
+
+        from inventory.integrations.onlyoffice import build_document_key
+        from inventory.models import ManagedDocument
+
+        document = ManagedDocument.objects.create(title='OO SSRF Test', file_type='docx', status='draft')
+        document.file.save('ssrf-test.docx', ContentFile(b'original-content'), save=True)
+        key = build_document_key(document)
+
+        with patch('inventory.security_http.safe_urlopen', side_effect=ValueError('blocked')):
+            response = self.client.post(
+                reverse('managed_document_editor_callback', args=[document.pk]),
+                data=json.dumps({
+                    'status': 2,
+                    'key': key,
+                    'url': 'http://evil.example.com/malware.bin',
+                }),
+                content_type='application/json',
+            )
+        self.assertEqual(response.json()['error'], 1)
+
+    @override_settings(
+        ONLYOFFICE_DOCUMENT_SERVER_URL='http://onlyoffice.example.com',
+        ONLYOFFICE_JWT_SECRET='callback-secret',
+    )
+    def test_onlyoffice_callback_requires_jwt_when_configured(self):
+        import json
+
+        from django.core.files.base import ContentFile
+
+        from inventory.integrations.onlyoffice import build_document_key
+        from inventory.models import ManagedDocument
+
+        document = ManagedDocument.objects.create(title='OO JWT Test', file_type='docx', status='draft')
+        document.file.save('jwt-test.docx', ContentFile(b'content'), save=True)
+
+        response = self.client.post(
+            reverse('managed_document_editor_callback', args=[document.pk]),
+            data=json.dumps({'status': 2, 'key': build_document_key(document), 'url': 'http://x'}),
+            content_type='application/json',
+        )
+        self.assertEqual(response.json()['error'], 1)
+
+    @override_settings(DEBUG=False, SECURE_SSL_REDIRECT=False)
+    def test_production_security_headers_on_login(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get('X-Frame-Options'), 'DENY')
+
+    def test_global_search_api_sanitizes_query(self):
+        admin = User.objects.create_superuser(
+            username='searchadmin',
+            email='search@example.com',
+            password='StrongPass123!',
+        )
+        self.client.force_login(admin)
+        response = self.client.get(reverse('global_search_api'), {'q': '<script>alert(1)</script>'})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('results', response.json())
+
+    @override_settings(
+        WAZUH_API_KEY='test-wazuh-secret',
+        WEBHOOK_ALLOWED_IPS=['10.0.0.1'],
+    )
+    def test_webhook_rejects_non_allowlisted_ip(self):
+        response = self.client.post(
+            reverse('device_alert_webhook'),
+            data='{"ip":"10.0.0.2","message":"test"}',
+            content_type='application/json',
+            HTTP_X_API_KEY='test-wazuh-secret',
+            REMOTE_ADDR='127.0.0.1',
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_immutable_audit_prevents_tampering(self):
+        from inventory.models import ImmutableAuditEntry
+
+        admin = User.objects.create_superuser(
+            username='auditadmin',
+            email='audit@example.com',
+            password='StrongPass123!',
+        )
+        entry = ImmutableAuditEntry.objects.create(
+            actor=admin,
+            action='security',
+            resource_type='test',
+            resource_id='99',
+        )
+        with self.assertRaises(ValueError):
+            entry.action = 'delete'
+            entry.save()

@@ -22,12 +22,19 @@ from django.utils import timezone
 # --- PASSWORD VAULT (ŞİFRE KASASI) AES-256 ---
 from cryptography.fernet import Fernet
 
-# DİKKAT: Gerçek sistemlerde bu anahtar .env dosyasında saklanır!
 vault_key = getattr(settings, 'VAULT_KEY', None) or os.environ.get('VAULT_KEY')
-if not vault_key:
-    vault_key = 'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA='
-VAULT_KEY = vault_key.encode('utf-8') if isinstance(vault_key, str) else vault_key
-cipher_suite = Fernet(VAULT_KEY)
+_DEV_VAULT_KEY = 'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA='
+
+
+def _resolve_cipher_suite():
+    key_material = getattr(settings, 'VAULT_KEY', None) or os.environ.get('VAULT_KEY')
+    if not key_material and settings.DEBUG:
+        key_material = _DEV_VAULT_KEY
+    if not key_material:
+        return None
+    encoded = key_material.encode('utf-8') if isinstance(key_material, str) else key_material
+    return Fernet(encoded)
+
 
 def encrypt_vault_password(plain_text):
     """Metni AES ile şifreler."""
@@ -35,12 +42,20 @@ def encrypt_vault_password(plain_text):
         return plain_text
     if plain_text.startswith('aes_crypt:'):
         return plain_text
+    cipher_suite = _resolve_cipher_suite()
+    if cipher_suite is None:
+        if settings.DEBUG:
+            return plain_text
+        raise RuntimeError('VAULT_KEY must be configured for password encryption in production.')
     return 'aes_crypt:' + cipher_suite.encrypt(plain_text.encode('utf-8')).decode('utf-8')
 
 def decrypt_vault_password(cipher_text):
     """Şifreli metni AES ile çözer."""
     if not cipher_text or not cipher_text.startswith('aes_crypt:'):
         return cipher_text
+    cipher_suite = _resolve_cipher_suite()
+    if cipher_suite is None:
+        return cipher_text.replace('aes_crypt:', '', 1)
     try:
         clean_cipher = cipher_text.replace('aes_crypt:', '').encode('utf-8')
         return cipher_suite.decrypt(clean_cipher).decode('utf-8')

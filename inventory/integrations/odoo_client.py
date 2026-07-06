@@ -1,3 +1,9 @@
+try:
+    import defusedxml.xmlrpc  # noqa: F401
+    defusedxml.xmlrpc.monkey_patch()
+except ImportError:
+    pass
+
 import xmlrpc.client
 
 from .erp_connector import ERPClientError

@@ -54,7 +54,7 @@
             </div></div></div>
             <div class="col-12"><div class="card glass-card"><div class="card-header bg-transparent fw-bold">{% trans "CMDB Bağımlılıkları" %}</div><div class="card-body d-flex flex-wrap gap-2">
                 {% for dep in dependencies %}
-                <span class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">{{ dep.business_application.name }} → {{ dep.device.name|default:"Dış servis" }} · {{ dep.get_criticality_display }}</span>
+                <span class="badge rounded-pill bg-secondary-subtle text-secondary px-3 py-2">{{ dep.business_application.name }} → {{ dep.device.name|default:i18n_defaults.external_service }} · {{ dep.get_criticality_display }}</span>
                 {% empty %}<span class="text-muted">{% trans "CMDB bağımlılığı yok." %}</span>{% endfor %}
             </div></div></div>
         </div>

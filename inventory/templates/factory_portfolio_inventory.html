@@ -8,7 +8,7 @@
     <div>
         <span class="suite-eyebrow">OmniOps Factory IT Suite</span>
         <h1 class="suite-title">
-            {% if selected_site %}{{ selected_site.inventory_panel_title }}{% else %}Fabrika Portföy Envanteri{% endif %}
+            {% if selected_site %}{{ selected_site.inventory_panel_title }}{% else %}{% trans "Fabrika Portföy Envanteri" %}{% endif %}
         </h1>
         <p class="suite-subtitle">
             {% trans "Müşteri portföyündeki her fabrika/tesis için özelleştirilebilir bölüm envanteri." %}

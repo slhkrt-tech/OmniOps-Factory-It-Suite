@@ -2,7 +2,7 @@
 import hashlib
 import json
 import time
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 
 from django.conf import settings
 
@@ -14,7 +14,42 @@ def onlyoffice_enabled():
 def build_document_key(document):
     """OnlyOffice'in belge sürümünü tanıması için benzersiz anahtar üretir."""
     raw = f'{document.pk}-{document.updated_at.timestamp()}-{document.version}'
-    return hashlib.md5(raw.encode('utf-8')).hexdigest()
+    return hashlib.sha256(raw.encode('utf-8')).hexdigest()[:32]
+
+
+def onlyoffice_allowed_hosts():
+    base = getattr(settings, 'ONLYOFFICE_DOCUMENT_SERVER_URL', '').strip()
+    if not base:
+        return []
+    parsed = urlparse(base)
+    hosts = []
+    if parsed.netloc:
+        hosts.append(parsed.netloc.lower())
+    if parsed.hostname:
+        hosts.append(parsed.hostname.lower())
+    return hosts
+
+
+def verify_onlyoffice_callback_authorization(request, payload=None):
+    """JWT etkinse OnlyOffice callback isteğini doğrular."""
+    jwt_secret = getattr(settings, 'ONLYOFFICE_JWT_SECRET', '')
+    if not jwt_secret:
+        return True
+
+    auth_header = request.headers.get('Authorization', '')
+    token = auth_header[7:].strip() if auth_header.startswith('Bearer ') else ''
+    if not token and isinstance(payload, dict):
+        token = payload.get('token') or ''
+
+    if not token:
+        return False
+
+    try:
+        import jwt
+        jwt.decode(token, jwt_secret, algorithms=['HS256'])
+        return True
+    except Exception:
+        return False
 
 
 def build_onlyoffice_editor_config(document, request, mode='edit'):

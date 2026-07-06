@@ -117,7 +117,7 @@
                             <label class="form-check-label fw-bold text-body ms-2 small" for="{{ device_form.is_active.id_for_label }}">{% trans "Cihaz Aktif Mi?" %}</label>
                         </div>
                         <button type="submit" name="submit_device" id="btnDevice" class="btn btn-primary w-100 fw-bold shadow-sm rounded-3 py-2" onclick="showGlobalLoading('btnDevice', '{% trans "Kaydediliyor..." %}')">
-                            <span class="iconify me-1 align-text-bottom" data-icon="mdi:content-save-outline"></span> Cihazı Kaydet
+                            <span class="iconify me-1 align-text-bottom" data-icon="mdi:content-save-outline"></span> {% trans "Cihazı Kaydet" %}
                         </button>
                     </form>
                 </div>
@@ -295,7 +295,7 @@
                                 <td class="text-muted fw-bold ps-4">#{{ d.id }}</td>
                                 <td class="text-start">
                                     <div class="fw-bold text-body">{{ d.name }}</div>
-                                    <small class="text-muted d-block mb-1"><span class="iconify opacity-50" data-icon="mdi:arrow-up-right"></span> Üst: {{ d.parent_device.name|default:"Bağımsız" }}</small>
+                                    <small class="text-muted d-block mb-1"><span class="iconify opacity-50" data-icon="mdi:arrow-up-right"></span> {% trans "Üst:" %} {{ d.parent_device.name|default:i18n_defaults.independent }}</small>
                                     {% if d.os_version %}
                                         <small class="text-muted d-block p-1 bg-body-tertiary rounded border border-secondary-subtle mt-1" style="font-size: 0.75rem;">
                                             <span class="iconify text-info" data-icon="mdi:memory"></span> CPU: %{{ d.cpu_usage }} | RAM: %{{ d.ram_usage }}

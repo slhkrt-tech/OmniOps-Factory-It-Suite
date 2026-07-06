@@ -36,7 +36,7 @@
             <div class="text-muted small">{% trans "Açık Personel Süreci" %}</div>
             <div class="display-6 fw-bold text-primary">{{ metrics.open_processes }}</div>
             {% if overdue_processes_count %}
-            <span class="badge bg-danger">{{ overdue_processes_count }} gecikmiş</span>
+            <span class="badge bg-danger">{{ overdue_processes_count }} {% trans "gecikmiş" %}</span>
             {% endif %}
         </div></div>
     </div>

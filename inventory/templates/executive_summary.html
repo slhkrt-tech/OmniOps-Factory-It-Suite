@@ -86,7 +86,7 @@
                     <span class="text-muted small">{{ item }}</span>
                 </div>
                 {% endfor %}
-                <div class="small text-muted mt-3">Oluşturulma: {{ generated_at|date:"d.m.Y H:i" }}</div>
+                <div class="small text-muted mt-3">{% trans "Oluşturulma:" %} {{ generated_at|date:"d.m.Y H:i" }}</div>
             </div>
         </div>
     </div>

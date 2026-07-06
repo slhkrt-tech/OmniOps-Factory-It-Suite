@@ -179,25 +179,25 @@ def build_readiness_report():
     ])
 
     module_status = [
-        {'title': 'Cihaz', 'count': Device.objects.count(), 'url': '/topoloji/'},
-        {'title': 'Ticket', 'count': Ticket.objects.count(), 'url': '/panel/'},
-        {'title': 'BT Varlık', 'count': ITAsset.objects.count(), 'url': '/it-envanter/'},
-        {'title': 'Lisans', 'count': License.objects.count(), 'url': '/it-envanter/'},
-        {'title': 'Fabrika Alanı', 'count': FactoryArea.objects.count(), 'url': '/fabrika-operasyonlari/'},
-        {'title': 'Kamera', 'count': CameraDevice.objects.count(), 'url': '/komuta-merkezi/'},
-        {'title': 'İş Uygulaması', 'count': BusinessApplication.objects.count(), 'url': '/komuta-merkezi/'},
-        {'title': 'Runbook', 'count': Runbook.objects.count(), 'url': '/servis-surecleri/'},
-        {'title': 'Rapor Şablonu', 'count': ReportTemplate.objects.count(), 'url': '/komuta-merkezi/'},
-        {'title': 'Directory Kullanıcısı', 'count': DirectoryUser.objects.count(), 'url': '/kimlik-operasyonlari/'},
-        {'title': 'Endpoint Cihazı', 'count': EndpointDevice.objects.count(), 'url': '/kimlik-operasyonlari/'},
-        {'title': 'Fabrika Tesisi', 'count': FactorySite.objects.filter(is_active=True).count(), 'url': '/fabrika-portfoy-envanter/'},
-        {'title': 'Bölüm Envanteri', 'count': DepartmentInventoryItem.objects.filter(is_active=True).count(), 'url': '/fabrika-portfoy-envanter/'},
-        {'title': 'Fabrika Departmanı', 'count': FactoryDepartment.objects.filter(is_active=True).count(), 'url': '/fabrika-komuta-merkezi/'},
-        {'title': 'Yönetilen Doküman', 'count': ManagedDocument.objects.count(), 'url': '/fabrika-komuta-merkezi/'},
-        {'title': 'QR Etiket', 'count': AssetQRTag.objects.filter(is_active=True).count(), 'url': '/varlik-qr-tara/'},
-        {'title': 'ERP Bağlantısı', 'count': ERPConnection.objects.count(), 'url': '/erp-entegrasyonlari/'},
-        {'title': 'Entegrasyon Merkezi', 'count': MonitoringConnection.objects.count(), 'url': '/entegrasyon-merkezi/'},
-        {'title': 'ITSM Problem', 'count': ProblemRecord.objects.count(), 'url': '/itsm-olgunluk/'},
+        {'title': _('Cihaz'), 'count': Device.objects.count(), 'url': '/topoloji/'},
+        {'title': _('Ticket'), 'count': Ticket.objects.count(), 'url': '/panel/'},
+        {'title': _('BT Varlık'), 'count': ITAsset.objects.count(), 'url': '/it-envanter/'},
+        {'title': _('Lisans'), 'count': License.objects.count(), 'url': '/it-envanter/'},
+        {'title': _('Fabrika Alanı'), 'count': FactoryArea.objects.count(), 'url': '/fabrika-operasyonlari/'},
+        {'title': _('Kamera'), 'count': CameraDevice.objects.count(), 'url': '/komuta-merkezi/'},
+        {'title': _('İş Uygulaması'), 'count': BusinessApplication.objects.count(), 'url': '/komuta-merkezi/'},
+        {'title': _('Runbook'), 'count': Runbook.objects.count(), 'url': '/servis-surecleri/'},
+        {'title': _('Rapor Şablonu'), 'count': ReportTemplate.objects.count(), 'url': '/komuta-merkezi/'},
+        {'title': _('Directory Kullanıcısı'), 'count': DirectoryUser.objects.count(), 'url': '/kimlik-operasyonlari/'},
+        {'title': _('Endpoint Cihazı'), 'count': EndpointDevice.objects.count(), 'url': '/kimlik-operasyonlari/'},
+        {'title': _('Fabrika Tesisi'), 'count': FactorySite.objects.filter(is_active=True).count(), 'url': '/fabrika-portfoy-envanter/'},
+        {'title': _('Bölüm Envanteri'), 'count': DepartmentInventoryItem.objects.filter(is_active=True).count(), 'url': '/fabrika-portfoy-envanter/'},
+        {'title': _('Fabrika Departmanı'), 'count': FactoryDepartment.objects.filter(is_active=True).count(), 'url': '/fabrika-komuta-merkezi/'},
+        {'title': _('Yönetilen Doküman'), 'count': ManagedDocument.objects.count(), 'url': '/fabrika-komuta-merkezi/'},
+        {'title': _('QR Etiket'), 'count': AssetQRTag.objects.filter(is_active=True).count(), 'url': '/varlik-qr-tara/'},
+        {'title': _('ERP Bağlantısı'), 'count': ERPConnection.objects.count(), 'url': '/erp-entegrasyonlari/'},
+        {'title': _('Entegrasyon Merkezi'), 'count': MonitoringConnection.objects.count(), 'url': '/entegrasyon-merkezi/'},
+        {'title': _('ITSM Problem'), 'count': ProblemRecord.objects.count(), 'url': '/itsm-olgunluk/'},
     ]
 
     critical_total = len([item for item in checks if item['severity'] == 'danger'])
@@ -992,16 +992,16 @@ def _gather_factory_scope_modules(department=None, zone=None):
     ).order_by('name')
 
     modules = [
-        {'key': 'cameras', 'title': 'Kameralar', 'icon': 'mdi:cctv', 'items': list(cameras[:8]), 'count': cameras.count(), 'url': '/komuta-merkezi/'},
-        {'key': 'devices', 'title': 'Ağ Cihazları', 'icon': 'mdi:router-network', 'items': list(devices[:8]), 'count': devices.count(), 'url': '/topoloji/'},
-        {'key': 'endpoints', 'title': 'Endpointler', 'icon': 'mdi:laptop', 'items': list(endpoints[:8]), 'count': endpoints.count(), 'url': '/kimlik-operasyonlari/'},
-        {'key': 'printers', 'title': 'Yazıcılar', 'icon': 'mdi:printer', 'items': list(printers[:8]), 'count': printers.count(), 'url': '/servis-surecleri/'},
-        {'key': 'applications', 'title': 'İş Uygulamaları', 'icon': 'mdi:apps', 'items': list(applications[:8]), 'count': applications.count(), 'url': '/komuta-merkezi/'},
-        {'key': 'tickets', 'title': 'Ticketlar', 'icon': 'mdi:ticket-confirmation-outline', 'items': list(tickets[:8]), 'count': tickets.count(), 'url': '/panel/'},
-        {'key': 'documents', 'title': 'Dokümanlar', 'icon': 'mdi:file-document-outline', 'items': list(documents[:8]), 'count': documents.count(), 'url': '#documents-panel'},
-        {'key': 'maintenance', 'title': 'Bakım İşleri', 'icon': 'mdi:wrench-clock', 'items': list(maintenance_tasks[:8]), 'count': maintenance_tasks.count(), 'url': '/fabrika-operasyonlari/'},
-        {'key': 'consumables', 'title': 'Sarf/Yedek', 'icon': 'mdi:package-variant-closed', 'items': list(consumables[:8]), 'count': consumables.count(), 'url': '/fabrika-operasyonlari/'},
-        {'key': 'assets', 'title': 'IT Varlıkları', 'icon': 'mdi:server-network', 'items': list(it_assets[:8]), 'count': it_assets.count(), 'url': '/it-envanter/'},
+        {'key': 'cameras', 'title': _('Kameralar'), 'icon': 'mdi:cctv', 'items': list(cameras[:8]), 'count': cameras.count(), 'url': '/komuta-merkezi/'},
+        {'key': 'devices', 'title': _('Ağ Cihazları'), 'icon': 'mdi:router-network', 'items': list(devices[:8]), 'count': devices.count(), 'url': '/topoloji/'},
+        {'key': 'endpoints', 'title': _('Endpointler'), 'icon': 'mdi:laptop', 'items': list(endpoints[:8]), 'count': endpoints.count(), 'url': '/kimlik-operasyonlari/'},
+        {'key': 'printers', 'title': _('Yazıcılar'), 'icon': 'mdi:printer', 'items': list(printers[:8]), 'count': printers.count(), 'url': '/servis-surecleri/'},
+        {'key': 'applications', 'title': _('İş Uygulamaları'), 'icon': 'mdi:apps', 'items': list(applications[:8]), 'count': applications.count(), 'url': '/komuta-merkezi/'},
+        {'key': 'tickets', 'title': _('Ticketlar'), 'icon': 'mdi:ticket-confirmation-outline', 'items': list(tickets[:8]), 'count': tickets.count(), 'url': '/panel/'},
+        {'key': 'documents', 'title': _('Dokümanlar'), 'icon': 'mdi:file-document-outline', 'items': list(documents[:8]), 'count': documents.count(), 'url': '#documents-panel'},
+        {'key': 'maintenance', 'title': _('Bakım İşleri'), 'icon': 'mdi:wrench-clock', 'items': list(maintenance_tasks[:8]), 'count': maintenance_tasks.count(), 'url': '/fabrika-operasyonlari/'},
+        {'key': 'consumables', 'title': _('Sarf/Yedek'), 'icon': 'mdi:package-variant-closed', 'items': list(consumables[:8]), 'count': consumables.count(), 'url': '/fabrika-operasyonlari/'},
+        {'key': 'assets', 'title': _('IT Varlıkları'), 'icon': 'mdi:server-network', 'items': list(it_assets[:8]), 'count': it_assets.count(), 'url': '/it-envanter/'},
     ]
 
     risk_count = (
@@ -1369,9 +1369,13 @@ def managed_document_editor(request, pk):
 def managed_document_editor_callback(request, pk):
     """OnlyOffice belge sunucusunun kaydetme geri çağrısı (callback)."""
     import json
-    import urllib.request
     from django.http import HttpResponse
-    from .integrations.onlyoffice import build_document_key
+    from .integrations.onlyoffice import (
+        build_document_key,
+        onlyoffice_allowed_hosts,
+        verify_onlyoffice_callback_authorization,
+    )
+    from .security_http import safe_urlopen
 
     document = ManagedDocument.objects.filter(pk=pk).first()
     if not document:
@@ -1382,10 +1386,22 @@ def managed_document_editor_callback(request, pk):
     except (ValueError, UnicodeDecodeError):
         return HttpResponse(json.dumps({'error': 1}), content_type='application/json')
 
+    if not verify_onlyoffice_callback_authorization(request, payload):
+        return HttpResponse(json.dumps({'error': 1}), content_type='application/json')
+
+    if build_document_key(document) != payload.get('key', ''):
+        return HttpResponse(json.dumps({'error': 1}), content_type='application/json')
+
     status = payload.get('status')
     if status == 2 and payload.get('url'):
         try:
-            with urllib.request.urlopen(payload['url'], timeout=30) as remote:
+            allowed_hosts = onlyoffice_allowed_hosts()
+            with safe_urlopen(
+                payload['url'],
+                timeout=30,
+                allowed_hosts=allowed_hosts or None,
+                allow_private_hosts=not allowed_hosts,
+            ) as remote:
                 content = remote.read()
             filename = os.path.basename(document.file.name)
             document.file.save(filename, ContentFile(content), save=False)
@@ -1395,9 +1411,6 @@ def managed_document_editor_callback(request, pk):
         except Exception as exc:
             SystemLog.objects.create(action='SYSTEM', details=f'OnlyOffice callback hatası #{document.pk}: {exc}')
             return HttpResponse(json.dumps({'error': 1}), content_type='application/json')
-
-    if build_document_key(document) != payload.get('key', ''):
-        return HttpResponse(json.dumps({'error': 1}), content_type='application/json')
 
     return HttpResponse(json.dumps({'error': 0}), content_type='application/json')
 

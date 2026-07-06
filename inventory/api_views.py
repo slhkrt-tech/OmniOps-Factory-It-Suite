@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, serializers
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework import status
 from rest_framework.decorators import action, api_view, permission_classes
@@ -1398,7 +1398,21 @@ def get_rack_devices(request):
     return Response(data)
 
 
-@extend_schema(responses={200: OpenApiTypes.OBJECT})
+class WorkspaceLayoutRequestSerializer(serializers.Serializer):
+    page = serializers.CharField(required=False, default='dashboard')
+    order = serializers.ListField(child=serializers.CharField(), required=False)
+    hidden = serializers.ListField(child=serializers.CharField(), required=False, allow_null=True)
+
+
+@extend_schema(
+    methods=['GET'],
+    responses={200: OpenApiTypes.OBJECT},
+)
+@extend_schema(
+    methods=['POST'],
+    request=WorkspaceLayoutRequestSerializer,
+    responses={200: OpenApiTypes.OBJECT},
+)
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def workspace_layout_api(request):

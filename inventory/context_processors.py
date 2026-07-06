@@ -31,6 +31,11 @@ def get_template_defaults() -> dict[str, str]:
         'no_reference': gettext('Referans yok'),
         'unlimited': gettext('Süresiz'),
         'overdue': gettext('gecikmiş'),
+        'unassigned_ticket': gettext('Atanmadı'),
+        'department': gettext('Bölüm'),
+        'parent_independent': gettext('Bağımsız'),
+        'created_at_label': gettext('Oluşturulma:'),
+        'factory_portfolio_title': gettext('Fabrika Portföy Envanteri'),
     }
 
 

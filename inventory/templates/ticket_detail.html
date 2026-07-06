@@ -33,7 +33,7 @@
                     <div class="col-md-4"><strong>{% trans "Öncelik:" %}</strong> {{ ticket.priority }}</div>
                     <div class="col-md-4"><strong>{% trans "Kategori:" %}</strong> {{ ticket.category }}</div>
                     <div class="col-md-4"><strong>{% trans "Oluşturan:" %}</strong> {{ ticket.created_by.username|default:"—" }}</div>
-                    <div class="col-md-4 mt-2"><strong>Atanan:</strong> {{ ticket.assigned_to.username|default:"Atanmadı" }}</div>
+                    <div class="col-md-4 mt-2"><strong>{% trans "Atanan:" %}</strong> {{ ticket.assigned_to.username|default:i18n_defaults.unassigned_ticket }}</div>
                     <div class="col-md-4 mt-2"><strong>{% trans "Oluşturulma:" %}</strong> {{ ticket.created_at|date:"d.m.Y H:i" }}</div>
                     <div class="col-md-4 mt-2"><strong>SLA:</strong> {{ ticket.sla_deadline|date:"d.m.Y H:i"|default:"—" }}</div>
                 </div>
