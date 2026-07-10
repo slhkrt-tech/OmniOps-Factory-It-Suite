@@ -32,6 +32,7 @@ docker-compose.demo.yml
 docs/DEMO_SUNUM_METNI.txt
 inventory/demo_seed.py
 inventory/pdf_fonts.py
+inventory/management/commands/load_demo.py
 scripts/fetch_pdf_fonts.ps1
 scripts/start-demo.ps1
 archives/
