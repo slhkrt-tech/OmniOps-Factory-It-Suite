@@ -8,6 +8,8 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 
+from inventory.pdf_fonts import canvas_set_font
+
 
 def _draw_qr(c, x, y, size_mm, value):
     """Belirtilen konuma QR kod çizer."""
@@ -61,13 +63,13 @@ def build_qr_labels_pdf(tags, base_url=''):
         _draw_qr(c, x + 4 * mm, y + 18 * mm, 28, qr_value)
         _draw_barcode(c, x + 4 * mm, y + 4 * mm, tag.code)
 
-        c.setFont('Helvetica-Bold', 10)
+        canvas_set_font(c, bold=True, size=10)
         c.drawString(x + 40 * mm, y + label_height - 14 * mm, tag.display_name[:28])
-        c.setFont('Helvetica', 9)
+        canvas_set_font(c, bold=False, size=9)
         c.drawString(x + 40 * mm, y + label_height - 26 * mm, tag.code[:24])
         c.drawString(x + 40 * mm, y + label_height - 38 * mm, tag.get_tag_type_display()[:22])
         if tag.location:
-            c.setFont('Helvetica', 8)
+            canvas_set_font(c, bold=False, size=8)
             c.drawString(x + 44 * mm, y + 6 * mm, tag.location[:36])
 
         c.setStrokeColorRGB(0.82, 0.86, 0.9)

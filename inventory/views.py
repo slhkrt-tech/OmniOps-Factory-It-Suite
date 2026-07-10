@@ -30,7 +30,8 @@ from html import escape
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet
+
+from .pdf_fonts import get_pdf_styles, table_font_style
 
 from .utils import (
     generate_device_config, calculate_subnets, scan_network, 
@@ -209,7 +210,7 @@ def generate_heatmap_data():
     heatmap_series = []
     for i in range(7):
         data_points = [{'x': f"{h}:00", 'y': heatmap_dict[i][h]} for h in range(24)]
-        heatmap_series.append({'name': days[i], 'data': data_points})
+        heatmap_series.append({'name': str(days[i]), 'data': data_points})
     return heatmap_series
 
 
@@ -299,10 +300,10 @@ def dashboard(request):
     for type_code, type_name in Device.DEVICE_TYPES:
         count = Device.objects.filter(device_type=type_code).count()
         if count > 0:
-            device_labels.append(type_name)
+            device_labels.append(str(type_name))
             device_data.append(count)
 
-    ticket_labels = [_('Açık'), _('İnceleniyor'), _('Çözüldü')]
+    ticket_labels = [str(_('Açık')), str(_('İnceleniyor')), str(_('Çözüldü'))]
     ticket_data = [
         acik_bilet_sayisi,
         ticket_base.filter(status='Inceleniyor').count(),
@@ -560,12 +561,12 @@ def export_pdf(request):
     response['Content-Disposition'] = 'attachment; filename="devices.pdf"'
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4)
-    styles = getSampleStyleSheet()
-    elements = [Paragraph('Device Inventory Export', styles['Heading1']), Spacer(1, 12)]
-    data = [['Name', 'Type', 'Vendor', 'IP Address', 'Status']]
+    styles = get_pdf_styles()
+    elements = [Paragraph(_('Cihaz Envanter Dışa Aktarımı'), styles['Heading1']), Spacer(1, 12)]
+    data = [[_('Ad'), _('Tip'), _('Üretici'), _('IP Adresi'), _('Durum')]]
     for device in Device.objects.all().order_by('name'):
         ip_addr = device.ipaddress_set.first().address if device.ipaddress_set.exists() else ''
-        status = 'Active' if getattr(device, 'is_active', True) else 'Inactive'
+        status = _('Aktif') if getattr(device, 'is_active', True) else _('Pasif')
         data.append([device.name, str(device.device_type), str(device.vendor), ip_addr, status])
     table = Table(data, repeatRows=1)
     table.setStyle(TableStyle([
@@ -573,8 +574,7 @@ def export_pdf(request):
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        *table_font_style(),
     ]))
     elements.append(table)
     doc.build(elements)
@@ -1190,7 +1190,10 @@ def build_executive_report_context():
 
     low_stock_count = sum(1 for item in ConsumableItem.objects.all() if item.is_low_stock)
     printer_alert_count = sum(1 for item in PrinterFleetItem.objects.all() if item.needs_consumable)
-    active_remote_count = sum(1 for grant in RemoteAccessGrant.objects.all() if grant.is_active_now)
+    active_remote_count = sum(
+        1 for grant in RemoteAccessGrant.objects.all()
+        if grant.status == 'active' and not grant.is_expired
+    )
     unhealthy_backup_count = sum(1 for job in BackupJobMonitor.objects.all() if job.is_unhealthy)
     unhealthy_integrations = sum(1 for check in IntegrationHealthCheck.objects.all() if check.is_unhealthy)
 
@@ -1370,14 +1373,14 @@ def build_executive_report_context():
 def _build_executive_pdf(context):
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=28, leftMargin=28, topMargin=32, bottomMargin=28)
-    styles = getSampleStyleSheet()
+    styles = get_pdf_styles()
     elements = [
-        Paragraph('OmniOps Factory IT Suite - Yonetici Bilgilendirme Raporu', styles['Heading1']),
+        Paragraph('OmniOps Factory IT Suite — Yönetici Bilgilendirme Raporu', styles['Heading1']),
         Paragraph(context['period_label'], styles['Normal']),
         Spacer(1, 14),
     ]
 
-    kpi_data = [['KPI', 'Deger', 'Aciklama']]
+    kpi_data = [['KPI', 'Değer', 'Açıklama']]
     for item in context['kpis']:
         kpi_data.append([item['title'], str(item['value']), item['detail']])
     kpi_table = Table(kpi_data, colWidths=[155, 80, 265], repeatRows=1)
@@ -1385,28 +1388,29 @@ def _build_executive_pdf(context):
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#111827')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('GRID', (0, 0), (-1, -1), 0.4, colors.HexColor('#d1d5db')),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        *table_font_style(),
     ]))
     elements.append(kpi_table)
     elements.append(Spacer(1, 14))
 
     for section in context['sections']:
         elements.append(Paragraph(section['title'], styles['Heading2']))
-        data = [['Metrik', 'Deger']] + [[name, str(value)] for name, value in section['metrics']]
+        data = [['Metrik', 'Değer']] + [[name, str(value)] for name, value in section['metrics']]
         table = Table(data, colWidths=[260, 120])
         table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#7c3aed')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
             ('GRID', (0, 0), (-1, -1), 0.4, colors.HexColor('#e5e7eb')),
             ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#ffffff')),
+            *table_font_style(),
         ]))
         elements.extend([table, Spacer(1, 10)])
 
-    elements.append(Paragraph('Yonetim Onerileri', styles['Heading2']))
+    elements.append(Paragraph('Yönetim Önerileri', styles['Heading2']))
     for recommendation in context['recommendations']:
-        elements.append(Paragraph(f'- {recommendation}', styles['Normal']))
+        elements.append(Paragraph(f'• {recommendation}', styles['Normal']))
 
     doc.build(elements)
     return buffer.getvalue()
@@ -1486,7 +1490,7 @@ def reporting_hub_view(request):
             response = HttpResponse(content_type='application/pdf')
             buffer = io.BytesIO()
             doc = SimpleDocTemplate(buffer, pagesize=A4)
-            styles = getSampleStyleSheet()
+            styles = get_pdf_styles()
             elements = []
 
             # 1. BİLET (TICKET) PERFORMANS RAPORU
@@ -1509,10 +1513,10 @@ def reporting_hub_view(request):
                         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#0b101e')),
                         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
                         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
                         ('FONTSIZE', (0, 0), (-1, 0), 10),
                         ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
                         ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                        *table_font_style(),
                     ]))
                     elements.append(table)
                 else:
@@ -1539,10 +1543,10 @@ def reporting_hub_view(request):
                         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#0f172a')),
                         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
                         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
                         ('FONTSIZE', (0, 0), (-1, 0), 10),
                         ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f1f5f9')),
                         ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                        *table_font_style(),
                     ]))
                     elements.append(table)
                 else:

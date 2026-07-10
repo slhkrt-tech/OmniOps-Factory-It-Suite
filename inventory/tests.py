@@ -1,15 +1,28 @@
 import re
 import io
+import json
+from datetime import timedelta
 from pathlib import Path
 
 from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.contrib.staticfiles.finders import find
-from django.test import TestCase, override_settings
+from django.test import Client, TestCase, override_settings
 from django.urls import NoReverseMatch, reverse
 from django.conf import settings
+from django.utils import timezone
 
-from .models import SalesOpportunity
+from .models import SalesOpportunity, Device, Ticket
+
+
+def _assert_unicode_pdf(pdf_bytes):
+    """PDF gecerli ve Unicode font (DejaVu veya Arial fallback) icermeli."""
+    assert pdf_bytes.startswith(b'%PDF'), 'Gecerli PDF degil'
+    has_unicode_font = any(
+        marker in pdf_bytes
+        for marker in (b'OmniOpsUnicode', b'Arial', b'DejaVu', b'TrueType', b'Type0')
+    )
+    assert has_unicode_font, 'PDF icinde Unicode font bulunamadi'
 
 
 @override_settings(SECURE_SSL_REDIRECT=False)
@@ -992,3 +1005,170 @@ class VulnerabilityTests(TestCase):
         with self.assertRaises(ValueError):
             entry.action = 'delete'
             entry.save()
+
+
+class DemoLoadTests(TestCase):
+    def test_load_demo_command_seeds_environment(self):
+        from inventory.models import Device, Ticket, FactorySite
+
+        call_command('load_demo', '--reset')
+        self.assertTrue(User.objects.filter(username='demo.admin').exists())
+        self.assertTrue(Device.objects.filter(name='CORE-SW-01').exists())
+        self.assertTrue(Ticket.objects.filter(title__contains='[DEMO]').exists())
+        self.assertTrue(FactorySite.objects.filter(code='SITE-TEXTILE-01').exists())
+        demo_admin = User.objects.get(username='demo.admin')
+        self.assertTrue(demo_admin.check_password('Demo2026!'))
+
+    def test_presentation_qr_anchors_exist(self):
+        from inventory.demo_seed import PRESENTATION_QR_CODES
+        from inventory.models import AssetQRTag, ManagedDocument
+
+        call_command('load_demo', '--reset')
+        for code in PRESENTATION_QR_CODES.values():
+            tag = AssetQRTag.objects.filter(code=code, is_active=True).first()
+            self.assertIsNotNone(tag, msg=f'Missing presentation tag {code}')
+
+        core_tag = AssetQRTag.objects.get(code=PRESENTATION_QR_CODES['core_switch'])
+        self.assertEqual(core_tag.device.name, 'CORE-SW-01')
+
+        doc = ManagedDocument.objects.filter(reference_code='DEMO-SOP-001').first()
+        self.assertIsNotNone(doc)
+        self.assertTrue(doc.file)
+        self.assertTrue(doc.can_browser_preview)
+
+        admin = User.objects.get(username='demo.admin')
+        client = Client()
+        client.force_login(admin)
+        response = client.get(
+            reverse('qr_lookup_api'),
+            {'code': PRESENTATION_QR_CODES['core_switch']},
+        )
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertTrue(payload.get('found'))
+        self.assertIn('/topoloji/', payload.get('url', ''))
+
+
+class PdfTurkishEncodingTests(TestCase):
+    """PDF ciktilarinda Turkce karakter (şğüöçİ) destegi."""
+
+    def setUp(self):
+        self.admin = User.objects.create_superuser(
+            username='pdf_admin',
+            email='pdf@example.com',
+            password='StrongPass123!',
+        )
+        self.client.force_login(self.admin)
+
+    def test_pdf_font_registration(self):
+        from inventory.pdf_fonts import register_pdf_fonts, PDF_FONT
+
+        regular, bold = register_pdf_fonts()
+        self.assertEqual(regular, PDF_FONT)
+        self.assertTrue(bold)
+
+    def test_executive_pdf_embeds_unicode_font(self):
+        from inventory.views import _build_executive_pdf, build_executive_report_context
+
+        context = build_executive_report_context()
+        context['period_label'] = '01.07.2026 yönetici özeti — şğüöçİ test'
+        context['recommendations'] = ['Kritik olaylar önlenmeli; yedekleme doğrulanmalı.']
+        pdf_bytes = _build_executive_pdf(context)
+        _assert_unicode_pdf(pdf_bytes)
+
+    def test_executive_summary_export_pdf(self):
+        response = self.client.get(reverse('executive_summary_export', args=['pdf']))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('application/pdf', response['Content-Type'])
+        _assert_unicode_pdf(response.content)
+
+    def test_device_export_pdf_turkish_headers(self):
+        Device.objects.create(name='Test-SW', device_type='Switch', vendor='cisco', is_active=True)
+        response = self.client.get(reverse('export_pdf'))
+        self.assertEqual(response.status_code, 200)
+        _assert_unicode_pdf(response.content)
+
+    def test_qr_label_pdf_turkish_text(self):
+        from inventory.integrations.qr_labels import build_qr_labels_pdf
+        from inventory.models import AssetQRTag
+
+        tag = AssetQRTag.objects.create(
+            code='TR-001',
+            tag_type='it_asset',
+            label='Dokuma Atölye Etiketi',
+            location='Bursa Üretim — Depo A',
+        )
+        pdf_buffer = build_qr_labels_pdf([tag], base_url='http://127.0.0.1:8000')
+        _assert_unicode_pdf(pdf_buffer.getvalue())
+
+    def test_reporting_hub_ticket_pdf(self):
+        Ticket.objects.create(
+            title='[DEMO] Türkçe başlık — erişim sorunu',
+            description='Açıklama: şifre sıfırlama',
+            priority='Yuksek',
+            category='Ag',
+            status='Acik',
+            created_by=self.admin,
+        )
+        today = timezone.now().date()
+        start = (today - timedelta(days=30)).isoformat()
+        response = self.client.post(reverse('reporting_hub'), {
+            'report_type': 'ticket_performance',
+            'start_date': start,
+            'end_date': today.isoformat(),
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('application/pdf', response['Content-Type'])
+        _assert_unicode_pdf(response.content)
+
+
+class PresentationSmokeTests(TestCase):
+    """Sunum oncesi tum kritik sayfa ve export uclari."""
+
+    DEMO_ROUTES = [
+        'dashboard', 'custom_admin', 'live_monitor', 'network_topology', 'visual_ipam',
+        'network_scanner', 'device_backup', 'generator', 'rack_elevation',
+        'it_inventory', 'helpdesk_analytics', 'itsm_maturity', 'factory_operations',
+        'factory_command_center', 'factory_portfolio_inventory', 'service_operations',
+        'command_center', 'governance_center', 'identity_operations', 'it_operations',
+        'field_routes', 'sales_kanban', 'dlp_events', 'knowledge_base', 'reporting_hub',
+        'executive_summary', 'integration_hub_center', 'erp_integrations',
+        'ot_integrations', 'asset_qr_scanner', 'workspace_center', 'setup_center',
+        'offline_field_app', 'swagger-ui',
+    ]
+
+    def setUp(self):
+        call_command('load_demo', '--reset')
+        self.admin = User.objects.get(username='demo.admin')
+        self.client.force_login(self.admin)
+
+    def test_demo_admin_reaches_all_presentation_routes(self):
+        for route in self.DEMO_ROUTES:
+            with self.subTest(route=route):
+                response = self.client.get(reverse(route))
+                self.assertIn(response.status_code, (200, 301, 302), msg=f'{route} failed')
+
+    def test_demo_ticket_detail_renders(self):
+        from inventory.models import Ticket
+        ticket = Ticket.objects.filter(title__contains='[DEMO]').first()
+        self.assertIsNotNone(ticket)
+        response = self.client.get(reverse('ticket_detail', args=[ticket.pk]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_demo_global_search_finds_mes(self):
+        response = self.client.get(reverse('global_search_api'), {'q': 'MES'})
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn('results', payload)
+        self.assertTrue(len(payload['results']) > 0)
+
+    def test_demo_readiness_score(self):
+        output = io.StringIO()
+        call_command('omniops_doctor', '--json', stdout=output)
+        report = json.loads(output.getvalue())
+        self.assertGreaterEqual(report['score'], 90)
+
+    def test_csv_export_utf8_bom(self):
+        response = self.client.get(reverse('export_tickets_csv'))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('charset=utf-8', response['Content-Type'])

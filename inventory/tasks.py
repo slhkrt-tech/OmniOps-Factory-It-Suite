@@ -426,10 +426,11 @@ def data_retention_policy_task():
             from reportlab.lib.pagesizes import letter
             from reportlab.lib import colors
             from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+            from inventory.pdf_fonts import table_font_style
 
-            rows = [['Device', 'CPU %', 'RAM %', 'Disk %', 'Recorded At']]
+            rows = [['Cihaz', 'CPU %', 'RAM %', 'Disk %', 'Kayıt Zamanı']]
             for log in old_perf_logs.select_related('device').order_by('recorded_at'):
-                rows.append([log.device.name if log.device else 'Unknown', log.cpu_usage, log.ram_usage, log.disk_usage, log.recorded_at.strftime('%Y-%m-%d %H:%M')])
+                rows.append([log.device.name if log.device else 'Bilinmiyor', log.cpu_usage, log.ram_usage, log.disk_usage, log.recorded_at.strftime('%Y-%m-%d %H:%M')])
 
             doc = SimpleDocTemplate(str(pdf_path), pagesize=letter)
             table = Table(rows, repeatRows=1)
@@ -437,8 +438,8 @@ def data_retention_policy_task():
                 ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#0b5394')),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
                 ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
                 ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                *table_font_style(),
             ]))
             doc.build([table])
         except Exception:
@@ -940,10 +941,10 @@ def generate_and_send_audit_report():
         from reportlab.lib.pagesizes import A4
         from reportlab.lib import colors
         from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-        from reportlab.lib.styles import getSampleStyleSheet
+        from inventory.pdf_fonts import get_pdf_styles, table_font_style
 
         doc = SimpleDocTemplate(str(pdf_path), pagesize=A4)
-        styles = getSampleStyleSheet()
+        styles = get_pdf_styles()
         elements = []
 
         elements.append(Paragraph("Haftalık Sistem Denetim Raporu (ISO 27001 / KVKK)", styles['Heading1']))
@@ -962,11 +963,11 @@ def generate_and_send_audit_report():
                 ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#113231')),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
                 ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
                 ('FONTSIZE', (0, 0), (-1, 0), 10),
                 ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
                 ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
                 ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                *table_font_style(),
             ]))
             elements.append(table)
         else:
