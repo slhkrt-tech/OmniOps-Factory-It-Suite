@@ -11,6 +11,18 @@ env/
 .venv/
 pyvenv.cfg
 
+# --- Python / test / coverage artefaktları ---
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.sqlite3-journal
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+
 # --- Güvenlik ve Şifreler ---
 .env
 .env.*
