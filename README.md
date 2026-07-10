@@ -650,7 +650,9 @@ Projeye katkı sağlamak isterseniz:
 3. Değişikliklerinizi test edin ve belgeleyin.
 4. Pull request açın.
 
-Bu proje açık kaynak olarak sunulmaktadır; lisans ve kullanım koşulları proje kök dizinindeki lisans dosyası üzerinden takip edilmelidir.
+Detaylı katkı rehberi için [CONTRIBUTING.md](CONTRIBUTING.md) dosyasını inceleyebilirsiniz.
+
+Bu proje açık kaynak olarak sunulmaktadır. Kullanım koşulları ve lisans bilgileri için [LICENSE](LICENSE) dosyasını inceleyiniz.
 
 **Öne çıkan kaynaklar:** `devices`, `tickets`, `factory-sites`, `department-inventory`, `erp-connections`, `directory-users`, `managed-documents`, `module-permissions`, `workspace/layout`
 
