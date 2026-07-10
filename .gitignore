@@ -13,12 +13,29 @@ pyvenv.cfg
 
 # --- Güvenlik ve Şifreler ---
 .env
+.env.*
 .env.local
+.env.*.local
+*.env
+*.pem
+*.key
+*.p12
+*.crt
 secret.txt
 
 # --- Medya ve Statik Dosyalar ---
 media/
 staticfiles/
+
+# --- Demo / Yerel Dosyalar ---
+docker-compose.demo.yml
+docs/DEMO_SUNUM_METNI.txt
+inventory/demo_seed.py
+inventory/pdf_fonts.py
+scripts/fetch_pdf_fonts.ps1
+scripts/start-demo.ps1
+archives/
+db_backups/
 
 # --- IDE ve Çalışma Zamanı Logları ---
 logs/
