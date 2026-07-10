@@ -14,6 +14,47 @@ OmniOps; servis masası (ITSM), ağ operasyonları (ITOM), fabrika envanteri, ki
 
 ---
 
+## Hızlı özet
+
+OmniOps, üretim ve kurumsal ortamda çalışan BT, ağ, servis masası, güvenlik ve fabrika operasyon ekiplerinin aynı platform üzerinden çalışmasını sağlar. Proje, Django tabanlı bir çekirdek üzerinde kurulu olup; ticket, envanter, ağ otomasyonu, QR tabanlı varlık takibi, ERP/OT entegrasyonları, raporlama ve denetim akışlarını tek bir veri modeli altında birleştirir.
+
+### Ana kullanım senaryoları
+
+- Fabrika IT ekipleri için envanter, QR etiket, doküman ve tesis bazlı operasyon yönetimi
+- Ağ operasyonları için IPAM, tarama, topoloji, yedekleme ve yapılandırma üretimi
+- ITSM süreçleri için ticket, SLA, bilgi bankası, kullanıcı ve servis kataloğu
+- Güvenlik ve uyumluluk için denetim izi, webhook, DLP ve şifre kasası entegrasyonları
+- ERP/OT/MES sistemleri ile arka planda senkronizasyon ve otomasyon
+
+### Görsel özet
+
+![OmniOps katman mimarisi](docs/images/architecture-layers.svg)
+
+*Katmanlı mimari: istemci, uygulama, veri ve dış sistemler arasındaki akışın genel görünümü.*
+
+![OmniOps modül ekosistemi](docs/images/module-rings.svg)
+
+*Modül grupları: genel bakış, fabrika operasyonları, altyapı, servis masası, kimlik ve entegrasyon alanları.*
+
+### Hızlı başlangıç
+
+1. Depoyu klonlayın.
+2. Ortam değişkenlerini hazırlayın; örnek dosya olarak [.env.example](.env.example) kullanılabilir.
+3. Docker Compose ile sistemi başlatın.
+4. Veritabanı migrasyonlarını uygulayın.
+5. Yönetici hesabı oluşturup uygulamaya giriş yapın.
+
+```bash
+git clone https://github.com/slhkrt-tech/OmniOps-Factory-It-Suite.git
+cd OmniOps-Factory-It-Suite
+cp .env.example .env
+docker compose up --build
+```
+
+Daha detaylı kurulum ve yapılandırma talimatları için sonraki bölümleri inceleyebilirsiniz.
+
+---
+
 ## İçindekiler
 
 1. [OmniOps nedir?](#omniops-nedir)
@@ -452,6 +493,8 @@ python manage.py compilemessages
 
 ### Hızlı başlangıç (Docker — önerilen)
 
+Bu yöntem, projeyi hızlıca çalıştırmak için en basit ve tavsiye edilen yoldur. Docker kullanarak aynı anda Nginx, Django, PostgreSQL ve Celery altyapısını kurabilirsiniz.
+
 ```bash
 git clone https://github.com/slhkrt-tech/OmniOps-Factory-It-Suite.git
 cd OmniOps-Factory-It-Suite
@@ -509,7 +552,11 @@ celery -A core beat --loglevel=info
 
 ### İlk kurulum kontrolü
 
-Web: **`/kurulum-merkezi/`** — veritabanı, gruplar, secret key, SMTP, Celery, fabrika bootstrap skoru.
+Kurulum tamamlandıktan sonra aşağıdaki adreslerden sistemi doğrulayabilirsiniz:
+
+- Web: **`/kurulum-merkezi/`** — veritabanı, gruplar, secret key, SMTP, Celery, fabrika bootstrap skoru.
+- Sağlık: **`/health/`** — servis durumunu gösterir.
+- API dokümanları: **`/api/docs/`** — Swagger arayüzü.
 
 CLI:
 
@@ -520,6 +567,18 @@ python manage.py omniops_doctor --bootstrap
 ```
 
 `--bootstrap` oluşturur: RBAC grupları, ticket kategorileri, örnek fabrika tesisleri, departman kartelası, QR etiketleri.
+
+### Görsel kullanım örnekleri
+
+Projenin arayüzü ve akışları aşağıdaki alanlarda öne çıkar:
+
+- Ana panel ve komuta merkezi
+- Fabrika envanteri ve QR tarayıcı
+- Servis masası ve ticket akışı
+- Entegrasyon merkezi ve OT/ERP bağlantıları
+- Kurulum merkezi ve sağlık kontrol ekranları
+
+> Ekran görüntüleri proje dizinindeki [docs/images/screenshots](docs/images/screenshots) klasörüne eklenerek README’de daha da zenginleştirilebilir.
 
 ---
 
@@ -579,6 +638,19 @@ DOCUMENT_EDITOR_BACKEND=onlyoffice
 | JWT refresh | `POST /api/token/refresh/` |
 
 **Kimlik doğrulama:** Session (tarayıcı) veya `Authorization: Bearer <token>` (entegrasyon).
+
+---
+
+## Katkı ve lisans
+
+Projeye katkı sağlamak isterseniz:
+
+1. Depoyu fork edin.
+2. Kendi dalınızı oluşturun.
+3. Değişikliklerinizi test edin ve belgeleyin.
+4. Pull request açın.
+
+Bu proje açık kaynak olarak sunulmaktadır; lisans ve kullanım koşulları proje kök dizinindeki lisans dosyası üzerinden takip edilmelidir.
 
 **Öne çıkan kaynaklar:** `devices`, `tickets`, `factory-sites`, `department-inventory`, `erp-connections`, `directory-users`, `managed-documents`, `module-permissions`, `workspace/layout`
 
